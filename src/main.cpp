@@ -8,6 +8,8 @@
 
 namespace found {
 
+    
+
 #define LOST_OPTIONAL_OPTARG()                                   \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
      ? (bool) (optarg = argv[optind++])                          \
@@ -63,7 +65,7 @@ int FoundMain(int argc, char **argv) {
                     exit(1);
             }
         }
-
+    
 
 }
 
