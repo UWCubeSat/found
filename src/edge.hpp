@@ -17,9 +17,10 @@ typedef std::vector<Point> Points;
 class EdgeDetectionAlgorithm {
 public:
     EdgeDetectionAlgorithm();
+    virtual ~EdgeDetectionAlgorithm();
     
     // This is your core algorithm. I made a mock return type, feel free to redesign it!
-    virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/);
+    virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
 private:
     //useful fields for all algorithms
 
@@ -28,6 +29,7 @@ private:
 class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 public:
     LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+    virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
 // Overrided Go() goes here
     Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
 private:

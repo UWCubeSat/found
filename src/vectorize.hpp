@@ -2,6 +2,7 @@
 #define VECTORIZE_H
 
 #include "attitude-utils.hpp"
+#include "style.hpp"
 
 namespace found {
 
@@ -10,8 +11,8 @@ typedef Vec3 PositionVector;
 class VectorGenerationAlgorithm {
 public:
     VectorGenerationAlgorithm();
-    ~VectorGenerationAlgorithm();
-    virtual PositionVector Run(/*Params common to this type*/);
+    virtual ~VectorGenerationAlgorithm();
+    virtual PositionVector Run(/*Params common to this type*/) = 0;
 private:
 
 };

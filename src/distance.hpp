@@ -12,10 +12,10 @@ typedef decimal distFromEarth;
 class DistanceDeterminationAlgorithm {
 public:
     DistanceDeterminationAlgorithm();
-    ~DistanceDeterminationAlgorithm();
+    virtual ~DistanceDeterminationAlgorithm();
     
     // Main algorithm for distance determination. Returns distance from Earth
-    virtual distFromEarth Run(char* image, Points &p /*More go here*/);
+    virtual distFromEarth Run(char* image, Points &p /*More go here*/) = 0;
 private:
     // Should be nothing, if all algos share a field, better to put it in their specific class
 };

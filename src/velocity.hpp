@@ -12,8 +12,8 @@ typedef Vec3 VelocityPrediction;
 class VelocityPredictionAlgorithm {
 public:
     VelocityPredictionAlgorithm();
-    ~VelocityPredictionAlgorithm();
-    virtual VelocityPrediction Run(/*Params common to this type*/);
+    virtual ~VelocityPredictionAlgorithm();
+    virtual VelocityPrediction Run(/*Params common to this type*/) = 0;
 private:
 
 };

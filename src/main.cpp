@@ -5,6 +5,7 @@
 #include <string>
 
 #include "other.hpp"
+#include "style.hpp"
 
 namespace found {
 

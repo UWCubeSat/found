@@ -14,8 +14,8 @@ typedef std::vector<decimal> OrbitParams;
 class OrbitDeterminationAlgorithm {
 public:
     OrbitDeterminationAlgorithm();
-    ~OrbitDeterminationAlgorithm();
-    virtual OrbitParams Run(/*Params common to this type*/);
+    virtual ~OrbitDeterminationAlgorithm();
+    virtual OrbitParams Run(/*Params common to this type*/) = 0;
 private:
 
 };
