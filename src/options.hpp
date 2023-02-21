@@ -1,6 +1,6 @@
 // this file uses the "X" pattern.
 
-// Arguments to LOST_CLI_OPTION:
+// Arguments to FOUND_CLI_OPTION:
 // 1. String used as the command line option.
 // 2. Type of the option value.
 // 3. Property name

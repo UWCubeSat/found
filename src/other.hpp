@@ -1,6 +1,3 @@
-
-
-
 class Options {
 public:
 #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \

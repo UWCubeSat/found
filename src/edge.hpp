@@ -2,31 +2,34 @@
 #define EDGE_H
 
 #include <vector>
+#include "style.hpp"
+
+namespace found {
 
 struct Point {
-    int x;
-    int y;
+    decimal x;
+    decimal y;
 };
 
+// Always name your output Points
 typedef std::vector<Point> Points;
 
 class EdgeDetectionAlgorithm {
 public:
-    EdgeDetectionAlgorithm(char* picture /*Put more fields here!*/) : image(picture) /*Put more initializations here*/{};
+    EdgeDetectionAlgorithm();
     
     // This is your core algorithm. I made a mock return type, feel free to redesign it!
-    virtual Points Go(/*parameters all algorithms will need (Override this plz)*/);
+    virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/);
 private:
-    char* image;
     //useful fields for all algorithms
 
 };
 
 class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 public:
-    LoCEdgeDetectionAlgorithm(char* picture /*Put more fields here!*/) : EdgeDetectionAlgorithm(picture) /*Put more initializations here*/{};
+    LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
 // Overrided Go() goes here
-    Points Go(/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
 private:
 // useful fields specific to this algorhtm
 };
@@ -39,5 +42,6 @@ private:
 // useful fields specific to this algorhtm
 };
 
+}
 
 #endif
