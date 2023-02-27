@@ -6,8 +6,6 @@
 
 namespace found {
 
-// Always name whatever your return type is this type
-typedef Vec3 VelocityPrediction;
 
 class VelocityPredictionAlgorithm {
 public:

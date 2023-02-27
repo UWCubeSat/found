@@ -11,7 +11,7 @@ BIN := found
 
 all: $(BIN)
 
-LIBS     := -lcairo
+LIBS     := # -lcairo
 CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
 
 $(BIN): $(OBJS)

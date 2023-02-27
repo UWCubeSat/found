@@ -11,15 +11,24 @@ namespace found {
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
 // make everything more annoying, because you need vectors of pointers...ugh!
 
-/// A two dimensional vector with floating point components
+/**
+ * A Vec2 is an immutable object that represents a 2D Vector
+ * 
+*/
 struct Vec2 {
-    decimal x;
-    decimal y;
+    const decimal x;
+    const decimal y;
+
+    // Magnitude
 
     decimal Magnitude() const;
     decimal MagnitudeSq() const;
 
+    // Unit Vector of this
+
     Vec2 Normalize() const;
+
+    // Operations
 
     decimal operator*(const Vec2 &) const;
     Vec2 operator*(const decimal &) const;
@@ -29,16 +38,54 @@ struct Vec2 {
 
 class Mat3; // define above so we can use in Vec3 class
 
-/// Three dimensional vector with floating point components
+/**
+ * A Vec3 is a mutable object that represents a 3D Vector
+ * 
+*/
 class Vec3 {
 public:
     decimal x;
     decimal y;
     decimal z;
 
+    //TODO: Implement this constructor
+    /**
+     * Construction of orientation vector, which should be a unit vector
+     * 
+     * @param de The declination of the vector to create
+     * @param ra The right ascension of the vector to create
+    */
+    Vec3(decimal de, decimal ra);
+
+    /**
+     * Construction of vector with x, y, and z components
+     * 
+     * @param x The scalar value in the x direction of the vector to make
+     * @param y The scalar value in the y direction of the vector to make
+     * @param z The scalar value in the z direction of the vector to make
+    */
+    Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {};
+
+    /**
+     * Default construction of the Vector
+    */
+    Vec3() {};
+
+    // Magnitude
+
     decimal Magnitude() const;
     decimal MagnitudeSq() const;
+
+    // Unit Vector
+
     Vec3 Normalize() const;
+
+    // TODO: Accessor Methods
+
+    decimal getRightAscension() const;
+    decimal getDeclination() const;
+
+    // Operations
 
     decimal operator*(const Vec3 &) const;
     Vec3 operator*(const decimal &) const;
@@ -48,34 +95,53 @@ public:
     Mat3 OuterProduct(const Vec3 &) const;
 };
 
-/// 3x3 vector with floating point components
+/**
+ * A Mat3 is a mutable object that represents a 3x3 Matrix
+ * 
+*/
 class Mat3 {
 public:
     decimal x[9];
 
+    // Accessor
+
     decimal At(int i, int j) const;
-    Mat3 operator+(const Mat3 &) const;
-    Mat3 operator*(const Mat3 &) const;
-    Vec3 operator*(const Vec3 &) const;
-    Mat3 operator*(const decimal &) const;
-    Mat3 Transpose() const;
     Vec3 Column(int) const;
     Vec3 Row(int) const;
     decimal Trace() const;
     decimal Det() const;
+
+    // Operations
+
+    Mat3 operator+(const Mat3 &) const;
+    Mat3 operator*(const Mat3 &) const;
+    Vec3 operator*(const Vec3 &) const;
+    Mat3 operator*(const decimal &) const;
+
+    // Transformations
+
+    Mat3 Transpose() const;
     Mat3 Inverse() const;
 };
 
+// Identity Matrix
+
 extern const Mat3 kIdentityMat3;
+
+// Buffer-Vector Functions
 
 long SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);
 Vec3 DeserializeVec3(const unsigned char *);
 
+// Distance between Vectors
+
 decimal Distance(const Vec2 &, const Vec2 &);
 decimal Distance(const Vec3 &, const Vec3 &);
 
 /**
+ * An EulerAngle is a mutable Object representing Euler Angles of a 3D point
+ * 
  * A "human-readable" way to represent a 3d rotation or orientation.
  * Euler angles roughly correspond to yaw, pitch, and roll of an airplane, which are easy for humans to understand.
  * There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles.
@@ -93,7 +159,11 @@ public:
     decimal roll;
 };
 
-/// A quaternion is a common way to represent a 3d rotation.
+/**
+ * A Quaternion is a mutable object that represents a Quaternion. A Quaternion
+ * is a common way to represent rotations in 3D.
+ * 
+*/
 class Quaternion {
 public:
     Quaternion() = default;
@@ -120,8 +190,10 @@ public:
     decimal k;
 };
 
-//
+
 /**
+ * An Attitude is an immutable object that represents the orientation of a 3D point.
+ * 
  * The attitude (orientation) of a spacecraft.
  * The Attitude object stores either a rotation matrix (direction cosine matrix) or a quaternion, and converts automatically to the other format when needed.
  * @note When porting to an embedded device, you'll probably want to get rid of this class and adapt to
@@ -151,21 +223,23 @@ private:
     AttitudeType type;
 };
 
+// DCM-Quaternion-Spherical Conversions
+
 Mat3 QuaternionToDCM(const Quaternion &);
 Quaternion DCMToQuaternion(const Mat3 &);
-
-// Return a quaternion that will reorient the coordinate axes so that the x-axis points at the given
-// right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
-// will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
-// returns unit vector
+// Spherical-Vector Conversions
+
 Vec3 SphericalToSpatial(decimal ra, decimal de);
-void SpatialToSpherical(const Vec3 &, decimal *ra, decimal *de);
-// angle between two vectors, using dot product and magnitude division
+void SpatialToSpherical(const Vec3 &, decimal &ra, decimal &de);
+
+// Angle Between Vectors
+
 decimal Angle(const Vec3 &, const Vec3 &);
-// angle between two vectors, /assuming/ that they are already unit length
 decimal AngleUnit(const Vec3 &, const Vec3 &);
+
+// Angle Conversions
 
 decimal RadToDeg(decimal);
 decimal DegToRad(decimal);

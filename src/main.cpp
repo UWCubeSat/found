@@ -9,14 +9,29 @@
 
 namespace found {
 
-    
+// For macro processing
+const char kNoDefaultArgument = 0;
 
+// For command-line processing
 #define LOST_OPTIONAL_OPTARG()                                   \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
      ? (bool) (optarg = argv[optind++])                          \
      : (optarg != NULL))
 
 
+/**
+ * This is where the program starts.
+ * 
+ * @param argc The number of arguments passed into the command line
+ * @param argv The arguments passed into the command line
+ * 
+ * @return An integer indicating success (0) iff the program executes
+ * successfully
+ * 
+ * @note The method itself uses command line arguments to generate
+ * an Options object that represents all the algorithms we want to run
+ * and their parameters
+*/
 int FoundMain(int argc, char **argv) {
     if(argc == 1) {
         std::cout << "Seems you don't want to be found";
@@ -33,9 +48,9 @@ int FoundMain(int argc, char **argv) {
 
     static struct option long_options[] = {
         #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-                    {name,                                                      \
-                    defaultArg == 0 ? required_argument : optional_argument, \
-                    0,                                                         \
+                    {name,                                                            \
+                    defaultArg == 0 ? required_argument : optional_argument,          \
+                    0,                                                                \
                     (int)DatabaseCliOption::prop},
         #include "options.hpp" // NOLINT
         #undef FOUND_CLI_OPTION
@@ -49,16 +64,16 @@ int FoundMain(int argc, char **argv) {
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-                case (int)DatabaseCliOption::prop :                     \
-                    if (defaultArg == 0) {     \
-                        options.prop = converter;       \
-                    } else {                                    \
-                        if (LOST_OPTIONAL_OPTARG()) {           \
-                            options.prop = converter;   \
-                        } else {                                \
-                            options.prop = defaultArg;  \
-                        }                                       \
-                    }                                           \
+                case (int)DatabaseCliOption::prop :                           \
+                    if (defaultArg == 0) {                                    \
+                        options.prop = converter;                             \
+                    } else {                                                  \
+                        if (LOST_OPTIONAL_OPTARG()) {                         \
+                            options.prop = converter;                         \
+                        } else {                                              \
+                            options.prop = defaultArg;                        \
+                        }                                                     \
+                    }                                                         \
             break;
 #include "options.hpp" // NOLINT
 #undef FOUND_CLI_OPTION
@@ -66,12 +81,22 @@ int FoundMain(int argc, char **argv) {
                     exit(1);
             }
         }
-    
+    return 0;
 
 }
 
 }
 
+/**
+ * This is where the program starts.
+ * 
+ * @param argc The number of arguments passed into the command line
+ * @param argv The arguments passed into the command line
+ * 
+ * @return An integer indicating success (0) iff the program executes
+ * successfully
+ * 
+*/
 int main(int argc, char **argv) {
     found::FoundMain(argc, argv);
 }
