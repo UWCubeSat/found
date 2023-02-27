@@ -23,8 +23,7 @@ public:
     virtual ~VectorGenerationAlgorithm();
 
     /**
-     * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
-     * to Earth's center
+     * Finds the vector of the satellite with respect to Earth's center
      * 
      * @param x_E The distance from Earth
      * 
@@ -63,7 +62,7 @@ public:
     */
     PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
 private:
-    // Fields specific to this algorithm go here
+    // Fields specific to this algorithm go here, and helper methods
 
     // Orientation from LOST
     Vec3 orientation;
@@ -72,11 +71,23 @@ private:
 
 class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
 public:
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
     FeatureDetectionVectorGenerationAlgorithm(/*Params to initialze fields for this object*/);
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
     ~FeatureDetectionVectorGenerationAlgorithm();
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
     PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
 private:
-    // Fields specific to this algorithm go here 
+    // Fields specific to this algorithm go here, and helper methods
 };
 
 }

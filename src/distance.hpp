@@ -1,7 +1,6 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include "edge.hpp"
 #include "style.hpp"
 
 namespace found {
@@ -21,8 +20,7 @@ public:
     virtual ~DistanceDeterminationAlgorithm();
     
     /**
-     * Runs the Distance Determination Algorithm, which finds the distance of the 
-     * satellite from Earth based on the image of Earth
+     * Computes the distance of the satellite from Earth based on an image of Earth
      * 
      * @param image The image of Earth, represented as a character array with values from 0-255
      * that represents the black/white color of each pixel
@@ -34,25 +32,39 @@ public:
     virtual distFromEarth Run(char* image, Points &p /*More go here*/) = 0;
 };
 
-
+/**
+ * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
+ * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+ * 
+ * @note This class assumes that Earth is a perfect sphere
+*/
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
     SphericalDistanceDeterminationAlgorithm(float radius);
     ~SphericalDistanceDeterminationAlgorithm();
     
-    // Main algorithm for distance determination. Returns distance from Earth. MUST OVERRIDE
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
 private:
     // Fields specific to this algorithm, and helper methods
 };
 
-
+/**
+ * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
+ * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+ * 
+ * @note This class assumes that Earth is a perfect ellipse
+*/
 class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
     EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
-    // Main algorithm for distance determination. MUST OVERRIDE
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
 private:
     //Fields specific to this algorithm, and helper methods

@@ -1,14 +1,13 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <vector>
 #include "style.hpp"
 
 namespace found {
 
 /**
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
- * a picture of  Earth and finds all points on the horizon within the picture.
+ * a picture of Earth and finds all points on the horizon within the picture.
 */
 class EdgeDetectionAlgorithm {
 public:
@@ -23,7 +22,7 @@ public:
     virtual ~EdgeDetectionAlgorithm();
     
     /**
-     * Runs the Edge Detection Algorithm, which finds all points on Earth's horizon.
+     * Finds all points on Earth's horizon as seen in an image
      * 
      * @param image The image of Earth, represented as a character array with values from 0-255
      * that represents the black/white color of each pixel
@@ -33,22 +32,56 @@ public:
     virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
 };
 
-class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
-public:
-    LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
-    virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
-// Overrided Go() goes here
-    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
-private:
-// useful fields specific to this algorithm and helper methods
-};
-
+/**
+ * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
+ * a picture of Earth and finds all points on the horizon within the picture by employing thresholding
+ * to filter out edge components
+*/
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 public:
-// constructor goes here
-// Overrided Go() goes here
+    
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    SimpleEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    virtual ~SimpleEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
 private:
-// useful fields specific to this algorithm and helper methods
+    // useful fields specific to this algorithm and helper methods
+};
+
+/**
+ * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
+ * a picture of Earth and finds all points on the horizon within the picture by employing a 
+ * Laplacian of Gaussian (LoC) filter to the image.
+*/
+class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+public:
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+    /**
+     * Place documentation here. Press enter to automatically make a new line
+     * */
+    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
+private:
+    // useful fields specific to this algorithm and helper methods
 };
 
 }

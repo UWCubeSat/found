@@ -90,7 +90,7 @@ struct OrbitParams {
 // a struct that holds the orbit equations.
 typedef struct OrbitParams OrbitParams;
 
-// The output for Kinematic Profile Completion. Currently set to a singular
-// function that will tell you the position of the satellite at any given time
-typedef std::function<Vec3(int)> VelocityPrediction;
+// The output for Kinematic Profile Completion. Currently set to two functions that
+// will tell you the position and velocity of the satellite at any given time
+typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
 }
