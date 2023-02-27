@@ -8,9 +8,6 @@
 
 namespace found {
 
-// Always name whatever your return type is this type
-typedef std::vector<decimal> OrbitParams;
-
 class OrbitDeterminationAlgorithm {
 public:
     OrbitDeterminationAlgorithm();

@@ -6,18 +6,32 @@
 
 namespace found {
 
-// Always name your output distFromEarth
-typedef decimal distFromEarth;
-
+/**
+ * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
+ * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+*/
 class DistanceDeterminationAlgorithm {
 public:
+    /**
+     * Creates a Distance Determination Object
+    */
     DistanceDeterminationAlgorithm();
+
+    // Destroys this
     virtual ~DistanceDeterminationAlgorithm();
     
-    // Main algorithm for distance determination. Returns distance from Earth
+    /**
+     * Runs the Distance Determination Algorithm, which finds the distance of the 
+     * satellite from Earth based on the image of Earth
+     * 
+     * @param image The image of Earth, represented as a character array with values from 0-255
+     * that represents the black/white color of each pixel
+     * @param p The Points that we find on Earth's horizon with respect to the image coordinate
+     * system
+     * 
+     * @return The distance of the satellite from Earth
+    */
     virtual distFromEarth Run(char* image, Points &p /*More go here*/) = 0;
-private:
-    // Should be nothing, if all algos share a field, better to put it in their specific class
 };
 
 
@@ -29,7 +43,7 @@ public:
     // Main algorithm for distance determination. Returns distance from Earth. MUST OVERRIDE
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
 private:
-    //Fields specific to this algorithm
+    // Fields specific to this algorithm, and helper methods
 };
 
 
@@ -41,7 +55,7 @@ public:
     // Main algorithm for distance determination. MUST OVERRIDE
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
 private:
-    //Fields specific to this algorithm
+    //Fields specific to this algorithm, and helper methods
 };
 
 }

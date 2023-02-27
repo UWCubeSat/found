@@ -6,24 +6,31 @@
 
 namespace found {
 
-struct Point {
-    decimal x;
-    decimal y;
-};
-
-// Always name your output Points
-typedef std::vector<Point> Points;
-
+/**
+ * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
+ * a picture of  Earth and finds all points on the horizon within the picture.
+*/
 class EdgeDetectionAlgorithm {
 public:
+    /**
+     * Creates an EdgeDetectionAlgorithm object
+     * 
+     * @note Constructs an Edge Detection Algorithm
+    */
     EdgeDetectionAlgorithm();
+
+    // Destroys this
     virtual ~EdgeDetectionAlgorithm();
     
-    // This is your core algorithm. I made a mock return type, feel free to redesign it!
+    /**
+     * Runs the Edge Detection Algorithm, which finds all points on Earth's horizon.
+     * 
+     * @param image The image of Earth, represented as a character array with values from 0-255
+     * that represents the black/white color of each pixel
+     * 
+     * @return A Points object that holds all points found in the image
+    */
     virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
-private:
-    //useful fields for all algorithms
-
 };
 
 class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
@@ -33,7 +40,7 @@ public:
 // Overrided Go() goes here
     Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
 private:
-// useful fields specific to this algorhtm
+// useful fields specific to this algorithm and helper methods
 };
 
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
@@ -41,7 +48,7 @@ public:
 // constructor goes here
 // Overrided Go() goes here
 private:
-// useful fields specific to this algorhtm
+// useful fields specific to this algorithm and helper methods
 };
 
 }
