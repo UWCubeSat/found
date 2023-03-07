@@ -72,10 +72,10 @@ private:
     int xResolution; int yResolution;
 };
 
-// Floating function for calculating focal length
+// Conversions from FOV to Focal Length
 
 decimal FovToFocalLength(decimal xFov, decimal xResolution);
-
+decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize);
 }
 
 #endif
