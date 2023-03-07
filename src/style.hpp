@@ -1,12 +1,14 @@
+/**
+ * This file controls all stylistic-related choices for FOUND (except for decimal)
+ * 
+*/
+
 #include <vector>
 #include <functional>
 
 #include "attitude-utils.hpp"
 
 namespace found {
-
-// For controlling floating-point type memory usage throughout the program
-typedef float decimal;
 
 // The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set 
 // to a vector of 2D points on the image, according to image coordinate systems
