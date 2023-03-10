@@ -15,11 +15,6 @@ namespace found {
 */
 class KinematicProfilingAlgorithm {
 public:
-    /**
-     * Creates a KinematicProfilingAlgorithm object
-     * 
-    */
-    KinematicProfilingAlgorithm();
 
     // Destroys this
     virtual ~KinematicProfilingAlgorithm();

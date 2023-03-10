@@ -1,13 +1,17 @@
 
 SRCS := $(wildcard src/*.cpp)
 
-TEST_BIN := $(wildcard test/*.cpp)
+TEST_SRC := $(wildcard test/*.cpp)
 
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
+
+TESTS := $(patsubst %.cpp,%.o,$(TEST_SRC))
 
 TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
 
 BIN := found
+
+TEST_BIN := ./found-test
 
 all: $(BIN)
 
@@ -20,11 +24,11 @@ $(BIN): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-test: $(BIN) $(BSC) $(TEST_BIN)
+test: $(BIN) $(TEST_BIN)
 	$(TEST_BIN)
 
 $(TEST_BIN): $(TEST_OBJS)
 	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(BIN)
+	rm -f $(OBJS) $(BIN) $(TEST_OBJS) $(TEST_BIN)

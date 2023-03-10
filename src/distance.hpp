@@ -11,10 +11,6 @@ namespace found {
 */
 class DistanceDeterminationAlgorithm {
 public:
-    /**
-     * Creates a Distance Determination Object
-    */
-    DistanceDeterminationAlgorithm();
 
     // Destroys this
     virtual ~DistanceDeterminationAlgorithm();

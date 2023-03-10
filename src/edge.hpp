@@ -29,7 +29,7 @@ public:
      * 
      * @return A Points object that holds all points found in the image
     */
-    virtual Points Run(char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
+    virtual Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
 };
 
 /**
@@ -53,7 +53,7 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
 private:
     // useful fields specific to this algorithm and helper methods
 };
@@ -79,7 +79,7 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    Points Run(char* imgae/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
 private:
     // useful fields specific to this algorithm and helper methods
 };
