@@ -1,3 +1,8 @@
-*.o
+# Don't include the build folder
+build
 
-found
+# Don't include personal .vscode settings
+.vscode
+
+# Don't include google test stuff
+googletest*

@@ -1,8 +1,8 @@
 #ifndef VELOCITY_H
 #define VELOCITY_H
 
-#include "style.hpp"
-#include "attitude-utils.hpp"
+#include "style/style.hpp"
+#include "spatial/attitude-utils.hpp"
 
 namespace found {
 
@@ -14,13 +14,7 @@ namespace found {
  * 
 */
 class KinematicProfilingAlgorithm {
-public:
-    /**
-     * Creates a KinematicProfilingAlgorithm object
-     * 
-    */
-    KinematicProfilingAlgorithm();
-
+ public:
     // Destroys this
     virtual ~KinematicProfilingAlgorithm();
 
@@ -44,8 +38,7 @@ public:
  * 
 */
 class EulerianKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -60,7 +53,7 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
-private:
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
@@ -73,8 +66,7 @@ private:
  * 
 */
 class KeplerKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -89,11 +81,11 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
-private:
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 
 #endif

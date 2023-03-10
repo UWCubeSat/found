@@ -1,8 +1,10 @@
 #ifndef ORBIT_H
 #define ORBIT_H
 
-#include "attitude-utils.hpp"
-#include "style.hpp"
+#include <vector>
+
+#include "spatial/attitude-utils.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
@@ -12,12 +14,7 @@ namespace found {
  * 
 */
 class OrbitDeterminationAlgorithm {
-public:
-    /**
-     * Creates an OrbitDeterminationAlgorithm object
-    */
-    OrbitDeterminationAlgorithm();
-
+ public:
     // Destroys this
     virtual ~OrbitDeterminationAlgorithm();
 
@@ -40,8 +37,7 @@ public:
  * 
 */
 class EllipticalOrbitDerminationAlgorithm : public OrbitDeterminationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -56,7 +52,7 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     OrbitParams Run(std::vector<Vec3> &positions /*Params to override the base class one*/) override;
-private:
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
@@ -67,8 +63,7 @@ private:
  * 
 */
 class PrecessionOrbitDeterminationAlgorithm : public OrbitDeterminationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -83,10 +78,10 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     OrbitParams Run(std::vector<Vec3> &positions /*Params to override the base class one*/) override;
-private:
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 #endif

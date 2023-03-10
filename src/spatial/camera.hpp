@@ -1,9 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "attitude-utils.hpp"
+#include "spatial/attitude-utils.hpp"
 
-#include "style.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
@@ -14,7 +14,7 @@ namespace found {
  * 
 */
 class Camera {
-public:
+ public:
     Camera(const Camera &) = default;
 
     /**
@@ -30,7 +30,7 @@ public:
            int xResolution, int yResolution)
         : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
-          xResolution(xResolution), yResolution(yResolution) {};
+          xResolution(xResolution), yResolution(yResolution) {}
 
     /**
      * Creates a Camera object off of ideal Camera parameters
@@ -45,7 +45,7 @@ public:
     Camera(decimal focalLength, int xResolution, int yResolution)
         : Camera(focalLength,
                  xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
-                 xResolution, yResolution) {};
+                 xResolution, yResolution) {}
 
     // Projection of vectors into image and space
 
@@ -56,16 +56,16 @@ public:
 
     // Accessor Methods to Camera Parameters
 
-    int XResolution() const { return xResolution; };
-    int YResolution() const { return yResolution; };
-    decimal FocalLength() const { return focalLength; };
+    int XResolution() const { return xResolution; }
+    int YResolution() const { return yResolution; }
+    decimal FocalLength() const { return focalLength; }
     decimal Fov() const;
 
     // Mutator Method for Cameras
 
     void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
 
-private:
+ private:
     // TODO: distortion
     decimal focalLength;
     decimal xCenter; decimal yCenter;
@@ -76,6 +76,7 @@ private:
 
 decimal FovToFocalLength(decimal xFov, decimal xResolution);
 decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize);
-}
+
+}  // namespace found
 
 #endif

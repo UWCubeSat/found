@@ -1,8 +1,8 @@
 #ifndef VECTORIZE_H
 #define VECTORIZE_H
 
-#include "attitude-utils.hpp"
-#include "style.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
@@ -12,13 +12,7 @@ namespace found {
  * 
 */
 class VectorGenerationAlgorithm {
-public:
-
-    /**
-     * Creates a VectorGenerationAlgorithm object
-    */
-    VectorGenerationAlgorithm();
-
+ public:
     // Destroys this
     virtual ~VectorGenerationAlgorithm();
 
@@ -39,15 +33,15 @@ public:
  * 
 */
 class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
-public:
-
+ public:
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The orientation of the satellite as determined by LOST
     */
-    LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/) : orientation(orientation) {};
-    
+    explicit LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/)
+        : orientation(orientation) {}
+
     // Destroys this
     ~LOSTVectorGenerationAlgorithm();
 
@@ -61,7 +55,8 @@ public:
      * Earth's center
     */
     PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
-private:
+
+ private:
     // Fields specific to this algorithm go here, and helper methods
 
     // Orientation from LOST
@@ -70,8 +65,7 @@ private:
 
 
 class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -86,10 +80,10 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
-private:
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 #endif

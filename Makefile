@@ -1,30 +1,165 @@
+# Define all constant directories
+SRC_DIR := src
+TEST_DIR := test
+LIB_DIR := libraries
+BUILD_DIR := build
 
-SRCS := $(wildcard src/*.cpp)
+# Define directory with binaries
+BIN_DIR := $(BUILD_DIR)/bin
+BIN := $(BIN_DIR)/found
+TEST_BIN := $(BIN_DIR)/found-test
 
-TEST_BIN := $(wildcard test/*.cpp)
+# Define directory of external libraries
+BUILD_LIBRARY_SRC_DIR := $(BUILD_DIR)/$(LIB_DIR)/$(SRC_DIR)
+BUILD_LIBRARY_TEST_DIR := $(BUILD_DIR)/$(LIB_DIR)/$(TEST_DIR)
 
-OBJS := $(patsubst %.cpp,%.o,$(SRCS))
+# Define our directory with all object files
+BUILD_ARTIFACTS_DIR := $(BUILD_DIR)/objects
+BUILD_SRC_DIR := $(BUILD_ARTIFACTS_DIR)/src
+BUILD_TEST_DIR := $(BUILD_ARTIFACTS_DIR)/test
 
-TEST_OBJS := $(patsubst %.cpp,%.o,$(TESTS) $(filter-out %/main.o, $(OBJS)))
+# Define our directory with pre-processed code (for debugging)
+BUILD_PRIVATE_DIR := $(BUILD_DIR)/private
+BUILD_PRIVATE_SRC_DIR := $(BUILD_PRIVATE_DIR)/$(SRC_DIR)
+BUILD_PRIVATE_TEST_DIR := $(BUILD_PRIVATE_DIR)/$(TEST_DIR)
 
-BIN := found
+# Define the GoogleTest library and build targets
+GTEST := googletest
+GTEST_VERSION := release-1.12.1
+GTEST_URL := https://github.com/google/$(GTEST)/archive/$(GTEST_VERSION).tar.gz
+GTEST_DIR := $(BUILD_LIBRARY_TEST_DIR)/$(GTEST)-$(GTEST_VERSION)
+GTEST_BUILD_DIR := $(GTEST_DIR)/build
 
-all: $(BIN)
+# Define all source and test code
+SRC := $(shell find $(SRC_DIR) -name "*.cpp")
+SRC_H := $(shell find $(SRC_DIR) -name "*.hpp")
+TEST := $(shell find $(TEST_DIR) -name "*.cpp")
+TEST_H :=$(shell find $(TEST_DIR) -name "*.hpp")
 
-LIBS     := # -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
+# Define catch2 library and test suite files
+CATCH_LIB := $(TEST_DIR)/catch
+TEST_FILES := $(filter-out $(CATCH_LIB)/%, $(TEST) $(TEST_H))
 
-$(BIN): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJS) $(LIBS)
+# Our Object source and test files
+SRC_OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_SRC_DIR)/%.o,$(SRC))
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o,$(TEST)) $(filter-out %/main.o, $(SRC_OBJS))
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+# Our pre-processed source and test code
+PRIVATE_SRC := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_PRIVATE_SRC_DIR)/%.i,$(SRC))
+PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TEST))
 
-test: $(BIN) $(BSC) $(TEST_BIN)
-	$(TEST_BIN)
+# Out libraries for both source and test suites
+SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
+TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
-$(TEST_BIN): $(TEST_OBJS)
-	$(CXX) $(LDFLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS)
+# Compiler flags
+LIBS := # Nothing for now
+LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
+CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
+LDFLAGS_TEST := -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
-clean:
-	rm -f $(OBJS) $(BIN)
+# Targets
+COMPILE_SETUP_TARGET := compile_setup
+COMPILE_TARGET := compile
+GOOGLE_STYLECHECK_TARGET := google_stylecheck
+TEST_SETUP_TARGET := test_setup
+TEST_TARGET := test
+GOOGLE_STYLECHECK_TEST_TARGET := google_stylecheck_test
+PRIVATE_TARGET := private
+CLEAN_TARGET := clean
+
+# Prints out a Header when each
+# target begins
+# 
+# Argument
+# - $(1) The name of the target
+#
+# Prints out a banner for each
+# target with the specified name
+define PRINT_TARGET_HEADER
+	@MIDDLE_LINE="Target: $(1)"; \
+	MIDDLE_LINE_LEN=$$(echo -n "$$MIDDLE_LINE" | wc -m); \
+	EXTRA_CHARS=20; \
+	TOTAL_LENGTH=$$((MIDDLE_LINE_LEN + EXTRA_CHARS)); \
+	HASH_LINE=$$(printf '%*s' $$TOTAL_LENGTH | tr ' ' '='); \
+	printf "\n"; \
+	printf "%s\n" "$$HASH_LINE"; \
+	printf "          %s\n" "$$MIDDLE_LINE"; \
+	printf "%s\n" "$$HASH_LINE"; \
+	printf "\n"
+endef
+
+# The default target (all)
+all: $(COMPILE_SETUP_TARGET) \
+	 $(COMPILE_TARGET) \
+	 $(GOOGLE_STYLECHECK_TARGET) \
+	 $(TEST_TARGET) \
+	 $(GOOGLE_STYLECHECK_TEST_TARGET) \
+	 $(PRIVATE_TARGET)
+
+# The build setup target (sets up appropriate directories)
+$(COMPILE_SETUP_TARGET):
+	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
+
+# The compile target
+$(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
+$(BIN): $(SRC_OBJS) $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(BUILD_DIR) $(BIN_DIR)
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
+compile_message:
+	$(call PRINT_TARGET_HEADER, $(COMPILE_TARGET))
+
+# The stylecheck target for source code
+$(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
+	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TARGET))
+	cpplint $(SRC) $(SRC_H)
+
+$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
+$(BUILD_LIBRARY_TEST_DIR):
+	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
+test_setup_message:
+	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
+
+# The test target
+$(TEST_TARGET): $(TEST_SETUP_TARGET) $(COMPILE_TARGET) test_message $(TEST_BIN)
+	valgrind ./$(TEST_BIN)
+$(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
+	$(CXX) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
+$(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
+	mkdir -p $(@D)
+	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
+$(GTEST_DIR): $(BUILD_DIR)
+	wget $(GTEST_URL)
+	tar -xzf $(GTEST_VERSION).tar.gz -C $(BUILD_LIBRARY_TEST_DIR)
+	rm -f $(GTEST_VERSION).tar.gz
+	mkdir -p $(GTEST_BUILD_DIR)
+	cd $(GTEST_BUILD_DIR) && cmake .. && make
+test_message:
+	$(call PRINT_TARGET_HEADER, $(TEST_TARGET))
+
+# The stylecheck target for tests
+$(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST_FILES)
+	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TEST_TARGET))
+	cpplint $(TEST_FILES)
+
+# The pre-processed artifacts target (private)
+private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
+$(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC) $(BUILD_DIR)
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@ $(SRC_LIBS)
+$(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST) $(BUILD_DIR)
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@ $(SRC_LIBS) $(TEST_LIBS)
+private_message:
+	$(call PRINT_TARGET_HEADER, private)
+
+# The clean target (not in default target)
+$(CLEAN_TARGET):
+	$(call PRINT_TARGET_HEADER, $(CLEAN_TARGET))
+	rm -rf build
