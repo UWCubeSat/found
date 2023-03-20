@@ -1,7 +1,7 @@
 
 SRCS := $(wildcard src/*.cpp)
 
-TEST_SRC := $(wildcard test/*.cpp)
+TEST_SRC := $(filter-out test/example.cpp, $(wildcard test/*.cpp))
 
 OBJS := $(patsubst %.cpp,%.o,$(SRCS))
 
@@ -16,7 +16,7 @@ TEST_BIN := ./found-test
 all: $(BIN)
 
 LIBS     := # -lcairo
-CXXFLAGS := $(CXXFLAGS) -Ivendor -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Isrc -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11
 
 $(BIN): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(OBJS) $(LIBS)

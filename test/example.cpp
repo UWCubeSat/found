@@ -1,5 +1,13 @@
+/**
+ * This is an include directive that will allow us to include the Catch framework, which is used
+ * to generate test cases for C++ programs
+*/
 #include <catch.hpp>
 
+/**
+ * Include all relavant hpp files here where you need access to specific cpp files. The Makefile
+ * is configured to use those files despite being in a seperate folder, so it will be recognized
+*/
 #include "edge.hpp"
 
 /**
@@ -13,7 +21,6 @@
  * This is an example of what you might see. Pretend that SimpleEdgeDetectionAlgorithm
  * is a very simple algorithm, and we always know that when we Run() it, it will always
  * spit out a Points object with 2 Points, (1, 2) and (3, 4).
- * 
 */
 
 // This is placed here for convinience, otherwise, we need to "found::" everything. You should
@@ -22,8 +29,10 @@
 // so be careful about utilizing the "using namespace" clause.
 using namespace found;
 
-// A global object to be used by all my test methods (I only have one)
-SimpleEdgeDetectionAlgorithm eda = SimpleEdgeDetectionAlgorithm();
+// A global object to be used by all my test methods (I only have one). Note that this file will only
+// work when SimpleEdgeDetectionAlgorithm is properly implemented. Thus, this file has been excluded 
+// from from compiling via `make test` for such reasons.
+std::unique_ptr<EdgeDetectionAlgorithm> eda = std::unique_ptr<EdgeDetectionAlgorithm>(new SimpleEdgeDetectionAlgorithm());
 
 /**
  * All tests have the method name TEST_CASE. This is really a macro, so it is a preprocessor
@@ -35,7 +44,7 @@ SimpleEdgeDetectionAlgorithm eda = SimpleEdgeDetectionAlgorithm();
 */
 TEST_CASE("My first test case") {
     unsigned char arr[1] = {1};
-    Points p = eda.Run(arr);
+    Points p = eda->Run(arr);
 
     /**
      * This is a section, a macro inside of another macro. You can think of it
@@ -44,7 +53,6 @@ TEST_CASE("My first test case") {
      * what's inside without actually having to enclose it in a section
      * 
      * This section of the test "My first test case" is called "Preliminary (Sanity) Checks"
-     * 
     */
     SECTION("Preliminary (Sanity) Checks") {
         // CHECK is another macro. It checks to see if the contained test is true. If it isn't, 
