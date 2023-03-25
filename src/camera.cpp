@@ -3,6 +3,8 @@
 #include <math.h>
 #include <assert.h>
 
+#include "attitude-utils.hpp"
+
 namespace found {
 
 /**

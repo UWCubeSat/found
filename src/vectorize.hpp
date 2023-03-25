@@ -14,11 +14,6 @@ namespace found {
 class VectorGenerationAlgorithm {
 public:
 
-    /**
-     * Creates a VectorGenerationAlgorithm object
-    */
-    VectorGenerationAlgorithm();
-
     // Destroys this
     virtual ~VectorGenerationAlgorithm();
 

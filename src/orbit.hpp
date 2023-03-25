@@ -13,10 +13,6 @@ namespace found {
 */
 class OrbitDeterminationAlgorithm {
 public:
-    /**
-     * Creates an OrbitDeterminationAlgorithm object
-    */
-    OrbitDeterminationAlgorithm();
 
     // Destroys this
     virtual ~OrbitDeterminationAlgorithm();
