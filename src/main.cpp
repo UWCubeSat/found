@@ -99,4 +99,5 @@ int FoundMain(int argc, char **argv) {
 */
 int main(int argc, char **argv) {
     found::FoundMain(argc, argv);
+    return 0;
 }
