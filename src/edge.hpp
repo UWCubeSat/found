@@ -39,7 +39,7 @@ public:
 */
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 public:
-    // testing
+    
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
