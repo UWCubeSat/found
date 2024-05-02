@@ -16,7 +16,7 @@ typedef std::vector<Vec2> Points;
 
 // The output for Distance Determination Algorithms (distance.hpp/cpp). Currently 
 // set to a floating point value that represents the distance from Earth
-typedef decimal distFromEarth;
+typedef Vec3 distFromEarth;
 
 // The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 // to a 3D Vector that represents the satellite's position relative to Earth's

@@ -426,6 +426,47 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
 ///////////////////////////////////
 
 /**
+* Finds the midpoint between two different vectors
+*
+* @param vec1 The first vector
+* @param vec2 The second vector
+*
+* @return The mid point vector
+*
+*/
+Vec2 midpoint(const Vec2 &vec1, const Vec2 &vec2){
+    return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2};
+}
+
+/**
+* Finds the midpoint between two different vectors
+*
+* @param vec1 The first vector
+* @param vec2 The second vector
+*
+* @return The mid point vector
+*
+*/
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2){
+    return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2, (vec1.z + vec2.z)/2};
+}
+
+/**
+* Finds the midpoint between three different vectors
+*
+* @param vec1 The first vector
+* @param vec2 The second vector
+* @param vec3 The third vector
+*
+* @return The mid point vector
+*
+*/
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2, const Vec3 &vec3){
+    return {(vec1.x + vec2.x + vec3.x)/3, (vec1.y + vec2.y + vec3.y)/3, (vec1.z + vec2.z + vec3.z)/3};
+}
+
+
+/**
  * Determines the angle between two different vectors
  * 
  * @param vec1 The first vector
@@ -457,7 +498,7 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 }
 
 /**
- * Determines the distance between two vectors
+ * Determines the  between two vectors
  * 
  * @param v1 The first vector
  * @param v2 The second vector
@@ -467,6 +508,19 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 */
 decimal Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
+}
+
+/**
+ * Determines the  between two vectors
+ * 
+ * @param v1 The first vector
+ * @param v2 The second vector
+ * 
+ * @return The distance between v1 and v2
+ * 
+*/
+decimal Distance(const Vec3 &v1, const Vec3 &v2) {
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
 }
 
 ///////////////////////////////////

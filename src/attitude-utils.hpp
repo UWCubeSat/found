@@ -104,6 +104,7 @@ class Mat3 {
 public:
     decimal x[9];
 
+    
     // Accessor
 
     decimal At(int i, int j) const;
@@ -223,6 +224,11 @@ private:
     Mat3 dcm; // direction cosine matrix
     AttitudeType type;
 };
+
+// Vector operations
+Vec2 midpoint(const Vec2 &, const Vec2 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3);
 
 // DCM-Quaternion-Spherical Conversions
 

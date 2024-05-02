@@ -2,6 +2,8 @@
 #define DISTANCE_H
 
 #include "style.hpp"
+#include "attitude-utils.hpp"
+#include "camera.hpp"
 
 namespace found {
 
@@ -25,7 +27,7 @@ public:
      * 
      * @return The distance of the satellite from Earth
     */
-    virtual distFromEarth Run(char* image, Points &p /*More go here*/) = 0;
+    virtual distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight /*More go here*/) = 0;
 };
 
 /**
@@ -36,15 +38,30 @@ public:
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
-    SphericalDistanceDeterminationAlgorithm(float radius);
+    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : radius_(radius), cam_(cam) {};
+    /**
+     * Equivalent to:
+     * 
+     * SphericalDistanceDeterminationAlgorithm(float radius) {
+     *      radius_ = radius;
+     * }
+    */
     ~SphericalDistanceDeterminationAlgorithm();
     
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    distFromEarth Run(char* image, Points &p/*More go here*/) override;
+    distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight/*More go here*/) override;
 private:
     // Fields specific to this algorithm, and helper methods
+    Vec3 getCenter(Vec3* spats);
+    decimal getRadius(Vec3* spats, Vec3 center);
+    decimal getDistance(decimal r);
+    void solve(Points& pts, int R);
+    
+    Camera cam_;
+    float radius_;
+
 };
 
 /**
