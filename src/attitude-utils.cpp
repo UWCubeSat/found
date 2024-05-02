@@ -498,7 +498,7 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 }
 
 /**
- * Determines the  between two vectors
+ * Determines the Distance between two vectors
  * 
  * @param v1 The first vector
  * @param v2 The second vector
