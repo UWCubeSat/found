@@ -39,13 +39,6 @@ public:
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
     SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : radius_(radius), cam_(cam) {};
-    /**
-     * Equivalent to:
-     * 
-     * SphericalDistanceDeterminationAlgorithm(float radius) {
-     *      radius_ = radius;
-     * }
-    */
     ~SphericalDistanceDeterminationAlgorithm();
     
     /**
@@ -54,10 +47,43 @@ public:
     distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight/*More go here*/) override;
 private:
     // Fields specific to this algorithm, and helper methods
+    /**
+     *Returns the center of earth as a 3d Vector
+     *
+     * @param spats The normalized spatial coordinates used to find the center 
+     * 
+     * @return The center of earth as a 3d Vector
+    */
     Vec3 getCenter(Vec3* spats);
+
+    /**
+     * Returns the radius of the calculated "earth" (normalized)
+     * 
+     * @param spats The normalized spatial coordinates
+     * @param center The center of the earth as a 3d Vector
+     * 
+     * @return The radius of earth normalized
+    */
     decimal getRadius(Vec3* spats, Vec3 center);
+
+    /**
+     * Returns the scaled distance from earth
+     * 
+     * @param r The normalized radius
+     * 
+     * @return The distance from earth as a Scalar
+    */
     decimal getDistance(decimal r);
-    void solve(Points& pts, int R);
+
+    /**
+     * Solves the whole thing, calculating the final distance from the earth as a 3d Vector
+     * 
+     * @param pts The points on the image (Not used)
+     * @param R The given radius (Currently not used, Radius is set to 6378.0)
+     * 
+     * @return The distance from earth as a 3d Vector
+    */
+    distFromEarth solve(Points& pts, int R);
     
     Camera cam_;
     float radius_;

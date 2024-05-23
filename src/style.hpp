@@ -15,7 +15,7 @@ namespace found {
 typedef std::vector<Vec2> Points;
 
 // The output for Distance Determination Algorithms (distance.hpp/cpp). Currently 
-// set to a floating point value that represents the distance from Earth
+// set to a 3d Vector that represents the distance from Earth
 typedef Vec3 distFromEarth;
 
 // The output for Vector Assembly Algorithms (vectorize.hpp). Currently set

@@ -104,7 +104,6 @@ class Mat3 {
 public:
     decimal x[9];
 
-    
     // Accessor
 
     decimal At(int i, int j) const;
