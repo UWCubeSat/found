@@ -7,8 +7,6 @@
 
 #include "distance.hpp"
 
-#define RADIUS_OF_EARTH 6378.0
-
 namespace found {
 distFromEarth SphericalDistanceDeterminationAlgorithm::Run(char *image,
 Points &p, int imageWidth, int imageHeight) {
@@ -49,7 +47,7 @@ Vec3 center) {
 }
 
 decimal SphericalDistanceDeterminationAlgorithm::getDistance(decimal r) {
-    return RADIUS_OF_EARTH/r;
+    return radius_/r;
 }
 
 distFromEarth SphericalDistanceDeterminationAlgorithm::solve(Points& pts,
@@ -65,4 +63,5 @@ distFromEarth SphericalDistanceDeterminationAlgorithm::solve(Points& pts,
 
     return center * h;
 }
+
 };

@@ -15,7 +15,7 @@ class DistanceDeterminationAlgorithm {
 public:
 
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm();
+    virtual ~DistanceDeterminationAlgorithm() {};
     
     /**
      * Computes the distance of the satellite from Earth based on an image of Earth
@@ -39,7 +39,7 @@ public:
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
     SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {};
-    ~SphericalDistanceDeterminationAlgorithm();
+    ~SphericalDistanceDeterminationAlgorithm() {};
     
     /**
      * Place documentation here. Press enter to automatically make a new line
