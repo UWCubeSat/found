@@ -38,7 +38,7 @@ public:
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
 public:
-    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : radius_(radius), cam_(cam) {};
+    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {};
     ~SphericalDistanceDeterminationAlgorithm();
     
     /**
@@ -85,7 +85,14 @@ private:
     */
     distFromEarth solve(Points& pts, int R);
     
+    /**
+     * cam_ field instance describes the camera settings used for the photo taken
+    */
     Camera cam_;
+
+    /**
+     * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
+    */
     float radius_;
 
 };
@@ -104,7 +111,7 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    distFromEarth Run(char* image, Points &p/*More go here*/) override;
+    distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight/*More go here*/) override;
 private:
     //Fields specific to this algorithm, and helper methods
 };

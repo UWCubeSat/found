@@ -3,10 +3,14 @@
  * 
 */
 
+#ifndef STYLE_H_
+#define STYLE_H_
+
 #include <vector>
 #include <functional>
 
 #include "attitude-utils.hpp"
+
 
 namespace found {
 
@@ -96,3 +100,5 @@ typedef struct OrbitParams OrbitParams;
 // will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
 }
+
+#endif  // STYLE_H_
