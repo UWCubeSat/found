@@ -12,6 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - run: apt -y upgrade
+    - run: apt install -y cmake
+    - run: apt install -y wget
+    - run: apt install -y tar
+    - run: apt install -y valgrind
     - run: pip install cpplint
     - name: Build all (Twice)
       run: (make || make) && make clean

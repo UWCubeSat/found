@@ -8,9 +8,16 @@ If you are using Windows, we recommend downloading Windows Subsystem for Linux, 
 
 ## Linux Prerequisites
 FOUND runs on a Linux System that has many requirements. The following packages are required, with download instructions given in Ubuntu:
+- Git (`sudo apt install git`)
 - A C++ compiler (`sudo apt install g++`)
 - GNU Make (`sudo apt install make`)
-- Git (`sudo apt install git`)
+- CMake (`sudo apt install cmake`)
+- Valgrind (`sudo apt install valgrind`)
+- Python PIP, or more specifically, its cpplint file (`sudo apt install pip && pip install cpplint`)
+
+You should natively have the following, but if not, the download instructions in Ubuntu are given for the following packages:
+- wget (`sudo apt install wget`)
+- tar (`sudo apt install tar`)
 
 ## macOS Prerequisites
 You can also run FOUND on a macOS. To do so:
