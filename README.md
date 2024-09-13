@@ -1,64 +1,57 @@
-# FOUND
-FOUND: FOUND Open-Source Universal Navigation Determiner
+# FOUND: FOUND Open-Source Universal Navigation Determiner
 
-Feel free to add to everything. We want to track as many requirements/steps as possible so there is less cleanup work.
+FOUND is a system that Earth satellites can use to calculate their orbits using pictures taken by the satellite of Earth. It is being developed at Husky Satellite Lab, a CubeSat team at the University of Washington. It will be deployed and tested on HuskySat-2, the team's next mission.
 
-## Requirements
-- [ ] Accurately Model Satellite Orbit
-  - [ ] Accurately predict Position above Earth (or other celestial body) at any point in orbit
-  - [ ] Accurately predict the velocity at any point in orbit
-- [ ] Runtime about 3 seconds maximum to generate an accurate kinematic profile for the satellite.
-- [ ] Use of Embedded-Friendly Data Structures (Use as little space as possible)
+# Installation
 
-## Design
+If you are using Windows, we recommend downloading Windows Subsystem for Linux, and following the instructions for Linux.
 
-### Finding Position Above Earth (Algorithms names to be inserted)
+## Linux Prerequisites
+FOUND runs on a Linux System that has many requirements. The following packages are required, with download instructions given in Ubuntu:
+- A C++ compiler (`sudo apt install g++`)
+- GNU Make (`sudo apt install make`)
+- Git (`sudo apt install git`)
 
-1. Edge Detection
-The first part of the FOUND will take a picture of Earth and locate all points along the horizon.
+## macOS Prerequisites
+You can also run FOUND on a macOS. To do so:
+- Download Homebrew, run /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" in terminal
 
-Note that points must be filtered and enhanced before edge detection begins. These are edge cases, so they do not need to be immediately handled.
-- [ ] Laplacian of Gaussian (This does all three steps at once)
+## Building FOUND
+- Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)
+- Go into the directory (`cd found`)
+- Compile the executable (`make`)
+- Execute the executable (`./found`)
 
-2. Curve Fitting
-The second part will take all points on the horizon to model the elliptical shape of the earth.
-
-The equation is non linear, so there are no convient linear algorithms, but here are some ideas to get you started.
-- [ ] Gaussian Elimination
-- [ ] Gauss-Siedel/Jacobain
-- [ ] Least Square-Sum Error
-- [ ] [Non-linear regression](https://corporatefinanceinstitute.com/resources/data-science/nonlinear-regression/)
-
-3. Position Determination
-The part takes the size derived from the curve fit and determines the distance from earth. This is can be derived from photogrammetry. I found a [paper](https://www.lpl.arizona.edu/hamilton/sites/lpl.arizona.edu.hamilton/files/courses/ptys551/Principles_of_Photogrammetry.pdf.) that may be helpful.
-
-Keep in mind that distortion due to camera lens and atmospheric distortion will be present, but we can handle this in steps before the main algorithm that finds the position.
-
-4. Position Vector Output
-This last part takes the previous derived information and outputs a spatial vector relative to Earth's center. The vector for now will be in astronomical coordinates (dec, ra, radius), and its fairly easy to convert to cartesian or some other form if needed. To obtain orientation information
-
-- [ ] Feature Detection
-
-or
-
-- [ ] Take information from LOST
+If you modify the local copy of this repository, only the last 2 instructions need to be repeated (unless you have `cd`'ed into another folder)
 
 
-### Finding Orbit/Velocity
+# Usage
+FOUND is still in development! Come back in about 3 to 6 months to see how to run FOUND.
 
-For now, assume that the orbital system is 2-body, since we extract no other information than the one pertaining to Earth, and that Earth exerts the strongest gravitational pull experienced by the satellite.
+# Capabilities
+FOUND will have the following components/modules, which all function together produce an orbital projection for a given satellite.
 
-1. Repeat of Previous Process (Finding Position Above Earth) with time delay
-This is to get a second data point to define the orbital system.
+## Edge Detection
+After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:
+- [ ] Simple Edge Detection via Simple Thresholding
+- [ ] Laplacian of Gaussian (LoG) Filtered Edge Detection
 
-2. Find velocity using Euler Approximation
-This is just a simple slope equation, but the next part may eliminate the need for this.
+## Distance Determination
+The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND will be capable of:
+- [ ] Distance Determination with a Spherical Earth Assumption
+- [ ] Distance Determination with an Ellipsoid Earth Assumption
 
-3. Find the orbital path of the satellite
+## Vector Generation
+The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND will be capable of:
+- [ ] Star-Tracker Assisted Vector Generation via LOST
+- [ ] Feature Detection Assisted Vector Generation (to be developed for future mission)
 
-This can be done in two ways:
-- Fit position and velocity information to orbit position equation
-- Fit both positions to an eliptical equation about the barrycenter of the earth-satellite system (Probably just the center of earth).
+## Orbit Determination
+This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
+- [ ] Stable Elliptical Orbit Determination
+- [ ] Preceding Elliptical Orbit Determination
 
-
-The output of this entire stage should be constants relavent to the eliptical equation.
+## Kinematic Profiling
+This stage then takes the projected path of travel and matches it to the speed of the satellite, providing the position and velocity vectors of the satellite at any future time. FOUND will be capable of:
+- [ ] Eulerian-based Kinematic Profiling
+- [ ] Keplerian-based Kinematic Profiling
