@@ -1,7 +1,7 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "style.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
@@ -10,17 +10,7 @@ namespace found {
  * a picture of Earth and finds all points on the horizon within the picture.
 */
 class EdgeDetectionAlgorithm {
-public:
-    /**
-     * Creates an EdgeDetectionAlgorithm object
-     * 
-     * @note Constructs an Edge Detection Algorithm
-    */
-    EdgeDetectionAlgorithm();
-
-    // Destroys this
-    virtual ~EdgeDetectionAlgorithm();
-    
+ public:
     /**
      * Finds all points on Earth's horizon as seen in an image
      * 
@@ -38,8 +28,7 @@ public:
  * to filter out edge components
 */
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
-public:
-    
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -54,7 +43,7 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
-private:
+ private:
     // useful fields specific to this algorithm and helper methods
 };
 
@@ -64,8 +53,7 @@ private:
  * Laplacian of Gaussian (LoC) filter to the image.
 */
 class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -80,10 +68,10 @@ public:
      * Place documentation here. Press enter to automatically make a new line
      * */
     Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
-private:
+ private:
     // useful fields specific to this algorithm and helper methods
 };
 
-}
+}  // namespace found
 
 #endif

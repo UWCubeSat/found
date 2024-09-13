@@ -3,18 +3,22 @@
  * 
 */
 
+#ifndef STYLE_H
+#define STYLE_H
+
 #include <vector>
 #include <functional>
+#include <utility>
 
-#include "attitude-utils.hpp"
+#include "spatial/attitude-utils.hpp"
 
 namespace found {
 
-// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set 
+// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 // to a vector of 2D points on the image, according to image coordinate systems
 typedef std::vector<Vec2> Points;
 
-// The output for Distance Determination Algorithms (distance.hpp/cpp). Currently 
+// The output for Distance Determination Algorithms (distance.hpp/cpp). Currently
 // set to a floating point value that represents the distance from Earth
 typedef decimal distFromEarth;
 
@@ -24,8 +28,7 @@ typedef decimal distFromEarth;
 typedef Vec3 PositionVector;
 
 struct OrbitParams {
-
-    // The initial position of the satellite with respect to Earth 
+    // The initial position of the satellite with respect to Earth
     // (at t = 0 and theta = 0)
     Vec3 initialCondition;
 
@@ -85,7 +88,6 @@ struct OrbitParams {
      * theta revolutions
      * */
     decimal (* outPlaneRotation)(int theta);
-
 };
 
 // The output for Orbit Trajectory Calculation Algorithms. Currently set to
@@ -95,4 +97,7 @@ typedef struct OrbitParams OrbitParams;
 // The output for Kinematic Profile Completion. Currently set to two functions that
 // will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
-}
+
+}  // namespace found
+
+#endif
