@@ -1,0 +1,17 @@
+name: Build, Test, and Lint
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - run: pip install cpplint
+    - name: Build all (Twice)
+      run: (make || make) && make clean
