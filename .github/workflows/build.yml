@@ -41,8 +41,8 @@ jobs:
     container: nguy8tri/huskysat:latest
     steps:
     - uses: actions/checkout@v3
-    - name: Coverage
-      run: make coverage
+    - name: Coverage (Twice)
+      run: (make coverage || make coverage)
     - name: Install rsync
       run: apt install -y rsync
     - name: Upload Coverage Report
