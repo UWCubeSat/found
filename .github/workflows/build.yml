@@ -48,7 +48,8 @@ jobs:
     - name: Upload Coverage Report
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        name: coverage-pages
+        name: Coverage Report
+        branch: coverage-report
         folder: build/documentation/coverage
   
   doxygen:
@@ -64,5 +65,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         name: Doxygen Documentation
-        branch: documentation-pages
+        branch: documentation
         folder: build/documentation/doxygen
