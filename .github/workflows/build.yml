@@ -29,7 +29,7 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         name: Coverage Report
-        folder: build/documentation/coverage/
+        folder: build/documentation/coverage
   
   lint:
     runs-on: ubuntu-latest
