@@ -46,10 +46,9 @@ jobs:
     - name: Install rsync
       run: apt install -y rsync
     - name: Upload Coverage Report
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: actions/upload-artifact@v3
       with:
         name: Coverage Report
-        branch: coverage-report
         folder: build/documentation/coverage
   
   doxygen:
