@@ -1,7 +1,7 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include "style.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
@@ -10,11 +10,12 @@ namespace found {
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
 */
 class DistanceDeterminationAlgorithm {
-public:
-
+ public:
+    // Constructs this
+    DistanceDeterminationAlgorithm() = default;
     // Destroys this
     virtual ~DistanceDeterminationAlgorithm();
-    
+
     /**
      * Computes the distance of the satellite from Earth based on an image of Earth
      * 
@@ -35,15 +36,15 @@ public:
  * @note This class assumes that Earth is a perfect sphere
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
-public:
-    SphericalDistanceDeterminationAlgorithm(float radius);
+ public:
+    explicit SphericalDistanceDeterminationAlgorithm(float radius);
     ~SphericalDistanceDeterminationAlgorithm();
-    
+
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
-private:
+ private:
     // Fields specific to this algorithm, and helper methods
 };
 
@@ -54,19 +55,18 @@ private:
  * @note This class assumes that Earth is a perfect ellipse
 */
 class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
-public:
-    EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
+ public:
+    explicit EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
+    * Place documentation here. Press enter to automatically make a new line
+    * */
     distFromEarth Run(char* image, Points &p/*More go here*/) override;
-private:
-    //Fields specific to this algorithm, and helper methods
+ private:
+    // Fields specific to this algorithm, and helper methods
 };
 
-}
-
+}  // namespace found
 
 #endif
