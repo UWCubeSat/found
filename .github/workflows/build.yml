@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: huskysat/found:latest
+    container: nguy8tri/huskysat:latest
 
     steps:
     - uses: actions/checkout@v3
@@ -17,7 +17,7 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    container: huskysat/found:latest
+    container: nguy8tri/huskysat:latest
 
     steps:
     - name: Test (Twice)
@@ -30,7 +30,7 @@ jobs:
   
   lint:
     runs-on: ubuntu-latest
-    container: huskysat/found:latest
+    container: nguy8tri/huskysat:latest
     steps:
     - name: Stylecheck
       run: make google_stylecheck
