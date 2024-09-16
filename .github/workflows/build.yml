@@ -1,22 +1,40 @@
 name: Build, Test, and Lint
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "refractor" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     container: huskysat/found:latest
 
     steps:
     - uses: actions/checkout@v3
-    - run: apt -y upgrade
-    - run: apt install -y cmake
-    - run: apt install -y wget
-    - run: apt install -y tar
-    - run: apt install -y valgrind
-    - run: pip install cpplint
     - name: Build all (Twice)
-      run: (make || make) && make clean
+      run: (make compile || make compile)
+  
+  test:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - name: Test (Twice)
+      run: (make test || make test)
+    - name: Upload coverage report
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        name: Coverage Report
+        folder: build/documentation/coverage/
+  
+  lint:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+    steps:
+    - name: Stylecheck
+      run: make google_stylecheck
+    - name: Test Stylecheck
+      run: make google_stylecheck_test
+    - name: Line Endings
+      uses: erclu/check-crlf@v1
