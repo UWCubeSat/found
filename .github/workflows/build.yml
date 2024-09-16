@@ -66,4 +66,4 @@ jobs:
       with:
         name: Doxygen Documentation
         branch: documentation
-        folder: build/documentation/doxygen
+        folder: build/documentation/doxygen/html
