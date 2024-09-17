@@ -11,7 +11,7 @@ jobs:
     container: nguy8tri/huskysat:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Build all (Twice)
       run: (make compile || make compile)
   
@@ -20,7 +20,7 @@ jobs:
     container: nguy8tri/huskysat:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Test (Twice)
       run: (make test || make test)
   
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Stylecheck
       run: make google_stylecheck
     - name: Test Stylecheck
@@ -40,11 +40,11 @@ jobs:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Coverage (Twice)
       run: (make coverage || make coverage)
     - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Coverage Report
         path: build/documentation/coverage
@@ -54,7 +54,7 @@ jobs:
     container: nguy8tri/huskysat:latest
     needs: [build, lint, coverage]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: make coverage
       run: make coverage
     - name: Doxygen
@@ -62,12 +62,32 @@ jobs:
     - name: Install rsync
       run: apt install -y rsync
     - name: Upload Pages Artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: JamesIves/github-pages-deploy-action@v4
       with:
+        name: Documentation
+        branch: documentation
         path: build/documentation
-
-  deploy:
+  
+  documentation-upload:
     needs: documentation
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: documentation
+    - name: Build with Jekyll
+      uses: actions/jekyll-build-pages@v1
+      with:
+        source: .
+        destination: ./_site
+        verbose: true
+    - name: Upload Pages Artifact
+      with:
+        path: ./_site
+        name: github-pages
+        retention-days: 1
+
+  documentation-deploy:
+    needs: documentation-upload
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
