@@ -1,23 +1,15 @@
 #!/bin/bash
 
-# Define paths
-DOXYGEN_CONFIG="Doxyfile"
-DOXYGEN_LOG_DIR="build/logs/doxygen"
-DOXYGEN_LOG="$DOXYGEN_LOG_DIR/doxygen.log"
-
-# Create the logs
-mkdir -p $DOXYGEN_LOG_DIR
-
 # Update the Doxygen file
 doxygen -u > /dev/null 2>&1
 rm -rf Doxyfile.bak
 
 # Run Doxygen and capture output
-warnings=$(doxygen "$DOXYGEN_CONFIG" 2>&1 1>/dev/null)
+warnings=$(doxygen 2>&1 1>/dev/tty)
 
 # Check for warnings/errors in the log file
 if [ -n "$warnings" ]; then
-    printf "\nDoxygen found errors and warnings while generating documentation:"
+    printf "\nDoxygen found errors and warnings while generating documentation:\n"
     echo $warnings
     printf "\n"
     exit 1
