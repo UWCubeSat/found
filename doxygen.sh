@@ -4,8 +4,14 @@
 doxygen -u > /dev/null 2>&1
 rm -rf Doxyfile.bak
 
-# Run Doxygen and capture output
-warnings=$(doxygen 2>&1 1>/dev/tty)
+# Run Doxygen and capture stderr while preserving stdout
+doxygen > /dev/tty 2> stderr.log
+
+# Extract warnings from stderr file
+warnings=$(grep "warning" stderr.log)
+
+# Cleanup the stderr file
+rm stderr.log
 
 # Check for warnings/errors in the log file
 if [ -n "$warnings" ]; then
