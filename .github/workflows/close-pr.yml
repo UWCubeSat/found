@@ -24,7 +24,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      - name: PUshing Deletion Change
+      - name: Pushing Deletion Change
         run: |
           pr = ${{ github.event.pull_request.number }}
           git commit -m "Remove folder ${{ github.head_ref }} from documentation branch after PR ${pr} was closed"

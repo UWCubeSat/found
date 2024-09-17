@@ -1,7 +1,7 @@
-name: Build, Test, and Lint
+name: Build, Test, Lint, Coverage, and Documentation
 on:
   push:
-    branches: [ "refractor" ]
+    branches: [ "master" ]
   pull_request:
     branches: ["master"]
     types:
@@ -69,9 +69,9 @@ jobs:
       id: set-folder
       run: |
         if [ "${{ github.ref_name }}" = "main" ]; then
-          echo "TARGET_FOLDER=/"
+          echo "TARGET_FOLDER=." >> $GITHUB_ENV
         else
-          echo "TARGET_FOLDER=${{ github.ref_name }}/"
+          echo "TARGET_FOLDER=${{ github.ref_name }}" >> $GITHUB_ENV
         fi
       shell: bash
     - name: Upload Pages Artifact
@@ -79,4 +79,4 @@ jobs:
       with:
         branch: documentation
         folder: build/documentation/
-        target-folder: ${{ steps.set-folder.outputs.TARGET_FOLDER }}/
+        target-folder: ${{ env.TARGET_FOLDER }}
