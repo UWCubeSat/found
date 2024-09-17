@@ -1,6 +1,7 @@
 FROM ubuntu:latest
 RUN apt update
 RUN apt -y upgrade
+RUN apt install -y git
 RUN apt install -y g++
 RUN apt install -y cmake
 RUN apt install -y wget
