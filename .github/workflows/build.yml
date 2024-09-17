@@ -65,7 +65,8 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: documentation
-        folder: build/documentation/${{ github.ref_name }}
+        folder: build/documentation/
+        target-folder: ${{ github.ref_name }}/
   
   documentation-upload:
     needs: documentation
