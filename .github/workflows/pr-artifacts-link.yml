@@ -3,7 +3,7 @@ name: Update PR Description with Build Artifacts
 on:
   pull_request:
     branches: [ "main" ]
-    types: [opened]
+    types: [opened, edited, synchronize]
 
 jobs:
   update-description:
