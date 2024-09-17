@@ -62,7 +62,7 @@ LIBS := $(SRC_LIBS)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
-CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14 $(LIBS)
 CXXFLAGS_TEST := $(CXXFLAGS) $(COVERAGE_FLAGS) $(LIBS_TEST)
 LDFLAGS := # Any dynamic libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
@@ -156,6 +156,7 @@ $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
+	mv $<
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
