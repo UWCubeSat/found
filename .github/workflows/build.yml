@@ -48,6 +48,8 @@ jobs:
       with:
         name: Coverage Report
         path: build/documentation/coverage
+    - name: Install rsync
+      run: apt install -y rsync
     - name: Deploy coverage to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
