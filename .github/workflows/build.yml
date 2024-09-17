@@ -67,7 +67,7 @@ jobs:
         path: build/documentation
 
   deploy:
-    needs: [documentation]
+    needs: documentation
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
