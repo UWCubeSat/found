@@ -3,7 +3,7 @@ name: Update PR Description with Build Artifacts
 on:
   pull_request:
     branches: [ "main" ]
-    types: [opened, edited, synchronize]
+    types: [opened]
 
 jobs:
   update-description:
@@ -22,9 +22,9 @@ jobs:
         with:
           script: |
             const prNumber = process.env.PR_NUMBER;
-            prBody = `# Artifacts for PR #${prNumber}\n\n`;
-            prBody += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
-            prBody += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
+            prFooter = `# Artifacts for PR #${prNumber}\n\n`;
+            prFooter += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
+            prFooter += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
             
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
@@ -32,14 +32,14 @@ jobs:
               pull_number: prNumber,
             });
 
-            if (pr.body.includes(prBody)) {
+            if (pr.body.includes(prFooter)) {
               console.log('PR description already has documentation artifacts');
             } else {
               await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: prNumber,
-                body: `# PR Description\n\n${prBody}\n${pr.body}`,
+                body: `# PR Description\n\n${pr.body}\n${prFooter}`,
               });
               console.log('PR description updated with documentation artifacts');
             }
