@@ -55,14 +55,37 @@ jobs:
     needs: [build, lint, coverage]
     steps:
     - uses: actions/checkout@v4
-    - name: make coverage
-      run: make coverage
+    - name: Coverage
+      run: |
+        make coverage
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "Placing coverage into \"coverage\""
+        else
+          mv build/documentation/coverage build/documentation/coverage-${{ github.ref_name }}
+          echo "Placing coverage into \"coverage-${{ github.ref_name }}\""
+        fi
     - name: Doxygen
       run: make doxygen_generate
+    - name: Install rsync
+      run: apt install -y rsync
+    - name: Upload Pages Artifact
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        name: Documentation
+        branch: documentation
+        path: build/documentation
+  
+  documentation-upload:
+    needs: documentation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: documentation
     - name: Build with Jekyll
       uses: actions/jekyll-build-pages@v1
       with:
-        source: build/documentation
+        source: .
         destination: ./_site
         verbose: true
     - name: Upload Pages Artifact
@@ -72,7 +95,7 @@ jobs:
         name: github-pages
 
   documentation-deploy:
-    needs: documentation
+    needs: documentation-upload
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
