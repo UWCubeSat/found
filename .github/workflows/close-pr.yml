@@ -14,18 +14,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: documentation
-      - name: Delete coverage/documentation for ${{ github.head_ref }} from documentation branch
+
+      - name: Delete coverage/documentation for ${{ github.event.pull_request.number }} from documentation branch
         run: |
-          folder_to_delete="${{ github.head_ref }}"
+          folder_to_delete="${{ github.event.pull_request.number }}/merge"
           echo "Deleting folder: $folder_to_delete from documentation"
           rm -rf "$folder_to_delete"
           git rm -r "$folder_to_delete" || true
+
       - name: Configure Git for Pushing Deletion change
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit Deletion Change
+        run: |
+          git add -A
+          pr="${{ github.event.pull_request.number }}"
+          git commit -m "Remove folder ${pr}/merge from documentation branch because PR ${pr} is closed"
+      
       - name: Pushing Deletion Change
         run: |
-          pr = ${{ github.event.pull_request.number }}
-          git commit -m "Remove folder ${{ github.head_ref }} from documentation branch after PR ${pr} was closed"
-          git push origin ${{ github.head_ref }}
+          git push origin documentation
