@@ -32,9 +32,9 @@ jobs:
               pull_number: prNumber,
             });
 
-            console.log("Body: ${pr.body}");
-            console.log("Footer: ${prFooter}");
-            console.log("pr.body.includes(prFooter): ${pr.body.includes(prFooter)}")
+            console.log(`Body: ${pr.body}`);
+            console.log(`Footer: ${prFooter}`);
+            console.log(`pr.body.includes(prFooter): ${pr.body.includes(prFooter)}`);
 
             if (pr.body.includes(prFooter)) {
               console.log('PR description already has documentation artifacts');
