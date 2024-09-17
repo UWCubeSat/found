@@ -74,3 +74,19 @@ jobs:
         branch: documentation
         folder: build/documentation/doxygen/html
         target-folder: doxygen
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+    - coverage
+    - doxygen
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        publish_branch: documentation
+        publish_dir: ./
