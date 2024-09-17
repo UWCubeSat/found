@@ -18,15 +18,17 @@ jobs:
         run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
 
       - name: Update PR description
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const prNumber = process.env.PR_NUMBER;
             prBody = `# Artifacts for PR #${prNumber}\n\n`;
             prBody += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
             prBody += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
+
+            const { context, github } = require('@actions/github');
             
-            const { data: pr } = await github.pulls.get({
+            const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber,
