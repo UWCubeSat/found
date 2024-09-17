@@ -35,7 +35,7 @@ jobs:
             if (pr.body.includes(prBody)) {
               console.log('PR description already has documentation artifacts');
             } else {
-              await github.pulls.update({
+              await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: prNumber,
