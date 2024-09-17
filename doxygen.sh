@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Exit on any command failure
-set -e
-
 # Update the Doxygen file
 doxygen -u > /dev/null 2>&1
 rm -rf Doxyfile.bak
