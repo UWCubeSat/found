@@ -157,7 +157,7 @@ $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
 $(GTEST_DIR): $(BUILD_DIR)
 	wget $(GTEST_URL)
 	tar -xzf $(GTEST_VERSION).tar.gz -C $(BUILD_LIBRARY_TEST_DIR)
