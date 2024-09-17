@@ -56,14 +56,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Coverage
-      run: |
-        make coverage
-        if [ "${{ github.ref_name }}" = "main" ]; then
-          echo "Placing coverage into \"coverage\""
-        else
-          mv build/documentation/coverage build/documentation/coverage-${{ github.ref_name }}
-          echo "Placing coverage into \"coverage-${{ github.ref_name }}\""
-        fi
+      run: make coverage
     - name: Doxygen
       run: make doxygen_generate
     - name: Install rsync
@@ -71,9 +64,8 @@ jobs:
     - name: Upload Pages Artifact
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        name: Documentation
         branch: documentation
-        folder: build/documentation
+        folder: build/documentation/${{ github.ref_name }}
   
   documentation-upload:
     needs: documentation
