@@ -22,6 +22,7 @@ jobs:
         with:
           script: |
             const prNumber = process.env.PR_NUMBER;
+            const prFooter = "# Artifacts for PR #${prNumber} (DO NOT CHANGE)";
             const artifactLinks = `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`
                                + `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
 
@@ -32,10 +33,10 @@ jobs:
             });
 
             // Check if both artifact links are already present in the PR body
-            if (pr.body.includes(artifactLinks.trim())) {
+            if (pr.body.includes("Artifacts for PR")) {
               console.log('PR description already has documentation artifacts');
             } else {
-              const newPrBody = `# Artifacts for PR #${prNumber}\n\n${artifactLinks.trim()}\n\n${pr.body}`;
+              const newPrBody = `# Description\n${pr.body}\n\n${prFooter}\n${artifactLinks.trim()}`;
               
               await github.rest.pulls.update({
                 owner: context.repo.owner,
