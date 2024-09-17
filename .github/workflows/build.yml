@@ -82,6 +82,7 @@ jobs:
         destination: ./_site
         verbose: true
     - name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v4
       with:
         path: ./_site
         name: github-pages
