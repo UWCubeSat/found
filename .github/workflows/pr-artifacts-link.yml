@@ -39,7 +39,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: prNumber,
-                body: `${pr.body}\n# PR Description\n\n${prBody}`,
+                body: `${prBody}\n# PR Description\n\n${pr.body}`,
               });
               console.log('PR description updated with documentation artifacts');
             }
