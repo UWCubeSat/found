@@ -8,6 +8,10 @@ DOXYGEN_LOG="$DOXYGEN_LOG_DIR/doxygen.log"
 # Create the logs
 mkdir -p $DOXYGEN_LOG_DIR
 
+# Update the Doxygen file
+doxygen -u > /dev/null 2>&1
+rm -rf Doxyfile.bak
+
 # Run Doxygen and capture output
 warnings=$(doxygen "$DOXYGEN_CONFIG" 2>&1 1>/dev/null)
 
