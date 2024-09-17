@@ -47,7 +47,7 @@ TEST_FILES := $(filter-out $(CATCH_LIB)/%, $(TEST) $(TEST_H))
 
 # Our Object source and test files
 SRC_OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_SRC_DIR)/%.o,$(SRC))
-TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o,$(TEST)) $(filter-out %/main.o, $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o, $(SRC)))
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o,$(TEST)) $(filter-out %/main.o, $(SRC_OBJS))
 
 # Our pre-processed source and test code
 PRIVATE_SRC := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_PRIVATE_SRC_DIR)/%.i,$(SRC))
@@ -58,14 +58,13 @@ SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
 # Compiler flags
-LIBS := $(SRC_LIBS)
+LIBS := # Nothing for now
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
-CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++14 $(LIBS)
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
 CXXFLAGS_TEST := $(CXXFLAGS) $(COVERAGE_FLAGS) $(LIBS_TEST)
-LDFLAGS := # Any dynamic libraries go here
-LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
+LDFLAGS_TEST := -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
 
 # Targets
 COMPILE_SETUP_TARGET := compile_setup
@@ -107,14 +106,15 @@ define PRINT_TARGET_HEADER
 	printf "\n"
 endef
 
+all: CXXFLAGS := $(CXXFLAGS) $(COVERAGE_FLAGS)
 # The default target (all)
 all: $(COMPILE_SETUP_TARGET) \
 	 $(COMPILE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TARGET) \
+	 $(PRIVATE_TARGET) \
 	 $(TEST_TARGET) \
 	 $(COVERAGE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TEST_TARGET) \
-	 $(PRIVATE_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
@@ -128,7 +128,7 @@ $(COMPILE_SETUP_TARGET):
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(BUILD_DIR) $(BIN_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
@@ -140,7 +140,6 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TARGET))
 	cpplint $(SRC) $(SRC_H)
 
-$(TEST_SETUP_TARGET): CXXFLAGS := $(CXXFLAGS) $(COVERAGE_FLAGS)
 $(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
 $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
@@ -149,15 +148,11 @@ test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
 
 # The test target
-$(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
+$(TEST_TARGET): $(TEST_SETUP_TARGET) $(COMPILE_TARGET) test_message $(TEST_BIN)
 	valgrind ./$(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
-	mkdir -p $(@D)
-	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
-	mv $<
-$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
 $(GTEST_DIR): $(BUILD_DIR)
