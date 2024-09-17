@@ -73,7 +73,7 @@ jobs:
       with:
         name: Documentation
         branch: documentation
-        path: build/documentation
+        folder: build/documentation
   
   documentation-upload:
     needs: documentation
@@ -85,14 +85,9 @@ jobs:
     - name: Build with Jekyll
       uses: actions/jekyll-build-pages@v1
       with:
-        source: .
-        destination: ./_site
         verbose: true
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./_site
-        name: github-pages
 
   documentation-deploy:
     needs: documentation-upload
