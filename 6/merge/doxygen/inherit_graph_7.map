@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classfound_1_1OrbitDeterminationAlgorithm.html" title=" " alt="" coords="5,37,199,77"/>
+<area shape="rect" id="Node000001" href="$classfound_1_1EllipticalOrbitDerminationAlgorithm.html" title=" " alt="" coords="260,5,496,45"/>
+<area shape="poly" id="edge7_Node000000_Node000001" title=" " alt="" coords="212,42,260,36,260,42,213,47"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1PrecessionOrbitDeterminationAlgorithm.html" title=" " alt="" coords="247,69,509,109"/>
+<area shape="poly" id="edge8_Node000000_Node000002" title=" " alt="" coords="213,67,247,71,246,77,212,73"/>
+</map>
