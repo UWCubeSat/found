@@ -48,29 +48,40 @@ jobs:
       with:
         name: Coverage Report
         path: build/documentation/coverage
-    - name: Install rsync
-      run: apt install -y rsync
-    - name: Deploy coverage to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        name: Coverage Report
-        branch: documentation
-        folder: build/documentation/coverage
-        target-folder: coverage-${{ github.ref_name }}
   
-  doxygen:
+  documentation:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    needs: [build, lint, coverage]
     steps:
     - uses: actions/checkout@v3
+    - name: make coverage
+      run: make coverage
     - name: Doxygen
       run: make doxygen_generate
     - name: Install rsync
       run: apt install -y rsync
-    - name: Upload Doxygen Documentation
-      uses: JamesIves/github-pages-deploy-action@v4
+    - name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        name: Doxygen Documentation
-        branch: documentation
-        folder: build/documentation/doxygen/html
-        target-folder: doxygen
+        path: build/documentation
+
+  deploy:
+    needs: [documentation]
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
