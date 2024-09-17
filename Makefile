@@ -58,13 +58,14 @@ SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
 # Compiler flags
-LIBS := # Nothing for now
+LIBS := $(SRC_LIBS)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
 CXXFLAGS_TEST := $(CXXFLAGS) $(COVERAGE_FLAGS) $(LIBS_TEST)
-LDFLAGS_TEST := -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
+LDFLAGS := # Any dynamic libraries go here
+LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
 
 # Targets
 COMPILE_SETUP_TARGET := compile_setup
@@ -106,15 +107,14 @@ define PRINT_TARGET_HEADER
 	printf "\n"
 endef
 
-all: CXXFLAGS := $(CXXFLAGS) $(COVERAGE_FLAGS)
 # The default target (all)
 all: $(COMPILE_SETUP_TARGET) \
 	 $(COMPILE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TARGET) \
-	 $(PRIVATE_TARGET) \
 	 $(TEST_TARGET) \
 	 $(COVERAGE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TEST_TARGET) \
+	 $(PRIVATE_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
@@ -128,7 +128,7 @@ $(COMPILE_SETUP_TARGET):
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(BUILD_DIR) $(BIN_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
@@ -140,6 +140,7 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TARGET))
 	cpplint $(SRC) $(SRC_H)
 
+$(TEST_SETUP_TARGET): CXXFLAGS := $(CXXFLAGS) $(COVERAGE_FLAGS)
 $(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
 $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
