@@ -1,7 +1,7 @@
 name: Build, Test, Lint, Coverage, and Documentation
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "refractor" ]
   pull_request:
     branches: ["master"]
     types:
