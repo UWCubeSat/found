@@ -48,8 +48,8 @@ jobs:
       with:
         name: Coverage Report
         path: build/documentation/coverage
-    - name: Deploy site1 to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+    - name: Deploy coverage to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
         with:
           name: Coverage Report
           branch: documentation
