@@ -6,28 +6,18 @@ FOUND is a system that Earth satellites can use to calculate their orbits using 
 
 If you are using Windows, we recommend downloading Windows Subsystem for Linux, and following the instructions for Linux.
 
-## Linux Prerequisites
-FOUND runs on a Linux System that has many requirements. The following packages are required, with download instructions given in Ubuntu:
-- Git (`sudo apt install git`)
-- A C++ compiler (`sudo apt install g++`)
-- GNU Make (`sudo apt install make`)
-- CMake (`sudo apt install cmake`)
-- Valgrind (`sudo apt install valgrind`)
-- Python PIP, or more specifically, its cpplint file (`sudo apt install pip && pip install cpplint`)
-
-You should natively have the following, but if not, the download instructions in Ubuntu are given for the following packages:
-- wget (`sudo apt install wget`)
-- tar (`sudo apt install tar`)
-
-## macOS Prerequisites
-You can also run FOUND on a macOS. To do so:
-- Download Homebrew, run /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" in terminal
+## Prerequisites
+To obtain the required packages for this software:
+- Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
+- Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
+- Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
 ## Building FOUND
 - Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
 - Compile the executable (`make`)
-- Execute the executable (`./found`)
+- Execute the executable (`./build/bin/found`)
+- Execute the test suite (`./build/bin/found-test`)
 
 If you modify the local copy of this repository, only the last 2 instructions need to be repeated (unless you have `cd`'ed into another folder)
 
