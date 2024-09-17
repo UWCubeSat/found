@@ -1,7 +1,7 @@
 name: Build, Test, Lint, Coverage, and Documentation
 on:
   push:
-    branches: [ "refractor" ]
+    branches: [ "master" ]
   pull_request:
     branches: ["master"]
     types:
@@ -65,7 +65,7 @@ jobs:
       run: make doxygen_generate
     - name: Install rsync
       run: apt install -y rsync
-    - name: Set target-folder
+    - name: Set Target Folder in documentation
       id: set-folder
       run: |
         if [ "${{ github.ref_name }}" = "main" ]; then

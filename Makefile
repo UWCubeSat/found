@@ -192,7 +192,8 @@ private_message:
 $(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET)
 	$(call PRINT_TARGET_HEADER, $(DOXYGEN_TARGET))
 	mkdir -p $(BUILD_DOCUMENTATION_DOXYGEN_DIR)
-	doxygen
+	chmod +rwx doxygen.sh
+	./doxygen.sh
 
 # The clean target (not in default target)
 $(CLEAN_TARGET):
