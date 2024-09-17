@@ -25,8 +25,6 @@ jobs:
             prBody = `# Artifacts for PR #${prNumber}\n\n`;
             prBody += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
             prBody += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
-
-            # const { context, github } = require('@actions/github');
             
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
