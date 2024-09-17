@@ -3,7 +3,11 @@ on:
   push:
     branches: [ "refractor" ]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
+    types:
+      - opened
+      - synchronize
+      - reopened 
 
 jobs:
   build:
@@ -61,43 +65,18 @@ jobs:
       run: make doxygen_generate
     - name: Install rsync
       run: apt install -y rsync
+    - name: Set target-folder
+      id: set-folder
+      run: |
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "TARGET_FOLDER=/"
+        else
+          echo "TARGET_FOLDER=${github.ref_name}/"
+        fi
+      shell: bash
     - name: Upload Pages Artifact
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: documentation
         folder: build/documentation/
-        target-folder: ${{ github.ref_name }}/
-  
-  # documentation-upload:
-  #   needs: documentation
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #     with:
-  #       ref: documentation
-  #   - name: Build with Jekyll
-  #     uses: actions/jekyll-build-pages@v1
-  #     with:
-  #       verbose: true
-  #   - name: Upload Pages Artifact
-  #     uses: actions/upload-pages-artifact@v3
-
-  # documentation-deploy:
-  #   needs: documentation-upload
-
-  #   # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
-  #   permissions:
-  #     pages: write      # to deploy to Pages
-  #     id-token: write   # to verify the deployment originates from an appropriate source
-
-  #   # Deploy to the github-pages environment
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-
-  #   # Specify runner + deployment step
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v4
+        target-folder: ${{ steps.set-folder.outputs.TARGET_FOLDER }}/

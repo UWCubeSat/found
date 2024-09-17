@@ -1,0 +1,31 @@
+name: Cleanup PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: documentation
+      - name: Delete coverage/documentation for ${{ github.head_ref }} from documentation branch
+        run: |
+          folder_to_delete="${{ github.head_ref }}"
+          echo "Deleting folder: $folder_to_delete from documentation"
+          rm -rf "$folder_to_delete"
+          git rm -r "$folder_to_delete" || true
+      - name: Configure Git for Pushing Deletion change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: PUshing Deletion Change
+        run: |
+          pr = ${{ github.event.pull_request.number }}
+          git commit -m "Remove folder ${{ github.head_ref }} from documentation branch after PR ${pr} was closed"
+          git push origin ${{ github.head_ref }}
