@@ -50,11 +50,11 @@ jobs:
         path: build/documentation/coverage
     - name: Deploy coverage to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          name: Coverage Report
-          branch: documentation
-          folder: build/documentation/coverage
-          folder-path: coverage
+      with:
+        name: Coverage Report
+        branch: documentation
+        folder: build/documentation/coverage
+        folder-path: coverage
   
   doxygen:
     runs-on: ubuntu-latest
