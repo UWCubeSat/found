@@ -47,7 +47,7 @@ TEST_FILES := $(filter-out $(CATCH_LIB)/%, $(TEST) $(TEST_H))
 
 # Our Object source and test files
 SRC_OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_SRC_DIR)/%.o,$(SRC))
-TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o,$(TEST)) $(filter-out %/main.o, $(SRC_OBJS))
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o,$(TEST)) $(filter-out %/main.o, $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_TEST_DIR)/%.o, $(SRC)))
 
 # Our pre-processed source and test code
 PRIVATE_SRC := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_PRIVATE_SRC_DIR)/%.i,$(SRC))
@@ -148,11 +148,14 @@ test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
 
 # The test target
-$(TEST_TARGET): $(TEST_SETUP_TARGET) $(COMPILE_TARGET) test_message $(TEST_BIN)
+$(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
 	valgrind ./$(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
+	mkdir -p $(@D)
+	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
+$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
 $(GTEST_DIR): $(BUILD_DIR)
