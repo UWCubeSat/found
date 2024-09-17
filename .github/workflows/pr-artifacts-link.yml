@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const prNumber = process.env.PR_NUMBER;
-            const prBody = `# Artifacts for PR #${prNumber}\n\n`;
+            prBody = `# Artifacts for PR #${prNumber}\n\n`;
             prBody += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
             prBody += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
             
