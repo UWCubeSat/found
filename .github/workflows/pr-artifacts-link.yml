@@ -1,0 +1,45 @@
+name: Update PR Description with Build Artifacts
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types: [opened, edited, synchronize]
+
+jobs:
+  update-description:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get PR number
+        id: get-pr-number
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+      - name: Update PR description
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = process.env.PR_NUMBER;
+            const prBody = `# Artifacts for PR #${prNumber}\n\n`;
+            prBody += `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`;
+            prBody += `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
+            
+            const { data: pr } = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            if (pr.body.includes(prBody)) {
+              console.log('PR description already has documentation artifacts');
+            } else {
+              await github.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                body: `${pr.body}\n# PR Description\n\n${prBody}`,
+              });
+              console.log('PR description updated with documentation artifacts');
+            }
