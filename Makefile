@@ -63,7 +63,7 @@ LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
-CXXFLAGS_TEST := $(CXXFLAGS) $(COVERAGE_FLAGS) $(LIBS_TEST)
+CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
 LDFLAGS := # Any dynamic libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
 
@@ -140,7 +140,6 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TARGET))
 	cpplint $(SRC) $(SRC_H)
 
-$(TEST_SETUP_TARGET): CXXFLAGS := $(CXXFLAGS) $(COVERAGE_FLAGS)
 $(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
 $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
@@ -155,10 +154,10 @@ $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(TEST_LIBS) $(CXXFLAGS_TEST) -c $< -o $@
+	$(CXX) $(TEST_LIBS) $(COVERAGE_FLAGS) $(CXXFLAGS_TEST) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
 $(GTEST_DIR): $(BUILD_DIR)
 	wget $(GTEST_URL)
 	tar -xzf $(GTEST_VERSION).tar.gz -C $(BUILD_LIBRARY_TEST_DIR)

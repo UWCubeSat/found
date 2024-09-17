@@ -54,7 +54,7 @@ jobs:
         name: Coverage Report
         branch: documentation
         folder: build/documentation/coverage
-        folder-path: coverage
+        target-folder: coverage
   
   doxygen:
     runs-on: ubuntu-latest
@@ -71,4 +71,4 @@ jobs:
         name: Doxygen Documentation
         branch: documentation
         folder: build/documentation/doxygen/html
-        folder-path: doxygen
+        target-folder: doxygen
