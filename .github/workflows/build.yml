@@ -71,7 +71,7 @@ jobs:
         if [ "${{ github.ref_name }}" = "main" ]; then
           echo "TARGET_FOLDER=/"
         else
-          echo "TARGET_FOLDER=${github.ref_name}/"
+          echo "TARGET_FOLDER=${{ github.ref_name }}/"
         fi
       shell: bash
     - name: Upload Pages Artifact
