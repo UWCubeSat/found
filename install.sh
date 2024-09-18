@@ -49,11 +49,9 @@ case "$OS" in
             execute_cmd apt-get -y dist-upgrade
         elif command -v yum &> /dev/null; then
             PM="yum"
-            execute_cmd yum -y check-update
             execute_cmd yum -y update
         elif command -v dnf &> /dev/null; then
             PM="dnf"
-            execute_cmd dnf -y check-update
             execute_cmd dnf -y upgrade
         else
             echo "No known package manager found"
@@ -76,7 +74,7 @@ case "$OS" in
 esac
 
 # List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip gcovr doxygen graphviz"
+PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip graphviz"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
@@ -84,8 +82,23 @@ for PACKAGE in $PACKAGES; do
     execute_cmd $CMD
 done
 
+# Attempt to install gcovr
+execute_cmd $INSTALL gcovr || true
+
+# Install doxygen
+execute_cmd $INSTALL doxygen || ( \
+    $INSTALL bison \
+    $INSTALL flex \
+    wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.src.tar.gz && \
+    tar xf doxygen-1.8.17.src.tar.gz && \
+    cd doxygen-1.8.17 && \
+    mkdir build && cd build && cmake -G "Unix Makefiles" .. && make install && \
+    cd ../.. && \
+    rm -rf doxygen-1.8.17*
+)
+
 # Python packages to install
-PYTHON_PACKAGES="cpplint"
+PYTHON_PACKAGES="cpplint gcovr"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do

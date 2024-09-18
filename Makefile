@@ -170,12 +170,12 @@ test_message:
 # The coverage target
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
-	gcovr || $(PASS_ON_COVERAGE_FAIL)
+	gcovr || python3 -m gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
 $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST_FILES)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TEST_TARGET))
-	cpplint $(TEST_FILES)
+	cpplint $(TEST_FILES) || python3 -m cpplint $(TEST_FILES)
 
 # The pre-processed artifacts target (private)
 private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
