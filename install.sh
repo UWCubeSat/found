@@ -83,19 +83,21 @@ for PACKAGE in $PACKAGES; do
 done
 
 # Attempt to install gcovr
-execute_cmd $INSTALL gcovr || true
+CMD="$INSTALL gcovr || true"
+execute_cmd $CMD
 
 # Install doxygen
-execute_cmd $INSTALL doxygen || ( \
-    $INSTALL bison \
-    $INSTALL flex \
+CMD="$INSTALL doxygen || ( \
+    $INSTALL bison && \
+    $INSTALL flex && \
     wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.src.tar.gz && \
     tar xf doxygen-1.8.17.src.tar.gz && \
     cd doxygen-1.8.17 && \
-    mkdir build && cd build && cmake -G "Unix Makefiles" .. && make install && \
+    mkdir build && cd build && cmake -G \"Unix Makefiles\" .. && make install && \
     cd ../.. && \
-    rm -rf doxygen-1.8.17*
-)
+    rm -rf doxygen-1.8.17* \
+)"
+execute_cmd $CMD
 
 # Python packages to install
 PYTHON_PACKAGES="cpplint gcovr"
