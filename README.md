@@ -7,10 +7,13 @@ FOUND is a system that Earth satellites can use to calculate their orbits using 
 If you are using Windows, we recommend downloading Windows Subsystem for Linux, and following the instructions for Linux.
 
 ## Prerequisites
-To obtain the required packages for this software:
+For Linux Ubuntu/Oracle (uses either `apt-get` or `yum`) obtain the required packages for this software:
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
+For macOS, install the following dependencies (I recommend using Homebrew `brew` to install this):
+- Unix-like Dependencies: `git g++ make cmake wget tar valgrind python3 python3-pip doxygen graphviz`
+- Python Dependencies: `gcovr cpplint`
 
 ## Building FOUND
 - Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)

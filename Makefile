@@ -149,7 +149,6 @@ test_setup_message:
 
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
-	valgrind ./$(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
@@ -170,6 +169,7 @@ test_message:
 # The coverage target
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
+	valgrind ./$(TEST_BIN)
 	gcovr || python3 -m gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests

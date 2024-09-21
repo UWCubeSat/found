@@ -8,7 +8,8 @@
 namespace found {
 
 /**
- * A Camera is a mutable object that represents a Camera.
+ * A Camera is a mutable object that represents a Camera. All camera dimensions
+ * are in SI
  * 
  * @note This object contains enough information to reconstruct a Camera Matrix
  * 

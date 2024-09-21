@@ -50,23 +50,23 @@ case "$OS" in
         elif command -v yum &> /dev/null; then
             PM="yum"
             execute_cmd yum -y update
-        elif command -v dnf &> /dev/null; then
-            PM="dnf"
-            execute_cmd dnf -y upgrade
+        # elif command -v dnf &> /dev/null; then
+        #     PM="dnf"
+        #     execute_cmd dnf -y upgrade
         else
             echo "No known package manager found"
             exit 1
         fi
         INSTALL="$PM install -y"
         ;;
-    Darwin*)
-        # Check if Homebrew is installed; install it if not
-        if ! command -v brew &> /dev/null; then
-            echo "Homebrew not found. Installing Homebrew..."
-            execute_cmd curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-        fi
-        INSTALL="brew install"
-        ;;
+    # Darwin*)
+    #     # Check if Homebrew is installed; install it if not
+    #     if ! command -v brew &> /dev/null; then
+    #         echo "Homebrew not found. Installing Homebrew..."
+    #         execute_cmd curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+    #     fi
+    #     INSTALL="brew install"
+    #     ;;
     *)
         echo "Unknown Operating System $OS"
         exit 1
