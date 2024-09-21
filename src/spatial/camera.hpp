@@ -8,13 +8,17 @@
 namespace found {
 
 /**
- * A Camera is a mutable object that represents a Camera.
+ * A Camera is a mutable object that represents a Camera. All camera dimensions
+ * are in SI
  * 
  * @note This object contains enough information to reconstruct a Camera Matrix
  * 
 */
 class Camera {
  public:
+    /**
+     * Copy Constructor for Camera
+     */
     Camera(const Camera &) = default;
 
     /**
@@ -56,13 +60,36 @@ class Camera {
 
     // Accessor Methods to Camera Parameters
 
+   /**
+     * Returns the X resolution of this camera
+     * 
+     * @return the X resolution of this
+     */
     int XResolution() const { return xResolution; }
+
+    /**
+     * Returns the Y resolution of this camera
+     * 
+     * @return the Y resolution of this
+     */
     int YResolution() const { return yResolution; }
+
+    /**
+     * Returns the focal length of this camera
+     * 
+     * @return The focal length of this
+     */
     decimal FocalLength() const { return focalLength; }
+
     decimal Fov() const;
 
     // Mutator Method for Cameras
 
+    /**
+     * Sets the focal length of this
+     * 
+     * @param focalLength The focal length to give this camera
+     */
     void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
 
  private:

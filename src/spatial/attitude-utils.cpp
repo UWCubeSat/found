@@ -227,7 +227,7 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
 /**
  * Converts an angle in radians to degrees
  * 
- * @param The radians of the angle
+ * @param rad The rad of the angle
  * 
  * @return The degrees of the angle
 */
@@ -238,7 +238,7 @@ decimal RadToDeg(decimal rad) {
 /**
  * Converts an angle in degrees to radians
  * 
- * @param The degrees of the angle
+ * @param deg The degrees of the angle
  * 
  * @return The radians of the angle
 */
@@ -317,6 +317,12 @@ decimal Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * Normalizes this
+ * 
+ * @return The normalized vector
+ * of this
+ */
 Vec2 Vec2::Normalize() const {
     decimal mag = Magnitude();
     return {
@@ -341,7 +347,7 @@ decimal Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
-// Dot product (Scalar product)
+/// Dot product (Scalar product)
 decimal Vec2::operator*(const Vec2 &other) const {
     return x*other.x + y*other.y;
 }
@@ -470,6 +476,19 @@ decimal Distance(const Vec2 &v1, const Vec2 &v2) {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
 }
 
+/**
+ * Determines the distance between two vectors
+ * 
+ * @param v1 The first vector
+ * @param v2 The second vector
+ * 
+ * @return The distance between v1 and v2
+ * 
+*/
+decimal Distance(const Vec3 &v1, const Vec3 &v2) {
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
+}
+
 ///////////////////////////////////
 ///////// MATRIX CLASS ////////////
 ///////////////////////////////////
@@ -501,9 +520,9 @@ Vec3 Mat3::Column(int j) const {
 /**
  * Obtains one of the row vectors in this Matrix
  * 
- * @param j The row of the vector
+ * @param i The row of the vector
  * 
- * @return The vector at row j
+ * @return The vector at row i
 */
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};

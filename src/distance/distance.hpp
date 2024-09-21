@@ -37,6 +37,11 @@ class DistanceDeterminationAlgorithm {
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
+   /**
+    * Initializes this SphericalDistanceDeterminationAlgorithm
+    * 
+    * @param radius The radius of Earth to use
+    */
     explicit SphericalDistanceDeterminationAlgorithm(float radius);
     ~SphericalDistanceDeterminationAlgorithm();
 
@@ -56,6 +61,11 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
 */
 class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
+    /**
+     * Initializes an EllipticDistanceDeterminationAlgorithm
+     * 
+     * @param radius The distance from Earth to use
+     */
     explicit EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
