@@ -1,22 +1,94 @@
-name: Build, Test, and Lint
+name: Build, Test, Lint, Coverage, and Documentation
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: ["main"]
+    types:
+      - opened
+      - synchronize
+      - reopened 
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-    container: huskysat/found:latest
+    container: nguy8tri/huskysat:latest
 
     steps:
-    - uses: actions/checkout@v3
-    - run: apt -y upgrade
-    - run: apt install -y cmake
-    - run: apt install -y wget
-    - run: apt install -y tar
-    - run: apt install -y valgrind
-    - run: pip install cpplint
+    - uses: actions/checkout@v4
+
     - name: Build all (Twice)
-      run: (make || make) && make clean
+      run: (make compile || make compile)
+  
+  test:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Test (Twice)
+      run: (make test || make test)
+  
+  lint:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Stylecheck
+      run: make google_stylecheck
+    
+    - name: Test Stylecheck
+      run: make google_stylecheck_test
+    
+    - name: Line Endings
+      uses: erclu/check-crlf@v1
+
+  coverage:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Coverage (Twice)
+      run: (make coverage || make coverage)
+    
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: Coverage Report
+        path: build/documentation/coverage
+  
+  documentation:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+    needs: [build, lint, coverage]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Coverage
+      run: make coverage
+    
+    - name: Doxygen
+      run: make doxygen_generate
+    
+    - name: Install rsync
+      run: apt install -y rsync
+    
+    - name: Set Target Folder in documentation
+      id: set-folder
+      run: |
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "TARGET_FOLDER=." >> $GITHUB_ENV
+        else
+          echo "TARGET_FOLDER=${{ github.ref_name }}" >> $GITHUB_ENV
+        fi
+      shell: bash
+    
+    - name: Upload Pages Artifact
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: documentation
+        folder: build/documentation/
+        target-folder: ${{ env.TARGET_FOLDER }}

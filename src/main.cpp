@@ -9,10 +9,10 @@
 
 namespace found {
 
-// For macro processing
+/// For macro processing
 const char kNoDefaultArgument = 0;
 
-// For command-line processing
+/// For command-line processing
 #define LOST_OPTIONAL_OPTARG()                                   \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
         ? static_cast<bool>(optarg = argv[optind++])             \

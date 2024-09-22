@@ -5,7 +5,8 @@
 
 namespace found {
 
-// For controlling floating-point type memory usage throughout the program
+/// Alias for floating point numbers. Used for controlling
+/// floating-point type memory usage throughout the program
 typedef float decimal;
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
@@ -17,7 +18,9 @@ typedef float decimal;
  * 
 */
 struct Vec2 {
+    /// The x coordinate
     const decimal x;
+    /// The y coordinate
     const decimal y;
 
     // Magnitude
@@ -45,8 +48,11 @@ class Mat3;  // define above so we can use in Vec3 class
 */
 class Vec3 {
  public:
+    /// The x coordinate
     decimal x;
+    /// The y coordinate
     decimal y;
+    /// The z coordinate
     decimal z;
 
     // TODO: Implement this constructor
@@ -83,7 +89,25 @@ class Vec3 {
 
     // TODO: Accessor Methods
 
+    /**
+     * Obtains the Right Ascension of this
+     * vector
+     * 
+     * @return The RA of this
+     * 
+     * @pre this is relative to the celestial
+     * coordinate system
+     */
     decimal getRightAscension() const;
+    /**
+     * Obtains the Declination of
+     * this vector
+     * 
+     * @return The DE of this
+     * 
+     * @pre this is relative to the celestial
+     * coordinate system
+     */
     decimal getDeclination() const;
 
     // Operations
@@ -102,6 +126,7 @@ class Vec3 {
 */
 class Mat3 {
  public:
+    /// The matrix entries
     decimal x[9];
 
     // Accessor
@@ -149,6 +174,13 @@ decimal Distance(const Vec3 &, const Vec3 &);
  */
 class EulerAngles {
  public:
+    /**
+     * Initializes an EulerAngles with corresponding parameters
+     * 
+     * @param ra The Right Ascension of the Euler Angle
+     * @param de The Declination of the Euler Angle
+     * @param roll The roll of the Euler Angle
+     */
     EulerAngles(decimal ra, decimal de, decimal roll)
         : ra(ra), de(de), roll(roll) {}
 
@@ -171,6 +203,16 @@ class Quaternion {
     explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, decimal);
 
+    /**
+     * Creates a Quaternion with components
+     * 
+     * @param real The real component
+     * @param i The i component
+     * @param j The j component
+     * @param k The k component
+     * 
+     * Initializes this to be {real + iI + jJ + kK}
+     */
     Quaternion(decimal real, decimal i, decimal j, decimal k)
         : real(real), i(i), j(j), k(k) {}
 
@@ -185,9 +227,13 @@ class Quaternion {
     bool IsUnit(decimal tolerance) const;
     Quaternion Canonicalize() const;
 
+    /// The real component
     decimal real;
+    /// The i component
     decimal i;
+    /// The j component
     decimal j;
+    /// The k component
     decimal k;
 };
 

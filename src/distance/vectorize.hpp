@@ -63,7 +63,11 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     Vec3 orientation;
 };
 
-
+/**
+ * FeatureDetectionVectorGenerationAlgorithm figures out
+ * the distance vector of the satellite relative to earth
+ * by identifying features on earth.
+ */
 class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
  public:
     /**
