@@ -82,10 +82,6 @@ for PACKAGE in $PACKAGES; do
     execute_cmd $CMD
 done
 
-# Attempt to install gcovr
-CMD="$INSTALL gcovr || true"
-execute_cmd $CMD
-
 # Install doxygen
 CMD="$INSTALL doxygen || ( \
     $INSTALL bison && \
@@ -100,7 +96,7 @@ CMD="$INSTALL doxygen || ( \
 execute_cmd $CMD
 
 # Python packages to install
-PYTHON_PACKAGES="cpplint gcovr"
+PYTHON_PACKAGES="cpplint==1.6.1 gcovr==7.2"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do

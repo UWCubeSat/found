@@ -8,7 +8,7 @@ rm -rf Doxyfile.bak
 doxygen 2> stderr.log
 
 # Extract warnings from stderr file
-warnings=$(grep "warning" stderr.log)
+warnings=$(cat stderr.log)
 
 # Cleanup the stderr file
 rm stderr.log
@@ -16,7 +16,7 @@ rm stderr.log
 # Check for warnings/errors in the log file
 if [ -n "$warnings" ]; then
     printf "\nDoxygen found errors and warnings while generating documentation:\n"
-    echo $warnings
+    echo "$warnings"
     printf "\n"
     exit 1
 else
