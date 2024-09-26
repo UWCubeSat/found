@@ -28,7 +28,7 @@ class PipelineTest : public testing::Test {
     }
 };
 
-TEST_F(PipelineTest, SimplePipeline) {
+TEST_F(PipelineTest, IntToStringToCharPipeline) {
     // Make our pipeline and inject our object
     INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
 
@@ -62,5 +62,43 @@ TEST_F(PipelineTest, SimplePipeline) {
     // And we verify the result
     ASSERT_EQ(characters[test_set], result);
 }
+// DOUBLE > FLOAT > STRING
+TEST_F(PipelineTest, DoubleToFloatToStringPipeline) {
+    INIT_DOUBLE_TO_STRING_PIPELINE(pipeline, stages);
 
+    int test_set = 1;
+
+    std::unique_ptr<MockStage<double, float>> stage1(new MockStage<double, float>());
+    EXPECT_CALL(*stage1, Run(doubles[test_set]))
+        .WillOnce(testing::Return(floats[test_set]));
+
+    std::unique_ptr<MockStage<float, std::string>> stage2(new MockStage<float, std::string>());
+    EXPECT_CALL(*stage2, Run(floats[test_set]))
+        .WillOnce(testing::Return(strings[test_set]));
+
+    std::string result = pipeline.AddStage(*stage1)
+                          .Complete(*stage2)
+                          .Run(doubles[test_set]);
+    ASSERT_EQ(std::string(strings[test_set]), result);
+}
+
+// CHAR > INT > Double
+TEST_F(PipelineTest, CharToIntToDoublePipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
+
+    int test_set = 2;
+
+    std::unique_ptr<MockStage<char, int>> stage1(new MockStage<char, int>());
+    EXPECT_CALL(*stage1, Run(characters[test_set]))
+        .WillOnce(testing::Return(integers[test_set]));
+
+    std::unique_ptr<MockStage<int, double>> stage2(new MockStage<int, double>());
+    EXPECT_CALL(*stage2, Run(integers[test_set]))
+        .WillOnce(testing::Return(doubles[test_set]));
+
+    double result = pipeline.AddStage(*stage1)
+                          .Complete(*stage2)
+                          .Run(characters[test_set]);
+    ASSERT_EQ(doubles[test_set], result);
+}
 }  // namespace found
