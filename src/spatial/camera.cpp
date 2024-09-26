@@ -1,9 +1,9 @@
-#include "camera.hpp"
+#include "spatial/camera.hpp"
 
 #include <math.h>
 #include <assert.h>
 
-#include "attitude-utils.hpp"
+#include "spatial/attitude-utils.hpp"
 
 namespace found {
 
@@ -66,8 +66,8 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
  * @return true iff vector could be seen in this camera
 */
 bool Camera::InSensor(const Vec2 &vector) const {
-    // if vector.x == xResolution, then it is at the leftmost point 
-    // of the pixel that's "hanging off" the edge of the image, 
+    // if vector.x == xResolution, then it is at the leftmost point
+    // of the pixel that's "hanging off" the edge of the image,
     // so vector is still in the image.
     return vector.x >= 0 && vector.x <= xResolution
         && vector.y >= 0 && vector.y <= yResolution;
@@ -112,4 +112,4 @@ decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixel
     return atan(xResolution/2 * pixelSize / focalLength) * 2;
 }
 
-}
+}  // namespace found
