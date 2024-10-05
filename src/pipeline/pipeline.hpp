@@ -54,16 +54,16 @@ class Stage : public Action {
     /**
      * Executes Run (with a stored input and storing the output)
      */
-    void DoAction() override {
+    void DoAction() override {  // GCOVR_EXCL_START
       *this->product = this->Run(this->resource);
-    };
+    };  // GCOVR_EXCL_STOP
 
     /**
      * Returns the stored input of this
      * 
      * @return The stored input of this
      */
-    Input &GetResource() {return resource;}
+    Input &GetResource() {return resource;}  // GCOVR_EXCL_LINE
 
     /**
      * Returns the stored output of this
@@ -71,7 +71,7 @@ class Stage : public Action {
      * @return The pointer to the stored output
      * of this
      */
-    Output *&GetProduct() {return product;}
+    Output *&GetProduct() {return product;}  // GCOVR_EXCL_LINE
 
  protected:
     /// The stored input for this

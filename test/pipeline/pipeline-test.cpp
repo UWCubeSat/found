@@ -66,7 +66,7 @@ TEST_F(PipelineTest, IntToStringToCharPipeline) {
 TEST_F(PipelineTest, DoubleToFloatToStringPipeline) {
     INIT_DOUBLE_TO_STRING_PIPELINE(pipeline, stages);
 
-    int test_set = 1;
+    int test_set = 0;
 
     std::unique_ptr<MockStage<double, float>> stage1(new MockStage<double, float>());
     EXPECT_CALL(*stage1, Run(doubles[test_set]))
@@ -86,7 +86,7 @@ TEST_F(PipelineTest, DoubleToFloatToStringPipeline) {
 TEST_F(PipelineTest, CharToIntToDoublePipeline) {
     INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
 
-    int test_set = 2;
+    int test_set = 0;
 
     std::unique_ptr<MockStage<char, int>> stage1(new MockStage<char, int>());
     EXPECT_CALL(*stage1, Run(characters[test_set]))
@@ -101,4 +101,137 @@ TEST_F(PipelineTest, CharToIntToDoublePipeline) {
                           .Run(characters[test_set]);
     ASSERT_EQ(doubles[test_set], result);
 }
+
+// one stage pipeline
+TEST_F(PipelineTest, SingleStagePipeline) {
+    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
+
+    int test_set = 0;
+
+    std::unique_ptr<MockStage<int, char>> stage1(new MockStage<int, char>());
+    EXPECT_CALL(*stage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(characters[test_set]));
+
+    char result = pipeline.Complete(*stage1)
+                          .Run(integers[test_set]);
+
+    ASSERT_EQ(characters[test_set], result);
+}
+
+// empty pipeline > expecting failure
+TEST_F(PipelineTest, EmptyPipelineThrowsError) {
+    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
+    int test_input = 0;
+
+    // no stages == fail
+    ASSERT_THROW(pipeline.Run(test_input), std::runtime_error);
+}
+
+TEST_F(PipelineTest, CompleteBeforeAddStagePipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
+
+    std::unique_ptr<MockStage<char, double>> stage1(new MockStage<char, double>());
+
+    std::unique_ptr<MockStage<int, double>> stage2(new MockStage<int, double>());
+
+    pipeline.Complete(*stage1);
+    ASSERT_THROW(pipeline.AddStage(*stage2), std::invalid_argument);
+}
+
+TEST_F(PipelineTest, InvalidFirstStageInputType) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
+
+    std::unique_ptr<MockStage<double, int>> stage1(new MockStage<double, int>());
+
+    ASSERT_THROW(pipeline.AddStage(*stage1), std::invalid_argument);
+}
+
+// beginning inner pipeline
+TEST_F(PipelineTest, BeginningPipelineInPipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
+
+    int test_set = 0;
+
+    // begin pipeline
+    std::vector<std::reference_wrapper<Action>> innerStages;
+    INIT_PIPELINE(char, int, innerPipeline, innerStages);
+
+    std::unique_ptr<MockStage<char, int>> innerStage1(new MockStage<char, int>());
+    EXPECT_CALL(*innerStage1, Run(characters[test_set]))
+        .WillOnce(testing::Return(integers[test_set]));
+
+    innerPipeline.Complete(*innerStage1);
+
+    std::unique_ptr<MockStage<int, double>> outerStage1(new MockStage<int, double>());
+    EXPECT_CALL(*outerStage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(doubles[test_set]));
+
+    outerPipeline.AddStage(innerPipeline)
+                 .Complete(*outerStage1);
+
+    double result = outerPipeline.Run(characters[test_set]);
+
+    ASSERT_EQ(result, doubles[test_set]);
+}
+
+// end inner pipeline
+TEST_F(PipelineTest, EndPipelineInPipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
+
+    int test_set = 0;
+
+    std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
+    EXPECT_CALL(*outerStage1, Run(characters[test_set]))
+        .WillOnce(testing::Return(integers[test_set]));
+
+    // ending pipeline
+    std::vector<std::reference_wrapper<Action>> innerStages;
+    INIT_PIPELINE(int, double, innerPipeline, innerStages);
+
+    std::unique_ptr<MockStage<int, double>> innerStage1(new MockStage<int, double>());
+    EXPECT_CALL(*innerStage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(doubles[test_set]));
+
+    innerPipeline.Complete(*innerStage1);
+
+    outerPipeline.AddStage(*outerStage1)
+                 .Complete(innerPipeline);
+
+    double result = outerPipeline.Run(characters[test_set]);
+
+    ASSERT_EQ(result, doubles[test_set]);
+}
+
+TEST_F(PipelineTest, MiddlePipelineInPipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
+
+    int test_set = 0;
+
+    std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
+    EXPECT_CALL(*outerStage1, Run(characters[test_set]))
+        .WillOnce(testing::Return(integers[test_set]));
+
+    // middle pipeline
+    std::vector<std::reference_wrapper<Action>> innerStages;
+    INIT_PIPELINE(int, float, innerPipeline, innerStages);
+
+    std::unique_ptr<MockStage<int, float>> innerStage1(new MockStage<int, float>());
+    EXPECT_CALL(*innerStage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(floats[test_set]));
+
+    innerPipeline.Complete(*innerStage1);
+
+    std::unique_ptr<MockStage<float, double>> outerStage2(new MockStage<float, double>());
+    EXPECT_CALL(*outerStage2, Run(floats[test_set]))
+        .WillOnce(testing::Return(doubles[test_set]));
+
+    outerPipeline.AddStage(*outerStage1)
+                 .AddStage(innerPipeline)
+                 .Complete(*outerStage2);
+
+    double result = outerPipeline.Run(characters[test_set]);
+
+    ASSERT_EQ(result, doubles[test_set]);
+}
+
 }  // namespace found
