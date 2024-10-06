@@ -2,6 +2,7 @@
 #define EDGE_H
 
 #include "style/style.hpp"
+#include "pipeline/pipeline.hpp"
 
 namespace found {
 
@@ -9,18 +10,7 @@ namespace found {
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture.
 */
-class EdgeDetectionAlgorithm {
- public:
-    /**
-     * Finds all points on Earth's horizon as seen in an image
-     * 
-     * @param image The image of Earth, represented as a character array with values from 0-255
-     * that represents the black/white color of each pixel
-     * 
-     * @return A Points object that holds all points found in the image
-    */
-    virtual Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) = 0;
-};
+class EdgeDetectionAlgorithm : public Stage<Image, Points> {};
 
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
@@ -42,7 +32,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(const Image &image/*parameters all algorithms will need (Override this plz)*/) override;
  private:
     // useful fields specific to this algorithm and helper methods
 };
@@ -67,7 +57,7 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    Points Run(unsigned char* image/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(const Image &image/*parameters all algorithms will need (Override this plz)*/) override;
  private:
     // useful fields specific to this algorithm and helper methods
 };

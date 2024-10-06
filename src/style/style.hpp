@@ -28,6 +28,16 @@ typedef decimal distFromEarth;
 typedef Vec3 PositionVector;
 
 /**
+ * Represents an image
+ */
+struct Image {
+    /// The image contents
+    unsigned char *image;
+    /// The image {width, height, channels}
+    int dimensions[3];
+};
+
+/**
  * OrbitParams defines the orbital
  * parameters of a given orbit
  */
