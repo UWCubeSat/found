@@ -49,7 +49,7 @@ class Stage : public Action {
      * 
      * @return The output of this stage
      */
-    virtual Output Run(Input input) = 0;
+    virtual Output Run(const Input &input) = 0;
 
     /**
      * Executes Run (with a stored input and storing the output)
@@ -174,7 +174,7 @@ class Pipeline : public Stage<Input, Output> {
      * i.e. before this::Run is called, this::Complete must have
      * been called successfully
      */
-    Output Run(Input input) override {
+    Output Run(const Input &input) override {
         if (!this->ready) throw std::runtime_error("This is an illegal action: the pipeline is not ready yet");
         this->resource = input;
         *this->firstResource = input;
