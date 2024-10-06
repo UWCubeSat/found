@@ -3,6 +3,7 @@
 
 #include "style/style.hpp"
 #include "spatial/attitude-utils.hpp"
+#include "pipeline/pipeline.hpp"
 
 namespace found {
 
@@ -13,20 +14,10 @@ namespace found {
  * position of the satellite at any time
  * 
 */
-class KinematicProfilingAlgorithm {
+class KinematicProfilingAlgorithm : public Stage<OrbitParams, KinematicPrediction> {
  public:
     // Destroys this
     virtual ~KinematicProfilingAlgorithm();
-
-    /**
-     * Derives the kinematic profile of the satellite
-     * 
-     * @param orbit The projected path of the satellite
-     * 
-     * @return A KinematicPrediction that describes the kinematic profile of the satellite
-     * 
-    */
-    virtual KinematicPrediction Run(OrbitParams &orbit /*Params common to this type*/) = 0;
 };
 
 /**
@@ -52,7 +43,7 @@ class EulerianKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
+    KinematicPrediction Run(const OrbitParams &orbit /*Params to override the base class one*/) override;
  private:
     // Fields specific to this algorithm go here, and helper methods
 };
@@ -80,7 +71,7 @@ class KeplerKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
+    KinematicPrediction Run(const OrbitParams &orbit /*Params to override the base class one*/) override;
  private:
     // Fields specific to this algorithm go here, and helper methods
 };
