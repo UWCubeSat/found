@@ -19,7 +19,8 @@
 namespace found {
 
 // Array that holds one
-unsigned char arr[1] = {1};
+unsigned char imageContents[1] = {1};
+Image image = {imageContents, {1, 0, 1}};
 
 /**
  * Expected Results from our Mock

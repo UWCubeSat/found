@@ -10,9 +10,7 @@ namespace found {
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture.
 */
-class EdgeDetectionAlgorithm : public Stage<Image, Points> {
-
-};
+class EdgeDetectionAlgorithm : public Stage<Image, Points> {};
 
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 

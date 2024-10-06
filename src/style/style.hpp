@@ -31,7 +31,9 @@ typedef Vec3 PositionVector;
  * Represents an image
  */
 struct Image {
+    /// The image contents
     unsigned char *image;
+    /// The image {width, height, channels}
     int dimensions[3];
 };
 
