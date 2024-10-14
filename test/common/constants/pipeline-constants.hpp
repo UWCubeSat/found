@@ -11,11 +11,11 @@ namespace found {
 #define INIT_DOUBLE_TO_STRING_PIPELINE(pipeline, stages) INIT_PIPELINE(double, std::string, pipeline, stages)
 #define INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages) INIT_PIPELINE(char, double, pipeline, stages)
 
-constexpr int integers[] = {5};
-constexpr const char *strings[] = {"Hello World!"};
-constexpr char characters[] = {'c'};
-constexpr float floats[] = {5.5};
-constexpr double doubles[] = {5.1};
+constexpr int integers[] = {5, -2, 62};
+constexpr const char *strings[] = {"Hello World!", "Foo", "Bar"};
+constexpr char characters[] = {'c', 'a', '\n'};
+constexpr float floats[] = {5.5, 8.8, -152.1};
+constexpr double doubles[] = {-5.1, 23.2, -63.2};
 
 // std {vector, map, lists, struc, vec2, vec3}
 

@@ -28,7 +28,64 @@ class PipelineTest : public testing::Test {
     }
 };
 
-TEST_F(PipelineTest, IntToStringToCharPipeline) {
+/**
+ * Tets to running a pipeline with no stages
+ */
+TEST_F(PipelineTest, TestPipelineRunOnEmpty) {
+    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
+    int test_input = 2;
+
+    // no stages == fail
+    ASSERT_THROW(pipeline.Run(test_input), std::runtime_error);
+}
+
+/**
+ * Tests completing a pipeline, and then adding stages
+ */
+TEST_F(PipelineTest, TestPipelineAddStageAfterComplete) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
+
+    std::unique_ptr<MockStage<char, double>> stage1(new MockStage<char, double>());
+
+    std::unique_ptr<MockStage<int, double>> stage2(new MockStage<int, double>());
+
+    pipeline.Complete(*stage1);
+    ASSERT_THROW(pipeline.AddStage(*stage2), std::invalid_argument);
+}
+
+/**
+ * Tests adding an invalid first stage
+ */
+TEST_F(PipelineTest, TestPipelineInvalidFirstStage) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
+
+    std::unique_ptr<MockStage<double, int>> stage1(new MockStage<double, int>());
+
+    ASSERT_THROW(pipeline.AddStage(*stage1), std::invalid_argument);
+}
+
+/**
+ * Tests a pipeline with 1 stage
+ */
+TEST_F(PipelineTest, TestPipelineSingleStage) {
+    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
+
+    int test_set = 1;
+
+    std::unique_ptr<MockStage<int, char>> stage1(new MockStage<int, char>());
+    EXPECT_CALL(*stage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(characters[test_set]));
+
+    char result = pipeline.Complete(*stage1)
+                          .Run(integers[test_set]);
+
+    ASSERT_EQ(characters[test_set], result);
+}
+
+/**
+ * Tests a pipeline with 2 stages
+ */
+TEST_F(PipelineTest, TestPipelineTwoStage) {
     // Make our pipeline and inject our object
     INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
 
@@ -62,11 +119,14 @@ TEST_F(PipelineTest, IntToStringToCharPipeline) {
     // And we verify the result
     ASSERT_EQ(characters[test_set], result);
 }
-// DOUBLE > FLOAT > STRING
-TEST_F(PipelineTest, DoubleToFloatToStringPipeline) {
+
+/**
+ * Tests a different pipeline with 2 stages
+ */
+TEST_F(PipelineTest, TestPipelineTwoStageOther) {
     INIT_DOUBLE_TO_STRING_PIPELINE(pipeline, stages);
 
-    int test_set = 0;
+    int test_set = 1;
 
     std::unique_ptr<MockStage<double, float>> stage1(new MockStage<double, float>());
     EXPECT_CALL(*stage1, Run(doubles[test_set]))
@@ -82,72 +142,37 @@ TEST_F(PipelineTest, DoubleToFloatToStringPipeline) {
     ASSERT_EQ(std::string(strings[test_set]), result);
 }
 
-// CHAR > INT > Double
-TEST_F(PipelineTest, CharToIntToDoublePipeline) {
+/**
+ * Tests a pipeline with 3 parameters
+ */
+TEST_F(PipelineTest, TestPipelineThreeStage) {
     INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
 
-    int test_set = 0;
+    int test_set = 2;
 
     std::unique_ptr<MockStage<char, int>> stage1(new MockStage<char, int>());
     EXPECT_CALL(*stage1, Run(characters[test_set]))
         .WillOnce(testing::Return(integers[test_set]));
 
-    std::unique_ptr<MockStage<int, double>> stage2(new MockStage<int, double>());
+    std::unique_ptr<MockStage<int, std::string>> stage2(new MockStage<int, std::string>());
     EXPECT_CALL(*stage2, Run(integers[test_set]))
+        .WillOnce(testing::Return(strings[test_set]));
+
+    std::unique_ptr<MockStage<std::string, double>> stage3(new MockStage<std::string, double>());
+    EXPECT_CALL(*stage3, Run(strings[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
     double result = pipeline.AddStage(*stage1)
-                          .Complete(*stage2)
+                          .AddStage(*stage2)
+                          .Complete(*stage3)
                           .Run(characters[test_set]);
     ASSERT_EQ(doubles[test_set], result);
 }
 
-// one stage pipeline
-TEST_F(PipelineTest, SingleStagePipeline) {
-    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
-
-    int test_set = 0;
-
-    std::unique_ptr<MockStage<int, char>> stage1(new MockStage<int, char>());
-    EXPECT_CALL(*stage1, Run(integers[test_set]))
-        .WillOnce(testing::Return(characters[test_set]));
-
-    char result = pipeline.Complete(*stage1)
-                          .Run(integers[test_set]);
-
-    ASSERT_EQ(characters[test_set], result);
-}
-
-// empty pipeline > expecting failure
-TEST_F(PipelineTest, EmptyPipelineThrowsError) {
-    INIT_INT_TO_CHAR_PIPELINE(pipeline, stages);
-    int test_input = 0;
-
-    // no stages == fail
-    ASSERT_THROW(pipeline.Run(test_input), std::runtime_error);
-}
-
-TEST_F(PipelineTest, CompleteBeforeAddStagePipeline) {
-    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
-
-    std::unique_ptr<MockStage<char, double>> stage1(new MockStage<char, double>());
-
-    std::unique_ptr<MockStage<int, double>> stage2(new MockStage<int, double>());
-
-    pipeline.Complete(*stage1);
-    ASSERT_THROW(pipeline.AddStage(*stage2), std::invalid_argument);
-}
-
-TEST_F(PipelineTest, InvalidFirstStageInputType) {
-    INIT_CHAR_TO_DOUBLE_PIPELINE(pipeline, stages);
-
-    std::unique_ptr<MockStage<double, int>> stage1(new MockStage<double, int>());
-
-    ASSERT_THROW(pipeline.AddStage(*stage1), std::invalid_argument);
-}
-
-// beginning inner pipeline
-TEST_F(PipelineTest, BeginningPipelineInPipeline) {
+/**
+ * Tests putting a pipline in the beginning of another pipeline
+ */
+TEST_F(PipelineTest, TestPipelineBeginningPipelineInPipeline) {
     INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
 
     int test_set = 0;
@@ -174,38 +199,13 @@ TEST_F(PipelineTest, BeginningPipelineInPipeline) {
     ASSERT_EQ(result, doubles[test_set]);
 }
 
-// end inner pipeline
-TEST_F(PipelineTest, EndPipelineInPipeline) {
+/**
+ * Tests adding a Pipeline into the middle of another Pipeline
+ */
+TEST_F(PipelineTest, TestPipelineMiddlePipelineInPipeline) {
     INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
 
-    int test_set = 0;
-
-    std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
-    EXPECT_CALL(*outerStage1, Run(characters[test_set]))
-        .WillOnce(testing::Return(integers[test_set]));
-
-    // ending pipeline
-    std::vector<std::reference_wrapper<Action>> innerStages;
-    INIT_PIPELINE(int, double, innerPipeline, innerStages);
-
-    std::unique_ptr<MockStage<int, double>> innerStage1(new MockStage<int, double>());
-    EXPECT_CALL(*innerStage1, Run(integers[test_set]))
-        .WillOnce(testing::Return(doubles[test_set]));
-
-    innerPipeline.Complete(*innerStage1);
-
-    outerPipeline.AddStage(*outerStage1)
-                 .Complete(innerPipeline);
-
-    double result = outerPipeline.Run(characters[test_set]);
-
-    ASSERT_EQ(result, doubles[test_set]);
-}
-
-TEST_F(PipelineTest, MiddlePipelineInPipeline) {
-    INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
-
-    int test_set = 0;
+    int test_set = 4;
 
     std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
     EXPECT_CALL(*outerStage1, Run(characters[test_set]))
@@ -228,6 +228,36 @@ TEST_F(PipelineTest, MiddlePipelineInPipeline) {
     outerPipeline.AddStage(*outerStage1)
                  .AddStage(innerPipeline)
                  .Complete(*outerStage2);
+
+    double result = outerPipeline.Run(characters[test_set]);
+
+    ASSERT_EQ(result, doubles[test_set]);
+}
+
+/**
+ * Tests putting a pipeline at the end of another pipeline
+ */
+TEST_F(PipelineTest, TestPipelineEndPipelineInPipeline) {
+    INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
+
+    int test_set = 1;
+
+    std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
+    EXPECT_CALL(*outerStage1, Run(characters[test_set]))
+        .WillOnce(testing::Return(integers[test_set]));
+
+    // ending pipeline
+    std::vector<std::reference_wrapper<Action>> innerStages;
+    INIT_PIPELINE(int, double, innerPipeline, innerStages);
+
+    std::unique_ptr<MockStage<int, double>> innerStage1(new MockStage<int, double>());
+    EXPECT_CALL(*innerStage1, Run(integers[test_set]))
+        .WillOnce(testing::Return(doubles[test_set]));
+
+    innerPipeline.Complete(*innerStage1);
+
+    outerPipeline.AddStage(*outerStage1)
+                 .Complete(innerPipeline);
 
     double result = outerPipeline.Run(characters[test_set]);
 
