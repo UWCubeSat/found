@@ -10,5 +10,11 @@ var searchData=
   ['spatialtospherical_7',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
   ['sphericaldistancedeterminationalgorithm_8',['sphericaldistancedeterminationalgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html',1,'found::SphericalDistanceDeterminationAlgorithm'],['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a7fa59a5da214a9b60e9ae50375fb78c1',1,'found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm()']]],
   ['sphericaltoquaternion_9',['SphericalToQuaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found']]],
-  ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]]
+  ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
+  ['stage_11',['stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage::Stage()'],['../classfound_1_1Stage.html',1,'found::Stage&lt; Input, Output &gt;']]],
+  ['stage_3c_20distfromearth_2c_20positionvector_20_3e_12',['Stage&lt; distFromEarth, PositionVector &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20image_2c_20points_20_3e_13',['Stage&lt; Image, Points &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20orbitparams_2c_20kinematicprediction_20_3e_14',['Stage&lt; OrbitParams, KinematicPrediction &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20points_2c_20distfromearth_20_3e_15',['Stage&lt; Points, distFromEarth &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20std_3a_3avector_3c_20vec3_20_3e_2c_20orbitparams_20_3e_16',['Stage&lt; std::vector&lt; Vec3 &gt;, OrbitParams &gt;',['../classfound_1_1Stage.html',1,'found']]]
 ];

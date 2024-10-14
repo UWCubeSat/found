@@ -1,5 +1,9 @@
 <map id="found::EulerianKinematicProfilingAlgorithm" name="found::EulerianKinematicProfilingAlgorithm">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,192,133"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="5,5,192,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,59,101,93,96,93,96,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="13,255,200,295"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="13,167,200,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,221,109,254,104,254,104,221"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="5,79,208,119"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,133,109,166,104,166,104,133"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title=" " alt="" coords="53,5,161,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="109,44,109,79,104,79,104,44"/>
 </map>

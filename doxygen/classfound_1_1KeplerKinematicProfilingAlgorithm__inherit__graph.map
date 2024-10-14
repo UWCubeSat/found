@@ -1,5 +1,9 @@
 <map id="found::KeplerKinematicProfilingAlgorithm" name="found::KeplerKinematicProfilingAlgorithm">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,232,133"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="25,5,212,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,59,121,93,116,93,116,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,255,232,295"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="25,167,212,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,221,121,254,116,254,116,221"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="17,79,220,119"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,133,121,166,116,166,116,133"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title=" " alt="" coords="65,5,173,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="121,44,121,79,116,79,116,44"/>
 </map>

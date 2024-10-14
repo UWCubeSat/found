@@ -10,5 +10,6 @@ var searchData=
   ['spatialtospherical_7',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
   ['sphericaldistancedeterminationalgorithm_8',['SphericalDistanceDeterminationAlgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a7fa59a5da214a9b60e9ae50375fb78c1',1,'found::SphericalDistanceDeterminationAlgorithm']]],
   ['sphericaltoquaternion_9',['SphericalToQuaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found']]],
-  ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]]
+  ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
+  ['stage_11',['Stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage']]]
 ];

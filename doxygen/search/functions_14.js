@@ -6,5 +6,6 @@ var searchData=
   ['_7ekeplerkinematicprofilingalgorithm_3',['~KeplerKinematicProfilingAlgorithm',['../classfound_1_1KeplerKinematicProfilingAlgorithm.html#ad6ddef0ef43f937b5ce5daa22a144719',1,'found::KeplerKinematicProfilingAlgorithm']]],
   ['_7elocedgedetectionalgorithm_4',['~LoCEdgeDetectionAlgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a0d5919b564ec6f82f05f1c5e2b71b969',1,'found::LoCEdgeDetectionAlgorithm']]],
   ['_7eprecessionorbitdeterminationalgorithm_5',['~PrecessionOrbitDeterminationAlgorithm',['../classfound_1_1PrecessionOrbitDeterminationAlgorithm.html#a05ee00f246c1c8d2d727646f2609561d',1,'found::PrecessionOrbitDeterminationAlgorithm']]],
-  ['_7esimpleedgedetectionalgorithm_6',['~SimpleEdgeDetectionAlgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#afad693edfdc643c402b50a3fa92a8c30',1,'found::SimpleEdgeDetectionAlgorithm']]]
+  ['_7esimpleedgedetectionalgorithm_6',['~SimpleEdgeDetectionAlgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#afad693edfdc643c402b50a3fa92a8c30',1,'found::SimpleEdgeDetectionAlgorithm']]],
+  ['_7estage_7',['~Stage',['../classfound_1_1Stage.html#a6e5ad1944004dbdf4af363690dea7165',1,'found::Stage']]]
 ];

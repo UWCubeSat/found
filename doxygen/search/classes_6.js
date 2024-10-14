@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['locedgedetectionalgorithm_0',['LoCEdgeDetectionAlgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html',1,'found']]],
-  ['lostvectorgenerationalgorithm_1',['LOSTVectorGenerationAlgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html',1,'found']]]
+  ['keplerkinematicprofilingalgorithm_0',['KeplerKinematicProfilingAlgorithm',['../classfound_1_1KeplerKinematicProfilingAlgorithm.html',1,'found']]],
+  ['kinematicprofilingalgorithm_1',['KinematicProfilingAlgorithm',['../classfound_1_1KinematicProfilingAlgorithm.html',1,'found']]]
 ];

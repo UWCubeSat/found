@@ -1,5 +1,13 @@
 <map id="found::KeplerKinematicProfilingAlgorithm" name="found::KeplerKinematicProfilingAlgorithm">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,232,133"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="25,5,212,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,59,121,93,116,93,116,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,404,232,444"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1KinematicProfilingAlgorithm.html" title=" " alt="" coords="25,315,212,355"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,369,121,404,116,404,116,369"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="17,225,220,265"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,279,121,315,116,315,116,279"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title=" " alt="" coords="43,137,151,163"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="106,175,117,225,112,226,100,177"/>
+<area shape="rect" id="Node000005" href="$structfound_1_1OrbitParams.html" title=" " alt="" coords="176,137,323,163"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="223,173,147,227,144,223,220,169"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1Vec3.html" title=" " alt="" coords="200,5,299,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="252,44,252,137,247,137,247,44"/>
 </map>
