@@ -64,7 +64,7 @@ int FoundMain(int argc, char **argv) {
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-                case static_cast<int>(DatabaseCliOption::prop) :                           \
+                case static_cast<int>(DatabaseCliOption::prop) :              \
                     if (defaultArg == 0) {                                    \
                         options.prop = converter;                             \
                     } else {                                                  \
@@ -98,4 +98,5 @@ int FoundMain(int argc, char **argv) {
 */
 int main(int argc, char **argv) {
     found::FoundMain(argc, argv);
+    return 0;
 }

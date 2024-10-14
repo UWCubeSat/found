@@ -95,7 +95,7 @@ TEST_F(ExampleTest, MySecondTest) {
 
     // Here, we run the function we want to test,
     // which will execute our Mocked behavior
-    Points p = eda->Run(arr);
+    Points p = eda->Run(image);
 
     // Now, we test if the result of our
     // function matched our expectation
