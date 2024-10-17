@@ -74,8 +74,6 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarth) {
     Vec3 p2 = {static_cast<decimal>(p * cos(alpha)), static_cast<decimal>(-p * sin(alpha)), 0};
     Vec3 p3 = {static_cast<decimal>(p * cos(alpha)), 0, static_cast<decimal>(p * sin(alpha))};
 
-    std::cout << p1 * (1/p1.x) << std::endl;
-
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),
                 cam.SpatialToCamera(p2),
@@ -86,8 +84,6 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarth) {
         SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
 
     PositionVector actual = algo.Run(pts);
-
-    std::cout << "Actual Result: " << actual << std::endl;
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
