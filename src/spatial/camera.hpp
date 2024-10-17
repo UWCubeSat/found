@@ -1,20 +1,24 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "attitude-utils.hpp"
+#include "spatial/attitude-utils.hpp"
 
-#include "style.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
 /**
- * A Camera is a mutable object that represents a Camera.
+ * A Camera is a mutable object that represents a Camera. All camera dimensions
+ * are in SI
  * 
  * @note This object contains enough information to reconstruct a Camera Matrix
  * 
 */
 class Camera {
-public:
+ public:
+    /**
+     * Copy Constructor for Camera
+     */
     Camera(const Camera &) = default;
 
     /**
@@ -30,7 +34,7 @@ public:
            int xResolution, int yResolution)
         : focalLength(focalLength),
           xCenter(xCenter), yCenter(yCenter),
-          xResolution(xResolution), yResolution(yResolution) {};
+          xResolution(xResolution), yResolution(yResolution) {}
 
     /**
      * Creates a Camera object off of ideal Camera parameters
@@ -45,7 +49,7 @@ public:
     Camera(decimal focalLength, int xResolution, int yResolution)
         : Camera(focalLength,
                  xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
-                 xResolution, yResolution) {};
+                 xResolution, yResolution) {}
 
     // Projection of vectors into image and space
 
@@ -56,16 +60,39 @@ public:
 
     // Accessor Methods to Camera Parameters
 
-    int XResolution() const { return xResolution; };
-    int YResolution() const { return yResolution; };
-    decimal FocalLength() const { return focalLength; };
+   /**
+     * Returns the X resolution of this camera
+     * 
+     * @return the X resolution of this
+     */
+    int XResolution() const { return xResolution; }
+
+    /**
+     * Returns the Y resolution of this camera
+     * 
+     * @return the Y resolution of this
+     */
+    int YResolution() const { return yResolution; }
+
+    /**
+     * Returns the focal length of this camera
+     * 
+     * @return The focal length of this
+     */
+    decimal FocalLength() const { return focalLength; }
+
     decimal Fov() const;
 
     // Mutator Method for Cameras
 
+    /**
+     * Sets the focal length of this
+     * 
+     * @param focalLength The focal length to give this camera
+     */
     void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
 
-private:
+ private:
     // TODO: distortion
     decimal focalLength;
     decimal xCenter; decimal yCenter;
@@ -76,6 +103,7 @@ private:
 
 decimal FovToFocalLength(decimal xFov, decimal xResolution);
 decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize);
-}
 
-#endif
+}  // namespace found
+
+#endif  // CAMERA_H

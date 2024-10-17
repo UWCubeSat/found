@@ -4,19 +4,19 @@
 #include <iostream>
 #include <string>
 
-#include "other.hpp"
-#include "style.hpp"
+#include "command-line/other.hpp"
+#include "style/style.hpp"
 
 namespace found {
 
-// For macro processing
+/// For macro processing
 const char kNoDefaultArgument = 0;
 
-// For command-line processing
+/// For command-line processing
 #define LOST_OPTIONAL_OPTARG()                                   \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
-     ? (bool) (optarg = argv[optind++])                          \
-     : (optarg != NULL))
+        ? static_cast<bool>(optarg = argv[optind++])             \
+        : (optarg != NULL))
 
 
 /**
@@ -33,8 +33,8 @@ const char kNoDefaultArgument = 0;
  * and their parameters
 */
 int FoundMain(int argc, char **argv) {
-    if(argc == 1) {
-        std::cout << "Seems you don't want to be found";
+    if (argc == 1) {
+        std::cout << "Seems you don't want to be found" << std::endl;
         return 0;
     }
     std::string command(argv[1]);
@@ -42,7 +42,7 @@ int FoundMain(int argc, char **argv) {
 
     enum class DatabaseCliOption {
         #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) prop,
-        #include "options.hpp"
+        #include "command-line/options.hpp"
         #undef FOUND_CLI_OPTION
     };
 
@@ -51,8 +51,8 @@ int FoundMain(int argc, char **argv) {
                     {name,                                                            \
                     defaultArg == 0 ? required_argument : optional_argument,          \
                     0,                                                                \
-                    (int)DatabaseCliOption::prop},
-        #include "options.hpp" // NOLINT
+                    static_cast<int>(DatabaseCliOption::prop)},
+        #include "command-line/options.hpp"  // NOLINT
         #undef FOUND_CLI_OPTION
                         {0}
     };
@@ -64,7 +64,7 @@ int FoundMain(int argc, char **argv) {
         while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
             switch (option) {
 #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg) \
-                case (int)DatabaseCliOption::prop :                           \
+                case static_cast<int>(DatabaseCliOption::prop) :              \
                     if (defaultArg == 0) {                                    \
                         options.prop = converter;                             \
                     } else {                                                  \
@@ -75,17 +75,16 @@ int FoundMain(int argc, char **argv) {
                         }                                                     \
                     }                                                         \
             break;
-#include "options.hpp" // NOLINT
+#include "command-line/options.hpp"  // NOLINT
 #undef FOUND_CLI_OPTION
                 default :std::cout << "Illegal flag" << std::endl;
                     exit(1);
             }
         }
     return 0;
-
 }
 
-}
+}  // namespace found
 
 /**
  * This is where the program starts.
@@ -99,4 +98,5 @@ int FoundMain(int argc, char **argv) {
 */
 int main(int argc, char **argv) {
     found::FoundMain(argc, argv);
+    return 0;
 }

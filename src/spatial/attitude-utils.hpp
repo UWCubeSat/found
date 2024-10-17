@@ -5,7 +5,8 @@
 
 namespace found {
 
-// For controlling floating-point type memory usage throughout the program
+/// Alias for floating point numbers. Used for controlling
+/// floating-point type memory usage throughout the program
 typedef float decimal;
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
@@ -17,7 +18,9 @@ typedef float decimal;
  * 
 */
 struct Vec2 {
+    /// The x coordinate
     const decimal x;
+    /// The y coordinate
     const decimal y;
 
     // Magnitude
@@ -37,19 +40,22 @@ struct Vec2 {
     Vec2 operator+(const Vec2 &) const;
 };
 
-class Mat3; // define above so we can use in Vec3 class
+class Mat3;  // define above so we can use in Vec3 class
 
 /**
  * A Vec3 is a mutable object that represents a 3D Vector
  * 
 */
 class Vec3 {
-public:
+ public:
+    /// The x coordinate
     decimal x;
+    /// The y coordinate
     decimal y;
+    /// The z coordinate
     decimal z;
 
-    //TODO: Implement this constructor
+    // TODO: Implement this constructor
     /**
      * Construction of orientation vector, which should be a unit vector
      * 
@@ -65,12 +71,12 @@ public:
      * @param y The scalar value in the y direction of the vector to make
      * @param z The scalar value in the z direction of the vector to make
     */
-    Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {};
+    Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {}
 
     /**
      * Default construction of the Vector
     */
-    Vec3() {};
+    Vec3() {}
 
     // Magnitude
 
@@ -83,7 +89,25 @@ public:
 
     // TODO: Accessor Methods
 
+    /**
+     * Obtains the Right Ascension of this
+     * vector
+     * 
+     * @return The RA of this
+     * 
+     * @pre this is relative to the celestial
+     * coordinate system
+     */
     decimal getRightAscension() const;
+    /**
+     * Obtains the Declination of
+     * this vector
+     * 
+     * @return The DE of this
+     * 
+     * @pre this is relative to the celestial
+     * coordinate system
+     */
     decimal getDeclination() const;
 
     // Operations
@@ -101,7 +125,8 @@ public:
  * 
 */
 class Mat3 {
-public:
+ public:
+    /// The matrix entries
     decimal x[9];
 
     // Accessor
@@ -131,7 +156,7 @@ extern const Mat3 kIdentityMat3;
 
 // Buffer-Vector Functions
 
-long SerializeLengthVec3();
+int64_t SerializeLengthVec3();
 void SerializeVec3(const Vec3 &, unsigned char *);
 Vec3 DeserializeVec3(const unsigned char *);
 
@@ -148,9 +173,16 @@ decimal Distance(const Vec3 &, const Vec3 &);
  * There's no one single way to store Euler angles. We use z-y'-x'' angles, according to the notation used on the wikipedia page for euler angles.
  */
 class EulerAngles {
-public:
+ public:
+    /**
+     * Initializes an EulerAngles with corresponding parameters
+     * 
+     * @param ra The Right Ascension of the Euler Angle
+     * @param de The Declination of the Euler Angle
+     * @param roll The roll of the Euler Angle
+     */
     EulerAngles(decimal ra, decimal de, decimal roll)
-        : ra(ra), de(de), roll(roll) { };
+        : ra(ra), de(de), roll(roll) {}
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
     decimal ra;
@@ -166,13 +198,23 @@ public:
  * 
 */
 class Quaternion {
-public:
+ public:
     Quaternion() = default;
     explicit Quaternion(const Vec3 &);
     Quaternion(const Vec3 &, decimal);
 
+    /**
+     * Creates a Quaternion with components
+     * 
+     * @param real The real component
+     * @param i The i component
+     * @param j The j component
+     * @param k The k component
+     * 
+     * Initializes this to be {real + iI + jJ + kK}
+     */
     Quaternion(decimal real, decimal i, decimal j, decimal k)
-        : real(real), i(i), j(j), k(k) { };
+        : real(real), i(i), j(j), k(k) {}
 
     Quaternion operator*(const Quaternion &other) const;
     Quaternion Conjugate() const;
@@ -185,9 +227,13 @@ public:
     bool IsUnit(decimal tolerance) const;
     Quaternion Canonicalize() const;
 
+    /// The real component
     decimal real;
+    /// The i component
     decimal i;
+    /// The j component
     decimal j;
+    /// The k component
     decimal k;
 };
 
@@ -202,7 +248,7 @@ public:
  * attitude estimation algorithm you're using.
  */
 class Attitude {
-public:
+ public:
     Attitude() = default;
     explicit Attitude(const Quaternion &); // NOLINT
     explicit Attitude(const Mat3 &dcm);
@@ -212,7 +258,7 @@ public:
     EulerAngles ToSpherical() const;
     Vec3 Rotate(const Vec3 &) const;
 
-private:
+ private:
     enum AttitudeType {
         NullType,
         QuaternionType,
@@ -220,14 +266,14 @@ private:
     };
 
     Quaternion quaternion;
-    Mat3 dcm; // direction cosine matrix
+    Mat3 dcm;  // direction cosine matrix
     AttitudeType type;
 };
 
 // Vector operations
 Vec2 midpoint(const Vec2 &, const Vec2 &);
 Vec3 midpoint(const Vec3 &, const Vec3 &);
-Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3);
+Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
 
 // DCM-Quaternion-Spherical Conversions
 
@@ -254,6 +300,6 @@ decimal ArcSecToRad(decimal);
 
 // TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
-}
+}  // namespace found
 
 #endif

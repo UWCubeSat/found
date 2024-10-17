@@ -1,8 +1,11 @@
 #ifndef ORBIT_H
 #define ORBIT_H
 
-#include "attitude-utils.hpp"
-#include "style.hpp"
+#include <vector>
+
+#include "spatial/attitude-utils.hpp"
+#include "style/style.hpp"
+#include "pipeline/pipeline.hpp"
 
 namespace found {
 
@@ -11,22 +14,10 @@ namespace found {
  * algorithm finds the orbit path of the satellite from known position vectors relative to Earth
  * 
 */
-class OrbitDeterminationAlgorithm {
-public:
-
+class OrbitDeterminationAlgorithm : public Stage<std::vector<Vec3>, OrbitParams> {
+ public:
     // Destroys this
     virtual ~OrbitDeterminationAlgorithm();
-
-    /**
-     * Finds orbit parameters based off of given positional vectors
-     * 
-     * @param positions A list describing known points along satellite path
-     * 
-     * @return An OrbitParams, which describes the characteristics of the orbital path
-     * 
-     * @note See style.hpp for more detailed documentation of OrbitParams
-    */
-    virtual OrbitParams Run(std::vector<Vec3> &positions /*Params common to this type*/) = 0;
 };
 
 /**
@@ -36,8 +27,7 @@ public:
  * 
 */
 class EllipticalOrbitDerminationAlgorithm : public OrbitDeterminationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -51,8 +41,8 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    OrbitParams Run(std::vector<Vec3> &positions /*Params to override the base class one*/) override;
-private:
+    OrbitParams Run(const std::vector<Vec3> &positions /*Params to override the base class one*/) override;
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
@@ -63,8 +53,7 @@ private:
  * 
 */
 class PrecessionOrbitDeterminationAlgorithm : public OrbitDeterminationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -78,11 +67,11 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    OrbitParams Run(std::vector<Vec3> &positions /*Params to override the base class one*/) override;
-private:
+    OrbitParams Run(const std::vector<Vec3> &positions /*Params to override the base class one*/) override;
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 #endif

@@ -1,4 +1,5 @@
-#include "attitude-utils.hpp"
+
+#include "spatial/attitude-utils.hpp"
 
 #include <math.h>
 #include <assert.h>
@@ -83,7 +84,7 @@ Vec3 Quaternion::Rotate(const Vec3 &input) const {
 */
 decimal Quaternion::Angle() const {
     if (real <= -1) {
-        return 0; // 180*2=360=0
+        return 0;  // 180*2=360=0
     }
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan? (same as in AngleUnit)
     return (real >= 1 ? 0 : acos(real))*2;
@@ -148,7 +149,7 @@ EulerAngles Quaternion::ToSpherical() const {
     decimal ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
         ra += 2*M_PI;
-    decimal de = -asin(2*(-real*j-i*k)); // allow de to be positive or negaive, as is convention
+    decimal de = -asin(2*(-real*j-i*k));  // allow de to be positive or negaive, as is convention
     decimal roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
         roll += 2*M_PI;
@@ -226,7 +227,7 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
 /**
  * Converts an angle in radians to degrees
  * 
- * @param The radians of the angle
+ * @param rad The rad of the angle
  * 
  * @return The degrees of the angle
 */
@@ -237,7 +238,7 @@ decimal RadToDeg(decimal rad) {
 /**
  * Converts an angle in degrees to radians
  * 
- * @param The degrees of the angle
+ * @param deg The degrees of the angle
  * 
  * @return The radians of the angle
 */
@@ -314,6 +315,12 @@ decimal Vec2::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
+/**
+ * Normalizes this
+ * 
+ * @return The normalized vector
+ * of this
+ */
 Vec2 Vec2::Normalize() const {
     decimal mag = Magnitude();
     return {
@@ -338,7 +345,7 @@ decimal Vec3::operator*(const Vec3 &other) const {
     return x*other.x + y*other.y + z*other.z;
 }
 
-// Dot product (Scalar product)
+/// Dot product (Scalar product)
 decimal Vec2::operator*(const Vec2 &other) const {
     return x*other.x + y*other.y;
 }
@@ -429,7 +436,7 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
  *
  * @return The midpoint vector
 */
-Vec2 midpoint(const Vec2 &vec1, const Vec2 &vec2){
+Vec2 midpoint(const Vec2 &vec1, const Vec2 &vec2) {
     return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2};
 }
 
@@ -441,7 +448,7 @@ Vec2 midpoint(const Vec2 &vec1, const Vec2 &vec2){
  *
  * @return The midpoint vector
 */
-Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2){
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2) {
     return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2, (vec1.z + vec2.z)/2};
 }
 
@@ -454,7 +461,7 @@ Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2){
  *
  * @return The midpoint vector
 */
-Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2, const Vec3 &vec3){
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2, const Vec3 &vec3) {
     return {(vec1.x + vec2.x + vec3.x)/3, (vec1.y + vec2.y + vec3.y)/3, (vec1.z + vec2.z + vec3.z)/3};
 }
 
@@ -543,9 +550,9 @@ Vec3 Mat3::Column(int j) const {
 /**
  * Obtains one of the row vectors in this Matrix
  * 
- * @param j The row of the vector
+ * @param i The row of the vector
  * 
- * @return The vector at row j
+ * @return The vector at row i
 */
 Vec3 Mat3::Row(int i) const {
     return {At(i,0), At(i,1), At(i,2)};
@@ -617,7 +624,9 @@ decimal Mat3::Trace() const {
  * @return The determinant of this
 */
 decimal Mat3::Det() const {
-    return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) - (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) + (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
+    return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) -
+    (At(0,1) * (At(1,0)*At(2,2) - At(2,0)*At(1,2))) +
+    (At(0,2) * (At(1,0)*At(2,1) - At(2,0)*At(1,1)));
 }
 
 /**
@@ -639,9 +648,9 @@ Mat3 Mat3::Inverse() const {
 }
 
 /// 3x3 identity matrix
- const Mat3 kIdentityMat3 = {1,0,0,
-                     0,1,0,
-                     0,0,1};
+const Mat3 kIdentityMat3 = {1,0,0,
+                            0,1,0,
+                            0,0,1};
 
 
 ///////////////////////////////////
@@ -699,7 +708,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // Make a quaternion that rotates the reference frame X-axis into the dcm's X-axis, just like
     // the DCM itself does
     Vec3 oldXAxis = Vec3({1, 0, 0});
-    Vec3 newXAxis = dcm.Column(0); // this is where oldXAxis is mapped to
+    Vec3 newXAxis = dcm.Column(0);  // this is where oldXAxis is mapped to
     assert(abs(newXAxis.Magnitude()-1) < 0.001);
     Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     decimal xAlignAngle = AngleUnit(oldXAxis, newXAxis);
@@ -711,7 +720,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // we still need to take the cross product, because acos returns a value in [0,pi], and thus we
     // need to know which direction to rotate before we rotate. We do this by checking if the cross
     // product of old and new y axes is in the same direction as the new X axis.
-    bool rotateClockwise = oldYAxis.CrossProduct(newYAxis) * newXAxis > 0; // * is dot product
+    bool rotateClockwise = oldYAxis.CrossProduct(newYAxis) * newXAxis > 0;  // * is dot product
     Quaternion yAlign({1, 0, 0}, AngleUnit(oldYAxis, newYAxis) * (rotateClockwise ? 1 : -1));
 
     // We're done! There's no need to worry about the Z-axis because the handed-ness of the
@@ -802,7 +811,7 @@ EulerAngles Attitude::ToSpherical() const {
  * 
  * @return The number of bytes that a Vec3 occupies
 */
-long SerializeLengthVec3() {
+int64_t SerializeLengthVec3() {
     return sizeof(decimal)*3;
 }
 
@@ -820,7 +829,7 @@ long SerializeLengthVec3() {
  * data into a buffer.
 */
 void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
-    decimal *fBuffer = (decimal *)buffer;
+    decimal *fBuffer = reinterpret_cast<decimal *>(buffer);
     *fBuffer++ = vec.x;
     *fBuffer++ = vec.y;
     *fBuffer = vec.z;
@@ -842,11 +851,11 @@ void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
 */
 Vec3 DeserializeVec3(const unsigned char *buffer) {
     Vec3 result;
-    const decimal *fBuffer = (decimal *)buffer;
+    const decimal *fBuffer = reinterpret_cast<decimal *>(const_cast<unsigned char *>(buffer));
     result.x = *fBuffer++;
     result.y = *fBuffer++;
     result.z = *fBuffer;
     return result;
 }
 
-}
+}  // namespace found

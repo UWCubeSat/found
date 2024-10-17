@@ -1,8 +1,9 @@
 #ifndef VELOCITY_H
 #define VELOCITY_H
 
-#include "style.hpp"
-#include "attitude-utils.hpp"
+#include "style/style.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "pipeline/pipeline.hpp"
 
 namespace found {
 
@@ -13,21 +14,10 @@ namespace found {
  * position of the satellite at any time
  * 
 */
-class KinematicProfilingAlgorithm {
-public:
-
+class KinematicProfilingAlgorithm : public Stage<OrbitParams, KinematicPrediction> {
+ public:
     // Destroys this
     virtual ~KinematicProfilingAlgorithm();
-
-    /**
-     * Derives the kinematic profile of the satellite
-     * 
-     * @param orbit The projected path of the satellite
-     * 
-     * @return A KinematicPrediction that describes the kinematic profile of the satellite
-     * 
-    */
-    virtual KinematicPrediction Run(OrbitParams &orbit /*Params common to this type*/) = 0;
 };
 
 /**
@@ -39,8 +29,7 @@ public:
  * 
 */
 class EulerianKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -54,8 +43,8 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
-private:
+    KinematicPrediction Run(const OrbitParams &orbit /*Params to override the base class one*/) override;
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
@@ -68,8 +57,7 @@ private:
  * 
 */
 class KeplerKinematicProfilingAlgorithm : public KinematicProfilingAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -83,12 +71,12 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    KinematicPrediction Run(OrbitParams &orbit /*Params to override the base class one*/) override;
-private:
+    KinematicPrediction Run(const OrbitParams &orbit /*Params to override the base class one*/) override;
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 
 #endif

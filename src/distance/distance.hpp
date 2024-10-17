@@ -1,9 +1,10 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include "style.hpp"
-#include "attitude-utils.hpp"
-#include "camera.hpp"
+#include "style/style.hpp"
+#include "pipeline/pipeline.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "spatial/camera.hpp"
 
 namespace found {
 
@@ -11,23 +12,12 @@ namespace found {
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
 */
-class DistanceDeterminationAlgorithm {
-public:
-
+class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
+ public:
+    // Constructs this
+    DistanceDeterminationAlgorithm() = default;
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm() {};
-    
-    /**
-     * Computes the distance of the satellite from Earth based on an image of Earth
-     * 
-     * @param image The image of Earth, represented as a character array with values from 0-255
-     * that represents the black/white color of each pixel
-     * @param p The Points that we find on Earth's horizon with respect to the image coordinate
-     * system
-     * 
-     * @return The distance of the satellite from Earth
-    */
-    virtual distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight /*More go here*/) = 0;
+    virtual ~DistanceDeterminationAlgorithm() = default;
 };
 
 /**
@@ -37,15 +27,24 @@ public:
  * @note This class assumes that Earth is a perfect sphere
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
-public:
-    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {};
-    ~SphericalDistanceDeterminationAlgorithm() {};
-    
+ public:
+    /**
+     * Creates a SphericalDeterminationAlgorithm, which deduces
+     * the Position vector of a sattelite from Earth by modeling
+     * Earth as a sphere
+     * 
+     * @param radius The radius of Earth
+     * @param cam The camera used to capture the picture of Earth
+     */
+    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {}
+    ~SphericalDistanceDeterminationAlgorithm() {}
+
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight/*More go here*/) override;
-private:
+    PositionVector Run(const Points &p) override;
+
+ private:
     // Fields specific to this algorithm, and helper methods
     /**
      *Returns the center of earth as a 3d Vector
@@ -76,16 +75,6 @@ private:
     decimal getDistance(decimal r);
 
     /**
-     * Solves the whole thing, calculating the final distance from the earth as a 3d Vector
-     * 
-     * @param pts The points on the image (Not used)
-     * @param R The given radius (Currently not used, Radius is set to 6378.0)
-     * 
-     * @return The distance from earth as a 3d Vector
-    */
-    distFromEarth solve(Points& pts, int R);
-    
-    /**
      * cam_ field instance describes the camera settings used for the photo taken
     */
     Camera cam_;
@@ -94,7 +83,6 @@ private:
      * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
     */
     float radius_;
-
 };
 
 /**
@@ -104,19 +92,23 @@ private:
  * @note This class assumes that Earth is a perfect ellipse
 */
 class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
-public:
-    EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
+ public:
+    /**
+     * Initializes an EllipticDistanceDeterminationAlgorithm
+     * 
+     * @param radius The distance from Earth to use
+     */
+    explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    distFromEarth Run(char* image, Points &p, int imageWidth, int imageHeight/*More go here*/) override;
-private:
-    //Fields specific to this algorithm, and helper methods
+    * Place documentation here. Press enter to automatically make a new line
+    * */
+    PositionVector Run(const Points &p) override;
+ private:
+    // Fields specific to this algorithm, and helper methods
 };
 
-}
+}  // namespace found
 
-
-#endif
+#endif  // DISTANCE_H

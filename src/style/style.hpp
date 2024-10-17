@@ -3,34 +3,43 @@
  * 
 */
 
-#ifndef STYLE_H_
-#define STYLE_H_
+#ifndef STYLE_H
+#define STYLE_H
 
 #include <vector>
 #include <functional>
+#include <utility>
 
-#include "attitude-utils.hpp"
-
+#include "spatial/attitude-utils.hpp"
 
 namespace found {
 
-// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set 
-// to a vector of 2D points on the image, according to image coordinate systems
+/// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
+/// to a vector of 2D points on the image, according to image coordinate systems
 typedef std::vector<Vec2> Points;
 
-// The output for Distance Determination Algorithms (distance.hpp/cpp). Currently 
-// set to a 3d Vector that represents the distance from Earth
-typedef Vec3 distFromEarth;
-
-// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
-// to a 3D Vector that represents the satellite's position relative to Earth's
-// coordinate system.
+/// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
+/// to a 3D Vector that represents the satellite's position relative to Earth's
+/// coordinate system.
 typedef Vec3 PositionVector;
 
-struct OrbitParams {
+/**
+ * Represents an image
+ */
+struct Image {
+    /// The image contents
+    unsigned char *image;
+    /// The image {width, height, channels}
+    int dimensions[3];
+};
 
-    // The initial position of the satellite with respect to Earth 
-    // (at t = 0 and theta = 0)
+/**
+ * OrbitParams defines the orbital
+ * parameters of a given orbit
+ */
+struct OrbitParams {
+    /// The initial position of the satellite with respect to Earth
+    /// (at t = 0 and theta = 0)
     Vec3 initialCondition;
 
     /**
@@ -89,16 +98,15 @@ struct OrbitParams {
      * theta revolutions
      * */
     decimal (* outPlaneRotation)(int theta);
-
 };
 
-// The output for Orbit Trajectory Calculation Algorithms. Currently set to
-// a struct that holds the orbit equations.
+/// The output for Orbit Trajectory Calculation Algorithms. Currently set to
+/// a struct that holds the orbit equations.
 typedef struct OrbitParams OrbitParams;
 
-// The output for Kinematic Profile Completion. Currently set to two functions that
-// will tell you the position and velocity of the satellite at any given time
+/// The output for Kinematic Profile Completion. Currently set to two functions that
+/// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
-}
+}  // namespace found
 
 #endif  // STYLE_H_

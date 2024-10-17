@@ -1,8 +1,9 @@
 #ifndef VECTORIZE_H
 #define VECTORIZE_H
 
-#include "attitude-utils.hpp"
-#include "style.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "style/style.hpp"
+#include "pipeline/pipeline.hpp"
 
 namespace found {
 
@@ -11,21 +12,12 @@ namespace found {
  * finds the position from Earth with respect to its center with a 3D Vector (Vec3).
  * 
 */
-class VectorGenerationAlgorithm {
-public:
-
+class VectorGenerationAlgorithm : public Stage<distFromEarth, PositionVector> {
+ public:
+    // Constructs this
+    VectorGenerationAlgorithm() = default;
     // Destroys this
     virtual ~VectorGenerationAlgorithm();
-
-    /**
-     * Finds the vector of the satellite with respect to Earth's center
-     * 
-     * @param x_E The distance from Earth
-     * 
-     * @return A PositionVector that represents the 3D Vector of the satellite relative to
-     * Earth's center
-    */
-    virtual PositionVector Run(distFromEarth x_E /*Params common to this type*/) = 0;
 };
 
 /**
@@ -34,15 +26,15 @@ public:
  * 
 */
 class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
-public:
-
+ public:
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The orientation of the satellite as determined by LOST
     */
-    LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/) : orientation(orientation) {};
-    
+    explicit LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/)
+        : orientation(orientation) {}
+
     // Destroys this
     ~LOSTVectorGenerationAlgorithm();
 
@@ -55,18 +47,22 @@ public:
      * @return A PositionVector that represents the 3D Vector of the satellite relative to
      * Earth's center
     */
-    PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
-private:
+    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
+
+ private:
     // Fields specific to this algorithm go here, and helper methods
 
     // Orientation from LOST
     Vec3 orientation;
 };
 
-
+/**
+ * FeatureDetectionVectorGenerationAlgorithm figures out
+ * the distance vector of the satellite relative to earth
+ * by identifying features on earth.
+ */
 class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
-public:
-
+ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
@@ -80,11 +76,11 @@ public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    PositionVector Run(distFromEarth x_E /*Params to override the base class one*/) override;
-private:
+    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
+ private:
     // Fields specific to this algorithm go here, and helper methods
 };
 
-}
+}  // namespace found
 
 #endif
