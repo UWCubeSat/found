@@ -1,0 +1,11 @@
+<map id="found::OrbitDeterminationAlgorithm" name="found::OrbitDeterminationAlgorithm">
+<area shape="rect" id="Node000001" title=" " alt="" coords="436,37,629,77"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1EllipticalOrbitDerminationAlgorithm.html" title=" " alt="" coords="691,5,927,45"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="643,42,690,36,691,42,643,47"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1PrecessionOrbitDeterminationAlgorithm.html" title=" " alt="" coords="677,69,940,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="643,67,678,71,677,77,643,73"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Stage.html" title=" " alt="" coords="161,37,388,77"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="402,55,436,55,436,60,402,60"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Action.html" title=" " alt="" coords="5,45,113,70"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="127,55,161,55,161,60,127,60"/>
+</map>
