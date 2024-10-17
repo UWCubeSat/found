@@ -106,4 +106,4 @@ decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixel
 
 }  // namespace found
 
-#endif
+#endif  // CAMERA_H

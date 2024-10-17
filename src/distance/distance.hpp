@@ -3,6 +3,8 @@
 
 #include "style/style.hpp"
 #include "pipeline/pipeline.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "spatial/camera.hpp"
 
 namespace found {
 
@@ -10,12 +12,12 @@ namespace found {
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
 */
-class DistanceDeterminationAlgorithm : public Stage<Points, distFromEarth> {
+class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
  public:
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm();
+    virtual ~DistanceDeterminationAlgorithm() = default;
 };
 
 /**
@@ -26,20 +28,61 @@ class DistanceDeterminationAlgorithm : public Stage<Points, distFromEarth> {
 */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
-   /**
-    * Initializes this SphericalDistanceDeterminationAlgorithm
-    * 
-    * @param radius The radius of Earth to use
-    */
-    explicit SphericalDistanceDeterminationAlgorithm(float radius);
-    ~SphericalDistanceDeterminationAlgorithm();
+    /**
+     * Creates a SphericalDeterminationAlgorithm, which deduces
+     * the Position vector of a sattelite from Earth by modeling
+     * Earth as a sphere
+     * 
+     * @param radius The radius of Earth
+     * @param cam The camera used to capture the picture of Earth
+     */
+    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {}
+    ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    distFromEarth Run(const Points &p) override;
+    PositionVector Run(const Points &p) override;
+
  private:
     // Fields specific to this algorithm, and helper methods
+    /**
+     *Returns the center of earth as a 3d Vector
+     *
+     * @param spats The normalized spatial coordinates used to find the center 
+     * 
+     * @return The center of earth as a 3d Vector
+    */
+    Vec3 getCenter(Vec3* spats);
+
+    /**
+     * Returns the radius of the calculated "earth" (normalized)
+     * 
+     * @param spats The normalized spatial coordinates
+     * @param center The center of the earth as a 3d Vector
+     * 
+     * @return The radius of earth normalized
+    */
+    decimal getRadius(Vec3* spats, Vec3 center);
+
+    /**
+     * Returns the scaled distance from earth
+     * 
+     * @param r The normalized radius
+     * 
+     * @return The distance from earth as a Scalar
+    */
+    decimal getDistance(decimal r);
+
+    /**
+     * cam_ field instance describes the camera settings used for the photo taken
+    */
+    Camera cam_;
+
+    /**
+     * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
+    */
+    float radius_;
 };
 
 /**
@@ -55,17 +98,17 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * 
      * @param radius The distance from Earth to use
      */
-    explicit EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
+    explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
     /**
     * Place documentation here. Press enter to automatically make a new line
     * */
-    distFromEarth Run(const Points &p) override;
+    PositionVector Run(const Points &p) override;
  private:
     // Fields specific to this algorithm, and helper methods
 };
 
 }  // namespace found
 
-#endif
+#endif  // DISTANCE_H
