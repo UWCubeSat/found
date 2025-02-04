@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 #include <utility>
 #include <iomanip>
 
@@ -35,15 +35,29 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     Vec3 diff1 = std::move(spats[1] - spats[0]);
     Vec3 diff2 = std::move(spats[2] - spats[1]);
 
+    // Cross product to find the normal vector for points on earth
     Vec3 circleN = std::move(diff1.CrossProduct(diff2));
     Vec3 circlePt = spats[0];
 
+    // Mid point between 2 vectors
     Vec3 mid1 = std::move(midpoint(spats[0], spats[1]));
     Vec3 mid2 = std::move(midpoint(spats[1], spats[2]));
 
     Vec3 mid1N = std::move(diff1);
     Vec3 mid2N = std::move(diff2);
 
+    /**
+     * CirclePt is a vector that points to a point on the plane. We also know the center vector should point to a point on the plane.
+     * So, we get (circlePt - center) * circleN = 0. This is equivalent to (center * circleN) = (circlePt * circleN)
+     * 
+     * We have (center - mid1/mid2) gives us the vector perpendicular to the mid1N/mid2N vector. Hence,
+     * (center - mid1)*mid1N = 0. This becomes (mid1N * center) = (mid1N * mid1). (This is the same for mid2)
+     * So we have:
+     * circleN * center = circleN * circlePt
+     * mid1N * center = mid1N * mid1
+     * mid2N * center = mid2N * mid2
+     * This becomes a systems of linear equation
+     */
     Mat3 matrix;
     matrix = {circleN.x, circleN.y, circleN.z, mid1N.x, mid1N.y,
               mid1N.z, mid2N.x, mid2N.y, mid2N.z};

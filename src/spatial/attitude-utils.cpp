@@ -650,7 +650,7 @@ Mat3 Mat3::Inverse() const {
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
-                            0,0,1};
+                            0,0,1};  // NOLINT
 
 
 ///////////////////////////////////
@@ -662,8 +662,7 @@ const Mat3 kIdentityMat3 = {1,0,0,
  * 
  * @param quat The quaternion to base the attitude off of  
 */
-Attitude::Attitude(const Quaternion &quat)
-    : quaternion(quat), type(QuaternionType) {}
+Attitude::Attitude(const Quaternion &quat) : quaternion(quat), type(QuaternionType) {}
 
 /**
  * Constructs an Attitude object from a Direction Cosine Matrix (A
@@ -671,8 +670,7 @@ Attitude::Attitude(const Quaternion &quat)
  * 
  * @param matrix The matrix holding the direction cosines
 */
-Attitude::Attitude(const Mat3 &matrix)
-    : dcm(matrix), type(DCMType) {}
+Attitude::Attitude(const Mat3 &matrix) : dcm(matrix), type(DCMType) {}
 
 /**
  * Creates a Direction Cosine Matrix (DCM) off of a Quaternion.

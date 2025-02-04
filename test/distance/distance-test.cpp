@@ -53,7 +53,7 @@ std::ostream &operator<<(std::ostream &stream, const Vec3 &vector) {
 
 // Base Case I: The image captured contains an edge centered about the image
 
-TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarth) {
+TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX) {
     // Step I: Pick some distance (km) and a Camera
     decimal x_E = RADIUS_OF_EARTH + 1000;
     int imageWidth = 1024;
