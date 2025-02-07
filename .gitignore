@@ -12,3 +12,6 @@ googletest*
 # Don't include python stuff
 **__pycache__
 **.pytest_cache
+
+# Don't include personally generated images
+**.png

@@ -14,7 +14,6 @@ class Camera(CoordinateSystem):
         y_resolution: float,
     ):
         super().__init__(position, orientation)
-        print(*self.basis)
         self.focal_length = focal_length
         self.pixel_length = pixel_size
         self.x_resolution = x_resolution

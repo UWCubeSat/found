@@ -17,7 +17,7 @@ class Attitude:
         self.roll = converter(roll)
 
     def __str__(self):
-        return f"({self.right_ascension}, {self.declination}, {self.roll})"
+        return f"({self.right_ascension:.2f}, {self.declination:.2f}, {self.roll:.2f})"
 
 
 class Vector:
