@@ -6,3 +6,7 @@ build
 
 # Don't include google test stuff
 googletest*
+
+# Don't include python stuff
+**__pycache__
+**.pytest_cache
