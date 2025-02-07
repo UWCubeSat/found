@@ -65,7 +65,7 @@ LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
-CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
+CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) -fsanitize=address
 LDFLAGS := # Any dynamic libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 

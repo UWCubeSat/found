@@ -206,7 +206,7 @@ TEST_F(PipelineTest, TestPipelineBeginningPipelineInPipeline) {
 TEST_F(PipelineTest, TestPipelineMiddlePipelineInPipeline) {
     INIT_CHAR_TO_DOUBLE_PIPELINE(outerPipeline, stages);
 
-    int test_set = 4;
+    int test_set = 2;
 
     std::unique_ptr<MockStage<char, int>> outerStage1(new MockStage<char, int>());
     EXPECT_CALL(*outerStage1, Run(characters[test_set]))
