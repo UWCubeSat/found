@@ -6,6 +6,8 @@ build
 
 # Don't include google test stuff
 googletest*
+**.tar.gz
+.cache
 
 # Don't include python stuff
 **__pycache__

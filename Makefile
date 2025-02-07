@@ -3,6 +3,7 @@ SRC_DIR := src
 TEST_DIR := test
 LIB_DIR := libraries
 BUILD_DIR := build
+CACHE_DIR := .cache
 
 # Define directory with binaries
 BIN_DIR := $(BUILD_DIR)/bin
@@ -32,6 +33,7 @@ BUILD_DOCUMENTATION_COVERAGE_DIR := $(BUILD_DOCUMENTATION_DIR)/coverage
 GTEST := googletest
 GTEST_VERSION := release-1.12.1
 GTEST_URL := https://github.com/google/$(GTEST)/archive/$(GTEST_VERSION).tar.gz
+GTEST_ARTIFACT := $(CACHE_DIR)/$(GTEST_VERSION).tar.gz
 GTEST_DIR := $(BUILD_LIBRARY_TEST_DIR)/$(GTEST)-$(GTEST_VERSION)
 GTEST_BUILD_DIR := $(GTEST_DIR)/build
 
@@ -61,11 +63,11 @@ TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test sui
 LIBS := $(SRC_LIBS)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
-COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
+COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
 CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
 LDFLAGS := # Any dynamic libraries go here
-LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
+LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
 # Targets
 COMPILE_SETUP_TARGET := compile_setup
@@ -78,6 +80,7 @@ GOOGLE_STYLECHECK_TEST_TARGET := google_stylecheck_test
 PRIVATE_TARGET := private
 DOXYGEN_TARGET := doxygen_generate
 CLEAN_TARGET := clean
+CLEAN_ALL_TARGET := clean_all
 
 # Options configurations
 ifdef DEBUG
@@ -144,32 +147,33 @@ $(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY
 $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
+	mkdir -p $(CACHE_DIR)
 test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
 
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(TEST_LIBS) $(COVERAGE_FLAGS) $(CXXFLAGS_TEST) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
-$(GTEST_DIR): $(BUILD_DIR)
-	wget $(GTEST_URL)
-	tar -xzf $(GTEST_VERSION).tar.gz -C $(BUILD_LIBRARY_TEST_DIR)
-	rm -f $(GTEST_VERSION).tar.gz
+$(GTEST_DIR): $(BUILD_DIR) $(GTEST_ARTIFACT)
+	tar -xzf $(GTEST_ARTIFACT) -C $(BUILD_LIBRARY_TEST_DIR)
 	mkdir -p $(GTEST_BUILD_DIR)
 	cd $(GTEST_BUILD_DIR) && cmake .. && make
+$(GTEST_ARTIFACT):
+	wget $(GTEST_URL) -P $(CACHE_DIR)
 test_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_TARGET))
 
 # The coverage target
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
-	valgrind ./$(TEST_BIN)
+	./$(TEST_BIN)
 	gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
@@ -195,7 +199,12 @@ $(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET)
 	chmod +rwx doxygen.sh
 	./doxygen.sh
 
-# The clean target (not in default target)
+# The clean target (not in default target, cleans just the build folder)
 $(CLEAN_TARGET):
 	$(call PRINT_TARGET_HEADER, $(CLEAN_TARGET))
-	rm -rf build
+	rm -rf $(BUILD_DIR)
+
+# The clean_all target (cleans the build and cache folders)
+$(CLEAN_ALL_TARGET):
+	$(call PRINT_TARGET_HEADER, $(CLEAN_ALL_TARGET))
+	rm -rf $(BUILD_DIR) $(CACHE_DIR)
