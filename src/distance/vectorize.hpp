@@ -12,7 +12,7 @@ namespace found {
  * finds the position from Earth with respect to its center with a 3D Vector (Vec3).
  * 
 */
-class VectorGenerationAlgorithm : public Stage<distFromEarth, PositionVector> {
+class VectorGenerationAlgorithm : public Stage<PositionVector, PositionVector> {
  public:
     // Constructs this
     VectorGenerationAlgorithm() = default;
@@ -30,10 +30,11 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param orientation The orientation of the satellite as determined by LOST
+     * @param refAttitude The orientation of the satellite as determined by LOST
+     * @param difference The difference of angle between LOST and FOUND cameras
+     * 
     */
-    explicit LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/)
-        : orientation(orientation) {}
+    explicit LOSTVectorGenerationAlgorithm(Attitude refAttitude, Attitude difference);
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm();
@@ -42,44 +43,45 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
      * to Earth's center using information from LOST
      * 
-     * @param x_E The distance from Earth
+     * @param v_E A vector from the Satellite to Earth.
      * 
      * @return A PositionVector that represents the 3D Vector of the satellite relative to
      * Earth's center
     */
-    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
+    PositionVector Run(const PositionVector& v_E) override;
 
  private:
-    // Fields specific to this algorithm go here, and helper methods
-
     // Orientation from LOST
-    Vec3 orientation;
+    Attitude refAttitude;
+    Attitude difference;
 };
 
-/**
- * FeatureDetectionVectorGenerationAlgorithm figures out
- * the distance vector of the satellite relative to earth
- * by identifying features on earth.
- */
-class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
- public:
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    FeatureDetectionVectorGenerationAlgorithm(/*Params to initialze fields for this object*/);
+// TODO: IMPLEMENT THE FOLLOWING
 
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    ~FeatureDetectionVectorGenerationAlgorithm();
+// /**
+//  * FeatureDetectionVectorGenerationAlgorithm figures out
+//  * the distance vector of the satellite relative to earth
+//  * by identifying features on earth.
+//  */
+// class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
+//  public:
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * */
+//     FeatureDetectionVectorGenerationAlgorithm(/*Params to initialze fields for this object*/);
 
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
- private:
-    // Fields specific to this algorithm go here, and helper methods
-};
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * */
+//     ~FeatureDetectionVectorGenerationAlgorithm();
+
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * */
+//     PositionVector Run(const PositionVector &x_E /*Params to override the base class one*/) override;
+//  private:
+//     // Fields specific to this algorithm go here, and helper methods
+// };
 
 }  // namespace found
 
