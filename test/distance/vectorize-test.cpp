@@ -18,10 +18,10 @@ class VectorizeTest: public testing::Test {
  * The result should match the input vector.
  */
 TEST_F(VectorizeTest, IdentityTest) {
-    Vec3 result = lvga1.Run(test_vector_1);
-    ASSERT_TRUE(result.x == -test_vector_1.x);
-    ASSERT_TRUE(result.y == -test_vector_1.y);
-    ASSERT_TRUE(result.z == -test_vector_1.z);
+    Vec3 result = lvga_1.Run(test_vector_1);
+    ASSERT_TRUE(std::fabs(result.x + test_vector_1.x) <= 0.0001);
+    ASSERT_TRUE(std::fabs(result.y + test_vector_1.y) <= 0.0001);
+    ASSERT_TRUE(std::fabs(result.z + test_vector_1.z) <= 0.0001);
 }
 
 }  // namespace found

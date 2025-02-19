@@ -29,7 +29,7 @@ LOSTVectorGenerationAlgorithm::~LOSTVectorGenerationAlgorithm() {}
 PositionVector LOSTVectorGenerationAlgorithm::Run(const PositionVector& v_E) {
       // Extract Euler angles from attitudes
       EulerAngles ref_euler = refAttitude.ToSpherical();
-      EulerAngles dif_euler = refAttitude.ToSpherical();
+      EulerAngles dif_euler = difference.ToSpherical();
       // Combine angles to get quaternion
       decimal ra_combined = ref_euler.ra + dif_euler.ra;
       decimal de_combined = ref_euler.de + dif_euler.de;
