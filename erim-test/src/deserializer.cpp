@@ -2,37 +2,46 @@
 #include <fstream>
 #include <iostream>
 
+// Deserialize DataFile from a file
 DataFile deserialize(const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "Error opening file for reading: " << filename << std::endl;
-        return {};
+    std::ifstream inFile(filename, std::ios::binary);
+    if (!inFile) {
+        throw std::runtime_error("Failed to open file for reading");
     }
 
     DataFile data;
 
-    // Read Magic Number
-    file.read(data.magic, sizeof(data.magic));
+    // Read the header
+    inFile.read(reinterpret_cast<char*>(&data.header), sizeof(data.header));
 
-    // Read Version
-    file.read(reinterpret_cast<char*>(&data.version), sizeof(data.version));
-
-    // Read Checksum
-    file.read(reinterpret_cast<char*>(&data.checksum), sizeof(data.checksum));
-
-    // Read Coordinate System
-    file.read(data.coord_system, sizeof(data.coord_system));
-
-    // Read Number of Positions
-    uint32_t numPositions;
-    file.read(reinterpret_cast<char*>(&numPositions), sizeof(numPositions));
-
-    // Read Position Vectors
-    data.positions.resize(numPositions);
-    for (uint32_t i = 0; i < numPositions; i++) {
-        file.read(reinterpret_cast<char*>(&data.positions[i]), sizeof(PositionVector));
+    // Validate the header CRC
+    uint32_t expected_crc = calculateCRC32(&data.header, sizeof(data.header) - sizeof(data.header.crc));
+    if (data.header.crc != expected_crc) {
+        throw std::runtime_error("Header CRC validation failed: Corrupted file");
     }
 
-    file.close();
+    // Read the positions
+    data.positions.resize(data.header.num_positions);
+    inFile.read(reinterpret_cast<char*>(data.positions.data()), data.positions.size() * sizeof(Position));
+
     return data;
+}
+
+// Read only the header from a file
+DataFileHeader readHeader(const std::string& filename) {
+    std::ifstream inFile(filename, std::ios::binary);
+    if (!inFile) {
+        throw std::runtime_error("Failed to open file for reading");
+    }
+
+    DataFileHeader header;
+    inFile.read(reinterpret_cast<char*>(&header), sizeof(header));
+
+    // Validate the header CRC
+    uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    if (header.crc != expected_crc) {
+        throw std::runtime_error("Header CRC validation failed: Corrupted file");
+    }
+
+    return header;
 }
