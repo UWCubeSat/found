@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include <math.h>
+#include <cmath>
 
 #include "src/style/style.hpp"
 #include "src/spatial/attitude-utils.hpp"
