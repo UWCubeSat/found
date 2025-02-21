@@ -22,10 +22,10 @@ PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     Vec3 center = std::move(getCenter(spats));
 
     // Obtain the radius of the projected circle
-    decimal r = getRadius(spats, center);
+    PreciseDecimal r = getRadius(spats, center);
 
     // Obtain the distance from earth
-    decimal h = getDistance(r);
+    PreciseDecimal h = getDistance(r);
 
     // You have to normalize the center vector here
     return center.Normalize() * h;
@@ -62,9 +62,9 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     matrix = {circleN.x, circleN.y, circleN.z, mid1N.x, mid1N.y,
               mid1N.z, mid2N.x, mid2N.y, mid2N.z};
 
-    decimal alpha = circleN*circlePt;
-    decimal beta = mid1N*mid1;
-    decimal gamma = mid2N*mid2;
+    PreciseDecimal alpha = circleN*circlePt;
+    PreciseDecimal beta = mid1N*mid1;
+    PreciseDecimal gamma = mid2N*mid2;
 
     Vec3 y = {alpha, beta, gamma};
 
@@ -73,12 +73,12 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     return center;
 }
 
-decimal SphericalDistanceDeterminationAlgorithm::getRadius(Vec3* spats,
+PreciseDecimal SphericalDistanceDeterminationAlgorithm::getRadius(Vec3* spats,
 Vec3 center) {
     return Distance(spats[0], center);
 }
 
-decimal SphericalDistanceDeterminationAlgorithm::getDistance(decimal r) {
+PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r) {
     return radius_*sqrt(r * r + 1)/r;
 }
 

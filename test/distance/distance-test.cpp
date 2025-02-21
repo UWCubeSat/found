@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <math.h>
 
 #include "src/style/style.hpp"
 #include "src/spatial/attitude-utils.hpp"
@@ -22,10 +22,10 @@ using found::SphericalDistanceDeterminationAlgorithm;
 /* Common Constants */
 
 
-// Radius of Earth (km)
-#define RADIUS_OF_EARTH 6378.0
+// Radius of Earth (m)
+#define RADIUS_OF_EARTH 6378000.0
 // Default DoubleEquals Tolerance (So big because of floating point problems)
-#define DEFAULT_TOLERANCE 1
+#define DEFAULT_TOLERANCE 0.01
 
 
 /* Test Macros */
@@ -54,8 +54,8 @@ std::ostream &operator<<(std::ostream &stream, const Vec3 &vector) {
 // Base Case I: The image captured contains an edge centered about the image
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) {
-    // Step I: Pick some distance (km) and a Camera
-    decimal x_E = RADIUS_OF_EARTH + 1000;
+    // Step I: Pick some distance (m) and a Camera
+    decimal x_E = RADIUS_OF_EARTH + 1000000;
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, imageWidth, imageHeight);  // Focal length of 12 m
@@ -89,8 +89,8 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) {
 }
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
-    // Step I: Pick some distance (km) and a Camera
-    decimal x_E = RADIUS_OF_EARTH + 1000;
+    // Step I: Pick some distance (m) and a Camera
+    decimal x_E = RADIUS_OF_EARTH + 1000000;
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, imageWidth, imageHeight);  // Focal length of 12 mm
@@ -104,12 +104,12 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
     // b) Find the distance away from each projection point
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
     decimal centerMag = static_cast<decimal>(p * cos(alpha));
-    decimal projectionRadiusMag = static_cast<decimal>(-p * sin(alpha));
+    decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
 
     // c) Use 3 easy projections
-    Vec3 p1 = {centerMag, projectionRadiusMag * cos((decimal) 0.1), projectionRadiusMag * -sin((decimal) 0.1)};
+    Vec3 p1 = {centerMag, projectionRadiusMag * std::cos(0.1), projectionRadiusMag * std::sin(0.1)};
     Vec3 p2 = {centerMag, projectionRadiusMag, 0};
-    Vec3 p3 = {centerMag, projectionRadiusMag * cos((decimal) 0.1), projectionRadiusMag * sin((decimal) 0.1)};
+    Vec3 p3 = {centerMag, projectionRadiusMag * std::cos(-0.1), projectionRadiusMag * std::sin(-0.1)};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),

@@ -63,7 +63,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * 
      * @return The radius of earth normalized
     */
-    decimal getRadius(Vec3* spats, Vec3 center);
+    PreciseDecimal getRadius(Vec3* spats, Vec3 center);
 
     /**
      * Returns the scaled distance from earth
@@ -72,7 +72,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * 
      * @return The distance from earth as a Scalar
     */
-    decimal getDistance(decimal r);
+    PreciseDecimal getDistance(PreciseDecimal r);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken

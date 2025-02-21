@@ -14,6 +14,9 @@
 
 namespace found {
 
+/// Alias for very precise floating point numbers.
+typedef __float128 PreciseDecimal;
+
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 /// to a vector of 2D points on the image, according to image coordinate systems
 typedef std::vector<Vec2> Points;
