@@ -7,7 +7,7 @@ namespace found {
 
 /// Alias for floating point numbers. Used for controlling
 /// floating-point type memory usage throughout the program
-typedef float decimal;
+typedef double decimal;
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
@@ -269,6 +269,11 @@ class Attitude {
     Mat3 dcm;  // direction cosine matrix
     AttitudeType type;
 };
+
+// Vector operations
+Vec2 midpoint(const Vec2 &, const Vec2 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
 
 // DCM-Quaternion-Spherical Conversions
 
