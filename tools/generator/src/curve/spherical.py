@@ -1,7 +1,7 @@
 import numpy as np
 
 from spatial.coordinate import Vector
-from common.constants import EARTH_RADIUS
+from common.constants import EARTH_RADIUS, NUM_EARTH_POINTS
 from common.eval import float_equals
 from .curve import CurveProvider
 
@@ -27,7 +27,7 @@ class SphericalCurveProvider(CurveProvider):
         self.radius = self.radius.normalize() * radius_len
         self.radius2 = self.center.cross(self.radius).normalize() * radius_len
 
-    def generate_points(self, num_points: int = 360 * 10):
+    def generate_points(self, num_points: int = NUM_EARTH_POINTS):
         datapoints = np.linspace(0, 2 * np.pi, num_points)
         return self.center, [
             self.center + self.radius * np.sin(t) + self.radius2 * np.cos(t)

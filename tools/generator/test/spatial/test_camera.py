@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 
-from spatial.camera import Camera
-from spatial.coordinate import Attitude, Vector
+from src.spatial.camera import Camera
+from src.spatial.coordinate import Attitude, Vector
 
 
 class CameraTest(unittest.TestCase):

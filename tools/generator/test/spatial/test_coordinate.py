@@ -1,4 +1,4 @@
-from spatial.coordinate import Vector, CoordinateSystem, Attitude, CELESTIAL_SYSTEM
+from src.spatial.coordinate import Vector, CoordinateSystem, Attitude, CELESTIAL_SYSTEM
 import unittest
 import numpy as np
 

@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
 
-from common.constants import EARTH_RADIUS
-from spatial.coordinate import Attitude, Vector, CoordinateSystem
-from curve.spherical import SphericalCurveProvider
+from src.common.constants import EARTH_RADIUS
+from src.spatial.coordinate import Attitude, Vector, CoordinateSystem
+from src.curve.spherical import SphericalCurveProvider
 
 
 class SphericalGeneratorTest(unittest.TestCase):
