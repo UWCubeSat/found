@@ -8,6 +8,18 @@ from src.spatial.coordinate import Attitude, Vector
 class CameraTest(unittest.TestCase):
     """Camera Vector Transformation"""
 
+    def test_45_transform(self):
+        attitude = Attitude(45, 0, 0, radians=False)
+        position = Vector(0, 0, 0)
+        RESOLUTION = 1024
+        camera = Camera(position, attitude, 1, 1, RESOLUTION, RESOLUTION)
+        print(camera.to_camera_space([Vector(np.sqrt(2) / 2, np.sqrt(2) / 2, 0)]))
+        print(*camera.basis)
+        self.assertEqual(
+            Vector(1, 0, 0),
+            camera.to_camera_space([Vector(2**0.5 / 2, 2**0.5 / 2, 0)]),
+        )
+
     def test_random_transformations(self):
         TRANSFORMATION_TESTS = 100
         NUM_POINTS = 50
@@ -41,7 +53,7 @@ class CameraTest(unittest.TestCase):
                 Vector(numpy=expected_point)
                 for expected_point in (
                     np.linalg.solve(
-                        np.array([axis.vector for axis in system.basis]),
+                        np.column_stack([axis.vector for axis in system.basis]),
                         np.array([arr.vector - pos.vector for arr in pts]).T,
                     ).T
                 )

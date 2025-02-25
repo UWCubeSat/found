@@ -11,6 +11,7 @@ from common.constants import (
     DEFAULT_PIXEL_SIZE,
     DEFAULT_LEO_THRESHOLD,
     EARTH_RADIUS,
+    NUM_EARTH_POINTS,
 )
 from spatial.coordinate import Attitude, Vector
 from spatial.camera import Camera
@@ -110,6 +111,7 @@ def generate_points(
     pixel_size: float,
     x_resolution: int,
     y_resolution: int,
+    num_points: int = NUM_EARTH_POINTS,
 ) -> Tuple[Camera, List[Vector]]:
     """Generates the edge points of earth as seen in the camera given by all parameters
 
@@ -149,7 +151,7 @@ def generate_points(
 
     # Step 3: Get curve points from earth wrt celestial coordinate system
     spherical_curve_provider = SphericalCurveProvider(position)
-    center, points = spherical_curve_provider.generate_points()
+    center, points = spherical_curve_provider.generate_points(num_points=num_points)
 
     # Step 3E: Calculate if its possible that a head on image of Earth may not
     # be feasible

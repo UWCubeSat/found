@@ -97,7 +97,7 @@ class CoordinateTests(unittest.TestCase):
                 Vector(numpy=expected_point)
                 for expected_point in (
                     np.linalg.solve(
-                        np.array([axis.vector for axis in system.basis]),
+                        np.column_stack([axis.vector for axis in system.basis]),
                         np.array([arr.vector - pos.vector for arr in pts]).T,
                     ).T
                 )

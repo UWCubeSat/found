@@ -114,7 +114,7 @@ class CoordinateSystem:
         points = np.array([pt.vector - self.position.vector for pt in points])
         if len(points.shape) == 2 and not points.shape[0] == 3 and points.shape[1] == 3:
             points = points.T
-        basis = np.array([axis.vector for axis in self.basis])
+        basis = np.column_stack([axis.vector for axis in self.basis])
         transformed = np.linalg.solve(basis, points).T
         result = [Vector(numpy=point) for point in transformed]
         if len(result) == 1:
