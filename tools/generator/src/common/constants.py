@@ -1,9 +1,13 @@
-DEFAULT_FOCAL_LEN = 0.085  # m
-DEFAULT_RESOLUTION = 6000  # pixels
-DEFAULT_PIXEL_SIZE = 20e-6  # m
+## CAMERA PARAMETERS
+DEFAULT_FOCAL_LEN = 0.085  # Default focal length (m)
+DEFAULT_RESOLUTION = 6000  # Default resolution (pixels)
+DEFAULT_PIXEL_SIZE = 20e-6  # Default pixel size (m)
 
-DEFAULT_LEO_THRESHOLD = 2000000  # m
+## LEO THRESHOLD
+DEFAULT_LEO_THRESHOLD = 2000000  # Lowest Low-Earth Orbit altitude (m)
 
-EARTH_RADIUS = 6378137  # m
+## EARTH CONSTANTS
+EARTH_RADIUS = 6378137  # Average Earth Radius (m)
 
-NUM_EARTH_POINTS = 360 * 10
+## Software Parameters
+NUM_EARTH_POINTS = 360 * 10  # Number of Earth Points to generate

@@ -1,9 +1,11 @@
 import numpy as np
 from common.eval import float_equals
-from typing import Iterable
+from typing import Iterable, Iterator
 
 
 class Attitude:
+    """Represents an attitude in the celestial sphere (using modified Euler Angles)"""
+
     def __init__(
         self,
         right_ascension: float,
@@ -11,17 +13,41 @@ class Attitude:
         roll: float,
         radians: bool = True,
     ):
+        """Creates an Attitude object
+
+        Args:
+            right_ascension (float): The right ascension of the attitude
+            declination (float): The declination of the attitude
+            roll (float): The roll of the attitude
+            radians (bool, optional): Whether the 3 parameters are all specified as radians. Defaults to True.
+        """
         converter = lambda x: np.deg2rad(x) if not radians else x
         self.right_ascension = converter(right_ascension)
         self.declination = converter(declination)
         self.roll = converter(roll)
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of this
+
+        Returns:
+            str: The string that represents this
+        """
         return f"({self.right_ascension:.2f}, {self.declination:.2f}, {self.roll:.2f})"
 
 
 class Vector:
-    def __init__(self, *values: float, numpy: np.ndarray = None):
+    """Represents a R^n Vector"""
+
+    def __init__(self, *values: Iterable[float], numpy: np.ndarray = None):
+        """Creates a vector
+
+        Args:
+            values (Iterable[float]): The values to give this vector
+            numpy (np.ndarray, optional): A numpy array to use for this Vector. Defaults to None.
+
+        Raises:
+            ValueError: If the values or numpy array given can't be an array
+        """
         if numpy is None:
             self.dimension = len(values)
             self.vector = np.array(values)
@@ -34,34 +60,102 @@ class Vector:
             self.vector = numpy
 
     def cross(self, vector):
+        """Returns the cross product of this with some other vector
+
+        Args:
+            vector (Vector): The vector to cross this with
+
+        Returns:
+            Vector: The cross of this and vector
+        """
         return Vector(self, numpy=np.cross(self.vector, vector.vector))
 
     @property
-    def norm(self):
+    def norm(self) -> float:
+        """Is the norm of this
+
+        Returns:
+            float: The norm of this
+        """
         return np.linalg.norm(self.vector)
 
     def normalize(self):
+        """Normalizes this
+
+        Returns:
+            Vector: this, but with a length of one
+        """
         return Vector(self, numpy=self.vector / self.norm)
 
     def __neg__(self):
+        """Negates this vector
+
+        Returns:
+            Vector: The negation of this
+        """
         return Vector(numpy=-self.vector)
 
     def __add__(self, other):
+        """Returns the sum of this with some other vector
+
+        Args:
+            vector (Vector): The vector to sum this with
+
+        Returns:
+            Vector: The sum of this and vector
+        """
         return Vector(numpy=self.vector + other.vector)
 
     def __sub__(self, other):
+        """Returns the difference between this and some other vector
+
+        Args:
+            vector (Vector): The vector to subtract this from
+
+        Returns:
+            Vector: The difference between this and vector
+        """
         return Vector(numpy=self.vector - other.vector)
 
     def __mul__(self, factor: float):
+        """Returns the product of this with some other vector
+
+        Args:
+            vector (Vector): The vector to multiple this with
+
+        Returns:
+            Vector: The product of this and vector
+        """
         return Vector(numpy=factor * self.vector)
 
     def __getitem__(self, index: int):
+        """Obtains an element of this
+
+        Args:
+            index (int): The index of the element to get
+
+        Returns:
+            float: The value of the element at index
+        """
         return self.vector[index]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[float]:
+        """Returns the iteration object for this
+
+        Returns:
+            Iterator[float]: The iteration object for this
+        """
         return self.vector.__iter__()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """Evaluates if this vector is the same as the other vector
+
+        Args:
+            other (Any): The vector to cross this with
+
+        Returns:
+            bool: If this has the same contents as other
+        """
         if not isinstance(other, Vector) or self.dimension != other.dimension:
             return False
         for x, y in zip(self.vector, other.vector):
@@ -69,10 +163,20 @@ class Vector:
                 return False
         return True
 
-    def __hash__(self):
+    def __hash__(self) -> int:
+        """Returns the hash of this
+
+        Returns:
+            int: The hash of this
+        """
         return int(self.vector.sum().item())
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of this
+
+        Returns:
+            str: The string of this
+        """
         result = ""
         for el in self.vector:
             result += f"{el:.2f}, "
@@ -80,7 +184,15 @@ class Vector:
 
 
 class CoordinateSystem:
+    """Represents a 3D coordinate System"""
+
     def __init__(self, position: Vector = Vector(0, 0, 0), attitude: Attitude = None):
+        """Initializes this coordinate system with a position and rotation
+
+        Args:
+            position (Vector, optional): The position of the origin. Defaults to Vector(0, 0, 0).
+            attitude (Attitude, optional): The rotation applied to this coordinate system. Defaults to None.
+        """
         if attitude is not None:
             ra = attitude.right_ascension
             de = attitude.declination  # Negate because this is CW
@@ -110,7 +222,15 @@ class CoordinateSystem:
         # Step 7: Store the position
         self.position = position
 
-    def to_coordinate_system(self, points: Iterable[Vector]):
+    def to_coordinate_system(self, points: Iterable[Vector]) -> Iterable[Vector]:
+        """Transforms vectors in the reference to the coordinate system's frame
+
+        Args:
+            points (Iterable[Vector]): The points to transform
+
+        Returns:
+            Iterable[Vector]: The transformed points
+        """
         points = np.array([pt.vector - self.position.vector for pt in points])
         if len(points.shape) == 2 and not points.shape[0] == 3 and points.shape[1] == 3:
             points = points.T

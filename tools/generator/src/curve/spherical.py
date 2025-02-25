@@ -7,6 +7,13 @@ from .curve import CurveProvider
 
 
 class SphericalCurveProvider(CurveProvider):
+    """
+    Provides the edge points of earth by representing earth as a sphere
+
+    Parents:
+        CurveProvider: The base abstract class that defines a curve provider
+    """
+
     def __init__(self, position: Vector):
         # Step 1: Get the center vector
         distance = position.norm
