@@ -30,7 +30,7 @@ jobs:
     - name: Test (Twice)
       run: (make test || make test)
     - name: Memory Check
-      run: (valgrind ./build/bin/lost-test) || (valgrind ./build/bin/lost-test)
+      run: (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
   
   lint:
     runs-on: ubuntu-latest
