@@ -65,7 +65,11 @@ LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
-CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) -fsanitize=address -fomit-frame-pointer
+ifdef OMIT_ASAN
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
+else
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) -fsanitize=address -fomit-frame-pointer
+endif
 LDFLAGS := # Any dynamic libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
@@ -160,7 +164,7 @@ $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	$(CXX) $(TEST_LIBS) $(COVERAGE_FLAGS) $(CXXFLAGS_TEST) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS) $(COVERAGE_FLAGS) $(CXXFLAGS_TEST) -c $< -o $@ $(SRC_LIBS)
 $(GTEST_DIR): $(BUILD_DIR) $(GTEST_ARTIFACT)
 	tar -xzf $(GTEST_ARTIFACT) -C $(BUILD_LIBRARY_TEST_DIR)
 	mkdir -p $(GTEST_BUILD_DIR)
