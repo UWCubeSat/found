@@ -398,3 +398,61 @@ class IntegrationTest(unittest.TestCase):
                     break
 
         self.assertAlmostEqual(len(expected_points), count, delta=1)
+
+    def test_general(self):
+        nominal_system = CoordinateSystem(
+            attitude=Attitude(180 - 45, -45, -90, radians=False)
+        )
+        position = -nominal_system.basis[0] * (EARTH_RADIUS + 1000000)
+        orientation = Attitude(180 - 45 + 45, -45 - 20, -90 + 81, radians=False)
+        leo_threshold = EARTH_RADIUS + 1
+        focal_length = 0.012
+        pixel_size = DEFAULT_PIXEL_SIZE  # For convenience
+        x_resolution = DEFAULT_RESOLUTION
+        y_resolution = DEFAULT_RESOLUTION
+
+        curve_provider = SphericalCurveProvider(position)
+        coordinate_system = CoordinateSystem(attitude=orientation)
+        expected_points = curve_provider.generate_points(self.NUM_EARTH_POINTS)[1]
+
+        # Let it do the transformation, I'm stumped as to why me manually doing it
+        # doesn't work (with relative transformations)
+        expected_points = coordinate_system.to_coordinate_system(
+            [pt - position for pt in expected_points]
+        )
+
+        expected_points = [
+            (Vector(vec[1], vec[2]) * (focal_length / vec[0] / pixel_size))
+            for vec in expected_points
+            if vec[0] > focal_length
+        ]
+
+        dist_tolerance = 0
+        for i in range(len(expected_points) - 1):
+            dist_tolerance = max(
+                dist_tolerance, (expected_points[i] - expected_points[i + 1]).norm / 2
+            )
+        # self.fail(dist_tolerance)
+
+        camera, actual_points = generate_points(
+            position,
+            orientation,
+            leo_threshold,
+            focal_length,
+            pixel_size,
+            x_resolution,
+            y_resolution,
+            num_points=self.NUM_EARTH_POINTS,
+        )
+
+        # All points should be visible
+        self.assertAlmostEqual(len(expected_points), len(actual_points), delta=1)
+
+        count = 0
+        for exp_pt in expected_points:
+            for act_pt in actual_points:
+                if (exp_pt - act_pt).norm < dist_tolerance:
+                    count += 1
+                    break
+
+        self.assertAlmostEqual(len(expected_points), count, delta=1)
