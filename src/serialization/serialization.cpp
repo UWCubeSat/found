@@ -1,6 +1,9 @@
-#include "serializer.hpp"
 #include <fstream>
 #include <iostream>
+#include "serialization/serialization.hpp"
+#include "spatial/attitude-utils.hpp"
+
+using Vec3 = found::Vec3;
 
 // Calculate CRC32 (example implementation)
 uint32_t calculateCRC32(const void* data, size_t length) {
@@ -28,7 +31,7 @@ void serialize(const DataFile& data, const std::string& filename) {
     outFile.write(reinterpret_cast<const char*>(&header), sizeof(header));
 
     // Write the positions
-    outFile.write(reinterpret_cast<const char*>(data.positions.data()), data.positions.size() * sizeof(Position));
+    outFile.write(reinterpret_cast<const char*>(data.positions.data()), data.positions.size() * sizeof(Vec3));
 }
 
 // Deserialize DataFile from a file
@@ -51,7 +54,7 @@ DataFile deserialize(const std::string& filename) {
 
     // Read the positions
     data.positions.resize(data.header.num_positions);
-    inFile.read(reinterpret_cast<char*>(data.positions.data()), data.positions.size() * sizeof(Position));
+    inFile.read(reinterpret_cast<char*>(data.positions.data()), data.positions.size() * sizeof(Vec3));
 
     return data;
 }

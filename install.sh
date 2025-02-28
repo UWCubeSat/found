@@ -100,6 +100,6 @@ PYTHON_PACKAGES="cpplint==1.6.1 gcovr==7.2"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="python3 -m pip install -q $PACKAGE"
+    CMD="python3 -m pip install -q $PACKAGE --break-system-packages"
     execute_cmd $CMD
 done

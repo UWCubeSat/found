@@ -12,7 +12,7 @@ TARGET = $(BIN_DIR)/test_all
 
 # Source files
 SRCS = $(SRC_DIR)/test_all.cpp \
-       $(SRC_DIR)/serializer.cpp
+       $(SRC_DIR)/system.cpp
 
 # Object files
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
