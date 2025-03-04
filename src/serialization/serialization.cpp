@@ -35,7 +35,8 @@ namespace found {
         outFile.write(reinterpret_cast<const char*>(&data.relative_attitude), sizeof(data.relative_attitude));
 
         // Write the positions
-        outFile.write(reinterpret_cast<const char*>(data.positions.data()), data.positions.size() * sizeof(Vec3));
+        outFile.write(reinterpret_cast<const char*>(data.records.data()),
+                                                    data.records.size() * sizeof(LocationRecord));
     }
 
     // Deserialize DataFile from a file
@@ -59,8 +60,8 @@ namespace found {
         inFile.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(data.relative_attitude));
 
         // Read the positions
-        data.positions.resize(data.header.num_positions);
-        inFile.read(reinterpret_cast<char*>(data.positions.data()), data.positions.size() * sizeof(Vec3));
+        data.records.resize(data.header.num_records);
+        inFile.read(reinterpret_cast<char*>(data.records.data()), data.records.size() * sizeof(LocationRecord));
 
         return data;
     }
