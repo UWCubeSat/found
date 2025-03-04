@@ -3,6 +3,8 @@
 #include <fstream> // Include this for std::ofstream
 #include "serialization/serialization.hpp" // Include the header for system.cpp
 
+using namespace found;
+
 // Helper function to print DataFile information
 void printDataFile(const DataFile& data, const std::string& label) {
     std::cout << "=== " << label << " ===" << std::endl;

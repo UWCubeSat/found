@@ -6,6 +6,7 @@
 #include <string>
 #include "spatial/attitude-utils.hpp"  // Include the header for Vec3
 
+namespace found {
 
 struct DataFileHeader {
     char magic[4] = {'F', 'O', 'U', 'N'};
@@ -18,7 +19,9 @@ struct DataFileHeader {
 
 struct DataFile {
     DataFileHeader header;
+    EulerAngles relative_attitude = EulerAngles(0, 0, 0);  // Attitude of the object
     std::vector<found::Vec3> positions;  // Use Vec3 instead of Position
 };
 
+}  // namespace found
 #endif  // DATA_FILE_H
