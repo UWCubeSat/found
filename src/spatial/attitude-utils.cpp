@@ -650,7 +650,7 @@ Mat3 Mat3::Inverse() const {
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
-                            0,0,1};  // NOLINT
+                            0,0,1}; // NOLINT
 
 
 ///////////////////////////////////
