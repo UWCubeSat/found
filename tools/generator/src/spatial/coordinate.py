@@ -179,8 +179,8 @@ class Vector:
         """
         result = ""
         for el in self.vector:
-            result += f"{el:.2f}, "
-        return f"({result[:-2]})"
+            result += f"(decimal) {el:.64f}, "
+        return f"/{{result[:-2]}/}"
 
 
 class CoordinateSystem:
