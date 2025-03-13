@@ -257,7 +257,6 @@ decimal DegToRad(decimal deg) {
  * @pre rad is in radians
  * 
  * @warning rad must be in radians
- * 
 */
 decimal RadToArcSec(decimal rad) {
     return RadToDeg(rad) * 3600.0;
@@ -271,7 +270,6 @@ decimal RadToArcSec(decimal rad) {
  * 
  * @return A possible angle value, in radians, corresponding
  * to the arcsecant value arcSec
- * 
 */
 decimal ArcSecToRad(decimal arcSec) {
     return DegToRad(arcSec / 3600.0);
@@ -384,7 +382,6 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
  * 
  * @return A vector that is the cross product between
  * this and other
- * 
 */
 Vec3 Vec3::CrossProduct(const Vec3 &other) const {
     return {
@@ -401,7 +398,6 @@ Vec3 Vec3::CrossProduct(const Vec3 &other) const {
  * 
  * @return A matrix that is the outer product between this
  * and other
- * 
 */
 Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     return {
@@ -433,13 +429,50 @@ Vec3 Vec3::operator*(const Mat3 &other) const {
 ///////////////////////////////////
 
 /**
+ * Finds the midpoint between two different vectors
+ *
+ * @param vec1 The first vector
+ * @param vec2 The second vector
+ *
+ * @return The midpoint vector
+*/
+Vec2 midpoint(const Vec2 &vec1, const Vec2 &vec2) {
+    return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2};
+}
+
+/**
+ * Finds the midpoint between two different vectors
+ *
+ * @param vec1 The first vector
+ * @param vec2 The second vector
+ *
+ * @return The midpoint vector
+*/
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2) {
+    return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2, (vec1.z + vec2.z)/2};
+}
+
+/**
+ * Finds the midpoint between three different vectors
+ *
+ * @param vec1 The first vector
+ * @param vec2 The second vector
+ * @param vec3 The third vector
+ *
+ * @return The midpoint vector
+*/
+Vec3 midpoint(const Vec3 &vec1, const Vec3 &vec2, const Vec3 &vec3) {
+    return {(vec1.x + vec2.x + vec3.x)/3, (vec1.y + vec2.y + vec3.y)/3, (vec1.z + vec2.z + vec3.z)/3};
+}
+
+
+/**
  * Determines the angle between two different vectors
  * 
  * @param vec1 The first vector
  * @param vec2 The second vector
  * 
  * @return The angle, in radians, between vec1 and vec2
- * 
 */
 decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
@@ -464,29 +497,27 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 }
 
 /**
- * Determines the distance between two vectors
+ * Determines the Distance between two vectors
  * 
  * @param v1 The first vector
  * @param v2 The second vector
  * 
  * @return The distance between v1 and v2
- * 
 */
 decimal Distance(const Vec2 &v1, const Vec2 &v2) {
-    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2));
+    return (v1-v2).Magnitude();
 }
 
 /**
- * Determines the distance between two vectors
+ * Determines the Distance between two vectors
  * 
  * @param v1 The first vector
  * @param v2 The second vector
  * 
  * @return The distance between v1 and v2
- * 
 */
 decimal Distance(const Vec3 &v1, const Vec3 &v2) {
-    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
+    return (v1-v2).Magnitude();
 }
 
 ///////////////////////////////////
@@ -500,7 +531,6 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
  * @param j The column of the entry
  * 
  * @return The value of the entry in this at (i, j)
- * 
 */
 decimal Mat3::At(int i, int j) const {
     return x[3*i+j];
@@ -570,7 +600,6 @@ Mat3 Mat3::operator*(const decimal &s) const {
  * Obtains the transpose of this Matrix
  * 
  * @return The transpose Matrix of this
- * 
 */
 Mat3 Mat3::Transpose() const {
     return {
@@ -584,7 +613,6 @@ Mat3 Mat3::Transpose() const {
  * Obtains the trace of this Matrix
  * 
  * @return The trace of this
- * 
 */
 decimal Mat3::Trace() const {
     return At(0,0) + At(1,1) + At(2,2);
@@ -594,7 +622,6 @@ decimal Mat3::Trace() const {
  * Obtains the determinant of this Matrix
  * 
  * @return The determinant of this
- * 
 */
 decimal Mat3::Det() const {
     return (At(0,0) * (At(1,1)*At(2,2) - At(2,1)*At(1,2))) -
@@ -605,8 +632,7 @@ decimal Mat3::Det() const {
 /**
  * Obtains the inverse of this Matrix
  * 
- * @return The inverse Matrix of this
- * 
+ * @return The inverse Matrix of this 
 */
 Mat3 Mat3::Inverse() const {
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
@@ -634,8 +660,7 @@ const Mat3 kIdentityMat3 = {1,0,0,
 /**
  * Constructs an Attitude object from Quaternion information
  * 
- * @param quat The quaternion to base the attitude off of 
- * 
+ * @param quat The quaternion to base the attitude off of  
 */
 Attitude::Attitude(const Quaternion &quat) : quaternion(quat), type(QuaternionType) {}
 
@@ -644,7 +669,6 @@ Attitude::Attitude(const Quaternion &quat) : quaternion(quat), type(QuaternionTy
  * matrix holding the direction cosines for an attitude)
  * 
  * @param matrix The matrix holding the direction cosines
- * 
 */
 Attitude::Attitude(const Mat3 &matrix) : dcm(matrix), type(DCMType) {}
 
@@ -677,7 +701,6 @@ Mat3 QuaternionToDCM(const Quaternion &quat) {
  * @param dcm The matrix holding the direction cosines
  * 
  * @return A Quaternion that expresses the rotation defined in dcm
- * 
 */
 Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // Make a quaternion that rotates the reference frame X-axis into the dcm's X-axis, just like
@@ -712,7 +735,6 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
  * 
  * @return A Quaternion that holds the attitude information
  * of this
- * 
 */
 Quaternion Attitude::GetQuaternion() const {
     switch (type) {
@@ -730,7 +752,6 @@ Quaternion Attitude::GetQuaternion() const {
  * 
  * @return A matrix containing the direction cosines
  * indicated by this
- * 
 */
 Mat3 Attitude::GetDCM() const {
     switch (type) {
@@ -750,7 +771,6 @@ Mat3 Attitude::GetDCM() const {
  * @param vec The vector to rotate
  * 
  * @return A new vector that is rotated from vec based on this
- * 
 */
 Vec3 Attitude::Rotate(const Vec3 &vec) const {
     switch (type) {
@@ -768,7 +788,6 @@ Vec3 Attitude::Rotate(const Vec3 &vec) const {
  * 
  * @return An EulerAngles object that holds the Euler
  * Angles of this
- * 
 */
 EulerAngles Attitude::ToSpherical() const {
     switch (type) {
@@ -789,7 +808,6 @@ EulerAngles Attitude::ToSpherical() const {
  * Computes the size, in bytes, that a Vec3 object will take up
  * 
  * @return The number of bytes that a Vec3 occupies
- * 
 */
 int64_t SerializeLengthVec3() {
     return sizeof(decimal)*3;
@@ -807,7 +825,6 @@ int64_t SerializeLengthVec3() {
  * @note A buffer is a very long character array that holds information
  * that the user defines. Serialization of data means inputting certain
  * data into a buffer.
- * 
 */
 void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
     decimal *fBuffer = reinterpret_cast<decimal *>(buffer);
@@ -829,7 +846,6 @@ void SerializeVec3(const Vec3 &vec, unsigned char *buffer) {
  * 
  * @warning Returns nonsense if buffer does not point to a valid location
  * that stores a Vec3
- * 
 */
 Vec3 DeserializeVec3(const unsigned char *buffer) {
     Vec3 result;

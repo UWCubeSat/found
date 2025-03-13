@@ -191,7 +191,7 @@ def generate_points(
         exit(1)
     if len(image_points) != len(camera_points):
         logging.warning(
-            f"{(len(camera_points)-len(image_points)) / len(camera_points) * 100:.2f}% of the horizon is behind the camera"
+            f"{(len(camera_points)-len(image_points)) / len(camera_points) * 100:.10f}% of the horizon is behind the camera"
         )
     logging.info(
         f"{count / len(camera_points) * 100:.2f}% of the horizon is in the camera"
