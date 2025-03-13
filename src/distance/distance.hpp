@@ -69,10 +69,11 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * Returns the scaled distance from earth
      * 
      * @param r The normalized radius
+     * @param c The distance to the center of the small circle
      * 
      * @return The distance from earth as a Scalar
     */
-    PreciseDecimal getDistance(PreciseDecimal r);
+    PreciseDecimal getDistance(PreciseDecimal r, PreciseDecimal c);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken
@@ -82,7 +83,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
     /**
      * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
     */
-    float radius_;
+    decimal radius_;
 };
 
 /**

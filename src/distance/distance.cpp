@@ -11,40 +11,37 @@
 namespace found {
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
-    // We do not normalize here, because the assumption for getting the distance
-    // is dependent on the fact that vec.x is 1. It is also not cost effective
-    // as the tradeoff is to nromalize center instead (3 norms v. 1 norm)
-    Vec3 spats[3] = {cam_.CameraToSpatial(p[0]),
-                      cam_.CameraToSpatial(p[1]),
-                      cam_.CameraToSpatial(p[2])};
+    Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
+                      cam_.CameraToSpatial(p[1]).Normalize(),
+                      cam_.CameraToSpatial(p[2]).Normalize()};
 
     // Obtain the center point of the projected circle
-    Vec3 center = std::move(getCenter(spats));
+    Vec3 center = getCenter(spats);
 
     // Obtain the radius of the projected circle
     PreciseDecimal r = getRadius(spats, center);
 
     // Obtain the distance from earth
-    PreciseDecimal h = getDistance(r);
+    PreciseDecimal h = getDistance(r, center.Magnitude());
 
     // You have to normalize the center vector here
     return center.Normalize() * h;
 }
 
 Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
-    Vec3 diff1 = std::move(spats[1] - spats[0]);
-    Vec3 diff2 = std::move(spats[2] - spats[1]);
+    Vec3 diff1 = spats[1] - spats[0];
+    Vec3 diff2 = spats[2] - spats[1];
 
     // Cross product to find the normal vector for points on earth
-    Vec3 circleN = std::move(diff1.CrossProduct(diff2));
+    Vec3 circleN = diff1.CrossProduct(diff2);
     Vec3 circlePt = spats[0];
 
     // Mid point between 2 vectors
-    Vec3 mid1 = std::move(midpoint(spats[0], spats[1]));
-    Vec3 mid2 = std::move(midpoint(spats[1], spats[2]));
+    Vec3 mid1 = midpoint(spats[0], spats[1]);
+    Vec3 mid2 = midpoint(spats[1], spats[2]);
 
-    Vec3 mid1N = std::move(diff1);
-    Vec3 mid2N = std::move(diff2);
+    Vec3 mid1N = diff1;
+    Vec3 mid2N = diff2;
 
     /**
      * CirclePt is a vector that points to a point on the plane. We also know the center vector should point to a point on the plane.
@@ -62,13 +59,13 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     matrix = {circleN.x, circleN.y, circleN.z, mid1N.x, mid1N.y,
               mid1N.z, mid2N.x, mid2N.y, mid2N.z};
 
-    PreciseDecimal alpha = circleN*circlePt;
-    PreciseDecimal beta = mid1N*mid1;
-    PreciseDecimal gamma = mid2N*mid2;
+    decimal alpha = circleN*circlePt;
+    decimal beta = mid1N*mid1;
+    decimal gamma = mid2N*mid2;
 
     Vec3 y = {alpha, beta, gamma};
 
-    Vec3 center = std::move(matrix.Inverse() * y);
+    Vec3 center = matrix.Inverse() * y;
 
     return center;
 }
@@ -78,8 +75,8 @@ Vec3 center) {
     return Distance(spats[0], center);
 }
 
-PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r) {
-    return radius_*sqrt(r * r + 1)/r;
+PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
+    return radius_*sqrt(r * r + c * c)/r;
 }
 
 }  // namespace found

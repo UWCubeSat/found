@@ -169,7 +169,6 @@ def generate_points(
     # Step 4: Transform points into camera coordinate system
     camera_points = camera.to_camera_space(points)
     camera_center = camera.to_camera_space({center})
-    print(camera_center);
 
     # Step 5: Project Points into Camera
     image_center, *image_points = camera.spatial_to_camera(

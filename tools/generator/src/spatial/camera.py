@@ -96,6 +96,10 @@ class Camera(CoordinateSystem):
             factor = self.focal_length / point[0] / self.pixel_length
             image_point = Vector(factor * point[1], factor * point[2])
             result.append(image_point)
+            if self.in_camera(image_point):
+                reference = Vector(self.x_resolution / 2, self.y_resolution / 2)
+                canvas_pt = -image_point + reference
+                print(f"{canvas_pt},")
         if not result:
             return [None] * len(points)
         elif len(result) == 1:

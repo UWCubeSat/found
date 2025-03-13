@@ -43,8 +43,6 @@ class Printer:
         )
         for point in points:
             result.append(reference_point - point)
-            if self.camera.in_camera(point):
-                print(result[-1])
         return result
 
     def _draw_earth(self, curve_points: Iterable[Vector]):

@@ -23,9 +23,10 @@ using found::SphericalDistanceDeterminationAlgorithm;
 
 
 // Radius of Earth (m)
-#define RADIUS_OF_EARTH 6378000.0
+#define RADIUS_OF_EARTH (static_cast<decimal>(6378137.0))
 // Default DoubleEquals Tolerance (So big because of floating point problems)
 #define DEFAULT_TOLERANCE 0.01
+// Tolerance for Generator-Derived Points
 
 
 /* Test Macros */
@@ -127,60 +128,68 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) {
     // Step I: Pick some distance (m) and a Camera
-    decimal x_E = 70000000;
-    int imageWidth = 1024;
-    int imageHeight = 1024;
-    Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
+    decimal x_E = 7000000;
+    int imageWidth = 6000;
+    int imageHeight = 6000;
+    Camera cam(0.085, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
     PositionVector expected = {0, x_E, 0};
 
     // Step II: Figure out my projection points
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {{ (decimal) 164.5803738848234729630348738282918930053710937500000000000000000000, (decimal) 991.8012832451947815570747479796409606933593750000000000000000000000},
-                    {(decimal) 226.4719365675742324128805194050073623657226562500000000000000000000, (decimal) 708.6034128081986409597448073327541351318359375000000000000000000000},
-                    {(decimal) 232.4013901714329222158994525671005249023437500000000000000000000000,(decimal) 362.7771025605316594919713679701089859008789062500000000000000000000}};
+    Points pts = {
+    {static_cast<decimal>(1040.29858052800545920035801827907562),
+        static_cast<decimal>(2153.41717327522883351775817573070526)},
+    {static_cast<decimal>(905.12458718505968136014416813850403),
+        static_cast<decimal>(4843.01654323685215786099433898925781)},
+    {static_cast<decimal>(649.50418565826112171635031700134277),
+        static_cast<decimal>(5992.19055700358148897066712379455566)}
+    };
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
         SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
 
     PositionVector actual = algo.Run(pts);
-    printf("%f, %f, %f \n", actual.x, actual.y, actual.z);
-    
-    printf("%f \n", actual.Magnitude());
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
     // Step I: Pick some distance (m) and a Camera
-    decimal x_E = 70000000;
+    decimal x_E = 80000000;
     int imageWidth = 1024;
     int imageHeight = 1024;
-    Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
+    Camera cam(0.0001, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
     PositionVector expected = {0, x_E, 0};
 
     // Step II: Figure out my projection points
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {{ (decimal) 271.5639315821267700812313705682754516601562500000000000000000000000, (decimal) 24.7609584897558789862159756012260913848876953125000000000000000000},
-                    {(decimal) 355.6295230493384451619931496679782867431640625000000000000000000000, (decimal) 508.3634641727322218685003463178873062133789062500000000000000000000},
-                    {(decimal) 308.3699606216349593523773364722728729248046875000000000000000000000, (decimal) 324.0180483597874854240217246115207672119140625000000000000000000000}};
+    Points pts = {
+    {static_cast<decimal>(15.92071472869832859942107461392879),
+        static_cast<decimal>(551.36076804192668987525394186377525)},
+    {static_cast<decimal>(383.64131687430347028566757217049599),
+        static_cast<decimal>(520.96642804561145112529629841446877)},
+    {static_cast<decimal>(425.31380021720195827583665959537029),
+        static_cast<decimal>(516.80315691018540746881626546382904)}
+    };
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
         SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
 
     PositionVector actual = algo.Run(pts);
-    //actual = actual * (decimal) 0.00002;
-    printf("%f, %f, %f \n", actual.x, actual.y, actual.z);
+    // actual = actual * static_cast<decimal>(0.00002);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
 // TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) {
 //     //Step 0: Determine Quaterion rotation
-//     found::Quaternion positionDirection = found::SphericalToQuaternion(static_cast<decimal> (3 * M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0));
+//     found::Quaternion positionDirection = found::SphericalToQuaternion(
+//         static_cast<decimal> (3 * M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)
+//     );
 
 //     // Step I: Pick some distance (m) and a Camera
 //     decimal y_E = RADIUS_OF_EARTH + 10000000;
