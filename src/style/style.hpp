@@ -11,6 +11,7 @@
 #include <utility>
 
 #include "spatial/attitude-utils.hpp"
+#include "style/decimal.hpp"
 
 namespace found {
 
@@ -31,10 +32,14 @@ typedef Vec3 PositionVector;
  * Represents an image
  */
 struct Image {
+    /// The image width
+    int width;
+    /// The image height
+    int height;
+    /// The image channels
+    int channels;
     /// The image contents
     unsigned char *image;
-    /// The image {width, height, channels}
-    int dimensions[3];
 };
 
 /**
