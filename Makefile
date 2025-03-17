@@ -60,6 +60,16 @@ PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TE
 SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
+ifdef ENABLE_LOGGING
+	ifdef LOGGING_LEVEL
+		LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=$(LOGGING_LEVEL)
+  	else
+    	LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
+  	endif
+endif
+
+LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
+
 # Compiler flags
 LIBS := $(SRC_LIBS)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
@@ -67,10 +77,11 @@ DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
 ifdef OMIT_ASAN
-	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 else
-	CXXFLAGS_TEST := -O1 $(CXXFLAGS) $(LIBS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
+	CXXFLAGS_TEST := -O1 $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
+CXXFLAGS += $(LOGGING_MACROS)
 LDFLAGS := # Any dynamic libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
@@ -176,7 +187,7 @@ $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	$(CXX) $(CXXFLAGS_TEST) $(TEST_LIBS) $(COVERAGE_FLAGS) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_TEST) $(CXXFLAGS) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
 test_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_TARGET))
 

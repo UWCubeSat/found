@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include "logging/logging.hpp"
 #include "style/style.hpp"
 #include "command-line/options.hpp"
 
@@ -57,7 +58,7 @@ const char kNoDefaultArgument = 0;
 
 int main(int argc, char **argv) {
     if (argc == 1) {
-        std::cout << "Seems you don't want to be found" << std::endl;
+        LOG_INFO("Seems you don't want to be found");
         return EXIT_SUCCESS;
     }
     std::string command(argv[1]);
@@ -109,7 +110,7 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
             CALIBRATION
             #undef FOUND_CLI_OPTION
             default:
-                std::cerr << "Illegal flag detected" << std::endl;
+                LOG_ERROR("Illegal flag detected");
                 exit(EXIT_FAILURE);
                 break;
         }
