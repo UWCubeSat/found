@@ -51,12 +51,18 @@ namespace found {
 
 ///// INTERNAL Definitions /////
 
-// The output streams to where the logs go. These
-// should remain these values within the main branch
-// but feel free to change this to a file
+// The output streams to where the logs go. You must
+// place your definitions of each within each ifndef
+// statement
+#ifndef INFO_STREAM
 #define INFO_STREAM std::cout
+#endif
+#ifndef WARN_STREAM
 #define WARN_STREAM std::cerr
+#endif
+#ifndef ERROR_STREAM
 #define ERROR_STREAM std::cerr
+#endif
 
 /**
  * Determines the correct stream to use for logging
