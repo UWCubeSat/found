@@ -33,17 +33,17 @@ TEST_F(ParserTest, CalibrationParserTestExampleBaseCase) {
     const char *argv[] = {"found", "calibration"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.ra);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.de);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.roll);
 
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.ra);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.de);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.roll);
 
-    // ASSERT_FALSE(options.useSameOrientation);
+    ASSERT_FALSE(options.useSameOrientation);
 
-    // ASSERT_EQ("", options.outputFile);
+    ASSERT_EQ("", options.outputFile);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExampleGeneral) {
@@ -54,17 +54,17 @@ TEST_F(ParserTest, CalibrationParserTestExampleGeneral) {
         "--output-file", "example.found"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(2), options.lclOrientation.de);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(2), options.lclOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3), options.lclOrientation.roll);
 
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3.0), options.refOrientation.ra);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
-    // ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3.0), options.refOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
 
-    // ASSERT_FALSE(options.useSameOrientation);
+    ASSERT_FALSE(options.useSameOrientation);
 
-    // ASSERT_EQ("example.found", options.outputFile);
+    ASSERT_EQ("example.found", options.outputFile);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriBlank) {
@@ -74,7 +74,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriBlank) {
         "--output-file", "example.found"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_TRUE(options.useSameOrientation);
+    ASSERT_TRUE(options.useSameOrientation);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExample3UseSameOriTrue) {
@@ -84,7 +84,7 @@ TEST_F(ParserTest, CalibrationParserTestExample3UseSameOriTrue) {
         "--output-file", "example.found"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_TRUE(options.useSameOrientation);
+    ASSERT_TRUE(options.useSameOrientation);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriFalse) {
@@ -96,7 +96,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriFalse) {
             "--output-file", "example.found"};
         CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-        // ASSERT_FALSE(options.useSameOrientation);
+        ASSERT_FALSE(options.useSameOrientation);
         optind = 2;
     }
 }
@@ -107,7 +107,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriAlone) {
         "--use-same-orientation"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_TRUE(options.useSameOrientation);
+    ASSERT_TRUE(options.useSameOrientation);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExample6UseSameOriEquals) {
@@ -116,7 +116,7 @@ TEST_F(ParserTest, CalibrationParserTestExample6UseSameOriEquals) {
         "--use-same-orientation=true"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    // ASSERT_TRUE(options.useSameOrientation);
+    ASSERT_TRUE(options.useSameOrientation);
 }
 
 TEST_F(ParserTest, CalibrationParserTestExampleFail) {
