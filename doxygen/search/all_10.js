@@ -1,20 +1,12 @@
 var searchData=
 [
-  ['serializelengthvec3_0',['SerializeLengthVec3',['../namespacefound.html#a7aabae2b067c4e67b12ed0bfd663cd73',1,'found']]],
-  ['serializevec3_1',['SerializeVec3',['../namespacefound.html#ab084af9a457818d313399c33239cd274',1,'found']]],
-  ['setangle_2',['SetAngle',['../classfound_1_1Quaternion.html#aa96441c7f87b94c546f55e9a8a3a545e',1,'found::Quaternion']]],
-  ['setfocallength_3',['SetFocalLength',['../classfound_1_1Camera.html#af5acf428687056de2a4a9b122298a8a0',1,'found::Camera']]],
-  ['setvector_4',['SetVector',['../classfound_1_1Quaternion.html#af94cca484c9c4f7c8b814855e4fc91b8',1,'found::Quaternion']]],
-  ['simpleedgedetectionalgorithm_5',['simpleedgedetectionalgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html',1,'found::SimpleEdgeDetectionAlgorithm'],['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a32cc5516171ac2740b0c8e39c7ed6245',1,'found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm()']]],
-  ['spatialtocamera_6',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
-  ['spatialtospherical_7',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
-  ['sphericaldistancedeterminationalgorithm_8',['sphericaldistancedeterminationalgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html',1,'found::SphericalDistanceDeterminationAlgorithm'],['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a7fa59a5da214a9b60e9ae50375fb78c1',1,'found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm()']]],
-  ['sphericaltoquaternion_9',['SphericalToQuaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found']]],
-  ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
-  ['stage_11',['stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage::Stage()'],['../classfound_1_1Stage.html',1,'found::Stage&lt; Input, Output &gt;']]],
-  ['stage_3c_20distfromearth_2c_20positionvector_20_3e_12',['Stage&lt; distFromEarth, PositionVector &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stage_3c_20image_2c_20points_20_3e_13',['Stage&lt; Image, Points &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stage_3c_20orbitparams_2c_20kinematicprediction_20_3e_14',['Stage&lt; OrbitParams, KinematicPrediction &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stage_3c_20points_2c_20distfromearth_20_3e_15',['Stage&lt; Points, distFromEarth &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stage_3c_20std_3a_3avector_3c_20vec3_20_3e_2c_20orbitparams_20_3e_16',['Stage&lt; std::vector&lt; Vec3 &gt;, OrbitParams &gt;',['../classfound_1_1Stage.html',1,'found']]]
+  ['ra_0',['ra',['../classfound_1_1EulerAngles.html#a06428650d165be6e9a411336eb2d08da',1,'found::EulerAngles']]],
+  ['radtoarcsec_1',['RadToArcSec',['../namespacefound.html#a318752941946cf09d15e889737651d2b',1,'found']]],
+  ['radtodeg_2',['RadToDeg',['../namespacefound.html#adda3ec1b56418141d730d1081703049f',1,'found']]],
+  ['real_3',['real',['../classfound_1_1Quaternion.html#a68e88d9765ca79f899ef1ce306634ad2',1,'found::Quaternion']]],
+  ['resource_4',['resource',['../classfound_1_1Stage.html#a91a27c6a882620582eea17316edb1b10',1,'found::Stage']]],
+  ['roll_5',['roll',['../classfound_1_1EulerAngles.html#ae37fefb43e9dd8fd1c9facfdf2c8fd78',1,'found::EulerAngles']]],
+  ['rotate_6',['rotate',['../classfound_1_1Attitude.html#aa05352ffe0bdf138dc6d377a31d4652d',1,'found::Attitude::Rotate()'],['../classfound_1_1Quaternion.html#a0fd3683f1ca6d3f03093636c113b8d96',1,'found::Quaternion::Rotate()']]],
+  ['row_7',['Row',['../classfound_1_1Mat3.html#ab2cb86b4ee9da78f5e5f974563cdde37',1,'found::Mat3']]],
+  ['run_8',['run',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a8a4ac0fa3da0f770a7a28f9e5c4b9d3d',1,'found::SphericalDistanceDeterminationAlgorithm::Run()'],['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html#a8bac32bc4f09da3118cb8fa8e470aed3',1,'found::EllipticDistanceDeterminationAlgorithm::Run()'],['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a2b32dd8b47f526f89f5caa8772ab3c5d',1,'found::SimpleEdgeDetectionAlgorithm::Run()'],['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a0b2c0d0d4dd192d5fe8914542e68e3d7',1,'found::LoCEdgeDetectionAlgorithm::Run()'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#abedc9bfcb409f784d22d7bec1d5e064c',1,'found::LOSTVectorGenerationAlgorithm::Run()'],['../classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html#aa90a2395d13c3b12e8936576e62afb95',1,'found::FeatureDetectionVectorGenerationAlgorithm::Run()'],['../classfound_1_1EulerianKinematicProfilingAlgorithm.html#ac77ca7c9a16599c27c0f17ed52bca8e1',1,'found::EulerianKinematicProfilingAlgorithm::Run()'],['../classfound_1_1KeplerKinematicProfilingAlgorithm.html#a19f52a098528a41ebd4f273ab44d9b31',1,'found::KeplerKinematicProfilingAlgorithm::Run()'],['../classfound_1_1EllipticalOrbitDerminationAlgorithm.html#aa001c299f8ea1165ffad27949aff9a7f',1,'found::EllipticalOrbitDerminationAlgorithm::Run()'],['../classfound_1_1PrecessionOrbitDeterminationAlgorithm.html#a46ba28d9e28638cd305e767d8c48ca26',1,'found::PrecessionOrbitDeterminationAlgorithm::Run()'],['../classfound_1_1Stage.html#a76f980d2fdce66333c6d7e7057e92f73',1,'found::Stage::Run()'],['../classfound_1_1Pipeline.html#a1202b385e9bb9acf3ad09f8ff3632e83',1,'found::Pipeline::Run()']]]
 ];

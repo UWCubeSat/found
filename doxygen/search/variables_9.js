@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['y_0',['y',['../structfound_1_1Vec2.html#a9c50134ad99e864ce569d70f5bd3bb00',1,'found::Vec2::y'],['../classfound_1_1Vec3.html#a12c2ea9033026f7640ec9bf4aacb0e13',1,'found::Vec3::y']]]
+  ['ra_0',['ra',['../classfound_1_1EulerAngles.html#a06428650d165be6e9a411336eb2d08da',1,'found::EulerAngles']]],
+  ['real_1',['real',['../classfound_1_1Quaternion.html#a68e88d9765ca79f899ef1ce306634ad2',1,'found::Quaternion']]],
+  ['resource_2',['resource',['../classfound_1_1Stage.html#a91a27c6a882620582eea17316edb1b10',1,'found::Stage']]],
+  ['roll_3',['roll',['../classfound_1_1EulerAngles.html#ae37fefb43e9dd8fd1c9facfdf2c8fd78',1,'found::EulerAngles']]]
 ];

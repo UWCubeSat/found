@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['x_0',['x',['../structfound_1_1Vec2.html#ab05e67e32ebb49667f7a5d2780c42043',1,'found::Vec2::x'],['../classfound_1_1Vec3.html#ac8fa88312e572766a0a09fe19c609a25',1,'found::Vec3::x'],['../classfound_1_1Mat3.html#ae38489abeaed5e8591653287141418e7',1,'found::Mat3::x']]],
-  ['xresolution_1',['XResolution',['../classfound_1_1Camera.html#a1a23d5d3d8781d3d8b79f03bebc7c718',1,'found::Camera']]]
+  ['vec2_0',['Vec2',['../structfound_1_1Vec2.html',1,'found']]],
+  ['vec3_1',['vec3',['../classfound_1_1Vec3.html',1,'found::Vec3'],['../classfound_1_1Vec3.html#a114add3348d882097d4efc4905fe03e1',1,'found::Vec3::Vec3(decimal de, decimal ra)'],['../classfound_1_1Vec3.html#a77e9a7e6cc069e9a5a6155723dfd0923',1,'found::Vec3::Vec3(decimal x, decimal y, decimal z)'],['../classfound_1_1Vec3.html#a28a457ab6a5ee18b826465b307ce3a01',1,'found::Vec3::Vec3()']]],
+  ['vector_2',['Vector',['../classfound_1_1Quaternion.html#a075f7b0efb538968108462e80373a718',1,'found::Quaternion']]],
+  ['vectorgenerationalgorithm_3',['VectorGenerationAlgorithm',['../classfound_1_1VectorGenerationAlgorithm.html',1,'found']]]
 ];

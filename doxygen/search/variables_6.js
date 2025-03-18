@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['position_0',['position',['../structfound_1_1OrbitParams.html#a640c86fd0d8b581c751c313fda2304c7',1,'found::OrbitParams']]],
-  ['product_1',['product',['../classfound_1_1Stage.html#a1e6b9a9dc3e1c93dc0eeca103c353616',1,'found::Stage']]]
+  ['majoraxis_0',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
+  ['minoraxis_1',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]]
 ];

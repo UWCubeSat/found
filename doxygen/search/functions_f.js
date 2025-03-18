@@ -11,5 +11,8 @@ var searchData=
   ['sphericaldistancedeterminationalgorithm_8',['SphericalDistanceDeterminationAlgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a7fa59a5da214a9b60e9ae50375fb78c1',1,'found::SphericalDistanceDeterminationAlgorithm']]],
   ['sphericaltoquaternion_9',['SphericalToQuaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found']]],
   ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
-  ['stage_11',['Stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage']]]
+  ['stage_11',['Stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage']]],
+  ['strtobool_12',['strtobool',['../namespacefound.html#a7024f78e6740e032817c2bc20a71962e',1,'found']]],
+  ['strtodecimal_13',['strtodecimal',['../namespacefound.html#a60ee66e81bce477a178b2470285de1dd',1,'found']]],
+  ['strtoea_14',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]]
 ];
