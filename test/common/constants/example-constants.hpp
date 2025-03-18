@@ -20,7 +20,7 @@ namespace found {
 
 // Array that holds one
 unsigned char imageContents[1] = {1};
-Image image = {imageContents, {1, 0, 1}};
+Image image = {1, 0, 1, imageContents};
 
 /**
  * Expected Results from our Mock
