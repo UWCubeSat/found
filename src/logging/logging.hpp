@@ -1,6 +1,8 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#ifdef ENABLE_LOGGING
+
 #include <string>
 
 ///// LOGGING LEVELS /////
@@ -28,8 +30,6 @@
 // LOG_INFO, LOG_WARN and LOG_ERROR
 // should be used within the program
 // (see command-line/parser.cpp for examples)
-
-#ifdef ENABLE_LOGGING
 
 // Basically, the logging level only allows logs equal
 // to its level and above (in severity) to be printed

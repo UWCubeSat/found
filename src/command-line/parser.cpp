@@ -40,7 +40,7 @@ int optind = 2;
  * @param options The options object that has the flag
  * @param prop The name of the prop within options
  * @param value The value to assign
- * @param default THe default value
+ * @param default The default value
  * 
  * @pre Must be used with FOUND_CLI_OPTION
  */
