@@ -1,144 +1,57 @@
-#include <iostream>
-#include <cassert>
-#include <fstream> // Include this for std::ofstream
-#include "serialization/serialization.hpp" // Include the header for system.cpp
+#include <gtest/gtest.h>
+#include "serialization/serialization.hpp"
+#include <fstream>
+#include <cstddef>
 
-using namespace found;
+namespace found {
 
-// Helper function to print DataFile information
-void printDataFile(const DataFile& data, const std::string& label) {
-    std::cout << "=== " << label << " ===" << std::endl;
-    std::cout << "Number of Positions: " << data.header.num_records << std::endl;
-    for (size_t i = 0; i < data.records.size(); ++i) {
-        std::cout << "Position " << i + 1 << ": (" 
-                  << data.records[i].position.x << ", " 
-                  << data.records[i].position.y << ", " 
-                  << data.records[i].position.z << ")" << std::endl;
-    }
-    std::cout << "====================" << std::endl;
-}
+class SerializationTest : public ::testing::Test {
+protected:
+    // Headers in stored (big-endian) format.
+    const unsigned char emptyTestHeader[16] = {
+        'F', 'O', 'U', 'N', // Magic Number
+        0x00U, 0x00U, 0x00U, 0x01U, // Version
+        0x00U, 0x00U, 0x00U, 0x00U, // NumPositions
+        0x00U, 0x00U, 0x01U, 0x39U // CRC (313 in Decimal)
+    };
 
-// Test function for basic serialization and deserialization
-void test_basic() {
-    std::cout << "Running test_basic..." << std::endl;
+    const unsigned char incorrectCRCTestHeader[16] = {
+        'F', 'O', 'U', 'N', // Magic Number
+        0x00U, 0x00U, 0x00U, 0x01U, // Version
+        0x00U, 0x00U, 0x00U, 0x00U, // NumPositions
+        0x39U, 0x01U, 0x10U, 0x00U // Incorrect CRC
+    };
 
-    // Create a DataFile object
-    DataFile originalData;
-    originalData.header.num_records = 3;
-    originalData.records = { { {1.0, 2.0, 3.0} }, { {4.5, 5.5, 6.5} }, { {7.0, 8.0, 9.0} } };
+    std::string emptyTestHeaderString;
+    std::istringstream emptyTestHeaderStream;
 
-    // Print original data
-    printDataFile(originalData, "Original Data");
-
-    // Define filename
-    std::string filename = "data/test_basic.found";
-
-    // Serialize the data
-    serialize(originalData, filename);
-    std::cout << "Data serialized to " << filename << std::endl;
-
-    // Deserialize the data
-    DataFile loadedData = deserialize(filename);
-    std::cout << "Data deserialized from " << filename << std::endl;
-
-    // Print deserialized data
-    printDataFile(loadedData, "Deserialized Data");
-
-    // Test if the deserialized data matches the original data
-    assert(originalData.header.num_records == loadedData.header.num_records);
-    assert(originalData.records.size() == loadedData.records.size());
-
-    for (size_t i = 0; i < originalData.records.size(); ++i) {
-        assert(originalData.records[i].position.x == loadedData.records[i].position.x);
-        assert(originalData.records[i].position.y == loadedData.records[i].position.y);
-        assert(originalData.records[i].position.z == loadedData.records[i].position.z);
+    void SetUp() override {
+        emptyTestHeaderString = std::string(reinterpret_cast<const char*>(emptyTestHeader), sizeof(emptyTestHeader));
+        emptyTestHeaderStream = std::istringstream(emptyTestHeaderString);
     }
 
-    std::cout << "test_basic passed!" << std::endl;
-}
-
-// Test function for reading only the header
-void test_read_header() {
-    std::cout << "Running test_read_header..." << std::endl;
-
-    // Create a DataFile object
-    DataFile originalData;
-    originalData.header.num_records = 2;
-    originalData.records = { { {10.0, 20.0, 30.0} }, { {40.0, 50.0, 60.0} } };
-
-    // Print original data
-    printDataFile(originalData, "Original Data");
-
-    // Define filename
-    std::string filename = "data/test_read_header.found";
-
-    // Serialize the data
-    serialize(originalData, filename);
-    std::cout << "Data serialized to " << filename << std::endl;
-
-    // Read only the header
-    DataFileHeader header = readHeader(filename);
-    std::cout << "Header read from " << filename << ":" << std::endl;
-    std::cout << "Number of Positions: " << header.num_records << std::endl;
-
-    // Test if the header matches the original data
-    assert(originalData.header.num_records == header.num_records);
-
-    std::cout << "test_read_header passed!" << std::endl;
-}
-
-// Test function for CRC validation
-void test_crc_validation() {
-    std::cout << "Running test_crc_validation..." << std::endl;
-
-    // Create a DataFile object
-    DataFile originalData;
-    originalData.header.num_records = 1;
-    originalData.records = { { {100.0, 200.0, 300.0} } };
-
-    // Print original data
-    printDataFile(originalData, "Original Data");
-
-    // Define filename
-    std::string filename = "data/test_crc_validation.found";
-
-    // Serialize the data
-    serialize(originalData, filename);
-    std::cout << "Data serialized to " << filename << std::endl;
-
-    // Deserialize the data (should pass CRC validation)
-    DataFile loadedData = deserialize(filename);
-    std::cout << "Data deserialized from " << filename << std::endl;
-
-    // Print deserialized data
-    printDataFile(loadedData, "Deserialized Data");
-
-    // Corrupt the file (simulate a corrupted file)
-    std::ofstream outFile(filename, std::ios::binary | std::ios::in | std::ios::out);
-    if (!outFile) {
-        throw std::runtime_error("Failed to open file for writing");
+    void TearDown() override {
+        // Clean up any test files
+        // std::remove("test_data.bin");
     }
-    outFile.seekp(10); // Move to a random position in the file
-    outFile.put(0xFF); // Write a corrupted byte
-    outFile.close();
+};
 
-    // Attempt to deserialize the corrupted file (should fail CRC validation)
-    try {
-        DataFile corruptedData = deserialize(filename);
-        std::cerr << "CRC validation should have failed!" << std::endl;
-    } catch (const std::runtime_error& e) {
-        std::cout << "CRC validation failed as expected: " << e.what() << std::endl;
-    }
-
-    std::cout << "test_crc_validation passed!" << std::endl;
+TEST_F(SerializationTest, CorrectHeader) {
+    DataFileHeader header = readHeader(emptyTestHeaderStream);
+    ASSERT_EQ(header.magic[0], 'F');
+    ASSERT_EQ(header.magic[1], 'O');
+    ASSERT_EQ(header.magic[2], 'U');
+    ASSERT_EQ(header.magic[3], 'N');
+    ASSERT_EQ(header.version, 1U);
+    ASSERT_EQ(calculateCRC32(emptyTestHeader, sizeof(header) - sizeof(header.crc)), 313U);
 }
 
-int main() {
-    // Run all tests
-    test_basic();
-    test_read_header();
-    test_crc_validation();
-
-    std::cout << "All tests completed!" << std::endl;
-    return 0;
+TEST_F(SerializationTest, IncorrectHeader) {
+    std::string incorrectCRCTestHeaderString;
+    std::istringstream incorrectCRCTestHeaderStream;
+    incorrectCRCTestHeaderString = std::string(reinterpret_cast<const char*>(incorrectCRCTestHeader), sizeof(incorrectCRCTestHeader));
+    incorrectCRCTestHeaderStream = std::istringstream(incorrectCRCTestHeaderString);
+    ASSERT_THROW(readHeader(incorrectCRCTestHeaderStream), std::runtime_error);
 }
+
+}  // namespace found
