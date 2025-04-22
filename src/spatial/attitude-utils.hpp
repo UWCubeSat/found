@@ -3,11 +3,9 @@
 
 #include <memory>
 
-namespace found {
+#include "style/decimal.hpp"
 
-/// Alias for floating point numbers. Used for controlling
-/// floating-point type memory usage throughout the program
-typedef float decimal;
+namespace found {
 
 // At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
 // to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
