@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>=3.10  # You can change the Python version if needed
+  - python>=3.9
   - numpy
   - pycairo
   - pytest

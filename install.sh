@@ -74,7 +74,7 @@ case "$OS" in
 esac
 
 # List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip graphviz"
+PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz cpplint gcovr"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
@@ -95,11 +95,17 @@ CMD="$INSTALL doxygen || ( \
 )"
 execute_cmd $CMD
 
+# Prepare pipx
+execute_cmd "pipx ensurepath"
+
 # Python packages to install
-PYTHON_PACKAGES="cpplint==1.6.1 gcovr==7.2"
+PYTHON_PACKAGES="cpplint==2.0.0 gcovr==8.3"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="python3 -m pip install -q $PACKAGE"
+    CMD="pipx install $PACKAGE"
     execute_cmd $CMD
 done
+
+# Restart Terminal
+execute_cmd "source ~/.bashrc"
