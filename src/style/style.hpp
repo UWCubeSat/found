@@ -15,13 +15,12 @@
 
 namespace found {
 
+/// Alias for very precise floating point numbers.
+typedef __float128 PreciseDecimal;
+
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 /// to a vector of 2D points on the image, according to image coordinate systems
 typedef std::vector<Vec2> Points;
-
-/// The output for Distance Determination Algorithms (distance.hpp/cpp). Currently
-/// set to a floating point value that represents the distance from Earth
-typedef decimal distFromEarth;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -116,7 +115,6 @@ typedef struct OrbitParams OrbitParams;
 /// The output for Kinematic Profile Completion. Currently set to two functions that
 /// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
-
 }  // namespace found
 
-#endif
+#endif  // STYLE_H_
