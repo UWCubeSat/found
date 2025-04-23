@@ -7,9 +7,9 @@
 
 #include "test/common/common.hpp"
 
-#include "src/spatial/attitude-utils.hpp"
-#include "src/command-line/converters.hpp"
-#include "src/style/decimal.hpp"
+#include "src/common/spatial/attitude-utils.hpp"
+#include "src/providers/converters.hpp"
+#include "src/common/decimal.hpp"
 
 namespace found {
 

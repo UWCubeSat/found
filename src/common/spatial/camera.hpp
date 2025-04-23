@@ -1,9 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "spatial/attitude-utils.hpp"
+#include "common/spatial/attitude-utils.hpp"
 
-#include "style/style.hpp"
+#include "common/style.hpp"
 
 namespace found {
 

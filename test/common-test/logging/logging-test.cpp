@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "src/logging/logging.hpp"
+#include "src/common/logging/logging.hpp"
 
 namespace found {
 

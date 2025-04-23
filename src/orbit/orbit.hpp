@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "spatial/attitude-utils.hpp"
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-#include "src/pipeline/pipeline.hpp"
+#include "src/common/pipeline.hpp"
 
 #include "test/common/constants/pipeline-constants.hpp"
 #include "test/common/mocks/pipeline-mocks.hpp"

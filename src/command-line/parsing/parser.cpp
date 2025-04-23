@@ -1,13 +1,13 @@
-#include "command-line/parser.hpp"
+#include "command-line/parsing/parser.hpp"
 
 #include <getopt.h>
 
 #include <iostream>
 #include <string>
 
-#include "logging/logging.hpp"
-#include "style/style.hpp"
-#include "command-line/options.hpp"
+#include "common/logging/logging.hpp"
+#include "common/style.hpp"
+#include "command-line/parsing/options.hpp"
 
 /// This defines the global variable optind, used
 /// for keeping track of parsing for command-line

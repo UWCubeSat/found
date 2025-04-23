@@ -34,6 +34,7 @@
 #define DECIMAL_M_2_SQRTPI      (static_cast<decimal>(M_2_SQRTPI))    /* 2/sqrt(pi) */
 #define DECIMAL_M_SQRT2         (static_cast<decimal>(M_SQRT2))       /* sqrt(2) */
 #define DECIMAL_M_SQRT1_2       (static_cast<decimal>(M_SQRT1_2))     /* 1/sqrt(2) */
+#define DECIMAL_M_R_E           (static_cast<decimal>(6371008.7714))  /* Earth's Radius */
 
 // Math Functions wrapped with Decimal typecast
 #define DECIMAL_POW(base,power) (static_cast<decimal>(std::pow(base), power))

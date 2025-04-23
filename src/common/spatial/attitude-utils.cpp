@@ -1,5 +1,5 @@
 
-#include "spatial/attitude-utils.hpp"
+#include "common/spatial/attitude-utils.hpp"
 
 #include <math.h>
 #include <assert.h>

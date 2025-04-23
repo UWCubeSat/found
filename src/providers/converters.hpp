@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 
-#include "spatial/attitude-utils.hpp"
-#include "style/decimal.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/decimal.hpp"
 
 namespace found {
 

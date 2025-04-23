@@ -1,8 +1,8 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 

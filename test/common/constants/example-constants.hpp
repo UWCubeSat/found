@@ -11,8 +11,8 @@
 #include <memory>
 
 #include "src/distance/edge.hpp"
-#include "src/style/style.hpp"
-#include "src/spatial/attitude-utils.hpp"
+#include "src/common/style.hpp"
+#include "src/common/spatial/attitude-utils.hpp"
 
 #include "test/common/mocks/example-mocks.hpp"
 

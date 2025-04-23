@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include "src/style/decimal.hpp"
+#include "src/common/decimal.hpp"
 
 #define DEFAULT_TOLERANCE 1e-3
 

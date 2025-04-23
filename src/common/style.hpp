@@ -10,8 +10,9 @@
 #include <functional>
 #include <utility>
 
-#include "spatial/attitude-utils.hpp"
-#include "style/decimal.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/decimal.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 
@@ -116,6 +117,15 @@ typedef struct OrbitParams OrbitParams;
 /// The output for Kinematic Profile Completion. Currently set to two functions that
 /// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
+
+/// Pipeline for Calibration
+typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPipeline;
+
+/// Pipeline for Distance Determination
+typedef Pipeline<Image, PositionVector> DistancePipeline;
+
+/// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
+typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
 
 }  // namespace found
 

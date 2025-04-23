@@ -1,9 +1,9 @@
 #ifndef VELOCITY_H
 #define VELOCITY_H
 
-#include "style/style.hpp"
-#include "spatial/attitude-utils.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/style.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 

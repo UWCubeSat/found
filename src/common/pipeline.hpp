@@ -108,6 +108,11 @@ class Pipeline : public Stage<Input, Output> {
        : stages(stages), firstResource(nullptr), ready(false) {}
 
     /**
+     * Constructs an empty Pipeline
+     */
+    Pipeline() : firstResource(nullptr), ready(false) {}
+
+    /**
      * Adds a stage to this pipeline
      * 
      * @param stage The stage to add to the pipeline

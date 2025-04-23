@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "command-line/options.hpp"
+#include "command-line/parsing/options.hpp"
 
 namespace found {
 

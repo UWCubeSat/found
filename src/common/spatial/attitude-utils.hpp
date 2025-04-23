@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "style/decimal.hpp"
+#include "common/decimal.hpp"
 
 namespace found {
 
@@ -273,6 +273,20 @@ class Attitude {
 Mat3 QuaternionToDCM(const Quaternion &);
 Quaternion DCMToQuaternion(const Mat3 &);
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
+
+/**
+ * Converts Euler Angles into a quaternion
+ * 
+ * @param angles The euler angles to convert
+ * 
+ * @return A Quaternion representing this collection of Euler Angles
+ * 
+ * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
+ * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
+ * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+*/
+inline Quaternion SphericalToQuaternion(EulerAngles angles)
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };  // NOLINT
 
 // Spherical-Vector Conversions
 

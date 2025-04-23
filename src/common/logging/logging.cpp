@@ -1,4 +1,4 @@
-#include "logging/logging.hpp"
+#include "common/logging/logging.hpp"
 
 #ifdef ENABLE_LOGGING
 

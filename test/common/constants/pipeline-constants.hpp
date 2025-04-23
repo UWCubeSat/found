@@ -1,4 +1,4 @@
-#include "src/pipeline/pipeline.hpp"
+#include "src/common/pipeline.hpp"
 
 #define INIT_PIPELINE(I, O, pipeline, stages) Pipeline<I, O> pipeline(stages)
 
