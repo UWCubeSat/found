@@ -114,6 +114,7 @@ class Vec3 {
     Vec3 operator*(const decimal &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
+    Vec3 operator+(const Vec3 &other) const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 };
