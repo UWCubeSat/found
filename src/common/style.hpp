@@ -7,8 +7,10 @@
 #define STYLE_H
 
 #include <vector>
+#include <unordered_set>
 #include <functional>
 #include <utility>
+#include <memory>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
@@ -34,14 +36,32 @@ typedef Vec3 PositionVector;
  */
 struct Image {
     /// The image width
-    int width;
+    uint64_t width;
     /// The image height
-    int height;
+    uint64_t height;
     /// The image channels
     int channels;
     /// The image contents
     unsigned char *image;
 };
+
+/**
+ * Represents a 2D edge in an image
+ * 
+ * @note This must be carried with the original
+ * image, as there's no such field in this struct
+ */
+struct Edge {
+    /// The edge points
+    Points points;
+    /// The lowest point (left upper edge)
+    Vec2 upperLeft;
+    /// The highest point (right lower edge)
+    Vec2 lowerRight;
+};
+
+/// A collection of Edges
+typedef std::vector<Edge> Edges;
 
 /**
  * OrbitParams defines the orbital
@@ -129,4 +149,4 @@ typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
 
 }  // namespace found
 
-#endif
+#endif  // STYLE_H
