@@ -6,5 +6,6 @@ var searchData=
   ['column_3',['Column',['../classfound_1_1Mat3.html#af76b9c014a93ec1f2f9ffbee9a5a1def',1,'found::Mat3']]],
   ['complete_4',['Complete',['../classfound_1_1Pipeline.html#a2be74f428704c0bc058000726ce85bca',1,'found::Pipeline']]],
   ['conjugate_5',['Conjugate',['../classfound_1_1Quaternion.html#a75750d18a8b0e79ea3f0aa6fba5ee708',1,'found::Quaternion']]],
-  ['crossproduct_6',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
+  ['connectedcomponentsalgorithm_6',['ConnectedComponentsAlgorithm',['../namespacefound.html#a456b6b4e94c6aad743ac99f88076626d',1,'found']]],
+  ['crossproduct_7',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
 ];

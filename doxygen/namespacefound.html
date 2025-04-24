@@ -88,6 +88,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1DistanceDeterminationAlgorithm.html">DistanceDeterminationAlgorithm</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1Edge.html">Edge</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1EdgeDetectionAlgorithm.html">EdgeDetectionAlgorithm</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1EllipticalOrbitDerminationAlgorithm.html">EllipticalOrbitDerminationAlgorithm</a></td></tr>
@@ -143,6 +145,10 @@ Typedefs</h2></td></tr>
 <tr class="separator:a1b604d6c88357a2cfd98ad02c4697484"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ada279355d5202ae5bd893e569a4f40" id="r_a4ada279355d5202ae5bd893e569a4f40"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a4ada279355d5202ae5bd893e569a4f40">PositionVector</a></td></tr>
 <tr class="separator:a4ada279355d5202ae5bd893e569a4f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12b2a675381c9a2f96dc2afc874b0c0b" id="r_a12b2a675381c9a2f96dc2afc874b0c0b"><td class="memItemLeft" align="right" valign="top"><a id="a12b2a675381c9a2f96dc2afc874b0c0b" name="a12b2a675381c9a2f96dc2afc874b0c0b"></a>
+typedef std::vector&lt; <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Edges</b></td></tr>
+<tr class="memdesc:a12b2a675381c9a2f96dc2afc874b0c0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A collection of Edges. <br /></td></tr>
+<tr class="separator:a12b2a675381c9a2f96dc2afc874b0c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2731cf682fa0b6482db0998744ee09f6" id="r_a2731cf682fa0b6482db0998744ee09f6"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structfound_1_1OrbitParams.html">OrbitParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a2731cf682fa0b6482db0998744ee09f6">OrbitParams</a></td></tr>
 <tr class="separator:a2731cf682fa0b6482db0998744ee09f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefe13c4bfa4e0ae99e393a3141fd6f88" id="r_aefe13c4bfa4e0ae99e393a3141fd6f88"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; std::function&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>(int)&gt;, std::function&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>(int)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#aefe13c4bfa4e0ae99e393a3141fd6f88">KinematicPrediction</a></td></tr>
@@ -164,6 +170,14 @@ Functions</h2></td></tr>
 <tr class="separator:abb55dee2dcdd24ecdb2a37021b3f15f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cde8661904383c5d9df7c3c904d1042" id="r_a6cde8661904383c5d9df7c3c904d1042"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classOrbitOptions.html">OrbitOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a6cde8661904383c5d9df7c3c904d1042">ParseOrbitOptions</a> (int argc, char **argv)</td></tr>
 <tr class="separator:a6cde8661904383c5d9df7c3c904d1042"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a532a003b6775ad0c1e340256e492be0a" id="r_a532a003b6775ad0c1e340256e492be0a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a532a003b6775ad0c1e340256e492be0a">LabelPresent</a> (int label, int *adjacentLabels, int size)</td></tr>
+<tr class="separator:a532a003b6775ad0c1e340256e492be0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad88d57ec95e3045961185bf5204bf571" id="r_ad88d57ec95e3045961185bf5204bf571"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#ad88d57ec95e3045961185bf5204bf571">UpdateEdge</a> (<a class="el" href="structfound_1_1Edge.html">Edge</a> &amp;edge, <a class="el" href="structfound_1_1Vec2.html">Vec2</a> &amp;pixel)</td></tr>
+<tr class="separator:ad88d57ec95e3045961185bf5204bf571"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bb8d587616f836f63bc256031e2b45a" id="r_a3bb8d587616f836f63bc256031e2b45a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a3bb8d587616f836f63bc256031e2b45a">NWayEquivalenceAdd</a> (<a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, uint64_t index, int &amp;L, int adjacentLabels[4], int size, std::unordered_map&lt; int, <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt; &amp;edges, std::unordered_map&lt; int, int &gt; &amp;equivalencies)</td></tr>
+<tr class="separator:a3bb8d587616f836f63bc256031e2b45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a456b6b4e94c6aad743ac99f88076626d" id="r_a456b6b4e94c6aad743ac99f88076626d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a12b2a675381c9a2f96dc2afc874b0c0b">Edges</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a456b6b4e94c6aad743ac99f88076626d">ConnectedComponentsAlgorithm</a> (<a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, bool(*Criteria)(uint64_t, <a class="el" href="structfound_1_1Image.html">Image</a> &amp;))</td></tr>
+<tr class="separator:a456b6b4e94c6aad743ac99f88076626d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad42cc33dcaec977f225a7609f9d7cd0c" id="r_ad42cc33dcaec977f225a7609f9d7cd0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Quaternion.html">Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c">SphericalToQuaternion</a> (decimal ra, decimal dec, decimal roll)</td></tr>
 <tr class="separator:ad42cc33dcaec977f225a7609f9d7cd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a343128d3a03d505a732fddcd468ebce1" id="r_a343128d3a03d505a732fddcd468ebce1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a343128d3a03d505a732fddcd468ebce1">SphericalToSpatial</a> (const decimal ra, const decimal de)</td></tr>
@@ -270,7 +284,7 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The output for Edge Detection Algorithms (<a class="el" href="edge_8hpp_source.html">edge.hpp</a>/cpp). Currently set to a vector of 2D points on the image, according to image coordinate systems </p>
+<p>The output for <a class="el" href="structfound_1_1Edge.html">Edge</a> Detection Algorithms (<a class="el" href="edge_8hpp_source.html">edge.hpp</a>/cpp). Currently set to a vector of 2D points on the image, according to image coordinate systems </p>
 
 </div>
 </div>
@@ -389,6 +403,44 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A possible angle value, in radians, corresponding to the arcsecant value arcSec </dd></dl>
+
+</div>
+</div>
+<a id="a456b6b4e94c6aad743ac99f88076626d" name="a456b6b4e94c6aad743ac99f88076626d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a456b6b4e94c6aad743ac99f88076626d">&#9670;&#160;</a></span>ConnectedComponentsAlgorithm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacefound.html#a12b2a675381c9a2f96dc2afc874b0c0b">Edges</a> found::ConnectedComponentsAlgorithm </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool(*)(uint64_t, <a class="el" href="structfound_1_1Image.html">Image</a> &amp;)&#160;</td>
+          <td class="paramname"><em>Criteria</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Computes the groups of edges within the image</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">image</td><td>The image that defines the possible pixels </td></tr>
+    <tr><td class="paramname">Criteria</td><td>A function that accepts a pixel index and the image and returns true iff the pixel is part of the edge</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Edges The edges that are part of the image</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function iterates through each pixel in the image, but treats the image as 2D, not 3D. You must program Criteria correctly to handle cases where there are multiple channels (i.e. This algorithm doesn't know how many channels are involved). </dd></dl>
 
 </div>
 </div>
@@ -627,6 +679,58 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
 
 </div>
 </div>
+<a id="a532a003b6775ad0c1e340256e492be0a" name="a532a003b6775ad0c1e340256e492be0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a532a003b6775ad0c1e340256e492be0a">&#9670;&#160;</a></span>LabelPresent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool found::LabelPresent </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>label</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>adjacentLabels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Checks if a label is present in the list of adjacent labels</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">label</td><td>The label to check </td></tr>
+    <tr><td class="paramname">adjacentLabels</td><td>The list of adjacent labels </td></tr>
+    <tr><td class="paramname">size</td><td>The size of the list</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true iff label is in adjacentLabels </dd></dl>
+
+</div>
+</div>
 <a id="a25eef2e6e20aa0e29f7d5c1140b6bad0" name="a25eef2e6e20aa0e29f7d5c1140b6bad0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a25eef2e6e20aa0e29f7d5c1140b6bad0">&#9670;&#160;</a></span>main()</h2>
 
@@ -662,6 +766,87 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An integer indicating success (0) iff the program executes successfully</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>The method itself uses command line arguments to generate an Options object that represents all the algorithms we want to run and their parameters </dd></dl>
+
+</div>
+</div>
+<a id="a3bb8d587616f836f63bc256031e2b45a" name="a3bb8d587616f836f63bc256031e2b45a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bb8d587616f836f63bc256031e2b45a">&#9670;&#160;</a></span>NWayEquivalenceAdd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int found::NWayEquivalenceAdd </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>L</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>adjacentLabels</em>[4], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unordered_map&lt; int, <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>edges</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unordered_map&lt; int, int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>equivalencies</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds a pixel to some edge, creating a new edge if necessary</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">image</td><td>The image to which the pixel belongs </td></tr>
+    <tr><td class="paramname">index</td><td>The index of the pixel </td></tr>
+    <tr><td class="paramname">L</td><td>The current label </td></tr>
+    <tr><td class="paramname">adjacentLabels</td><td>The labels of the adjacent edges </td></tr>
+    <tr><td class="paramname">size</td><td>The number of adjacent labels </td></tr>
+    <tr><td class="paramname">edges</td><td>The edges that are part of the image </td></tr>
+    <tr><td class="paramname">equivalencies</td><td>The labels that are equivalent to each other</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The label of the edge point that was added</dd></dl>
+<p>Updates edges with the new pixel as appropriate </p>
 
 </div>
 </div>
@@ -1141,6 +1326,51 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An EulerAngle corresponding to the string, if the str is valid</dd></dl>
 <dl class="section pre"><dt>Precondition</dt><dd>The string must have 3 decimal values seperated by commas or spaces </dd></dl>
+
+</div>
+</div>
+<a id="ad88d57ec95e3045961185bf5204bf571" name="ad88d57ec95e3045961185bf5204bf571"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad88d57ec95e3045961185bf5204bf571">&#9670;&#160;</a></span>UpdateEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void found::UpdateEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structfound_1_1Edge.html">Edge</a> &amp;&#160;</td>
+          <td class="paramname"><em>edge</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfound_1_1Vec2.html">Vec2</a> &amp;&#160;</td>
+          <td class="paramname"><em>pixel</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Updates the edge with the given pixel</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>The edge to update </td></tr>
+    <tr><td class="paramname">pixel</td><td>The pixel to add</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>UpdateEdge must be called in order of increasing index </dd></dl>
 
 </div>
 </div>
