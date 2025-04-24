@@ -79,7 +79,7 @@ CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-f
 ifdef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 else
-	CXXFLAGS_TEST := -O1 $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
 CXXFLAGS += $(LOGGING_MACROS)
 LDFLAGS := # Any dynamic libraries go here
