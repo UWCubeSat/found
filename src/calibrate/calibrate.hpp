@@ -28,8 +28,6 @@ class CalibrationAlgorithm : public Stage<std::pair<EulerAngles, EulerAngles>, Q
  */
 class LOSTCalibrationAlgorithm : public CalibrationAlgorithm {
  public:
-    ~LOSTCalibrationAlgorithm() {}
-
     /**
      * Runs the calibration algorithm
      * 
