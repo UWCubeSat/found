@@ -17,9 +17,9 @@ namespace found {
 */
 struct Vec2 {
     /// The x coordinate
-    const decimal x;
+    decimal x;
     /// The y coordinate
-    const decimal y;
+    decimal y;
 
     // Magnitude
 
