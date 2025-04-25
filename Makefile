@@ -3,6 +3,7 @@ SRC_DIR := src
 TEST_DIR := test
 LIB_DIR := libraries
 BUILD_DIR := build
+CACHE_DIR := .cache
 
 # Define directory with binaries
 BIN_DIR := $(BUILD_DIR)/bin
@@ -32,8 +33,10 @@ BUILD_DOCUMENTATION_COVERAGE_DIR := $(BUILD_DOCUMENTATION_DIR)/coverage
 GTEST := googletest
 GTEST_VERSION := release-1.12.1
 GTEST_URL := https://github.com/google/$(GTEST)/archive/$(GTEST_VERSION).tar.gz
+GTEST_CACHE_ARTIFACT := $(CACHE_DIR)/$(GTEST_VERSION).tar.gz
+GTEST_CACHE_DIR := $(CACHE_DIR)/$(GTEST)-$(GTEST_VERSION)
+GTEST_CACHE_BUILD_DIR := $(GTEST_CACHE_DIR)/build
 GTEST_DIR := $(BUILD_LIBRARY_TEST_DIR)/$(GTEST)-$(GTEST_VERSION)
-GTEST_BUILD_DIR := $(GTEST_DIR)/build
 
 # Define all source and test code
 SRC := $(shell find $(SRC_DIR) -name "*.cpp")
@@ -57,15 +60,30 @@ PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TE
 SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
+ifdef ENABLE_LOGGING
+	ifdef LOGGING_LEVEL
+		LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=$(LOGGING_LEVEL)
+  	else
+    	LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
+  	endif
+endif
+
+LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO -DINFO_STREAM=std::cout -DWARN_STREAM=std::cerr -DERROR_STREAM=std::cerr
+
 # Compiler flags
 LIBS := $(SRC_LIBS)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
-COVERAGE_FLAGS := -fprofile-arcs -ftest-coverage
-CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++11 $(LIBS)
-CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST)
+COVERAGE_FLAGS := --coverage
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 $(LIBS)
+ifdef OMIT_ASAN
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
+else
+	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
+endif
+CXXFLAGS += $(LOGGING_MACROS)
 LDFLAGS := # Any dynamic libraries go here
-LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread -lgcov
+LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
 # Targets
 COMPILE_SETUP_TARGET := compile_setup
@@ -78,6 +96,7 @@ GOOGLE_STYLECHECK_TEST_TARGET := google_stylecheck_test
 PRIVATE_TARGET := private
 DOXYGEN_TARGET := doxygen_generate
 CLEAN_TARGET := clean
+CLEAN_ALL_TARGET := clean_all
 
 # Options configurations
 ifdef DEBUG
@@ -118,18 +137,20 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET):
-	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR)
+$(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
+compile_setup_message:
+	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(BUILD_DIR) $(BIN_DIR)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
 compile_message:
@@ -140,36 +161,40 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TARGET))
 	cpplint $(SRC) $(SRC_H)
 
+# The test setup target (sets up directories and gtest)
 $(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
 $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
+	mkdir -p $(CACHE_DIR)
+$(GTEST_DIR): $(GTEST_CACHE_DIR)
+	cp -r $(GTEST_CACHE_DIR) $(BUILD_LIBRARY_TEST_DIR)
+$(GTEST_CACHE_DIR):
+	wget $(GTEST_URL) -P $(CACHE_DIR)
+	tar -xzf $(GTEST_CACHE_ARTIFACT) -C $(CACHE_DIR)
+	mkdir -p $(GTEST_CACHE_BUILD_DIR)
+	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && make
+	rm $(GTEST_CACHE_ARTIFACT)
 test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
 
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS_TEST) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
-$(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
+$(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(TEST_LIBS) $(COVERAGE_FLAGS) $(CXXFLAGS_TEST) -c $< -o $@
-$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS_TEST) $(TEST_LIBS) $(COVERAGE_FLAGS) -c $< -o $@
+$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
-$(GTEST_DIR): $(BUILD_DIR)
-	wget $(GTEST_URL)
-	tar -xzf $(GTEST_VERSION).tar.gz -C $(BUILD_LIBRARY_TEST_DIR)
-	rm -f $(GTEST_VERSION).tar.gz
-	mkdir -p $(GTEST_BUILD_DIR)
-	cd $(GTEST_BUILD_DIR) && cmake .. && make
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
 test_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_TARGET))
 
 # The coverage target
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
-	valgrind ./$(TEST_BIN)
+	./$(TEST_BIN)
 	gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
@@ -179,10 +204,10 @@ $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST_FILES)
 
 # The pre-processed artifacts target (private)
 private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
-$(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC) $(BUILD_DIR)
+$(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@ $(SRC_LIBS)
-$(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST) $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -E $< -o $@ $(SRC_LIBS)
+$(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@ $(SRC_LIBS) $(TEST_LIBS)
 private_message:
@@ -195,7 +220,12 @@ $(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET)
 	chmod +rwx doxygen.sh
 	./doxygen.sh
 
-# The clean target (not in default target)
+# The clean target (not in default target, cleans just the build folder)
 $(CLEAN_TARGET):
 	$(call PRINT_TARGET_HEADER, $(CLEAN_TARGET))
-	rm -rf build
+	rm -rf $(BUILD_DIR)
+
+# The clean_all target (cleans the build and cache folders)
+$(CLEAN_ALL_TARGET):
+	$(call PRINT_TARGET_HEADER, $(CLEAN_ALL_TARGET))
+	rm -rf $(BUILD_DIR) $(CACHE_DIR)

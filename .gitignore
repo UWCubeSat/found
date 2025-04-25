@@ -6,3 +6,12 @@ build
 
 # Don't include google test stuff
 googletest*
+**.tar.gz
+.cache
+
+# Don't include python stuff
+**__pycache__
+**.pytest_cache
+
+# Don't include personally generated images
+**.png

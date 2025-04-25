@@ -7,10 +7,13 @@
 #define STYLE_H
 
 #include <vector>
+#include <unordered_set>
 #include <functional>
 #include <utility>
+#include <memory>
 
 #include "spatial/attitude-utils.hpp"
+#include "style/decimal.hpp"
 
 namespace found {
 
@@ -31,11 +34,33 @@ typedef Vec3 PositionVector;
  * Represents an image
  */
 struct Image {
+    /// The image width
+    uint64_t width;
+    /// The image height
+    uint64_t height;
+    /// The image channels
+    int channels;
     /// The image contents
     unsigned char *image;
-    /// The image {width, height, channels}
-    int dimensions[3];
 };
+
+/**
+ * Represents a 2D edge in an image
+ * 
+ * @note This must be carried with the original
+ * image, as there's no such field in this struct
+ */
+struct Edge {
+    /// The edge points
+    Points points;
+    /// The lowest point (left upper edge)
+    Vec2 upperLeft;
+    /// The highest point (right lower edge)
+    Vec2 lowerRight;
+};
+
+/// A collection of Edges
+typedef std::vector<Edge> Edges;
 
 /**
  * OrbitParams defines the orbital
@@ -114,4 +139,4 @@ typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPr
 
 }  // namespace found
 
-#endif
+#endif  // STYLE_H
