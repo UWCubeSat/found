@@ -42,20 +42,13 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * Constructs a CalibrationPipelineExecutor
      * 
      * @param options The options to create the pipeline
+     * @param calibrationAlgorithm The calibration algorithm to use
      */
-    explicit CalibrationPipelineExecutor(const CalibrationOptions &options);
+    explicit CalibrationPipelineExecutor(const CalibrationOptions &options,
+                                         std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
-
-    /**
-     * Creates the pipeline
-     * 
-     * @param calibrationAlgorithm The calibration algorithm to use
-     * 
-     * @note This method is called in the constructor
-     */
-    void CreatePipeline(std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
  private:
     const CalibrationOptions &options_;
@@ -72,24 +65,17 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * Constructs a DistancePipelineExecutor
      * 
      * @param options The options to create the pipeline
+     * @param edgeDetectionAlgorithm The edge detection algorithm to use
+     * @param distanceAlgorithm The distance determination algorithm to use
+     * @param vectorizationAlgorithm The vectorization algorithm to use
      */
-    explicit DistancePipelineExecutor(const DistanceOptions &options);
+    explicit DistancePipelineExecutor(const DistanceOptions &options,
+                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
-
-    /**
-    * Creates the pipeline
-    * 
-    * @param edgeDetectionAlgorithm The edge detection algorithm to use
-    * @param distanceAlgorithm The distance determination algorithm to use
-    * @param vectorizationAlgorithm The vectorization algorithm to use
-    * 
-    * @note This method is called in the constructor
-    */
-    void CreatePipeline(std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                        std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                        std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
  private:
     const DistanceOptions &options_;

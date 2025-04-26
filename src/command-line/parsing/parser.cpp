@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "common/logging/logging.hpp"
+#include "common/logging.hpp"
 #include "common/style.hpp"
 #include "command-line/parsing/options.hpp"
 

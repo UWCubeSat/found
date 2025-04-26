@@ -20,6 +20,11 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.k + other.real*k + i*other.j - j*other.i);
 }
 
+/// Negate the quaternion, which is the same rotation
+Quaternion Quaternion::operator-() const {
+    return Quaternion(-real, -i, -j, -k);
+}
+
 /// Effectively computes a quaternion representing the inverse rotation of the original.
 Quaternion Quaternion::Conjugate() const {
     return Quaternion(real, -i, -j, -k);

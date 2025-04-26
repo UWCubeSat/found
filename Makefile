@@ -29,6 +29,13 @@ BUILD_DOCUMENTATION_DIR := $(BUILD_DIR)/documentation
 BUILD_DOCUMENTATION_DOXYGEN_DIR := $(BUILD_DOCUMENTATION_DIR)/doxygen
 BUILD_DOCUMENTATION_COVERAGE_DIR := $(BUILD_DOCUMENTATION_DIR)/coverage
 
+# Define the stb_image library
+STB_IMAGE := stb_image
+STB_IMAGE_URL := https://raw.githubusercontent.com/nothings/stb/master/$(STB_IMAGE).h
+STB_IMAGE_CACHE_DIR := $(CACHE_DIR)/$(STB_IMAGE)
+STB_IMAGE_CACHE_ARTIFACT := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).cpp
+STB_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(STB_IMAGE)
+
 # Define the GoogleTest library and build targets
 GTEST := googletest
 GTEST_VERSION := release-1.12.1
@@ -43,10 +50,6 @@ SRC := $(shell find $(SRC_DIR) -name "*.cpp")
 SRC_H := $(shell find $(SRC_DIR) -name "*.hpp")
 TEST := $(shell find $(TEST_DIR) -name "*.cpp")
 TEST_H :=$(shell find $(TEST_DIR) -name "*.hpp")
-
-# Define catch2 library and test suite files
-CATCH_LIB := $(TEST_DIR)/catch
-TEST_FILES := $(filter-out $(CATCH_LIB)/%, $(TEST) $(TEST_H))
 
 # Our Object source and test files
 SRC_OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_SRC_DIR)/%.o,$(SRC))
@@ -71,11 +74,11 @@ endif
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO -DINFO_STREAM=std::cout -DWARN_STREAM=std::cerr -DERROR_STREAM=std::cerr
 
 # Compiler flags
-LIBS := $(SRC_LIBS)
+LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 $(LIBS)
+CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
 ifdef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 else
@@ -137,19 +140,25 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
+	mkdir -p $(STB_IMAGE_CACHE_DIR)
 compile_setup_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
+$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT)
+	cp -r $(STB_IMAGE_CACHE_DIR) $(BUILD_LIBRARY_SRC_DIR)
+$(STB_IMAGE_CACHE_ARTIFACT):
+	wget $(STB_IMAGE_URL) -P $(STB_IMAGE_CACHE_DIR)
+	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(shell find $(BUILD_LIBRARY_SRC_DIR) -name "*.cpp") $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
@@ -181,7 +190,7 @@ test_setup_message:
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(shell find $(BUILD_LIBRARY_SRC_DIR) -name "*.cpp") $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) $(TEST_LIBS) $(COVERAGE_FLAGS) -c $< -o $@
@@ -198,9 +207,9 @@ $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
-$(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST_FILES)
+$(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
 	$(call PRINT_TARGET_HEADER, $(GOOGLE_STYLECHECK_TEST_TARGET))
-	cpplint $(TEST_FILES)
+	cpplint $(TEST) $(TEST_H)
 
 # The pre-processed artifacts target (private)
 private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
@@ -229,3 +238,5 @@ $(CLEAN_TARGET):
 $(CLEAN_ALL_TARGET):
 	$(call PRINT_TARGET_HEADER, $(CLEAN_ALL_TARGET))
 	rm -rf $(BUILD_DIR) $(CACHE_DIR)
+
+-include $(SRC_OBJS:.o=.d) $(TEST_OBJS:.o=.d)

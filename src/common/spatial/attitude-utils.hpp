@@ -179,7 +179,7 @@ class EulerAngles {
      * @param de The Declination of the Euler Angle
      * @param roll The roll of the Euler Angle
      */
-    EulerAngles(decimal ra, decimal de, decimal roll)
+    explicit EulerAngles(decimal ra = DECIMAL(0.0), decimal de = DECIMAL(0.0), decimal roll = DECIMAL(0.0))
         : ra(ra), de(de), roll(roll) {}
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
@@ -215,6 +215,7 @@ class Quaternion {
         : real(real), i(i), j(j), k(k) {}
 
     Quaternion operator*(const Quaternion &other) const;
+    Quaternion operator-() const;
     Quaternion Conjugate() const;
     Vec3 Vector() const;
     void SetVector(const Vec3 &);

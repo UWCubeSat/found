@@ -33,12 +33,15 @@ typedef Vec3 PositionVector;
 
 /**
  * Represents an image
+ * 
+ * @note If image points to heap allocated memory,
+ * it must be freed appropriately
  */
 struct Image {
     /// The image width
-    uint64_t width;
+    int width;
     /// The image height
-    uint64_t height;
+    int height;
     /// The image channels
     int channels;
     /// The image contents

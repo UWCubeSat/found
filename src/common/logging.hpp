@@ -3,6 +3,8 @@
 
 #ifdef ENABLE_LOGGING
 
+#include <iostream>
+#include <iomanip>
 #include <string>
 
 ///// LOGGING LEVELS /////
@@ -34,17 +36,17 @@
 // Basically, the logging level only allows logs equal
 // to its level and above (in severity) to be printed
 #if LOGGING_LEVEL == INFO
-    #define LOG_INFO(msg) found::Log(INFO, msg)
-    #define LOG_WARN(msg) found::Log(WARN, msg)
-    #define LOG_ERROR(msg) found::Log(ERROR, msg)
+    #define LOG_INFO(msg) LOG(INFO, msg)
+    #define LOG_WARN(msg) LOG(WARN, msg)
+    #define LOG_ERROR(msg) LOG(ERROR, msg)
 #elif LOGGING_LEVEL == WARN
     #define LOG_INFO(msg)
-    #define LOG_WARN(msg) found::Log(WARN, msg)
-    #define LOG_ERROR(msg) found::Log(ERROR, msg)
+    #define LOG_WARN(msg) LOG(WARN, msg)
+    #define LOG_ERROR(msg) LOG(ERROR, msg)
 #else
     #define LOG_INFO(msg)
     #define LOG_WARN(msg)
-    #define LOG_ERROR(msg) found::Log(ERROR, msg)
+    #define LOG_ERROR(msg) LOG(ERROR, msg)
 #endif
 
 namespace found {
@@ -73,12 +75,22 @@ namespace found {
     (level == ERROR ? ERROR_STREAM : (level == WARN ? WARN_STREAM : INFO_STREAM))
 
 /**
- * Logs a message
+ * Logs a message to a particular level
  * 
- * @param level The level
+ * @param level The level to log at
  * @param message The message to log
  */
-void Log(int level, const std::string message);
+#define LOG(level, message)                                                                         \
+    /* Determine Logging Level */                                                                   \
+    const std::string level_string = GET_LEVEL(level);                                              \
+    /* Determine UTC Time */                                                                        \
+    std::time_t now = std::time(nullptr);                                                           \
+    /* Convert to local time */                                                                     \
+    std::tm *local_time = std::localtime(&now);                                                     \
+    /* Print out everything */                                                                      \
+    GET_STREAM(level) <<                                                                            \
+        "[" << level_string << " " << std::put_time(local_time, "%Y-%m-%d %H:%M:%S %Z") << "] " <<  \
+        message << std::endl;                                                                       \
 
 }  // namespace found
 
