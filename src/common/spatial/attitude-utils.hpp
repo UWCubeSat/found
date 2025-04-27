@@ -249,7 +249,7 @@ class Quaternion {
 class Attitude {
  public:
     Attitude() = default;
-    explicit Attitude(const Quaternion &); // NOLINT
+    explicit Attitude(const Quaternion &);
     explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
@@ -287,7 +287,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
-    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };  // NOLINT
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
 
 // Spherical-Vector Conversions
 

@@ -60,13 +60,13 @@ inline void UpdateEdge(Edge &edge, Vec2 &pixel) {
  * 
  * Updates edges with the new pixel as appropriate
  */
-inline int NWayEquivalenceAdd(Image &image,  // NOLINTBEGIN
+inline int NWayEquivalenceAdd(Image &image,
                                uint64_t index,
                                int &L,
                                int adjacentLabels[4],
                                int size,
                                std::unordered_map<int, Edge> &edges,
-                               std::unordered_map<int, int> &equivalencies) {  // NOLINTEND
+                               std::unordered_map<int, int> &equivalencies) {
     Vec2 pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
     if (size == 0) {
         // No adjacent labels

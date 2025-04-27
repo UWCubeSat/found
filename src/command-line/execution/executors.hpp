@@ -44,15 +44,16 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param calibrationAlgorithm The calibration algorithm to use
      */
-    explicit CalibrationPipelineExecutor(const CalibrationOptions &options,
+    explicit CalibrationPipelineExecutor(CalibrationOptions &options,
                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    const CalibrationOptions &options_;
+    CalibrationOptions &options_;
     CalibrationPipeline pipeline_;
+    std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
 
 /**
@@ -62,12 +63,21 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
 class DistancePipelineExecutor : public PipelineExecutor {
  public:
     /**
+     * Destroys this and all distance determination pipeline resources
+     */
+    ~DistancePipelineExecutor();
+
+    /**
      * Constructs a DistancePipelineExecutor
      * 
      * @param options The options to create the pipeline
      * @param edgeDetectionAlgorithm The edge detection algorithm to use
      * @param distanceAlgorithm The distance determination algorithm to use
      * @param vectorizationAlgorithm The vectorization algorithm to use
+     * 
+     * @pre options.image.image must be point to heap allocated memory.
+     * This is guarenteed as long as strtoimage is used to create the image,
+     * and it throws an error if the image is not valid.
      */
     explicit DistancePipelineExecutor(const DistanceOptions &options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
@@ -80,6 +90,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
  private:
     const DistanceOptions &options_;
     DistancePipeline pipeline_;
+    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
 
 /**

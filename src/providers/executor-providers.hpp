@@ -1,7 +1,7 @@
 #ifndef EXECUTOR_PROVIDERS_H
 #define EXECUTOR_PROVIDERS_H
 
-#include "command-line/pipelines/executors.hpp"
+#include "command-line/execution/executors.hpp"
 
 namespace found {
 

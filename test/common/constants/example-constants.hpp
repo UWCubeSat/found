@@ -31,5 +31,5 @@ Vec2 expectedPoint1 = {1.0, 2.0};
 Vec2 expectedPoint2 = {3.0, 4.0};
 Points expectedPoints = {expectedPoint1, expectedPoint2};
 // Expected Size of Points
-const long unsigned int expectedSize = 2;  // NOLINT
+const long unsigned int expectedSize = 2;
 }  // namespace found

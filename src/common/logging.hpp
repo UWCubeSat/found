@@ -80,17 +80,18 @@ namespace found {
  * @param level The level to log at
  * @param message The message to log
  */
-#define LOG(level, message)                                                                         \
-    /* Determine Logging Level */                                                                   \
-    const std::string level_string = GET_LEVEL(level);                                              \
-    /* Determine UTC Time */                                                                        \
-    std::time_t now = std::time(nullptr);                                                           \
-    /* Convert to local time */                                                                     \
-    std::tm *local_time = std::localtime(&now);                                                     \
-    /* Print out everything */                                                                      \
-    GET_STREAM(level) <<                                                                            \
-        "[" << level_string << " " << std::put_time(local_time, "%Y-%m-%d %H:%M:%S %Z") << "] " <<  \
-        message << std::endl;                                                                       \
+#define LOG(level, message) {                                                                         \
+    /* Determine Logging Level */                                                                     \
+    const std::string level_string = GET_LEVEL(level);                                                \
+    /* Determine UTC Time */                                                                          \
+    std::time_t now = std::time(nullptr);                                                             \
+    /* Convert to local time */                                                                       \
+    std::tm *local_time = std::localtime(&now);                                                       \
+    /* Print out everything */                                                                        \
+    GET_STREAM(level) <<                                                                              \
+        "[" << level_string << " " << std::put_time(local_time, "%Y-%m-%d %H:%M:%S %Z") << "] " <<    \
+        message << std::endl;                                                                         \
+}
 
 }  // namespace found
 

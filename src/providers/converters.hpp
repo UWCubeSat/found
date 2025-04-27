@@ -12,6 +12,12 @@
 #include "common/style.hpp"
 #include "common/decimal.hpp"
 
+// NOTE: Throwing exceptions is allowed in this file, as these functions
+// must successfully parse data for any pipeline to function properly.
+// If they fail, the pipeline should not be run, and an exception should be thrown.
+// This is preferable than continuing with invalid data and outputting an unintended
+// result.
+
 namespace found {
 
 /**
@@ -78,6 +84,8 @@ inline bool strtobool(const std::string &str) {
  * @return The image that the string represents
  * 
  * @note This function uses stb_image.h to load the image
+ * 
+ * @throw std::runtime_error if the image cannot be loaded
  */
 inline Image strtoimage(const std::string &str) {
     Image image;
