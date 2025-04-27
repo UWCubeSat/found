@@ -17,7 +17,7 @@ class VectorGenerationAlgorithm : public Stage<PositionVector, PositionVector> {
     // Constructs this
     VectorGenerationAlgorithm() = default;
     // Destroys this
-    virtual ~VectorGenerationAlgorithm();
+    virtual ~VectorGenerationAlgorithm() {}
 };
 
 /**

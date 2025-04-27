@@ -15,7 +15,7 @@ class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm();
+    virtual ~DistanceDeterminationAlgorithm() {}
 };
 
 /**

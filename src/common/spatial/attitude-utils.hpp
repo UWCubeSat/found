@@ -85,8 +85,6 @@ class Vec3 {
 
     Vec3 Normalize() const;
 
-    // TODO: Accessor Methods
-
     /**
      * Obtains the Right Ascension of this
      * vector
@@ -179,7 +177,9 @@ class EulerAngles {
      * @param de The Declination of the Euler Angle
      * @param roll The roll of the Euler Angle
      */
-    explicit EulerAngles(decimal ra = DECIMAL(0.0), decimal de = DECIMAL(0.0), decimal roll = DECIMAL(0.0))
+    EulerAngles(decimal ra = DECIMAL(0.0),
+                decimal de = DECIMAL(0.0),
+                decimal roll = DECIMAL(0.0))  // NOLINT(runtime/explicit)
         : ra(ra), de(de), roll(roll) {}
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
@@ -305,8 +305,6 @@ decimal RadToDeg(decimal);
 decimal DegToRad(decimal);
 decimal RadToArcSec(decimal);
 decimal ArcSecToRad(decimal);
-
-// TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
 }  // namespace found
 

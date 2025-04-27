@@ -112,8 +112,6 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     void ExecutePipeline() override;
     void OutputResults() override;
 
-    // TODO(nguy8tri): Define void CreatePipeline();
-
  private:
     const OrbitOptions &options_;
     OrbitPipeline pipeline_;
