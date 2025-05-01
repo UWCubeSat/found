@@ -1,0 +1,6 @@
+#!/bin/sh
+g++ -std=c++17 -Wall -Wextra -Werror -pedantic \
+    -Iinclude \
+    src/edge_detection/simple-edge-detection.cpp \
+    test/edge_detection/test-simple-edge-detection.cpp \
+    -o found

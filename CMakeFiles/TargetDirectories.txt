@@ -1,0 +1,4 @@
+/home/demo/Documents/found/CMakeFiles/edge_detection.dir
+/home/demo/Documents/found/CMakeFiles/test_edge_detection.dir
+/home/demo/Documents/found/CMakeFiles/edit_cache.dir
+/home/demo/Documents/found/CMakeFiles/rebuild_cache.dir

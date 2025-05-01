@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsimple_threshold_ed.a CMakeFiles/simple_threshold_ed.dir/src/edge_detection/simple_threshold_ed.cpp.o
+/usr/bin/ranlib libsimple_threshold_ed.a

@@ -4,35 +4,29 @@
 #include <vector>
 #include <cstdint>
 
-/* 
- * SimpleImage
- * Represents a 2D grayscale image for edge detection.
- */
 namespace found {
 
+/* 
+ * SimpleImage represents a grayscale image structure
+ * width: Image width in pixels
+ * height: Image height in pixels
+ * data: 2D vector of grayscale values (0-255)
+ */
 struct SimpleImage {
     int width;
     int height;
     std::vector<std::vector<uint8_t>> data;
-
-    /* 
-     * SimpleImage Constructor
-     * Initializes an image with the given width and height, all pixels set to 0.
-     */
+    
     explicit SimpleImage(int width, int height);
 };
 
 /*
- * SimpleEdgeDetection
- * Performs threshold-based edge detection on a grayscale image.
- * Parameters:
- *   input_image: The input grayscale SimpleImage.
- *   threshold:   The threshold value (0-255) for binarization.
- * Returns:
- *   A new SimpleImage containing detected edges (255=white edge, 0=background).
+ * Performs threshold-based edge detection
+ * @param input_image: Input grayscale image
+ * @param threshold: Binarization threshold (0-255)
+ * @return: Image with edges marked as 255 (white)
  */
 SimpleImage SimpleEdgeDetection(const SimpleImage& input_image, uint8_t threshold);
 
 } // namespace found
-
 #endif // SIMPLE_EDGE_DETECTION_HPP
