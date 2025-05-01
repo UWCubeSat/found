@@ -1,0 +1,2 @@
+/usr/bin/ar qc libedge_detection.a "CMakeFiles/edge_detection.dir/src/edge_detection/simple-edge-detection.cpp.o"
+/usr/bin/ranlib libedge_detection.a
