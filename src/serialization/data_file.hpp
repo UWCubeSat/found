@@ -4,17 +4,12 @@
 #include <vector>
 #include <cstdint>
 #include <string>
-#include "spatial/attitude-utils.hpp"  // Include the header for Vec3
+#include "spatial/attitude-utils.hpp"  // Includes Vec3 and EulerAngles
 
 /**
  * @file data_file.hpp
- * @brief Defines structures for handling serialized data files, including headers, 
- *        location records, and complete data file representations.
- *
- * This file provides:
- * - `DataFileHeader`: Metadata for serialized data files, including validation methods.
- * - `LocationRecord`: A single location with position and timestamp.
- * - `DataFile`: A complete file containing header, attitude, and position records.
+ * @brief Declares data structures for serialized spatial data files, including headers,
+ *        location records, and full data file representations.
  */
 
 namespace found {
@@ -22,67 +17,77 @@ namespace found {
     /**
      * @brief Represents the header of a data file used in the serialization process.
      *
-     * Contains metadata such as a magic identifier, version, number of positions,
-     * and a CRC value for validating header integrity.
+     * Contains metadata such as a magic identifier, version, number of position records,
+     * and a CRC32 checksum for integrity verification.
      */
     struct DataFileHeader {
         /**
-         * @brief A 4-character array used as a magic identifier for the file. Default: {'F', 'O', 'U', 'N'}.
+         * @brief Magic identifier used to validate file type.
+         *
+         * The magic string "FOUN" is used to identify this file format during deserialization.
+         * This is similar to other file formats (e.g., PNG, PDF) that include a recognizable
+         * signature at the start of the file. If the magic value doesn't match, the file
+         * is considered invalid or corrupted.
          */
         char magic[4] = {'F', 'O', 'U', 'N'};
 
         /**
-         * @brief The version of the data file format. Default: 1.
+         * @brief Version of the file format.
+         * Default is 1. Used to support versioned deserialization in the future.
          */
         uint32_t version = 1;
 
         /**
-         * @brief Number of Vec3 elements (positions) in the data file.
+         * @brief Number of position entries (Vec3 elements) in the file.
          */
         uint32_t num_positions;
 
         /**
-         * @brief CRC32 checksum used to validate the integrity of the header.
+         * @brief CRC32 checksum of the header (excluding this field) for validation.
          */
         uint32_t crc;
 
         /**
-         * @brief Validates the integrity of the header using the magic bytes and CRC.
+         * @brief Validates the integrity of the header using the magic string and CRC.
+         *
+         * Throws a runtime error if validation fails.
          */
         void validate();
     };
 
     /**
-     * @brief Represents a single location record containing a position and a timestamp.
+     * @brief Represents a single spatial data point with position and timestamp.
      */
     struct LocationRecord {
         /**
-         * @brief The 3D position vector associated with this location.
+         * @brief 3D position of the recorded data point.
          */
         Vec3 position;
 
         /**
-         * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
+         * @brief Timestamp associated with the position, in microseconds or appropriate units.
          */
         uint64_t timestamp;
     };
 
     /**
-     * @brief Represents a complete data file containing header, relative attitude, and position records.
+     * @brief Represents a complete serialized data file.
+     *
+     * Contains the file header, relative orientation of the sensor, and a list of spatial position records.
      */
     struct DataFile {
         /**
-         * @brief The metadata header of the file.
+         * @brief Metadata header for the file (includes magic, version, and CRC).
          */
         DataFileHeader header;
 
         /**
-         * @brief Attitude of the object represented by Euler angles.
+         * @brief Relative orientation (attitude) of the object as Euler angles.
          */
         EulerAngles relative_attitude = EulerAngles(0, 0, 0);
 
         /**
-         * @brief A list of recorded positions with timestamps.
+         * @brief Collection of location records in the file.
          */
         std::vector<LocationRecord> positions;
     };

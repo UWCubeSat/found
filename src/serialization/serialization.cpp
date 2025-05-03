@@ -7,42 +7,49 @@ using Vec3 = found::Vec3;
 
 namespace found {
 
+    /// Converts a DataFileHeader from host to network byte order.
     void hton(DataFileHeader& header) {
         header.version = htonl(header.version);
         header.num_positions = htonl(header.num_positions);
         header.crc = htonl(header.crc);
     }
 
+    /// Converts EulerAngles from host to network byte order.
     void hton(EulerAngles& angles) {
         angles.roll = htonl(angles.roll);
         angles.ra = htonl(angles.ra);
         angles.de = htonl(angles.de);
     }
 
+    /// Converts a Vec3 from host to network byte order.
     void hton(Vec3& v) {
         v.x = htonl(v.x);
         v.y = htonl(v.y);
         v.z = htonl(v.z);
     }
 
+    /// Converts a DataFileHeader from network to host byte order.
     void ntoh(DataFileHeader& header) {
         header.version = ntohl(header.version);
         header.num_positions = ntohl(header.num_positions);
         header.crc = ntohl(header.crc);
     }
 
+    /// Converts EulerAngles from network to host byte order.
     void ntoh(EulerAngles& angles) {
         angles.roll = ntohl(angles.roll);
         angles.ra = ntohl(angles.ra);
         angles.de = ntohl(angles.de);
     }
 
+    /// Converts a Vec3 from network to host byte order.
     void ntoh(Vec3& v) {
         v.x = ntohl(v.x);
         v.y = ntohl(v.y);
         v.z = ntohl(v.z);
     }
 
+    /// Calculates the CRC32 checksum for a block of memory (placeholder implementation).
     uint32_t calculateCRC32(const void* data, size_t length) {
         uint32_t crc = 0;
         const uint8_t* bytes = static_cast<const uint8_t*>(data);
@@ -52,12 +59,12 @@ namespace found {
         return crc;
     }
 
+    /// Serializes a DataFile object to an output stream.
     void serialize(const DataFile& data, std::ostream& stream) {
         DataFileHeader header = data.header;
         hton(header);
         header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
         header.crc = htonl(header.crc);
-
         stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
 
         EulerAngles relative_attitude = data.relative_attitude;
@@ -72,28 +79,29 @@ namespace found {
         }
     }
 
+    /// Deserializes a DataFile object from an input stream.
     DataFile deserialize(std::istream& stream) {
         DataFile data;
 
         data.relative_attitude = EulerAngles(0, 0, 0);
-        ntoh(data.relative_attitude);
+        ntoh(data.relative_attitude);  // Default will be overwritten after header
 
         data.header = readHeader(stream);
 
         stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(data.relative_attitude));
+        ntoh(data.relative_attitude);
 
+        data.positions.resize(data.header.num_positions);
         for (auto& r : data.positions) {
             stream.read(reinterpret_cast<char*>(&r), sizeof(LocationRecord));
             ntoh(r.position);
             r.timestamp = ntohl(r.timestamp);
         }
 
-        data.positions.resize(data.header.num_positions);
-        stream.read(reinterpret_cast<char*>(data.positions.data()), data.positions.size() * sizeof(LocationRecord));
-
         return data;
     }
 
+    /// Reads and validates the header from an input stream.
     DataFileHeader readHeader(std::istream& stream) {
         DataFileHeader header;
         stream.read(reinterpret_cast<char*>(&header), sizeof(header));
@@ -104,7 +112,6 @@ namespace found {
         }
 
         ntoh(header);
-
         return header;
     }
 

@@ -42,23 +42,37 @@ namespace found {
     /**
      * @brief Converts a 16-bit integer from host byte order to network byte order.
      */
-    inline uint16_t htons(uint16_t v);
+    inline uint16_t htons(uint16_t v) {
+        return (v << 8) | (v >> 8);
+    }
 
     /**
      * @brief Converts a 32-bit integer from host byte order to network byte order.
      */
-    inline uint32_t htonl(uint32_t v);
+    inline uint32_t htonl(uint32_t v) {
+        return ((v & 0xFF000000) >> 24) |
+               ((v & 0x00FF0000) >> 8) |
+               ((v & 0x0000FF00) << 8) |
+               ((v & 0x000000FF) << 24);
+    }
 
     /**
      * @brief Converts a 16-bit integer from network byte order to host byte order.
      */
-    inline uint16_t ntohs(uint16_t v);
+    inline uint16_t ntohs(uint16_t v) {
+        return (v << 8) | (v >> 8);
+    }
 
     /**
      * @brief Converts a 32-bit integer from network byte order to host byte order.
      */
-    inline uint32_t ntohl(uint32_t v);
-
+    inline uint32_t ntohl(uint32_t v) {
+        return ((v & 0xFF000000) >> 24) |
+               ((v & 0x00FF0000) >> 8) |
+               ((v & 0x0000FF00) << 8) |
+               ((v & 0x000000FF) << 24);
+    }
+    
     /**
      * @brief Converts a DataFileHeader from host to network byte order.
      * @param header The header to convert.

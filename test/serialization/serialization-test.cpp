@@ -1,25 +1,37 @@
 #include <gtest/gtest.h>
 #include "serialization/serialization.hpp"
+
 #include <fstream>
+#include <sstream>
 #include <cstddef>
 
 namespace found {
 
+/**
+ * @class SerializationTest
+ * @brief Unit test fixture for serialization/deserialization functions.
+ */
 class SerializationTest : public ::testing::Test {
 protected:
-    // Headers in stored (big-endian) format.
+    /**
+     * @brief A valid DataFileHeader in network byte order for an empty file (0 positions).
+     * CRC is set to 313 (0x0139), calculated from the first 12 bytes.
+     */
     const unsigned char emptyTestHeader[16] = {
-        'F', 'O', 'U', 'N', // Magic Number
-        0x00U, 0x00U, 0x00U, 0x01U, // Version
-        0x00U, 0x00U, 0x00U, 0x00U, // NumPositions
-        0x00U, 0x00U, 0x01U, 0x39U // CRC (313 in Decimal)
+        'F', 'O', 'U', 'N',             // Magic Number
+        0x00U, 0x00U, 0x00U, 0x01U,     // Version = 1
+        0x00U, 0x00U, 0x00U, 0x00U,     // NumPositions = 0
+        0x00U, 0x00U, 0x01U, 0x39U      // CRC = 313 (0x0139)
     };
 
+    /**
+     * @brief A header with a deliberately incorrect CRC value.
+     */
     const unsigned char incorrectCRCTestHeader[16] = {
-        'F', 'O', 'U', 'N', // Magic Number
-        0x00U, 0x00U, 0x00U, 0x01U, // Version
-        0x00U, 0x00U, 0x00U, 0x00U, // NumPositions
-        0x39U, 0x01U, 0x10U, 0x00U // Incorrect CRC
+        'F', 'O', 'U', 'N',             // Magic Number
+        0x00U, 0x00U, 0x00U, 0x01U,     // Version = 1
+        0x00U, 0x00U, 0x00U, 0x00U,     // NumPositions = 0
+        0x39U, 0x01U, 0x10U, 0x00U      // Incorrect CRC
     };
 
     std::string emptyTestHeaderString;
@@ -31,11 +43,13 @@ protected:
     }
 
     void TearDown() override {
-        // Clean up any test files
-        // std::remove("test_data.bin");
+        // Currently unused, kept for future file cleanup if needed
     }
 };
 
+/**
+ * @test Verifies that a correctly constructed header is parsed successfully.
+ */
 TEST_F(SerializationTest, CorrectHeader) {
     DataFileHeader header = readHeader(emptyTestHeaderStream);
     ASSERT_EQ(header.magic[0], 'F');
@@ -46,57 +60,45 @@ TEST_F(SerializationTest, CorrectHeader) {
     ASSERT_EQ(calculateCRC32(emptyTestHeader, sizeof(header) - sizeof(header.crc)), 313U);
 }
 
+/**
+ * @test Ensures that an incorrect CRC value triggers a runtime error.
+ */
 TEST_F(SerializationTest, IncorrectHeader) {
-    std::string incorrectCRCTestHeaderString;
-    std::istringstream incorrectCRCTestHeaderStream;
-    incorrectCRCTestHeaderString = std::string(reinterpret_cast<const char*>(incorrectCRCTestHeader), sizeof(incorrectCRCTestHeader));
-    incorrectCRCTestHeaderStream = std::istringstream(incorrectCRCTestHeaderString);
-    ASSERT_THROW(readHeader(incorrectCRCTestHeaderStream), std::runtime_error);
+    std::string incorrectStr(reinterpret_cast<const char*>(incorrectCRCTestHeader), sizeof(incorrectCRCTestHeader));
+    std::istringstream stream(incorrectStr);
+    ASSERT_THROW(readHeader(stream), std::runtime_error);
 }
 
+/**
+ * @test Serializes and deserializes a DataFile object and verifies round-trip consistency.
+ */
 TEST_F(SerializationTest, RoundTripSerialization) {
-    // Create a sample DataFile to simulate real data
     DataFile data;
-
-    // Set the header magic and version information
-    memcpy(data.header.magic, "FOUN", 4);  // Expected magic number
+    memcpy(data.header.magic, "FOUN", 4);
     data.header.version = 1;
-    data.header.num_positions = 2;  // We'll add two positions
-
-    // Set some dummy satellite-relative orientation values
+    data.header.num_positions = 2;
     data.relative_attitude = {123456789, 987654321, 111111111};
 
-    // Add two sample location records with position and timestamp
-    LocationRecord loc1;
-    loc1.position = {100, 200, 300};
-    loc1.timestamp = 161803398;
-
-    found::LocationRecord loc2;
-    loc2.position = {-100, -200, -300};
-    loc2.timestamp = 271828182;
+    LocationRecord loc1{{100, 200, 300}, 161803398};
+    LocationRecord loc2{{-100, -200, -300}, 271828182};
 
     data.positions.push_back(loc1);
     data.positions.push_back(loc2);
 
-    // Serialize the DataFile to a memory stream
     std::ostringstream out;
     serialize(data, out);
-    std::string buffer = out.str();  // Store binary data as a string
+    std::string buffer = out.str();
 
-    // Deserialize from the same stream and reconstruct the object
     std::istringstream in(buffer);
-    found::DataFile parsed = deserialize(in);
+    DataFile parsed = deserialize(in);
 
-    // Validate the parsed header fields
     ASSERT_EQ(parsed.header.version, 1U);
     ASSERT_EQ(parsed.header.num_positions, 2U);
 
-    // Validate the relative attitude fields
     ASSERT_EQ(parsed.relative_attitude.roll, data.relative_attitude.roll);
     ASSERT_EQ(parsed.relative_attitude.ra, data.relative_attitude.ra);
     ASSERT_EQ(parsed.relative_attitude.de, data.relative_attitude.de);
 
-    // Validate the positions
     ASSERT_EQ(parsed.positions.size(), 2U);
     EXPECT_EQ(parsed.positions[0].timestamp, loc1.timestamp);
     EXPECT_EQ(parsed.positions[0].position.x, loc1.position.x);
@@ -104,62 +106,52 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     EXPECT_EQ(parsed.positions[1].position.y, loc2.position.y);
 }
 
+/**
+ * @test Simulates a corrupted input stream by writing partial position data and expects failure.
+ */
 TEST_F(SerializationTest, CorruptedPositionDeserialization) {
-    // Create a header that claims to have one position
     std::ostringstream out;
     DataFileHeader header;
     memcpy(header.magic, "FOUN", 4);
     header.version = 1;
-    header.num_positions = 1;  // Claims one record
-
-    // Calculate and assign the CRC
+    header.num_positions = 1;
     header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
 
-    // Convert the header fields to network byte order (big endian)
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
-    header.crc = htonl(header.crc);  // Convert CRC as well
+    header.crc = htonl(header.crc);
 
-    // Write the header to the output stream
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-
-    // Write only 3 bytes of position data (incomplete LocationRecord)
-    out.write("bad", 3);  // Simulate a corrupted or truncated file
+    out.write("bad", 3);  // Incomplete LocationRecord
 
     std::string buffer = out.str();
     std::istringstream in(buffer);
 
-    // Attempt to deserialize and expect a failure due to corrupted input
     EXPECT_THROW({
         found::deserialize(in);
     }, std::ios_base::failure);
 }
 
+/**
+ * @test Provides a header with an invalid magic number and expects validation failure.
+ */
 TEST_F(SerializationTest, MagicNumberMismatch) {
-    // Create a header with an incorrect magic number
     std::ostringstream out;
     DataFileHeader header;
-    memcpy(header.magic, "FAIL", 4);  // Wrong magic value
+    memcpy(header.magic, "FAIL", 4);  // Invalid magic
     header.version = 1;
     header.num_positions = 0;
-
-    // Compute CRC based on the incorrect magic
     header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
 
-    // Convert to network byte order
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
     header.crc = htonl(header.crc);
 
-    // Write the faulty header to stream
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-
     std::string buffer = out.str();
     std::istringstream in(buffer);
 
-    // The CRC might pass, but the magic number should trigger a validation failure
-    EXPECT_THROW({
-        readHeader(in);
-    }, std::runtime_error);
+    EXPECT_THROW(readHeader(in), std::runtime_error);
 }
+
 }  // namespace found
