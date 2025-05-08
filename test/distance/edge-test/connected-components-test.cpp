@@ -7,7 +7,7 @@
 
 #include "test/common/common.hpp"
 
-#include "src/style/style.hpp"
+#include "src/common/style.hpp"
 
 #include "src/distance/edge.hpp"
 
