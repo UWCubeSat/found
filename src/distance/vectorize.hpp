@@ -1,9 +1,9 @@
 #ifndef VECTORIZE_H
 #define VECTORIZE_H
 
-#include "spatial/attitude-utils.hpp"
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 
@@ -12,12 +12,12 @@ namespace found {
  * finds the position from Earth with respect to its center with a 3D Vector (Vec3).
  * 
 */
-class VectorGenerationAlgorithm : public Stage<distFromEarth, PositionVector> {
+class VectorGenerationAlgorithm : public Stage<PositionVector, PositionVector> {
  public:
     // Constructs this
     VectorGenerationAlgorithm() = default;
     // Destroys this
-    virtual ~VectorGenerationAlgorithm();
+    virtual ~VectorGenerationAlgorithm() {}
 };
 
 /**
@@ -30,10 +30,19 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param orientation The orientation of the satellite as determined by LOST
+     * @param relativeOrientation The orientation of the FOUND camera with respect to the reference Orientation
+     * @param referenceOrientation The orientation of the reference orientation
     */
-    explicit LOSTVectorGenerationAlgorithm(Vec3 orientation/*Params to initialze fields for this object*/)
-        : orientation(orientation) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
+        : orientation(relativeOrientation * referenceOrientation) {}
+
+    /**
+     * Creates a LOSTVectorGenerationAlgorithm object
+     * 
+     * @param orientation The absolute orientation of the FOUND camera
+    */
+    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
+    : orientation(orientation) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm();
@@ -47,13 +56,13 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @return A PositionVector that represents the 3D Vector of the satellite relative to
      * Earth's center
     */
-    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
+    PositionVector Run(const PositionVector &x_E /*Params to override the base class one*/) override;
 
  private:
     // Fields specific to this algorithm go here, and helper methods
 
     // Orientation from LOST
-    Vec3 orientation;
+    Quaternion orientation;
 };
 
 /**
@@ -76,7 +85,7 @@ class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorit
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    PositionVector Run(const distFromEarth &x_E /*Params to override the base class one*/) override;
+    PositionVector Run(const PositionVector &x_E /*Params to override the base class one*/) override;
  private:
     // Fields specific to this algorithm go here, and helper methods
 };

@@ -16,7 +16,7 @@
 #include <gmock/gmock.h>
 
 #include "src/distance/edge.hpp"
-#include "src/style/style.hpp"
+#include "src/common/style.hpp"
 
 namespace found {
 

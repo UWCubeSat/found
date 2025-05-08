@@ -1,8 +1,8 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 
@@ -10,12 +10,12 @@ namespace found {
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
 */
-class DistanceDeterminationAlgorithm : public Stage<Points, distFromEarth> {
+class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
  public:
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm();
+    virtual ~DistanceDeterminationAlgorithm() {}
 };
 
 /**
@@ -37,7 +37,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    distFromEarth Run(const Points &p) override;
+    PositionVector Run(const Points &p) override;
  private:
     // Fields specific to this algorithm, and helper methods
 };
@@ -55,13 +55,13 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * 
      * @param radius The distance from Earth to use
      */
-    explicit EllipticDistanceDeterminationAlgorithm(distFromEarth radius);
+    explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
     ~EllipticDistanceDeterminationAlgorithm();
 
     /**
     * Place documentation here. Press enter to automatically make a new line
     * */
-    distFromEarth Run(const Points &p) override;
+    PositionVector Run(const Points &p) override;
  private:
     // Fields specific to this algorithm, and helper methods
 };
