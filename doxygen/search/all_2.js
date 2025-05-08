@@ -8,6 +8,8 @@ var searchData=
   ['distance_5',['distance',['../namespacefound.html#a52941ab54fcbb3625f21c7fa5433c59a',1,'found::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)'],['../namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed',1,'found::Distance(const Vec3 &amp;v1, const Vec3 &amp;v2)']]],
   ['distancedeterminationalgorithm_6',['DistanceDeterminationAlgorithm',['../classfound_1_1DistanceDeterminationAlgorithm.html',1,'found']]],
   ['distanceoptions_7',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
-  ['distfromearth_8',['distFromEarth',['../namespacefound.html#a1b604d6c88357a2cfd98ad02c4697484',1,'found']]],
-  ['doaction_9',['doaction',['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed',1,'found::Stage::DoAction()']]]
+  ['distancepipeline_8',['DistancePipeline',['../namespacefound.html#ac96a51e9bd06b83169c0aa3658c0005f',1,'found']]],
+  ['distancepipelineexecutor_9',['distancepipelineexecutor',['../classfound_1_1DistancePipelineExecutor.html',1,'found::DistancePipelineExecutor'],['../classfound_1_1DistancePipelineExecutor.html#a53e2079290f10c4bb2bf66a9d60cae5b',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()']]],
+  ['distfromearth_10',['distFromEarth',['../namespacefound.html#a1b604d6c88357a2cfd98ad02c4697484',1,'found']]],
+  ['doaction_11',['doaction',['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed',1,'found::Stage::DoAction()']]]
 ];

@@ -9,10 +9,11 @@ var searchData=
   ['spatialtocamera_6',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
   ['spatialtospherical_7',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
   ['sphericaldistancedeterminationalgorithm_8',['SphericalDistanceDeterminationAlgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a7fa59a5da214a9b60e9ae50375fb78c1',1,'found::SphericalDistanceDeterminationAlgorithm']]],
-  ['sphericaltoquaternion_9',['SphericalToQuaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found']]],
+  ['sphericaltoquaternion_9',['sphericaltoquaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found::SphericalToQuaternion(decimal ra, decimal dec, decimal roll)'],['../namespacefound.html#a00d185e68e6373ac81872eeb3326ac28',1,'found::SphericalToQuaternion(EulerAngles angles)']]],
   ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
   ['stage_11',['Stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage']]],
   ['strtobool_12',['strtobool',['../namespacefound.html#a7024f78e6740e032817c2bc20a71962e',1,'found']]],
   ['strtodecimal_13',['strtodecimal',['../namespacefound.html#a60ee66e81bce477a178b2470285de1dd',1,'found']]],
-  ['strtoea_14',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]]
+  ['strtoea_14',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]],
+  ['strtoimage_15',['strtoimage',['../namespacefound.html#a5715a57bc3e4ab1219f13fc289735f96',1,'found']]]
 ];

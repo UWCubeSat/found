@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/spatial/camera.hpp Source File</title>
+<title>My Project: src/common/spatial/camera.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(document).ready(function() { init_codefold(0); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_31b4388cdeb919ea2783a13f6c738b17.html">spatial</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_fdedb0aba14d44ce9d99bc100e026e6a.html">common</a></li><li class="navelem"><a class="el" href="dir_9ce1038593dae48328457dcdd6b1ca1f.html">spatial</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -84,9 +84,9 @@ $(document).ready(function() { init_codefold(0); });
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CAMERA_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define CAMERA_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;spatial/attitude-utils.hpp&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;common/spatial/attitude-utils.hpp&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;style/style.hpp&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;common/style.hpp&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
@@ -161,7 +161,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassfound_1_1Camera_html_ae1137acf442f7d43959f87d90325711c"><div class="ttname"><a href="classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c">found::Camera::SpatialToCamera</a></div><div class="ttdeci">Vec2 SpatialToCamera(const Vec3 &amp;) const</div><div class="ttdef"><b>Definition</b> camera.cpp:21</div></div>
 <div class="ttc" id="aclassfound_1_1Camera_html_af5acf428687056de2a4a9b122298a8a0"><div class="ttname"><a href="classfound_1_1Camera.html#af5acf428687056de2a4a9b122298a8a0">found::Camera::SetFocalLength</a></div><div class="ttdeci">void SetFocalLength(decimal focalLength)</div><div class="ttdef"><b>Definition</b> camera.hpp:93</div></div>
 <div class="ttc" id="aclassfound_1_1Vec3_html"><div class="ttname"><a href="classfound_1_1Vec3.html">found::Vec3</a></div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:47</div></div>
-<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> converters.hpp:10</div></div>
+<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
 <div class="ttc" id="anamespacefound_html_a62fa83965c3b82ae30673901b3bd9104"><div class="ttname"><a href="namespacefound.html#a62fa83965c3b82ae30673901b3bd9104">found::FovToFocalLength</a></div><div class="ttdeci">decimal FovToFocalLength(decimal xFov, decimal xResolution)</div><div class="ttdef"><b>Definition</b> camera.cpp:96</div></div>
 <div class="ttc" id="anamespacefound_html_ab88840d833bf7485c797570f7c8c045f"><div class="ttname"><a href="namespacefound.html#ab88840d833bf7485c797570f7c8c045f">found::FocalLengthToFov</a></div><div class="ttdeci">decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize)</div><div class="ttdef"><b>Definition</b> camera.cpp:111</div></div>
 <div class="ttc" id="astructfound_1_1Vec2_html"><div class="ttname"><a href="structfound_1_1Vec2.html">found::Vec2</a></div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:18</div></div>
