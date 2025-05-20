@@ -47,66 +47,12 @@ struct Image {
  * parameters of a given orbit
  */
 struct OrbitParams {
-    /// The initial position of the satellite with respect to Earth
-    /// (at t = 0 and theta = 0)
-    Vec3 initialCondition;
-
-    /**
-     * The position of the satellite as a function of the number of revolutions
-     * it has done
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The position vector after theta revolutions have taken place
-     * */
-    Vec3 (* position)(int theta);
-
-    /**
-     * The major axis vector as a function with respect to the revolutions
-     * of the satellite
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The major axis vector after theta revolutions have taken
-     * place
-     * */
-    Vec3 (* majorAxis)(int theta);
-
-    /**
-     * The minor axis vector as a function with respect to the revolutions
-     * of the satellite
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The minor axis vector after theta revolutions have taken
-     * place
-     * */
-    Vec3 (* minorAxis)(int theta);
-
-    /**
-     * The angular speed that the satellite's orbit plane rotates in plane at with respect
-     * to the number of revolutions in the satellite's orbit. This is the same as
-     * the speed at which the major axis rotates around the barycenter of orbit in the plane
-     * of orbit, which is approximately at Earth's center
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The angular speed at which the plane of orbit rotates at, in plane, after theta 
-     * revolutions
-     * */
-    decimal (* inPlaneRotation)(int theta);
-
-    /**
-     * The angular speed that the satellite's orbit plane rotates out of plane at with 
-     * respect to the number of revolutions in the satellite's orbit. This is the same as
-     * the angular speed at which the plane of orbit changes
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The angular speed at which the orbital plane rotates at, out of plane, after
-     * theta revolutions
-     * */
-    decimal (* outPlaneRotation)(int theta);
+    double h;    /**< Specific angular momentum magnitude */
+    double e;    /**< Eccentricity magnitude */
+    double RA;   /**< Right Ascension of the Ascending Node (RAAN) */
+    double incl; /**< Inclination */
+    double w;    /**< Argument of Periapsis */
+    double TA;   /**< True Anomaly */
 };
 
 /// The output for Orbit Trajectory Calculation Algorithms. Currently set to

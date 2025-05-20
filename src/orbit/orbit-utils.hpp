@@ -4,21 +4,10 @@
 #include <tuple>
 #include <vector>
 #include "../spatial/attitude-utils.hpp"
+#include "style/style.hpp"
 
 
 namespace found {
-
-/**
- * @brief Represents the classical orbital elements.
- */
-struct OrbitalElements {
-    double h;    /**< Specific angular momentum magnitude */
-    double e;    /**< Eccentricity magnitude */
-    double RA;   /**< Right Ascension of the Ascending Node (RAAN) */
-    double incl; /**< Inclination */
-    double w;    /**< Argument of Periapsis */
-    double TA;   /**< True Anomaly */
-};
 
 /**
  * @brief Performs Runge-Kutta 4th order integration (RK4) for a system of ODEs.
@@ -46,7 +35,7 @@ rk4(double t, const Vec3& y,
  * @param mu Gravitational parameter
  * @return OrbitalElements structure containing classical orbital parameters
  */
-OrbitalElements state_vector_to_elements(const Vec3& R, const Vec3& V, double mu);
+OrbitParams state_vector_to_elements(const Vec3& R, const Vec3& V, double mu);
 
 /**
  * @brief Converts orbital elements to a state vector (position and velocity).
