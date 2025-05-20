@@ -3,14 +3,14 @@
 
 #include <string>
 
-#include "src/logging/logging.hpp"
+#include "src/common/logging.hpp"
 
 namespace found {
 
 TEST(LoggingTest, TestLogInfo) {
     testing::internal::CaptureStdout();
 
-    found::Log(INFO, "Meep");
+    LOG(INFO, "Meep");
 
     std::string output = testing::internal::GetCapturedStdout();
 
@@ -23,7 +23,7 @@ TEST(LoggingTest, TestLogInfo) {
 TEST(LoggingTest, TestLogWarning) {
     testing::internal::CaptureStderr();
 
-    found::Log(WARN, "Meep Warning");
+    LOG(WARN, "Meep Warning");
 
     std::string output = testing::internal::GetCapturedStderr();
 
@@ -36,7 +36,7 @@ TEST(LoggingTest, TestLogWarning) {
 TEST(LoggingTest, TestLogError) {
     testing::internal::CaptureStderr();
 
-    found::Log(ERROR, "Meep Error");
+    LOG(ERROR, "Meep Error");
 
     std::string output = testing::internal::GetCapturedStderr();
 

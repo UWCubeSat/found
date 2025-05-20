@@ -7,11 +7,14 @@
 #define STYLE_H
 
 #include <vector>
+#include <unordered_set>
 #include <functional>
 #include <utility>
+#include <memory>
 
-#include "spatial/attitude-utils.hpp"
-#include "style/decimal.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/decimal.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 
@@ -30,6 +33,9 @@ typedef Vec3 PositionVector;
 
 /**
  * Represents an image
+ * 
+ * @note If image points to heap allocated memory,
+ * it must be freed appropriately
  */
 struct Image {
     /// The image width
@@ -41,6 +47,24 @@ struct Image {
     /// The image contents
     unsigned char *image;
 };
+
+/**
+ * Represents a 2D edge in an image
+ * 
+ * @note This must be carried with the original
+ * image, as there's no such field in this struct
+ */
+struct Edge {
+    /// The edge points
+    Points points;
+    /// The lowest point (left upper edge)
+    Vec2 upperLeft;
+    /// The highest point (right lower edge)
+    Vec2 lowerRight;
+};
+
+/// A collection of Edges
+typedef std::vector<Edge> Edges;
 
 /**
  * OrbitParams defines the orbital
@@ -63,6 +87,15 @@ typedef struct OrbitParams OrbitParams;
 /// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
 
+/// Pipeline for Calibration
+typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPipeline;
+
+/// Pipeline for Distance Determination
+typedef Pipeline<Image, PositionVector> DistancePipeline;
+
+/// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
+typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
+
 }  // namespace found
 
-#endif
+#endif  // STYLE_H

@@ -3,7 +3,7 @@
 
 #include "test/common/common.hpp"
 
-#include "command-line/parser.hpp"
+#include "command-line/parsing/parser.hpp"
 
 namespace found {
 

@@ -11,8 +11,8 @@
 #include <memory>
 
 #include "src/distance/edge.hpp"
-#include "src/style/style.hpp"
-#include "src/spatial/attitude-utils.hpp"
+#include "src/common/style.hpp"
+#include "src/common/spatial/attitude-utils.hpp"
 
 #include "test/common/mocks/example-mocks.hpp"
 
@@ -31,5 +31,5 @@ Vec2 expectedPoint1 = {1.0, 2.0};
 Vec2 expectedPoint2 = {3.0, 4.0};
 Points expectedPoints = {expectedPoint1, expectedPoint2};
 // Expected Size of Points
-const long unsigned int expectedSize = 2;  // NOLINT
+const std::size_t expectedSize = 2;
 }  // namespace found

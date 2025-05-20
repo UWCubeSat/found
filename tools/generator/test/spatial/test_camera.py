@@ -252,5 +252,3 @@ class CameraTest(unittest.TestCase):
             if None in actual_pts:
                 continue
             self.assertListEqual(exp_pts, actual_pts)
-
-    # TODO (nguy8tri): Need to figure out what we're going to do when x is negative

@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
 
-#include "src/pipeline/pipeline.hpp"
+#include "src/common/pipeline.hpp"
 
 namespace found {
 

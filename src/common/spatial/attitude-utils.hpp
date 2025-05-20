@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "style/decimal.hpp"
+#include "common/decimal.hpp"
 
 namespace found {
 
@@ -17,9 +17,9 @@ namespace found {
 */
 struct Vec2 {
     /// The x coordinate
-    const decimal x;
+    decimal x;
     /// The y coordinate
-    const decimal y;
+    decimal y;
 
     // Magnitude
 
@@ -84,8 +84,6 @@ class Vec3 {
     // Unit Vector
 
     Vec3 Normalize() const;
-
-    // TODO: Accessor Methods
 
     /**
      * Obtains the Right Ascension of this
@@ -180,7 +178,9 @@ class EulerAngles {
      * @param de The Declination of the Euler Angle
      * @param roll The roll of the Euler Angle
      */
-    EulerAngles(decimal ra, decimal de, decimal roll)
+    EulerAngles(decimal ra = DECIMAL(0.0),
+                decimal de = DECIMAL(0.0),
+                decimal roll = DECIMAL(0.0))  // NOLINT(runtime/explicit)
         : ra(ra), de(de), roll(roll) {}
 
     /// Right ascension. How far we yaw left. Yaw is performed first.
@@ -216,6 +216,7 @@ class Quaternion {
         : real(real), i(i), j(j), k(k) {}
 
     Quaternion operator*(const Quaternion &other) const;
+    Quaternion operator-() const;
     Quaternion Conjugate() const;
     Vec3 Vector() const;
     void SetVector(const Vec3 &);
@@ -249,7 +250,7 @@ class Quaternion {
 class Attitude {
  public:
     Attitude() = default;
-    explicit Attitude(const Quaternion &); // NOLINT
+    explicit Attitude(const Quaternion &);
     explicit Attitude(const Mat3 &dcm);
 
     Quaternion GetQuaternion() const;
@@ -275,6 +276,20 @@ Mat3 QuaternionToDCM(const Quaternion &);
 Quaternion DCMToQuaternion(const Mat3 &);
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
+/**
+ * Converts Euler Angles into a quaternion
+ * 
+ * @param angles The euler angles to convert
+ * 
+ * @return A Quaternion representing this collection of Euler Angles
+ * 
+ * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
+ * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
+ * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+*/
+inline Quaternion SphericalToQuaternion(EulerAngles angles)
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
+
 // Spherical-Vector Conversions
 
 Vec3 SphericalToSpatial(decimal ra, decimal de);
@@ -291,8 +306,6 @@ decimal RadToDeg(decimal);
 decimal DegToRad(decimal);
 decimal RadToArcSec(decimal);
 decimal ArcSecToRad(decimal);
-
-// TODO: quaternion and euler angle conversion, conversion between ascension/declination to rec9tu
 
 }  // namespace found
 

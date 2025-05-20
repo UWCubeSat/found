@@ -7,9 +7,9 @@
 
 #include "test/common/common.hpp"
 
-#include "src/spatial/attitude-utils.hpp"
-#include "src/command-line/converters.hpp"
-#include "src/style/decimal.hpp"
+#include "src/common/spatial/attitude-utils.hpp"
+#include "src/providers/converters.hpp"
+#include "src/common/decimal.hpp"
 
 namespace found {
 
@@ -45,6 +45,21 @@ TEST(ConvertersTest, TestBoolTrue) {
 
 TEST(ConvertersTest, TestDecimal) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.9876), strtodecimal("0.9876"));
+}
+
+TEST(ConvertersTest, TestNotExistentImage) {
+    ASSERT_THROW(strtoimage("not_existent.png"), std::runtime_error);
+}
+
+TEST(ConvertersTest, TestNormalImage) {
+    Image image = strtoimage("test/common/assets/example_image.jpg");
+
+    ASSERT_EQ(1008, image.width);
+    ASSERT_EQ(720, image.height);
+    ASSERT_EQ(3, image.channels);
+    ASSERT_NE(nullptr, image.image);
+
+    stbi_image_free(image.image);
 }
 
 }  // namespace found

@@ -1,5 +1,5 @@
 
-#include "spatial/attitude-utils.hpp"
+#include "common/spatial/attitude-utils.hpp"
 
 #include <math.h>
 #include <assert.h>
@@ -18,6 +18,11 @@ Quaternion Quaternion::operator*(const Quaternion &other) const {
         real*other.i + other.real*i + j*other.k - k*other.j,
         real*other.j + other.real*j + k*other.i - i*other.k,
         real*other.k + other.real*k + i*other.j - j*other.i);
+}
+
+/// Negate the quaternion, which is the same rotation
+Quaternion Quaternion::operator-() const {
+    return Quaternion(-real, -i, -j, -k);
 }
 
 /// Effectively computes a quaternion representing the inverse rotation of the original.
@@ -628,7 +633,7 @@ Mat3 Mat3::Inverse() const {
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
-                            0,0,1}; // NOLINT
+                            0,0,1};
 
 
 ///////////////////////////////////

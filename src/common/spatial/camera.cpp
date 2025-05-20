@@ -1,9 +1,9 @@
-#include "spatial/camera.hpp"
+#include "common/spatial/camera.hpp"
 
 #include <math.h>
 #include <assert.h>
 
-#include "spatial/attitude-utils.hpp"
+#include "common/spatial/attitude-utils.hpp"
 
 namespace found {
 

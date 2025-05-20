@@ -18,11 +18,11 @@
 
 #include <string>
 
-#include "style/style.hpp"
-#include "spatial/attitude-utils.hpp"
-#include "command-line/converters.hpp"
+#include "common/style.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "providers/converters.hpp"
 
-// TODO(nguy8tri): Change std::string values to proper values
+// TODO(nguy8tri): Change std::string values to proper values (i.e. output/input files should become streams, etc.)
 
 // NOLINTBEGIN
 
@@ -36,15 +36,17 @@ FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        
 
 /// Distance Flags
 #define DISTANCE \
-FOUND_CLI_OPTION("png"                     , std::string       , png             , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("image"                   , found::Image      , image           , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("calibration-data"        , std::string       , calibrationData , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("reference-as-orientation", bool              , refAsOrientation, false                      , found::strtobool(optarg)   , true              , OPT_ASSIGN) \
 FOUND_CLI_OPTION("camera-focal-length"     , decimal           , focalLength     , 0.012                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("camera-pixel-size"       , decimal           , pixelSize       , 20E-6                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("reference-orientation"   , found::EulerAngles, refOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN)
+FOUND_CLI_OPTION("reference-orientation"   , found::EulerAngles, refOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN)
 
 
 // Orbit Flags
+// TODO: Fix these all to correct parameters/outputs
 #define ORBIT \
 FOUND_CLI_OPTION("position-data", std::string, positionData, "", optarg, kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("output-form"  , std::string, output      , "", optarg, kNoDefaultArgument, REQ_ASSIGN)
