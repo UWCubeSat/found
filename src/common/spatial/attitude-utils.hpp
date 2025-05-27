@@ -287,7 +287,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
-    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }
 
 // Spherical-Vector Conversions
 
