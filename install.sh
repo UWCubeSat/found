@@ -58,23 +58,26 @@ case "$OS" in
             exit 1
         fi
         INSTALL="$PM install -y"
+        # List of packages to install
+        PACKAGES="git g++ make cmake wget tar python3.13 graphviz"
+        PYTHON="python3.13"
         ;;
-    # Darwin*)
-    #     # Check if Homebrew is installed; install it if not
-    #     if ! command -v brew &> /dev/null; then
-    #         echo "Homebrew not found. Installing Homebrew..."
-    #         execute_cmd curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-    #     fi
-    #     INSTALL="brew install"
-    #     ;;
+    Darwin*)
+        # Check if Homebrew is installed; install it if not
+        if ! command -v brew &> /dev/null; then
+            echo "Homebrew not found. Installing Homebrew..."
+            execute_cmd "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+        fi
+        INSTALL="brew install"
+        # List of packages to install
+        PACKAGES="git gcc make cmake wget gnu-tar python graphviz"
+        PYTHON="python3"
+        ;;
     *)
         echo "Unknown Operating System $OS"
         exit 1
         ;;
 esac
-
-# List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
@@ -95,15 +98,16 @@ CMD="$INSTALL doxygen || ( \
 )"
 execute_cmd $CMD
 
-# Prepare pipx
-execute_cmd "pipx ensurepath"
+# Prepare pip from python 3.13
+execute_cmd "curl -sS https://bootstrap.pypa.io/get-pip.py | sudo $PYTHON"
+execute_cmd "$PYTHON -m pip install --upgrade pip"
 
 # Python packages to install
 PYTHON_PACKAGES="cpplint==2.0.0 gcovr==8.3"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="pipx install $PACKAGE"
+    CMD="$PYTHON -m pip install $PACKAGE"
     execute_cmd $CMD
 done
 
