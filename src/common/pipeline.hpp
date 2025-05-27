@@ -128,9 +128,11 @@ class Pipeline : public Stage<Input, Output> {
      */
     template<typename I, typename O> Pipeline &AddStage(Stage<I, O> &stage) {
         // Check the input
-        if (this->ready) throw std::invalid_argument("Pipeline is already ready");
+        if (this->ready) throw std::invalid_argument("Pipeline is already ready");  // GCOVR_EXCL_LINE
         if (this->stages.empty()) {
-           if (!std::is_same<Input, I>::value) throw std::invalid_argument("The initial input type is not correct");
+            if (!std::is_same<Input, I>::value) {
+                throw std::invalid_argument("The initial input type is not correct");  // GCOVR_EXCL_LINE
+            }
            this->firstResource = reinterpret_cast<Input *>(&stage.GetResource());
         } else {
             // Chain here, and blindly trust the user
