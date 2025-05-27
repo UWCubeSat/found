@@ -59,14 +59,14 @@ case "$OS" in
         fi
         INSTALL="$PM install -y"
         ;;
-    # Darwin*)
-    #     # Check if Homebrew is installed; install it if not
-    #     if ! command -v brew &> /dev/null; then
-    #         echo "Homebrew not found. Installing Homebrew..."
-    #         execute_cmd curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-    #     fi
-    #     INSTALL="brew install"
-    #     ;;
+    Darwin*)
+        # Check if Homebrew is installed; install it if not
+        if ! command -v brew &> /dev/null; then
+            echo "Homebrew not found. Installing Homebrew..."
+            execute_cmd "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+        fi
+        INSTALL="brew install"
+        ;;
     *)
         echo "Unknown Operating System $OS"
         exit 1
@@ -74,7 +74,7 @@ case "$OS" in
 esac
 
 # List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz"
+PACKAGES="git g++ make cmake wget tar valgrind python3.13 graphviz"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
@@ -95,15 +95,15 @@ CMD="$INSTALL doxygen || ( \
 )"
 execute_cmd $CMD
 
-# Prepare pipx
-execute_cmd "pipx ensurepath"
+# Prepare pip from python 3.13
+execute_cmd "python3.13 -m ensurepip --upgrade"
 
 # Python packages to install
 PYTHON_PACKAGES="cpplint==2.0.0 gcovr==8.3"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="pipx install $PACKAGE"
+    CMD="python3.13 -m pip install $PACKAGE"
     execute_cmd $CMD
 done
 
