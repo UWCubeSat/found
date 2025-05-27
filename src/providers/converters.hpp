@@ -53,7 +53,7 @@ inline EulerAngles strtoea(const std::string &str) {
     size_t end = str.find(delimiter);
     size_t index = 0;
 
-    while (end != std::string::npos) {
+    while (index != 3 && end != std::string::npos) {
         result[index++] = strtodecimal(str.substr(start, end - start));
         start = end + 1;
         end = str.find(delimiter, start);

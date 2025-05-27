@@ -13,6 +13,8 @@
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
+#include "orbit/orbit.hpp"
+
 // TODO(nguy8tri): Include statement for Orbit Pipeline
 // TODO: Fully Implement this after everything is well defined
 
@@ -70,7 +72,16 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
     return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
 }
 
-// TODO(nguy8tri): Include functions for providing the orbit pipeline stages
+/**
+ * Provides an OrbitPropagationAlgorithm
+ * 
+ * @param options The options to derive the orbit propagation algorithm from
+ * 
+ * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
+ */
+std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &options) {
+    return std::make_unique<OrbitPropagationAlgorithm>(options.totalTime, options.dt, options.radius, options.mu);
+}
 
 }  // namespace found
 

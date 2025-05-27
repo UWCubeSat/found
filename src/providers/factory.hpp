@@ -41,8 +41,8 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
  * @return A OrbitPipelineExecutor
  */
 inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &options) {
-    // TODO: Implement this fully after orbit is well defined
-    return std::make_unique<OrbitPipelineExecutor>(options);
+    return std::make_unique<OrbitPipelineExecutor>(options,
+                                    ProvideOrbitPropagationAlgorithm(options));
 }
 
 }  // namespace found

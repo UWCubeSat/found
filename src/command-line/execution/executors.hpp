@@ -13,6 +13,8 @@
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
+#include "orbit/orbit.hpp"
+
 namespace found {
 
 /**
@@ -44,14 +46,14 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param calibrationAlgorithm The calibration algorithm to use
      */
-    explicit CalibrationPipelineExecutor(CalibrationOptions &options,
+    explicit CalibrationPipelineExecutor(const CalibrationOptions &options,
                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    CalibrationOptions &options_;
+    const CalibrationOptions &options_;
     CalibrationPipeline pipeline_;
     std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
@@ -105,9 +107,10 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * Constructs a OrbitPipelineExecutor
      * 
      * @param options The options to create the pipeline
+     * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
-    explicit OrbitPipelineExecutor(const OrbitOptions &options)
-        : options_(options) { /* TODO(nguy8tri): Uncomment when done defining -> CreatePipeline(); */ }
+    explicit OrbitPipelineExecutor(const OrbitOptions &options,
+                                   std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -115,6 +118,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
  private:
     const OrbitOptions &options_;
     OrbitPipeline pipeline_;
+    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
 }  // namespace found

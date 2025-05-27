@@ -48,8 +48,12 @@ FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation 
 // Orbit Flags
 // TODO: Fix these all to correct parameters/outputs
 #define ORBIT \
-FOUND_CLI_OPTION("position-data", std::string, positionData, "", optarg, kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("output-form"  , std::string, output      , "", optarg, kNoDefaultArgument, REQ_ASSIGN)
+FOUND_CLI_OPTION("position-data", std::string, positionData, ""         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("output-form"  , std::string, output      , ""         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("total-time"   , decimal    , totalTime   , 3600.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("time-step"    , decimal    , dt          , 0.01       , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("radius"       , decimal    , radius      , 6378.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("mu"           , decimal    , mu          , 398600.4418, found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN)
 
 // NOLINTEND
 

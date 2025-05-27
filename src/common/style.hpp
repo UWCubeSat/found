@@ -16,6 +16,8 @@
 #include "common/decimal.hpp"
 #include "common/pipeline.hpp"
 
+#include "orbit/orbit.hpp"  // Remove Include statement after merge with Data Serialization branch
+
 namespace found {
 
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
@@ -148,7 +150,7 @@ typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPip
 typedef Pipeline<Image, PositionVector> DistancePipeline;
 
 /// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
-typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
+typedef Pipeline<LocationRecord, std::vector<LocationRecord>> OrbitPipeline;
 
 }  // namespace found
 
