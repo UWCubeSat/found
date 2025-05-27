@@ -45,7 +45,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     : orientation(orientation) {}
 
     // Destroys this
-    ~LOSTVectorGenerationAlgorithm();
+    ~LOSTVectorGenerationAlgorithm() = default;
 
     /**
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect

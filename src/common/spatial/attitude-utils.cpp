@@ -382,6 +382,11 @@ Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
 }
 
+/// Vector Negation
+Vec3 Vec3::operator-() const {
+    return { -x, -y, -z };
+}
+
 /**
  * Computes the cross (vector) product between this and another vector
  * 
