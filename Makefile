@@ -34,7 +34,6 @@ STB_IMAGE := stb_image
 STB_IMAGE_URL := https://raw.githubusercontent.com/nothings/stb/master/$(STB_IMAGE).h
 STB_IMAGE_CACHE_DIR := $(CACHE_DIR)/$(STB_IMAGE)
 STB_IMAGE_CACHE_ARTIFACT := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).cpp
-STB_IMAGE_CACHE_ARTIFACT_LIB := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).a
 STB_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(STB_IMAGE)
 
 # Define the GoogleTest library and build targets

@@ -149,7 +149,8 @@ typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPip
 /// Pipeline for Distance Determination
 typedef Pipeline<Image, PositionVector> DistancePipeline;
 
-/// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
+// TODO(nguy8tri): Replace this statement after merge with Data Serialization
+/// Pipeline for Orbital Determination
 typedef Pipeline<LocationRecord, std::vector<LocationRecord>> OrbitPipeline;
 
 }  // namespace found
