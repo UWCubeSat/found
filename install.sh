@@ -86,12 +86,12 @@ done
 CMD="$INSTALL doxygen || ( \
     $INSTALL bison && \
     $INSTALL flex && \
-    wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.src.tar.gz && \
-    tar xf doxygen-1.8.17.src.tar.gz && \
-    cd doxygen-1.8.17 && \
+    wget https://sourceforge.net/projects/doxygen/files/rel-1.9.8/doxygen-1.9.8.src.tar.gz && \
+    tar xf doxygen-1.9.8.src.tar.gz && \
+    cd doxygen-1.9.8 && \
     mkdir build && cd build && cmake -G \"Unix Makefiles\" .. && make install && \
     cd ../.. && \
-    rm -rf doxygen-1.8.17* \
+    rm -rf doxygen-1.9.8* \
 )"
 execute_cmd $CMD
 
