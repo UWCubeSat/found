@@ -25,12 +25,6 @@ execute_cmd() {
     fi
 }
 
-# Check if the script is running with root privileges
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script requires root privileges. Please run with sudo/root."
-    exit 1
-fi
-
 # Detect the operating system using uname
 OS="$(uname -s)"
 
@@ -44,11 +38,11 @@ case "$OS" in
         # Detect the package manager
         PM=""
         if command -v apt-get &> /dev/null; then
-            PM="apt-get"
-            execute_cmd apt-get -y update
-            execute_cmd apt-get -y dist-upgrade
+            PM="sudo apt-get"
+            execute_cmd sudo apt-get -y update
+            execute_cmd sudo apt-get -y dist-upgrade
         elif command -v yum &> /dev/null; then
-            PM="yum"
+            PM="sudo yum"
             execute_cmd yum -y update
         # elif command -v dnf &> /dev/null; then
         #     PM="dnf"
@@ -59,8 +53,8 @@ case "$OS" in
         fi
         INSTALL="$PM install -y"
         # List of packages to install
-        PACKAGES="git g++ make cmake wget tar python3.13 graphviz"
-        PYTHON="python3.13"
+        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz"
+        PYTHON="pipx"
         ;;
     Darwin*)
         # Check if Homebrew is installed; install it if not
@@ -71,7 +65,7 @@ case "$OS" in
         INSTALL="brew install"
         # List of packages to install
         PACKAGES="git gcc make cmake wget gnu-tar python graphviz"
-        PYTHON="python3"
+        PYTHON="python3 -m pip"
         ;;
     *)
         echo "Unknown Operating System $OS"
@@ -98,18 +92,18 @@ CMD="$INSTALL doxygen || ( \
 )"
 execute_cmd $CMD
 
-# Prepare pip from python 3.13
-execute_cmd "curl -sS https://bootstrap.pypa.io/get-pip.py | sudo $PYTHON"
-execute_cmd "$PYTHON -m pip install --upgrade pip"
-
 # Python packages to install
-PYTHON_PACKAGES="cpplint==2.0.0 gcovr==8.3"
+PYTHON_PACKAGES="git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint git+https://github.com/gcovr/gcovr.git@8.3#egg=gcovr"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="$PYTHON -m pip install $PACKAGE"
+    CMD="$PYTHON install $PACKAGE"
     execute_cmd $CMD
 done
+
+if [ "$(uname)" != "Darwin" ]
+    execute_cmd "pipx ensurepath"
+fi
 
 # Restart Terminal
 execute_cmd "source ~/.bashrc"

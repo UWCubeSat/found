@@ -12,7 +12,7 @@ For Linux Ubuntu/Oracle (uses either `apt-get` or `yum`) obtain the required pac
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 For macOS, install the following dependencies (I recommend using Homebrew `brew` to install this):
-- Unix-like Dependencies: `git g++ make cmake wget tar valgrind python3 python3-pip doxygen graphviz`
+- Unix-like Dependencies: `git g++ make cmake wget tar python3 python3-pip doxygen graphviz`
 - Python Dependencies: `gcovr cpplint`
 
 ## Building FOUND
