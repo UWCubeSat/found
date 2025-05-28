@@ -1,8 +1,8 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 #include "spatial/attitude-utils.hpp"
 #include "spatial/camera.hpp"
 
@@ -17,7 +17,7 @@ class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
     // Destroys this
-    virtual ~DistanceDeterminationAlgorithm() = default;
+    virtual ~DistanceDeterminationAlgorithm() {}
 };
 
 /**

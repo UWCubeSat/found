@@ -1,8 +1,10 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "style/style.hpp"
-#include "pipeline/pipeline.hpp"
+#include <memory>
+
+#include "common/style.hpp"
+#include "common/pipeline.hpp"
 
 namespace found {
 
@@ -61,6 +63,21 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  private:
     // useful fields specific to this algorithm and helper methods
 };
+
+/**
+ * Computes the groups of edges within the image
+ * 
+ * @param image The image that defines the possible pixels
+ * @param Criteria A function that accepts a pixel index and the image and returns 
+ * true iff the pixel is part of the edge
+ * 
+ * @return Edges The edges that are part of the image
+ * 
+ * @note This function iterates through each pixel in the image, but treats the image
+ * as 2D, not 3D. You must program Criteria correctly to handle cases where there 
+ * are multiple channels (i.e. This algorithm doesn't know how many channels are involved).
+ */
+Edges ConnectedComponentsAlgorithm(Image &image, bool (*Criteria)(uint64_t, Image &));
 
 }  // namespace found
 

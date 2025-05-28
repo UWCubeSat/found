@@ -4,12 +4,12 @@
 #include <iomanip>
 #include <cmath>
 
-#include "src/style/style.hpp"
-#include "src/spatial/attitude-utils.hpp"
-#include "src/spatial/camera.hpp"
-#include "src/distance/distance.hpp"
-#include "src/logging/logging.hpp"
-#include "src/style/decimal.hpp"
+#include "common/style.hpp"
+#include "spatial/attitude-utils.hpp"
+#include "spatial/camera.hpp"
+#include "distance/distance.hpp"
+#include "common/logging.hpp"
+#include "common/decimal.hpp"
 
 
 /* Using Directives */

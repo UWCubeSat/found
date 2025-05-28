@@ -4,7 +4,7 @@
 
 #include "spatial/attitude-utils.hpp"
 #include "spatial/camera.hpp"
-#include "style/style.hpp"
+#include "common/style.hpp"
 
 #include "distance/distance.hpp"
 
