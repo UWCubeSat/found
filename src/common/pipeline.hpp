@@ -5,7 +5,6 @@
 #include <functional>
 #include <stdexcept>
 #include <utility>
-#include <iostream>
 
 namespace found {
 

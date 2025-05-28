@@ -2,7 +2,6 @@
 
 #include <getopt.h>
 
-#include <iostream>
 #include <string>
 
 #include "common/logging.hpp"

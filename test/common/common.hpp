@@ -9,6 +9,10 @@
 
 namespace found {
 
+#define ASSERT_RANGE(num, lo, hi) \
+    ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
+    ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
+
 #define DEFAULT_TOLERANCE 1e-3
 
 constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
