@@ -59,7 +59,24 @@ TEST(ConvertersTest, TestNormalImage) {
     ASSERT_EQ(3, image.channels);
     ASSERT_NE(nullptr, image.image);
 
-    stbi_image_free(image.image);
+    stbi_image_free(image.image);  // Free the image memory
+}
+
+TEST(ConvertersTest, TestPositionDataNonExistent) {
+    ASSERT_THROW(strtolr("not_existent.txt"), std::runtime_error);
+}
+
+TEST(ConvertersTest, TestPositionDataCSV) {
+    ASSERT_THROW(strtolr("test/common/assets/position-data/pos-data-invalid.csv"), std::runtime_error);
+}
+
+TEST(ConvertersTest, TestPositionDataNormal) {
+    LocationRecords records = strtolr("test/common/assets/position-data/pos-data-valid.txt");
+
+    ASSERT_EQ(static_cast<size_t>(3), records.size());
+    ASSERT_TRUE(LocationRecordEqual(records[0], {1000000, {1.0, 2.0, 3.0}}));
+    ASSERT_TRUE(LocationRecordEqual(records[1], {2000000, {4.0, 5.0, 6.0}}));
+    ASSERT_TRUE(LocationRecordEqual(records[2], {3000000, {7.0, 8.0, 9.0}}));
 }
 
 }  // namespace found

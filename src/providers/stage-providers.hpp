@@ -29,7 +29,7 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(CalibrationOptions &options) {
+std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -40,7 +40,7 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(CalibrationOpt
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &options) {
+std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm([[maybe_unused]] DistanceOptions &&options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>();
 }
 
@@ -51,7 +51,8 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOp
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &options) {
+std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
+                                                        [[maybe_unused]] DistanceOptions &&options) {
     return std::make_unique<SphericalDistanceDeterminationAlgorithm>(DECIMAL_M_R_E);
 }
 
@@ -62,7 +63,7 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &options) {
+std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
     Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     // TODO(nguy8tri) | TODO(ozbot11): If the relative Orientation is 0, then attempt to parse it out of the file
@@ -79,8 +80,11 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
  * 
  * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
  */
-std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &options) {
-    return std::make_unique<OrbitPropagationAlgorithm>(options.totalTime, options.dt, options.radius, options.mu);
+std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
+    return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
+                                                                  options.dt,
+                                                                  options.radius,
+                                                                  options.mu);
 }
 
 }  // namespace found

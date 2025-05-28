@@ -46,14 +46,14 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param calibrationAlgorithm The calibration algorithm to use
      */
-    explicit CalibrationPipelineExecutor(const CalibrationOptions &options,
+    explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    const CalibrationOptions &options_;
+    const CalibrationOptions options_;
     CalibrationPipeline pipeline_;
     std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
@@ -81,7 +81,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * This is guarenteed as long as strtoimage is used to create the image,
      * and it throws an error if the image is not valid.
      */
-    explicit DistancePipelineExecutor(const DistanceOptions &options,
+    explicit DistancePipelineExecutor(const DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                       std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
@@ -90,7 +90,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
     void OutputResults() override;
 
  private:
-    const DistanceOptions &options_;
+    const DistanceOptions options_;
     DistancePipeline pipeline_;
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
@@ -109,14 +109,14 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
-    explicit OrbitPipelineExecutor(const OrbitOptions &options,
+    explicit OrbitPipelineExecutor(const OrbitOptions &&options,
                                    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    const OrbitOptions &options_;
+    const OrbitOptions options_;
     OrbitPipeline pipeline_;
     std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };

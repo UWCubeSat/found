@@ -79,10 +79,9 @@ LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
-ifdef OMIT_ASAN
-	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
-else
-	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
+CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
+ifndef OMIT_ASAN
+	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
 CXXFLAGS += $(LOGGING_MACROS)
 LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o # Any external libraries go here

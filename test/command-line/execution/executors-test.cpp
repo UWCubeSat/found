@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "test/common/mocks/distance-mocks.hpp"
+#include "test/common/mocks/orbit-mocks.hpp"
 
 #include "src/providers/converters.hpp"
 
@@ -47,7 +48,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
         "example.found"
     };
 
-    CalibrationPipelineExecutor executor(options, std::make_unique<LOSTCalibrationAlgorithm>());
+    CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -107,7 +108,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     std::unique_ptr<VectorGenerationAlgorithm>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
 
-    DistancePipelineExecutor executor(options,
+    DistancePipelineExecutor executor(std::move(options),
                                       std::move(edgeDetectionAlgorithm),
                                       std::move(distanceDeterminationAlgorithm),
                                       std::move(vectorGenerationAlgorithm));
@@ -125,6 +126,43 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
                    << "Calculated Position: \\(4, 5, 6\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
                    << "Distance from Earth: 8.77496 m\\s*";
+
+    ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+}
+
+TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
+    OrbitOptions options = {
+        {{1, {1, 1, 1}}, {2, {2, 2, 2}}, {3, {3, 3, 3}}},
+        "example.orbit",
+        1000,
+        0.1,
+        0.01,
+        0.001
+    };
+
+    LocationRecords expectedResult = {
+        {4, {4, 4, 4}},
+        {5, {5, 5, 5}},
+        {6, {6, 6, 6}}
+    };
+
+    std::unique_ptr<MockOrbitPropagationAlgorithm> mockOrbitPropagationAlgorithm =
+        std::make_unique<MockOrbitPropagationAlgorithm>();
+    EXPECT_CALL(*mockOrbitPropagationAlgorithm, Run(testing::_))
+        .WillOnce(testing::Return(expectedResult));
+
+    OrbitPipelineExecutor executor(std::move(options), std::move(mockOrbitPropagationAlgorithm));
+    executor.ExecutePipeline();
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    executor.OutputResults();
+
+    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+
+    std::stringstream expectedOutput;
+    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Calculated Future Position: \\(6, 6, 6\\) m at time 6 s\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }

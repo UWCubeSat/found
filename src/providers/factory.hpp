@@ -2,6 +2,7 @@
 #define EXECUTOR_PROVIDERS_H
 
 #include <memory>
+#include <utility>
 
 #include "command-line/execution/executors.hpp"
 #include "providers/stage-providers.hpp"
@@ -15,8 +16,9 @@ namespace found {
  * 
  * @return A pointer to a CalibrationPipelineExecutor
  */
-inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExecutor(CalibrationOptions &options) {
-    return std::make_unique<CalibrationPipelineExecutor>(options, ProvideCalibrationAlgorithm(options));
+inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExecutor(CalibrationOptions &&options) {
+    return std::make_unique<CalibrationPipelineExecutor>(std::forward<CalibrationOptions>(options),
+                                    ProvideCalibrationAlgorithm(std::forward<CalibrationOptions>(options)));
 }
 
 /**
@@ -26,11 +28,11 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
  * 
  * @return A pointer to a DistancePipelineExecutor
  */
-inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &options) {
-    return std::make_unique<DistancePipelineExecutor>(options,
-                                    ProvideEdgeDetectionAlgorithm(options),
-                                    ProvideDistanceDeterminationAlgorithm(options),
-                                    ProvideVectorGenerationAlgorithm(options));
+inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
+    return std::make_unique<DistancePipelineExecutor>(std::forward<DistanceOptions>(options),
+                                    ProvideEdgeDetectionAlgorithm(std::forward<DistanceOptions>(options)),
+                                    ProvideDistanceDeterminationAlgorithm(std::forward<DistanceOptions>(options)),
+                                    ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }
 
 /**
@@ -40,9 +42,9 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
  * 
  * @return A OrbitPipelineExecutor
  */
-inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &options) {
-    return std::make_unique<OrbitPipelineExecutor>(options,
-                                    ProvideOrbitPropagationAlgorithm(options));
+inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &&options) {
+    return std::make_unique<OrbitPipelineExecutor>(std::forward<OrbitOptions>(options),
+                                    ProvideOrbitPropagationAlgorithm(std::forward<OrbitOptions>(options)));
 }
 
 }  // namespace found

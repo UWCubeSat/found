@@ -10,28 +10,18 @@
 
 namespace found {
 
-// TODO: Remove once merged with Data Serialization branch
 /**
- * @brief Represents a single location record containing a position and a timestamp.
+ * The OrbitPropagationAlgorithm is an algorithm that propagates an orbit
+ * over a specified time period.
  */
-struct LocationRecord {
-    /**
-     * @brief The 3D position vector associated with this location.
-     */
-    Vec3 position;
-
-    /**
-     * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
-     */
-    uint64_t timestamp;
-};
+class OrbitPropagationAlgorithm : public Stage<LocationRecords, LocationRecords> {};
 
 /**
  * OrbitPropagationAlgorithm is a stage that propagates an orbit over a specified time period.
  * It integrates the equations of motion to predict the satellite's trajectory using Runge-Kutta
  * 4 (RK4).
  */
-class OrbitPropagationAlgorithm : public Stage<LocationRecord, std::vector<LocationRecord>> {
+class ApproximateOrbitPropagationAlgorithm : OrbitPropagationAlgorithm {
  public:
     /**
     * @brief Constructs this OrbitPropagationAlgorithm.
@@ -41,10 +31,30 @@ class OrbitPropagationAlgorithm : public Stage<LocationRecord, std::vector<Locat
     * @param radius The radius of the celestial body (default is for Earth, in km)
     * @param mu The gravitational parameter (default is for Earth in km^3/s^2)
     */
-    explicit OrbitPropagationAlgorithm(decimal totalTime, decimal dt, decimal radius, decimal mu);
+    explicit ApproximateOrbitPropagationAlgorithm(decimal totalTime, decimal dt, decimal radius, decimal mu)
+        : totalTime_(totalTime), dt_(dt), radius_(radius), mu_(mu) {}
 
     /// Destroys this
-    virtual ~OrbitPropagationAlgorithm();
+    virtual ~ApproximateOrbitPropagationAlgorithm();
+
+    /**
+     * Projects an orbit
+     * 
+     * @param data The past data to use
+     * 
+     * @return Predicted positions in the future
+     */
+    LocationRecords Run(const LocationRecords &data) override;
+
+ private:
+    /// The total time to predict over
+    decimal totalTime_;
+    /// The time step for integration (seconds)
+    decimal dt_;
+    /// The radius of the celestial body (default is for Earth, in km)
+    decimal radius_;
+    /// The gravitational parameter (default is for Earth in km^3/s^2)
+    decimal mu_;
 };
 
 }  // namespace found

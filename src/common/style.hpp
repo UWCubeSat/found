@@ -16,8 +16,6 @@
 #include "common/decimal.hpp"
 #include "common/pipeline.hpp"
 
-#include "orbit/orbit.hpp"  // Remove Include statement after merge with Data Serialization branch
-
 namespace found {
 
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
@@ -67,6 +65,24 @@ struct Edge {
 
 /// A collection of Edges
 typedef std::vector<Edge> Edges;
+
+// TODO: Merge with Data Serialization branch
+/**
+ * @brief Represents a single location record containing a position and a timestamp.
+ */
+struct LocationRecord {
+    /**
+     * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
+     */
+    uint64_t timestamp;
+    /**
+     * @brief The 3D position vector associated with this location.
+     */
+    Vec3 position;
+};
+
+/// A collection of Location Records
+typedef std::vector<LocationRecord> LocationRecords;
 
 /**
  * OrbitParams defines the orbital
@@ -149,9 +165,8 @@ typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPip
 /// Pipeline for Distance Determination
 typedef Pipeline<Image, PositionVector> DistancePipeline;
 
-// TODO(nguy8tri): Replace this statement after merge with Data Serialization
 /// Pipeline for Orbital Determination
-typedef Pipeline<LocationRecord, std::vector<LocationRecord>> OrbitPipeline;
+typedef Pipeline<LocationRecords, LocationRecords> OrbitPipeline;
 
 }  // namespace found
 

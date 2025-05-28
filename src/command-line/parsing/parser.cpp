@@ -9,6 +9,9 @@
 #include "common/style.hpp"
 #include "command-line/parsing/options.hpp"
 
+// TODO: Uncomment once all stages are implemented
+// #include "providers/factory.hpp"
+
 /// This defines the global variable optind, used
 /// for keeping track of parsing for command-line
 /// arguments
@@ -17,6 +20,11 @@ int optind = 2;
 /**
  * Determines whether the current flag allows an optional argument AND
  * if that argument exists
+ * To Fully Test this, you must:
+ * - Use the flag with an argument
+ * - Use the flag with no argument
+ * - Use the flag with an equals sign and value all in one token
+ * - Use the flag at the end of the command line
  */
 #define OPTIONAL_OPTARG()                                        \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
@@ -59,12 +67,26 @@ const char kNoDefaultArgument = 0;
 int main(int argc, char **argv) {
     if (argc == 1) {
         LOG_INFO("Seems you don't want to be found");
-        return EXIT_SUCCESS;
+        return EXIT_FAILURE;
     }
     std::string command(argv[1]);
 
-    // TODO(skyler): Implement Logic to figure out what algorithm we need,
-    // and call appropriate Generate* functions
+    // TODO: Uncomment once all stages are implemented
+    // std::unique_ptr<PipelineExecutor> executor;
+
+    // if (command == "calibration") {
+    //     executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
+    // } else if (command == "distance") {
+    //     executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
+    // } else if (command == "orbit") {
+    //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
+    // } else {
+    //     LOG_ERROR("Unrecognized Command: " << command);
+    //     return EXIT_FAILURE;
+    // }
+
+    // executor->ExecutePipeline();
+    // executor->OutputResults();
 
     return EXIT_SUCCESS;
 }
@@ -119,6 +141,104 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
     return options;
 }
 
-// TODO(skyler): Implement Generate* functions here (example is above for you)
+DistanceOptions ParseDistanceOptions(int argc, char **argv) {
+    // Define an enum for each valid flag (command-line entry), which maps it from the name
+    // to an integer
+    enum class ClientOption {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                prop,
+        DISTANCE
+        #undef FOUND_CLI_OPTION
+    };
+
+    // Define an array of options, which defines the traits pertaining to each
+    // expected command-line entry
+    static option long_options[] = {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                {name,                                                                        \
+                defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
+                0,                                                                            \
+                static_cast<int>(ClientOption::prop)},
+        DISTANCE
+        #undef FOUND_CLI_OPTION
+        {0}
+    };
+
+    // Define our result, and iterator helpers
+    DistanceOptions options;
+    int index;
+    int option;
+
+    // Iterates through the list of command-line tokens and figures out
+    // what data to assign to which field in options. Note that the
+    // FOUND_CLI_OPTION defines the conversion already between any
+    // particular parameter (as a string) to its actual type
+    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+        switch (option) {
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                    case static_cast<int>(ClientOption::prop):                                    \
+                        ASSIGN(options, prop, converter, defaultArg)                              \
+                        break;
+            DISTANCE
+            #undef FOUND_CLI_OPTION
+            default:
+                LOG_ERROR("Illegal flag detected");
+                exit(EXIT_FAILURE);
+                break;
+        }
+    }
+
+    return options;
+}
+
+OrbitOptions ParseOrbitOptions(int argc, char **argv) {
+    // Define an enum for each valid flag (command-line entry), which maps it from the name
+    // to an integer
+    enum class ClientOption {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                prop,
+        ORBIT
+        #undef FOUND_CLI_OPTION
+    };
+
+    // Define an array of options, which defines the traits pertaining to each
+    // expected command-line entry
+    static option long_options[] = {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                {name,                                                                        \
+                defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
+                0,                                                                            \
+                static_cast<int>(ClientOption::prop)},
+        ORBIT
+        #undef FOUND_CLI_OPTION
+        {0}
+    };
+
+    // Define our result, and iterator helpers
+    OrbitOptions options;
+    int index;
+    int option;
+
+    // Iterates through the list of command-line tokens and figures out
+    // what data to assign to which field in options. Note that the
+    // FOUND_CLI_OPTION defines the conversion already between any
+    // particular parameter (as a string) to its actual type
+    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+        switch (option) {
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+                    case static_cast<int>(ClientOption::prop):                                    \
+                        ASSIGN(options, prop, converter, defaultArg)                              \
+                        break;
+            ORBIT
+            #undef FOUND_CLI_OPTION
+            default:
+                LOG_ERROR("Illegal flag detected");
+                exit(EXIT_FAILURE);
+                break;
+        }
+    }
+
+    return options;
+}
 
 }  // namespace found

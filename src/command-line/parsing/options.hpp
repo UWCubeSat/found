@@ -34,6 +34,7 @@ FOUND_CLI_OPTION("use-same-orientation" , bool              , useSameOrientation
 FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        , ""                         , optarg                  , kNoDefaultArgument, REQ_ASSIGN)
 
 
+// TODO: Fix calibration-data to actually parse a datafile
 /// Distance Flags
 #define DISTANCE \
 FOUND_CLI_OPTION("image"                   , found::Image      , image           , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN) \
@@ -48,12 +49,12 @@ FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation 
 // Orbit Flags
 // TODO: Fix these all to correct parameters/outputs
 #define ORBIT \
-FOUND_CLI_OPTION("position-data", std::string, positionData, ""         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("output-form"  , std::string, output      , ""         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("total-time"   , decimal    , totalTime   , 3600.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("time-step"    , decimal    , dt          , 0.01       , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("radius"       , decimal    , radius      , 6378.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("mu"           , decimal    , mu          , 398600.4418, found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN)
+FOUND_CLI_OPTION("position-data", found::LocationRecords, positionData, {}         , found::strtolr(optarg)     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("output-form"  , std::string           , output      , ""         , optarg                     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("total-time"   , decimal               , totalTime   , 3600.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("time-step"    , decimal               , dt          , 0.01       , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("radius"       , decimal               , radius      , 6378.0     , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("mu"           , decimal               , mu          , 398600.4418, found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN)
 
 // NOLINTEND
 

@@ -17,10 +17,6 @@ constexpr auto criteria = [](uint64_t index, Image &image) {
     return image.image[index] > 0;
 };
 
-constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
-    return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
-};
-
 MATCHER_P(EdgeEqual, expected, "") {
     return std::is_permutation(expected.points.begin(),
                                expected.points.end(),
