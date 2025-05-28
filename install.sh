@@ -54,7 +54,6 @@ case "$OS" in
         INSTALL="$PM install -y"
         # List of packages to install
         PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz"
-        PYTHON="pipx"
         ;;
     Darwin*)
         # Check if Homebrew is installed; install it if not
@@ -64,8 +63,7 @@ case "$OS" in
         fi
         INSTALL="brew install"
         # List of packages to install
-        PACKAGES="git gcc make cmake wget gnu-tar python graphviz"
-        PYTHON="python3 -m pip"
+        PACKAGES="git gcc make cmake wget gnu-tar python pipx graphviz"
         ;;
     *)
         echo "Unknown Operating System $OS"
@@ -97,13 +95,9 @@ PYTHON_PACKAGES="git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint gi
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="$PYTHON install $PACKAGE"
+    CMD="pipx install $PACKAGE"
     execute_cmd $CMD
 done
+execute_cmd pipx ensurepath
 
-if [ "$(uname)" != "Darwin" ]
-    execute_cmd "pipx ensurepath"
-fi
-
-# Restart Terminal
-execute_cmd "source ~/.bashrc"
+printf "\n============Please Restart your Terminal============\n"
