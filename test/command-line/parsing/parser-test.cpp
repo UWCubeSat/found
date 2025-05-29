@@ -16,22 +16,50 @@ class ParserTest : public testing::Test {
     }
 };
 
-TEST_F(ParserTest, ParseNothing) {
+TEST_F(ParserTest, TestMainNothing) {
     int argc = 1;
     const char *argv[1] = {"found"};
 
-    ASSERT_EQ(1, main(argc, const_cast<char **>(argv)));
+    ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
 }
 
-TEST_F(ParserTest, ParseNoOption) {
+TEST_F(ParserTest, TestMainNoOption) {
     int argc = 3;
     const char *argv[3] = {"found", "--png", "none.png"};
 
-    // TODO: Change exepcted value from 0 to 1 after main is uncommented
-    ASSERT_EQ(0, main(argc, const_cast<char **>(argv)));
+    ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleBaseCase) {
+// TODO: Update the next 3 tests to test for more than just exit code
+
+TEST_F(ParserTest, TestMainCalibrationOption) {
+    int argc = 2;
+    const char *argv[] = {"found", "calibration"};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+}
+
+TEST_F(ParserTest, TestMainDistanceOption) {
+    int argc = 7;
+    const char *argv[] = {"found", "distance",
+        "--image", "test/common/assets/example_image.jpg",
+        "--reference-as-orientation"};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+}
+
+TEST_F(ParserTest, TestMainOrbitOption) {
+    int argc = 14;
+    const char *argv[] = {"found", "orbit",
+        "--position-data", "test/common/assets/position-data/pos-data-valid.txt",
+        "--output-form", "xml",
+        "--total-time", "7200.0",
+        "--mu", "168251.0"};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+}
+
+TEST_F(ParserTest, CalibrationParserBaseCase) {
     int argc = 2;
     const char *argv[] = {"found", "calibration"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
@@ -49,7 +77,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleBaseCase) {
     ASSERT_EQ("", options.outputFile);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleGeneral) {
+TEST_F(ParserTest, TestCalibrationParserGeneral) {
     int argc = 8;
     const char *argv[] = {"found", "calibration",
         "--local-orientation", "1 2 3",
@@ -70,7 +98,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleGeneral) {
     ASSERT_EQ("example.found", options.outputFile);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriBlank) {
+TEST_F(ParserTest, TestCalibrationParserUseSameOriBlank) {
     int argc = 5;
     const char *argv[] = {"found", "calibration",
         "--use-same-orientation",
@@ -80,7 +108,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriBlank) {
     ASSERT_TRUE(options.useSameOrientation);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExample3UseSameOriTrue) {
+TEST_F(ParserTest, TestCalibrationParser3UseSameOriTrue) {
     int argc = 6;
     const char *argv[] = {"found", "calibration",
         "--use-same-orientation", "not_false",
@@ -90,7 +118,7 @@ TEST_F(ParserTest, CalibrationParserTestExample3UseSameOriTrue) {
     ASSERT_TRUE(options.useSameOrientation);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriFalse) {
+TEST_F(ParserTest, TestCalibrationParserUseSameOriFalse) {
     const char *ori_args[] = {"", "0", "false"};
     for (const char *ori_arg : ori_args) {
         int argc = 6;
@@ -104,7 +132,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriFalse) {
     }
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriAlone) {
+TEST_F(ParserTest, TestCalibrationParserUseSameOriAlone) {
     int argc = 3;
     const char *argv[] = {"found", "calibration",
         "--use-same-orientation"};
@@ -113,7 +141,7 @@ TEST_F(ParserTest, CalibrationParserTestExampleUseSameOriAlone) {
     ASSERT_TRUE(options.useSameOrientation);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExample6UseSameOriEquals) {
+TEST_F(ParserTest, TestCalibrationParser6UseSameOriEquals) {
     int argc = 3;
     const char *argv[] = {"found", "calibration",
         "--use-same-orientation=true"};
@@ -122,21 +150,21 @@ TEST_F(ParserTest, CalibrationParserTestExample6UseSameOriEquals) {
     ASSERT_TRUE(options.useSameOrientation);
 }
 
-TEST_F(ParserTest, CalibrationParserTestExampleFail) {
+TEST_F(ParserTest, TestCalibrationParserFail) {
     int argc = 4;
     const char *argv[] = {"found", "calibration",
         "--meep", "meep"};
     ASSERT_EXIT(ParseCalibrationOptions(argc, const_cast<char **>(argv)), testing::ExitedWithCode(EXIT_FAILURE), "");
 }
 
-TEST_F(ParserTest, DistanceParserTestBadFlag) {
+TEST_F(ParserTest, TestDistanceParserBadFlag) {
     int argc = 4;
     const char *argv[] = {"found", "distance",
         "--meep", "meep"};
     ASSERT_EXIT(ParseDistanceOptions(argc, const_cast<char **>(argv)), testing::ExitedWithCode(EXIT_FAILURE), "");
 }
 
-TEST_F(ParserTest, DistanceParserTestExampleBaseCase) {
+TEST_F(ParserTest, TestDistanceParserBaseCase) {
     int argc = 2;
     const char *argv[] = {"found", "distance"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
@@ -153,7 +181,7 @@ TEST_F(ParserTest, DistanceParserTestExampleBaseCase) {
     ASSERT_EA_EQ_DEFAULT(emptyEA, options.relOrientation);
 }
 
-TEST_F(ParserTest, DistanceParserTestExampleGeneral) {
+TEST_F(ParserTest, DistanceParserGeneral) {
     int argc = 16;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -181,7 +209,7 @@ TEST_F(ParserTest, DistanceParserTestExampleGeneral) {
     stbi_image_free(options.image.image);  // Free the image memory
 }
 
-TEST_F(ParserTest, DistanceParserTestNoRefAsOriValue) {
+TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     int argc = 7;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -201,7 +229,7 @@ TEST_F(ParserTest, DistanceParserTestNoRefAsOriValue) {
     stbi_image_free(options.image.image);  // Free the image memory
 }
 
-TEST_F(ParserTest, DistanceParserRefAsOriWithEquals) {
+TEST_F(ParserTest, TestDistanceParserRefAsOriWithEquals) {
     int argc = 3;
     const char *argv[] = {"found", "distance",
         "--reference-as-orientation=true"};
@@ -210,7 +238,7 @@ TEST_F(ParserTest, DistanceParserRefAsOriWithEquals) {
     ASSERT_TRUE(options.refAsOrientation);
 }
 
-TEST_F(ParserTest, DistanceParserRefAsOriEnd) {
+TEST_F(ParserTest, TestDistanceParserRefAsOriEnd) {
     int argc = 3;
     const char *argv[] = {"found", "distance",
         "--reference-as-orientation"};
@@ -219,14 +247,14 @@ TEST_F(ParserTest, DistanceParserRefAsOriEnd) {
     ASSERT_TRUE(options.refAsOrientation);
 }
 
-TEST_F(ParserTest, OrbitParserBadFlag) {
+TEST_F(ParserTest, TestOrbitParserBadFlag) {
     int argc = 4;
     const char *argv[] = {"found", "orbit",
         "--meep", "meep"};
     ASSERT_EXIT(ParseOrbitOptions(argc, const_cast<char **>(argv)), testing::ExitedWithCode(EXIT_FAILURE), "");
 }
 
-TEST_F(ParserTest, OrbitParserTestExampleBaseCase) {
+TEST_F(ParserTest, OrbitParserBaseCase) {
     int argc = 2;
     const char *argv[] = {"found", "orbit"};
     OrbitOptions options = ParseOrbitOptions(argc, const_cast<char **>(argv));
@@ -240,7 +268,7 @@ TEST_F(ParserTest, OrbitParserTestExampleBaseCase) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(398600.4418), options.mu);
 }
 
-TEST_F(ParserTest, OrbitParserTestExampleGeneral) {
+TEST_F(ParserTest, OrbitParserGeneral) {
     int argc = 14;
     const char *argv[] = {"found", "orbit",
         "--position-data", "test/common/assets/position-data/pos-data-valid.txt",

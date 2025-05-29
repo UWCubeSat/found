@@ -32,6 +32,10 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * 
      * @param relativeOrientation The orientation of the FOUND camera with respect to the reference Orientation
      * @param referenceOrientation The orientation of the reference orientation
+     * 
+     * @pre If using EulerAngles to generate the parameters, use SphericalToQuaternion, which provides the backwards
+     * rotation quaternions for both Euler angles. Using the normal quaternion will result in the opposite
+     * behavior (i.e. Run(x_E) will rotate the position vector away from its celestial equivalent instead of to it)
     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
         : orientation(relativeOrientation * referenceOrientation) {}

@@ -47,11 +47,11 @@ TEST(ConvertersTest, TestDecimal) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.9876), strtodecimal("0.9876"));
 }
 
-TEST(ConvertersTest, TestNotExistentImage) {
+TEST(ConvertersTest, TestImageNotExistentImage) {
     ASSERT_THROW(strtoimage("not_existent.png"), std::runtime_error);
 }
 
-TEST(ConvertersTest, TestNormalImage) {
+TEST(ConvertersTest, TestImageNormalImage) {
     Image image = strtoimage("test/common/assets/example_image.jpg");
 
     ASSERT_EQ(1008, image.width);
@@ -62,15 +62,15 @@ TEST(ConvertersTest, TestNormalImage) {
     stbi_image_free(image.image);  // Free the image memory
 }
 
-TEST(ConvertersTest, TestPositionDataNonExistent) {
+TEST(ConvertersTest, TestLocationRecordsNonExistent) {
     ASSERT_THROW(strtolr("not_existent.txt"), std::runtime_error);
 }
 
-TEST(ConvertersTest, TestPositionDataCSV) {
+TEST(ConvertersTest, TestLocationRecordsCSV) {
     ASSERT_THROW(strtolr("test/common/assets/position-data/pos-data-invalid.csv"), std::runtime_error);
 }
 
-TEST(ConvertersTest, TestPositionDataNormal) {
+TEST(ConvertersTest, TestLocationRecordsNormal) {
     LocationRecords records = strtolr("test/common/assets/position-data/pos-data-valid.txt");
 
     ASSERT_EQ(static_cast<size_t>(3), records.size());

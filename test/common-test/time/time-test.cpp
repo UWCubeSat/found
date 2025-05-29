@@ -36,11 +36,9 @@ TEST(TimeTest, TestGetUTCTime) {
                  static_cast<int>(epoch_seconds.count()),
                  static_cast<int>(epoch_seconds.count() + 5));
     // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
-    ASSERT_EQ(actual.year,
-              static_cast<int>(expected->tm_year + 1900));
+    ASSERT_EQ(static_cast<int>(expected->tm_year + 1900), actual.year);
     // NOTE: In the rare case you run this when the month changes in UTC, this may fail
-    ASSERT_EQ(actual.month,
-              static_cast<int>(expected->tm_mon + 1));
+    ASSERT_EQ(static_cast<int>(expected->tm_mon + 1), actual.month);
     if (expected->tm_hour == 23 &&
             (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
             (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
@@ -48,7 +46,7 @@ TEST(TimeTest, TestGetUTCTime) {
                      static_cast<int>(expected->tm_mday),
                      static_cast<int>(expected->tm_mday + 1));
     } else {
-        ASSERT_EQ(actual.day, static_cast<int>(expected->tm_mday));
+        ASSERT_EQ(static_cast<int>(expected->tm_mday), actual.day);
     }
 
     // Check the hour with tolerance if warranted
@@ -58,8 +56,7 @@ TEST(TimeTest, TestGetUTCTime) {
                      static_cast<int>(expected->tm_hour),
                      static_cast<int>(expected->tm_hour + HOURS_TOLERANCE));
     } else {
-        ASSERT_EQ(actual.hour,
-                  static_cast<int>(expected->tm_hour));
+        ASSERT_EQ(static_cast<int>(expected->tm_hour), actual.hour);
     }
 
     // Check the minute with tolerance if warranted
@@ -68,8 +65,7 @@ TEST(TimeTest, TestGetUTCTime) {
                      static_cast<int>(expected->tm_min),
                      static_cast<int>(expected->tm_min + MINUTES_TOLERANCE));
     } else {
-        ASSERT_EQ(actual.minute,
-                  static_cast<int>(expected->tm_min));
+        ASSERT_EQ(static_cast<int>(expected->tm_min), actual.minute);
     }
 
     // Check the second with tolerance
@@ -97,11 +93,9 @@ TEST(TimeTest, TestGetUT1Time) {
                  static_cast<int>(epoch_seconds.count() + AVG_DELTA_UT1),
                  static_cast<int>(epoch_seconds.count() + + AVG_DELTA_UT1 + 5));
     // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
-    ASSERT_EQ(actual.year,
-              static_cast<int>(expected->tm_year + 1900));
+    ASSERT_EQ(static_cast<int>(expected->tm_year + 1900), actual.year);
     // NOTE: In the rare case you run this when the month changes in UTC, this may fail
-    ASSERT_EQ(actual.month,
-              static_cast<int>(expected->tm_mon + 1));
+    ASSERT_EQ(static_cast<int>(expected->tm_mon + 1), actual.month);
     if (expected->tm_hour == 23 &&
             (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
             (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
@@ -109,7 +103,7 @@ TEST(TimeTest, TestGetUT1Time) {
                      static_cast<int>(expected->tm_mday),
                      static_cast<int>(expected->tm_mday + 1));
     } else {
-        ASSERT_EQ(actual.day, static_cast<int>(expected->tm_mday));
+        ASSERT_EQ(static_cast<int>(expected->tm_mday), actual.day);
     }
 
     // Check the hour with tolerance if warranted
@@ -119,8 +113,7 @@ TEST(TimeTest, TestGetUT1Time) {
                      static_cast<int>(expected->tm_hour),
                      static_cast<int>(expected->tm_hour + HOURS_TOLERANCE));
     } else {
-        ASSERT_EQ(actual.hour,
-                  static_cast<int>(expected->tm_hour));
+        ASSERT_EQ(static_cast<int>(expected->tm_hour), actual.hour);
     }
 
     // Check the minute with tolerance if warranted
@@ -129,8 +122,7 @@ TEST(TimeTest, TestGetUT1Time) {
                      static_cast<int>(expected->tm_min),
                      static_cast<int>(expected->tm_min + MINUTES_TOLERANCE));
     } else {
-        ASSERT_EQ(actual.minute,
-                  static_cast<int>(expected->tm_min));
+        ASSERT_EQ(static_cast<int>(expected->tm_min), actual.minute);
     }
 
     // Check the second with tolerance
@@ -147,7 +139,7 @@ TEST(TimeTest, TestGetJulianDateNow) {
     // The default tolerance is 1e-3. The tolerance incurred
     // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
     // which is much smaller than the default tolerance.
-    ASSERT_DECIMAL_EQ_DEFAULT(julianDate, expectedJulianDate);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
 TEST(TimeTest, TestGetJulianDateBefore1900) {
@@ -168,7 +160,7 @@ TEST(TimeTest, TestGetJulianDateBefore1900) {
     // The default tolerance is 1e-3. The tolerance incurred
     // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
     // which is much smaller than the default tolerance.
-    ASSERT_DECIMAL_EQ_DEFAULT(julianDate, expectedJulianDate);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
 TEST(TimeTest, TestGetJulianDate) {
@@ -189,7 +181,7 @@ TEST(TimeTest, TestGetJulianDate) {
     // The default tolerance is 1e-3. The tolerance incurred
     // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
     // which is much smaller than the default tolerance.
-    ASSERT_DECIMAL_EQ_DEFAULT(julianDate, expectedJulianDate);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
 TEST(TimeTest, TestGetJulianDateTimeEpoch) {
@@ -209,7 +201,7 @@ TEST(TimeTest, TestGetJulianDateTimeEpoch) {
     // The default tolerance is 1e-3. The tolerance incurred
     // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
     // which is much smaller than the default tolerance.
-    ASSERT_DECIMAL_EQ_DEFAULT(julianDate, expectedJulianDate);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTimeNow) {
@@ -218,7 +210,7 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTimeNow) {
     decimal expectedGmst = 15 * (18.697374558 + 24.06570982441908 * (getJulianDateTime(time) - 2451545.0));
 
     // The default tolerance is 1e-3.
-    ASSERT_DECIMAL_EQ_DEFAULT(gmst, expectedGmst);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {
@@ -237,7 +229,7 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {
     decimal expectedGmst = 15 * (18.697374558 + 24.06570982441908 * (getJulianDateTime(time) - 2451545.0));
 
     // The default tolerance is 1e-3.
-    ASSERT_DECIMAL_EQ_DEFAULT(gmst, expectedGmst);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTimeEpoch) {
@@ -255,7 +247,7 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTimeEpoch) {
     decimal expectedGmst = getGreenwichMeanSiderealTime(time);
 
     // The default tolerance is 1e-3.
-    ASSERT_DECIMAL_EQ_DEFAULT(gmst, expectedGmst);
+    ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
 }
 
 }  // namespace found

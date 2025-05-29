@@ -73,16 +73,16 @@ int main(int argc, char **argv) {
     // TODO: Uncomment once all stages are implemented
     // std::unique_ptr<PipelineExecutor> executor;
 
-    // if (command == "calibration") {
+    if (command == "calibration") {
     //     executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
-    // } else if (command == "distance") {
+    } else if (command == "distance") {
     //     executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
-    // } else if (command == "orbit") {
+    } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
-    // } else {
-    //     LOG_ERROR("Unrecognized Command: " << command);
-    //     return EXIT_FAILURE;
-    // }
+    } else {
+        LOG_ERROR("Unrecognized Command: " << command);
+        return EXIT_FAILURE;
+    }
 
     // executor->ExecutePipeline();
     // executor->OutputResults();

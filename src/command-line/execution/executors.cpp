@@ -2,10 +2,7 @@
 
 #include <memory>
 #include <utility>
-#include <ctime>
 
-#include "common/time/time.hpp"
-#include "common/decimal.hpp"
 #include "common/logging.hpp"
 
 namespace found {
@@ -64,29 +61,6 @@ void DistancePipelineExecutor::OutputResults() {
                                       << positionVector->y << ", "
                                       << positionVector->z << ") m");
     LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
-
-    // I've placed the code here to output this in lat/long/alt, it is
-    // up to you all to figure out how to use it. This code is untested,
-    // at the time of writing it, so make sure you test it for accuracy.
-    // One way you could actually do output of results in general though
-    // is to make more Stage objects that just do that.
-
-    // Converts epoch time to GMST in degrees, then we convert to radians
-    // We should ensure Euclidean Mod, but both the divisor and dividend
-    // are positive, so we don't need it (GMST > 0 after Jan 1st, 2000).
-    decimal GMST = std::fmod(DECIMAL_M_PI * getCurrentGreenwichMeanSiderealTime() / 180.0, 2 * DECIMAL_M_PI);
-    // Figure out Earth's Rotating Frame and express the position in that frame
-    Quaternion toEarthRotatingFrame = SphericalToQuaternion(GMST, 0, 0);
-    Vec3 position = toEarthRotatingFrame.Conjugate().Rotate(*positionVector);
-    // Figure out the right ascension and declination of the vector
-    decimal RA = std::atan2(position.y, position.x);  // Huh, the range is [-PI, PI], not [0, 2PI]. That's convenient
-    decimal DE = std::asin(position.Normalize().z);  // Range is [-PI/2, PI/2]
-
-    // Longitude, Lattitude and Altitude Follow, with conversion
-    // to degrees and range adjustment from RA to longitude
-    [[maybe_unused]] decimal longitude = 180.0 * RA / DECIMAL_M_PI;
-    [[maybe_unused]] decimal latitude = 180 * DE / DECIMAL_M_PI;
-    [[maybe_unused]] decimal altitude = position.Magnitude();
 }
 
 OrbitPipelineExecutor::OrbitPipelineExecutor(const OrbitOptions &&options,

@@ -21,7 +21,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityTest) {
     PositionVector result = vectorGen.Run(x_E);
 
     // Check if the result is as expected
-    ASSERT_VEC3_EQ_DEFAULT(result, -x_E);
+    ASSERT_VEC3_EQ_DEFAULT(-x_E, result);
 }
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
@@ -36,7 +36,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
 
     // Check if the result is as expected
     PositionVector expected = {100, 200.0, -300.0};  // Negate x and y, keep z
-    ASSERT_VEC3_EQ_DEFAULT(result, expected);  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(expected, result);  // Negate x and y, keep z
 }
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
@@ -52,7 +52,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
     PositionVector expected = {-100.0 * cos(DECIMAL_M_PI / 4) - 200.0 * sin(DECIMAL_M_PI / 4),
                                100.0 * sin(DECIMAL_M_PI / 4) - 200.0 * cos(DECIMAL_M_PI / 4),
                                -300.0};
-    ASSERT_VEC3_EQ_DEFAULT(result, expected);  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(expected, result);  // Negate x and y, keep z
 }
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
@@ -68,7 +68,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
     PositionVector expected = {-100.0 * cos(DECIMAL_M_PI / 3) - 200.0 * sin(DECIMAL_M_PI / 3),
                                100.0 * sin(DECIMAL_M_PI / 3) - 200.0 * cos(DECIMAL_M_PI / 3),
                                -300.0};
-    ASSERT_VEC3_EQ_DEFAULT(result, expected);
+    ASSERT_VEC3_EQ_DEFAULT(expected, result);
 }
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
@@ -83,7 +83,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
 
     // Should be equivalent to this:
     PositionVector expected = (QuaternionToDCM(relativeOrientation) * QuaternionToDCM(referenceOrientation)) * -x_E;
-    ASSERT_VEC3_EQ_DEFAULT(result, expected);
+    ASSERT_VEC3_EQ_DEFAULT(expected, result);
 
     // Also, if we take the result and apply the inverse, we should get the original
     PositionVector inverseResult = (QuaternionToDCM(relativeOrientation)
