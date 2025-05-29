@@ -14,14 +14,20 @@ namespace found {
  * The OrbitPropagationAlgorithm is an algorithm that propagates an orbit
  * over a specified time period.
  */
-class OrbitPropagationAlgorithm : public Stage<LocationRecords, LocationRecords> {};
+class OrbitPropagationAlgorithm : public Stage<LocationRecords, LocationRecords> {
+ public:
+    /// Constructs this
+    OrbitPropagationAlgorithm() = default;
+    /// Destroys this
+    virtual ~OrbitPropagationAlgorithm() {}
+};
 
 /**
  * OrbitPropagationAlgorithm is a stage that propagates an orbit over a specified time period.
  * It integrates the equations of motion to predict the satellite's trajectory using Runge-Kutta
  * 4 (RK4).
  */
-class ApproximateOrbitPropagationAlgorithm : OrbitPropagationAlgorithm {
+class ApproximateOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
  public:
     /**
     * @brief Constructs this OrbitPropagationAlgorithm.
@@ -35,7 +41,7 @@ class ApproximateOrbitPropagationAlgorithm : OrbitPropagationAlgorithm {
         : totalTime_(totalTime), dt_(dt), radius_(radius), mu_(mu) {}
 
     /// Destroys this
-    virtual ~ApproximateOrbitPropagationAlgorithm();
+    ~ApproximateOrbitPropagationAlgorithm();
 
     /**
      * Projects an orbit

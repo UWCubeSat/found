@@ -38,7 +38,7 @@ After images from a satellite are received, their images are parsed to locate Ea
 
 ## Distance Determination
 The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND will be capable of:
-- [ ] Distance Determination with a Spherical Earth Assumption
+- [X] Distance Determination with a Spherical Earth Assumption
 - [ ] Distance Determination with an Ellipsoid Earth Assumption
 
 ## Vector Generation
@@ -48,5 +48,5 @@ The distance information will then be used to form a vector of the satellite rel
 
 ## Orbit Determination
 This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
-- [X] Runge-Kutta Based Orbital Prediction
+- [ ] Runge-Kutta Based Orbital Prediction
 - [ ] Lambert's Problem-Based Orbital Prediction

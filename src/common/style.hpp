@@ -81,6 +81,8 @@ struct LocationRecord {
     Vec3 position;
 };
 
+// TODO: Maybe change this to line up with the DataFile struct
+// so that we don't have to copy the data.
 /// A collection of Location Records
 typedef std::vector<LocationRecord> LocationRecords;
 

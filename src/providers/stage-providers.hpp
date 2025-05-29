@@ -66,7 +66,7 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
 std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
     Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
-    // TODO(nguy8tri) | TODO(ozbot11): If the relative Orientation is 0, then attempt to parse it out of the file
+    // TODO: If the relative Orientation is 0, then attempt to parse it out of the file
     if (options.refAsOrientation) {
         return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
     }
