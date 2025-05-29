@@ -187,7 +187,7 @@ class Pipeline : public Stage<Input, Output> {
         this->resource = input;
         *this->firstResource = input;
         for (Action &stage : this->stages) {
-        stage.DoAction();
+            stage.DoAction();
         }
         this->product = &this->finalProduct;
         return this->finalProduct;
