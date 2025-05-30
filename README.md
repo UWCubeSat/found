@@ -12,9 +12,6 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
-If installation for MacOS does not work, manually install everything using `brew`:
-- Unix depencencies: `git gcc make cmake wget gnu-tar python>=3.12 pipx graphviz doxygen==1.9.8`
-- Python Dependencies: `cpplint==2.0.0 gcovr==8.3`
 
 ## Building FOUND
 - Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)
