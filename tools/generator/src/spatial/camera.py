@@ -1,5 +1,3 @@
-import random
-
 from .coordinate import CoordinateSystem, Vector, Attitude
 
 from typing import Iterable, Union, Tuple
@@ -92,25 +90,12 @@ class Camera(CoordinateSystem):
             Does not ignore points that are not on the sensor but still in front of it.
         """
         result = []
-        valid_points = []
         for point in points:
             if point[0] < self.focal_length:
                 continue
             factor = self.focal_length / point[0] / self.pixel_length
             image_point = Vector(factor * point[1], factor * point[2])
             result.append(image_point)
-            if self.in_camera(image_point):
-                reference = Vector(self.x_resolution / 2, self.y_resolution / 2)
-                canvas_pt = -image_point + reference
-                valid_points.append(canvas_pt)
-                # print(f"{canvas_pt},")
-        if len(valid_points) >= 3:
-            samples = random.sample(range(1, len(valid_points)), 3)
-            print("Your 3 random points (chosen uniformly):")
-            print(f"{valid_points[samples[0]]},")
-            print(f"{valid_points[samples[1]]},")
-            print(f"{valid_points[samples[2]]}")
-
         if not result:
             return [None] * len(points)
         elif len(result) == 1:

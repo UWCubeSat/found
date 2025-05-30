@@ -169,11 +169,12 @@ def generate_points(
     # Step 4: Transform points into camera coordinate system
     camera_points = camera.to_camera_space(points)
     camera_center = camera.to_camera_space({center})
-    print(f"Position rel Camera: {camera_center.normalize() * position.norm}")
+
     # Step 5: Project Points into Camera
     image_center, *image_points = camera.spatial_to_camera(
         camera_center, *camera_points
     )
+
     if image_center == None:
         logging.error(
             "The produced image does not capture Earth's edge. Skipping image output."
@@ -182,8 +183,7 @@ def generate_points(
     count = 0
     for pt in image_points:
         if camera.in_camera(pt):
-            count += 1 
-    
+            count += 1
     if count == 0:
         logging.error(
             "The produced image does not capture Earth's edge. Skipping image output."
@@ -191,12 +191,12 @@ def generate_points(
         exit(1)
     if len(image_points) != len(camera_points):
         logging.warning(
-            f"{(len(camera_points)-len(image_points)) / len(camera_points) * 100:.10f}% of the horizon is behind the camera"
+            f"{(len(camera_points)-len(image_points)) / len(camera_points) * 100:.2f}% of the horizon is behind the camera"
         )
     logging.info(
         f"{count / len(camera_points) * 100:.2f}% of the horizon is in the camera"
     )
-    
+
     return (
         camera,
         image_points,

@@ -5,8 +5,8 @@
 #include <cmath>
 
 #include "common/style.hpp"
-#include "spatial/attitude-utils.hpp"
-#include "spatial/camera.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/spatial/camera.hpp"
 #include "distance/distance.hpp"
 #include "common/logging.hpp"
 #include "common/decimal.hpp"

@@ -3,8 +3,8 @@
 
 #include "common/style.hpp"
 #include "common/pipeline.hpp"
-#include "spatial/attitude-utils.hpp"
-#include "spatial/camera.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/spatial/camera.hpp"
 
 namespace found {
 

@@ -50,7 +50,7 @@ class Vector:
         """
         if numpy is None:
             self.dimension = len(values)
-            self.vector = np.array(values, dtype=np.float64)
+            self.vector = np.array(values)
         else:
             if len(numpy.shape) != 1:
                 raise ValueError(
@@ -179,8 +179,8 @@ class Vector:
         """
         result = ""
         for el in self.vector:
-            result += f"static_cast<decimal>({el:.32f}), "
-        return f"{{{result[:-2]}}}"
+            result += f"{el:.2f}, "
+        return f"({result[:-2]})"
 
 
 class CoordinateSystem:
