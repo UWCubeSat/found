@@ -1,8 +1,9 @@
 #include <utility>
-#include "orbit/orbit-propagation.hpp"
-#include "orbit/orbit-utils.hpp"
 #include <stdexcept>  // for exceptions if needed
 #include <cmath>      // for sqrt, pow
+
+#include "orbit/orbit-propagation.hpp"
+#include "orbit/orbit-utils.hpp"
 
 namespace found {
 

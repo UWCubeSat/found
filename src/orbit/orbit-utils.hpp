@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 #include "../spatial/attitude-utils.hpp"
-#include "style/style.hpp"
+#include "common/style.hpp"
 
 
 namespace found {

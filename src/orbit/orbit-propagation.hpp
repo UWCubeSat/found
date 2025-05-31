@@ -2,11 +2,11 @@
 
 #include <vector>
 #include <utility>
-#include "../spatial/attitude-utils.hpp"
+#include "common/spatial/attitude-utils.hpp"
+// #include "location/location-record.hpp"
+#include "common/pipeline.hpp"
+#include "common/style.hpp"
 #include "orbit/orbit-utils.hpp"
-#include "location/location-record.hpp"
-#include "pipeline/pipeline.hpp"
-#include "style/style.hpp"
 
 namespace found {
 

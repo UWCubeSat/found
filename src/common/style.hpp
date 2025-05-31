@@ -87,6 +87,21 @@ typedef struct OrbitParams OrbitParams;
 /// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
 
+/**
+ * @brief Represents a single location record containing a position and a timestamp.
+ */
+struct LocationRecord {
+    /**
+     * @brief The 3D position vector associated with this location.
+     */
+    Vec3 position;
+
+    /**
+     * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
+     */
+    uint64_t timestamp;
+};  // TODO: Remove definition when merged with Data Serialization PR #10
+
 /// Pipeline for Calibration
 typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPipeline;
 
