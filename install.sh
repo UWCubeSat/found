@@ -74,7 +74,7 @@ case "$OS" in
 esac
 
 # List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz cpplint gcovr"
+PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
