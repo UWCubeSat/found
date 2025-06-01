@@ -1,9 +1,10 @@
-#include <gtest/gtest.h>
-#include "serialization/serialization.hpp"
-
 #include <fstream>
 #include <sstream>
 #include <cstddef>
+#include <gtest/gtest.h>
+
+#include "serialization/encoding.hpp"
+#include "serialization/serialization.hpp"
 
 namespace found {
 

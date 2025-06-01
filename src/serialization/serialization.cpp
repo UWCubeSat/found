@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include "serialization/encoding.hpp"
 #include "serialization/serialization.hpp"
 #include "common/spatial/attitude-utils.hpp"
 

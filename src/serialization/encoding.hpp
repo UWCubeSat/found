@@ -1,0 +1,179 @@
+#ifndef ENCODING_H
+#define ENCODING_H
+
+#include <stdint.h>
+
+#include "common/decimal.hpp"
+
+namespace found {
+
+/**
+ * @brief Converts a 16-bit integer from host byte order to network byte order.
+ */
+inline uint16_t htons(uint16_t v) {
+    return (v << 8) | (v >> 8);
+}
+
+/**
+ * @brief Converts a 16-bit integer from network byte order to host byte order.
+ */
+inline uint16_t ntohs(uint16_t v) {
+    return (v << 8) | (v >> 8);
+}
+
+/**
+ * @brief Converts a 32-bit integer from host byte order to network byte order.
+ */
+inline uint32_t htonl(uint32_t v) {
+    return ((v & 0xFF000000) >> 24) |
+            ((v & 0x00FF0000) >> 8) |
+            ((v & 0x0000FF00) << 8) |
+            ((v & 0x000000FF) << 24);
+}
+
+/**
+ * @brief Converts a 32-bit integer from network byte order to host byte order.
+ */
+inline uint32_t ntohl(uint32_t v) {
+    return ((v & 0xFF000000) >> 24) |
+            ((v & 0x00FF0000) >> 8) |
+            ((v & 0x0000FF00) << 8) |
+            ((v & 0x000000FF) << 24);
+}
+
+/**
+ * @brief Converts a 64-bit integer from host byte order to network byte order.
+ */
+inline uint64_t htonl(uint64_t v) {
+    return ((v & 0xFF00000000000000ULL) >> 56) |
+           ((v & 0x00FF000000000000ULL) >> 40) |
+           ((v & 0x0000FF0000000000ULL) >> 24) |
+           ((v & 0x000000FF00000000ULL) >> 8) |
+           ((v & 0x00000000FF000000ULL) << 8) |
+           ((v & 0x0000000000FF0000ULL) << 24) |
+           ((v & 0x000000000000FF00ULL) << 40) |
+           ((v & 0x00000000000000FFULL) << 56);
+}
+
+/**
+ * @brief Converts a 64-bit integer from network byte order to host byte order.
+ */
+inline uint64_t ntohl(uint64_t v) {
+    return ((v & 0xFF00000000000000ULL) >> 56) |
+           ((v & 0x00FF000000000000ULL) >> 40) |
+           ((v & 0x0000FF0000000000ULL) >> 24) |
+           ((v & 0x000000FF00000000ULL) >> 8) |
+           ((v & 0x00000000FF000000ULL) << 8) |
+           ((v & 0x0000000000FF0000ULL) << 24) |
+           ((v & 0x000000000000FF00ULL) << 40) |
+           ((v & 0x00000000000000FFULL) << 56);
+}
+
+/**
+ * @brief Union for converting a 32-bit floating point number from host byte order to network byte order and vice versa.
+ */
+union _f_u_ {
+    float f;
+    uint32_t u;
+};
+
+/**
+ * @brief Union for converting a 64-bit floating point number from host byte order to network byte order and vice versa.
+ */
+union _d_u_ {
+    double d;
+    uint64_t u;
+};
+
+/**
+ * @brief Converts a float from network byte order to host byte order.
+ * 
+ * @param v The float value to convert.
+ * @return The converted float value in host byte order.
+ */
+inline float htonf(float v) {
+    _f_u_ t;
+    t.f = v;
+    t.u = htonl(t.u);
+    return t.f;
+}
+
+/**
+ * @brief Converts a float from host byte order to network byte order.
+ * 
+ * @param v The float value to convert.
+ * @return The converted float value in network byte order.
+ */
+inline float ntohf(float v) {
+    _f_u_ t;
+    t.f = v;
+    t.u = ntohl(t.u);
+    return t.f;
+}
+
+/**
+ * @brief Converts a double from host byte order to network byte order.
+ * 
+ * @param v The double value to convert.
+ * @return The converted double value in network byte order.
+ */
+inline double ntohd(double v) {
+    _d_u_ t;
+    t.d = v;
+    t.u = ntohl(t.u);
+    return t.d;
+}
+
+/**
+ * @brief Converts a double from network byte order to host byte order.
+ * 
+ * @param v The double value to convert.
+ * @return The converted double value in host byte order.
+ */
+inline double htond(double v) {
+    _d_u_ t;
+    t.d = v;
+    t.u = htonl(t.u);
+    return t.d;
+}
+
+/**
+ * @brief Converts a decimal from host byte order to network byte order.
+ * 
+ * @param v The decimal value to convert.
+ * @return The converted decimal value in network byte order.
+ */
+inline decimal htondec(decimal v) {
+#if FOUND_FLOAT_MODE
+    return htonf(v);
+#else
+    return htond(v);
+#endif
+}
+
+/**
+ * @brief Converts a decimal from network byte order to host byte order.
+ * 
+ * @param v The decimal value to convert.
+ * @return The converted decimal value in host byte order.
+ */
+inline decimal ntohdec(decimal v) {
+#if FOUND_FLOAT_MODE
+    return htonf(v);
+#else
+    return htond(v);
+#endif
+}
+
+/**
+ * @brief Calculates the CRC32 checksum for a given data buffer.
+ * 
+ * @param data Pointer to the data buffer.
+ * @param length The size of the data buffer in bytes.
+ * @return The calculated CRC32 checksum.
+ */
+uint32_t calculateCRC32(const void* data, size_t length);
+
+}  // namespace found
+
+#endif  // SERIALIZATION_H
