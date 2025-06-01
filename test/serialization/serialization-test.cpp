@@ -22,7 +22,7 @@ protected:
         'F', 'O', 'U', 'N',             // Magic Number
         0x00U, 0x00U, 0x00U, 0x01U,     // Version = 1
         0x00U, 0x00U, 0x00U, 0x00U,     // NumPositions = 0
-        0x00U, 0x00U, 0x01U, 0x39U      // CRC = 313 (0x0139)
+        0x95U, 0x36U, 0x85U, 0x7FU      // CRC = 2503378303 (0x9536857F)
     };
 
     /**
@@ -58,7 +58,7 @@ TEST_F(SerializationTest, CorrectHeader) {
     ASSERT_EQ(header.magic[2], 'U');
     ASSERT_EQ(header.magic[3], 'N');
     ASSERT_EQ(header.version, 1U);
-    // ASSERT_EQ(calculateCRC32(emptyTestHeader, sizeof(header) - sizeof(header.crc)), 313U);
+    ASSERT_EQ(calculateCRC32(emptyTestHeader, sizeof(DataFileHeader) - sizeof(uint32_t)), 2503378303U);
 }
 
 /**
@@ -183,9 +183,9 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
 
 /**
  * @test Deserializes a file that contains only a valid header and nothing else.
- * Should succeed if num_positions is 0, and fail if num_positions > 0.
+ * Should fail because RelativeAttitude is missing.
  */
-TEST_F(SerializationTest, OnlyHeaderNoPositions) {
+TEST_F(SerializationTest, OnlyHeaderNoRelativeAttitude) {
     // Prepare a header with num_positions = 0
     DataFileHeader header;
     memcpy(header.magic, "FOUN", 4);
@@ -198,6 +198,34 @@ TEST_F(SerializationTest, OnlyHeaderNoPositions) {
 
     std::ostringstream out;
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    // Should throw because relative_attitude is missing
+    EXPECT_THROW({
+        found::deserialize(in);
+    }, std::ios_base::failure);
+}
+
+/**
+ * @test Deserializes a file that contains invalid number of positions
+ */
+TEST_F(SerializationTest, MissingPositions) {
+    // Prepare a header with num_positions = 0
+    DataFileHeader header;
+    memcpy(header.magic, "FOUN", 4);
+    header.version = 1;
+    header.num_positions = 1; // Add a position which is missing.
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.crc = htonl(header.crc);
+
+    std::ostringstream out;
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    // Write an empty relative_attitude, which is required
+    EulerAngles angles;
+    out.write(reinterpret_cast<const char*>(&angles), sizeof(EulerAngles));
     std::string buffer = out.str();
     std::istringstream in(buffer);
 

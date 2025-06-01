@@ -49,14 +49,20 @@ void ntoh(Vec3& v) {
     v.z = ntohd(v.z);
 }
 
-/// Calculates the CRC32 checksum for a block of memory (placeholder implementation).
+/// Calculates the CRC32 checksum for a block of memory.
 uint32_t calculateCRC32(const void* data, size_t length) {
-    uint32_t crc = 0;
+    uint32_t crc = 0xFFFFFFFFU;
     const uint8_t* bytes = static_cast<const uint8_t*>(data);
     for (size_t i = 0; i < length; ++i) {
-        crc += bytes[i];
+        crc ^= bytes[i];
+        for (int j = 0; j < 8; ++j) {
+            if (crc & 1)
+                crc = (crc >> 1) ^ 0xEDB88320U;
+            else
+                crc = crc >> 1;
+        }
     }
-    return crc;
+    return crc ^ 0xFFFFFFFFU;
 }
 
 /// Serializes a DataFile object to an output stream.
@@ -84,7 +90,10 @@ DataFile deserialize(std::istream& stream) {
     DataFile data;
     data.header = readHeader(stream);
 
-    stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(data.relative_attitude));
+    stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(EulerAngles));
+    if (stream.gcount() != sizeof(EulerAngles)) {
+        throw std::ios_base::failure("Failed to read relative_attitude");
+    }
     ntoh(data.relative_attitude);
 
     data.positions.reserve(data.header.num_positions);
@@ -120,6 +129,7 @@ DataFileHeader readHeader(std::istream& stream) {
     // Validate CRC
     uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     if (ntohl(header.crc) != expected_crc) {
+        std::cerr << "Expected CRC: " << expected_crc << ", Found CRC: " << ntohl(header.crc) << std::endl;
         throw std::runtime_error("Header CRC validation failed: Corrupted file");
     }
 
