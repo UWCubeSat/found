@@ -25,14 +25,15 @@ class Camera {
      * Creates a Camera object off of real Camera parameters
      * 
      * @param focalLength The focal length of the camera
+     * @param pixelSize The physical size of a pixel (in meters)
      * @param xCenter,yCenter The "principal point" of the camera. 
      * @param xResolution The resolution of the camera in the x-direction
      * @param yResolution The resolution of the camera in the y-direction
      */
-    Camera(decimal focalLength,
+    Camera(decimal focalLength, decimal pixelSize,
            decimal xCenter, decimal yCenter,
            int xResolution, int yResolution)
-        : focalLength(focalLength),
+        : focalLength(focalLength), pixelSize(pixelSize),
           xCenter(xCenter), yCenter(yCenter),
           xResolution(xResolution), yResolution(yResolution) {}
 
@@ -40,14 +41,15 @@ class Camera {
      * Creates a Camera object off of ideal Camera parameters
      * 
      * @param focalLength The focal length of the camera
+     * @param pixelSize The physical size of a pixel (in meters)
      * @param xResolution The resolution of the camera in the x-direction
      * @param yResolution The resolution of the camera in the y-direction
      * 
      * @note In an ideal camera, the x and y centers are just half the resolution, 
      * but physical cameras often have a bit of offset.
      */
-    Camera(decimal focalLength, int xResolution, int yResolution)
-        : Camera(focalLength,
+    Camera(decimal focalLength, decimal pixelSize, int xResolution, int yResolution)
+        : Camera(focalLength, pixelSize,
                  xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
                  xResolution, yResolution) {}
 
@@ -94,7 +96,7 @@ class Camera {
 
  private:
     // TODO: distortion
-    decimal focalLength;
+    decimal focalLength; decimal pixelSize;
     decimal xCenter; decimal yCenter;
     int xResolution; int yResolution;
 };
@@ -106,4 +108,4 @@ decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixel
 
 }  // namespace found
 
-#endif
+#endif  // CAMERA_H
