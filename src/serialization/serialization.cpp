@@ -82,28 +82,6 @@ void serialize(const DataFile& data, std::ostream& stream) {
 /// Deserializes a DataFile object from an input stream.
 DataFile deserialize(std::istream& stream) {
     DataFile data;
-    // size_t record_len;
-    // // stream.read(reinterpret_cast<char*>(&record_len), sizeof(record_len));
-    // if (stream.gcount() != sizeof(record_len)) {
-    //     throw std::runtime_error("Failed to read record length");
-    // }
-
-    // record_len = ntohl(record_len);
-    // data.positions.resize(record_len);
-
-    // for (size_t i = 0; i < record_len; ++i) {
-    //     LocationRecord record;
-    //     stream.read(reinterpret_cast<char*>(&record), sizeof(LocationRecord));
-    //     if (stream.gcount() != sizeof(LocationRecord)) {
-    //         throw std::runtime_error("Failed to read location record");
-    //     }
-    //     ntoh(record.position);
-    //     record.timestamp = ntohl(record.timestamp);
-    //     data.positions[i] = record;
-    // }
-    // data.relative_attitude = EulerAngles(0, 0, 0);
-    // ntoh(data.relative_attitude);  // Default will be overwritten after header
-    // -------------------------------------
     data.header = readHeader(stream);
 
     stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(data.relative_attitude));
@@ -124,19 +102,6 @@ DataFile deserialize(std::istream& stream) {
     return data;
 }
 
-// /// Reads and validates the header from an input stream.
-// DataFileHeader readHeader(std::istream& stream) {
-//     DataFileHeader header;
-//     stream.read(reinterpret_cast<char*>(&header), sizeof(header));
-
-//     uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
-//     if (ntohl(header.crc) != expected_crc) {
-//         throw std::runtime_error("Header CRC validation failed: Corrupted file");
-//     }
-
-//     ntoh(header);
-//     return header;
-// }
 
 bool isValidMagicNumber(const char magic[4]) {
     return magic[0] == 'F' && magic[1] == 'O' && magic[2] == 'U' && magic[3] == 'N';

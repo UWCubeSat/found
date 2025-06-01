@@ -155,4 +155,56 @@ TEST_F(SerializationTest, MagicNumberMismatch) {
     EXPECT_THROW(readHeader(in), std::runtime_error);
 }
 
+/**
+ * @test Serializes and deserializes a DataFile object with zero positions.
+ */
+TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
+    DataFile data;
+    memcpy(data.header.magic, "FOUN", 4);
+    data.header.version = 1;
+    data.header.num_positions = 0;
+    data.relative_attitude = {0, 0, 0};
+    // No positions added
+
+    std::ostringstream out;
+    serialize(data, out);
+    std::string buffer = out.str();
+
+    std::istringstream in(buffer);
+    DataFile parsed = deserialize(in);
+
+    ASSERT_EQ(parsed.header.version, 1U);
+    ASSERT_EQ(parsed.header.num_positions, 0U);
+    ASSERT_EQ(parsed.relative_attitude.roll, 0);
+    ASSERT_EQ(parsed.relative_attitude.ra, 0);
+    ASSERT_EQ(parsed.relative_attitude.de, 0);
+    ASSERT_TRUE(parsed.positions.empty());
+}
+
+/**
+ * @test Deserializes a file that contains only a valid header and nothing else.
+ * Should succeed if num_positions is 0, and fail if num_positions > 0.
+ */
+TEST_F(SerializationTest, OnlyHeaderNoPositions) {
+    // Prepare a header with num_positions = 0
+    DataFileHeader header;
+    memcpy(header.magic, "FOUN", 4);
+    header.version = 1;
+    header.num_positions = 0;
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.crc = htonl(header.crc);
+
+    std::ostringstream out;
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    // Should throw because relative_attitude is missing
+    EXPECT_THROW({
+        found::deserialize(in);
+    }, std::ios_base::failure);
+}
+
 }  // namespace found
