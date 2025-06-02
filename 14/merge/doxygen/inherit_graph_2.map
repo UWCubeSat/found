@@ -1,0 +1,51 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classfound_1_1Action.html" title=" " alt="" coords="5,305,113,331"/>
+<area shape="rect" id="Node000001" href="$classfound_1_1Stage.html" title=" " alt="" coords="165,41,389,96"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="67,291,101,215,127,171,159,131,184,110,210,94,213,98,187,115,163,135,131,174,105,217,72,293"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Stage.html" title=" " alt="" coords="195,145,358,185"/>
+<area shape="poly" id="edge4_Node000000_Node000004" title=" " alt="" coords="79,293,115,257,160,220,226,183,229,187,163,224,119,261,83,297"/>
+<area shape="rect" id="Node000008" href="$classfound_1_1Stage.html" title=" " alt="" coords="195,234,359,274"/>
+<area shape="poly" id="edge8_Node000000_Node000008" title=" " alt="" coords="112,299,161,283,202,272,203,277,162,289,113,304"/>
+<area shape="rect" id="Node000012" href="$classfound_1_1Stage.html" title=" " alt="" coords="161,298,392,338"/>
+<area shape="poly" id="edge12_Node000000_Node000012" title=" " alt="" coords="127,315,161,315,161,321,127,321"/>
+<area shape="rect" id="Node000015" href="$classfound_1_1Stage.html" title=" " alt="" coords="169,362,385,402"/>
+<area shape="poly" id="edge15_Node000000_Node000015" title=" " alt="" coords="113,332,162,347,203,359,202,364,161,353,112,337"/>
+<area shape="rect" id="Node000019" href="$classfound_1_1Stage.html" title=" " alt="" coords="195,426,359,466"/>
+<area shape="poly" id="edge19_Node000000_Node000019" title=" " alt="" coords="81,340,117,377,163,412,195,426,193,431,160,416,113,381,78,344"/>
+<area shape="rect" id="Node000020" href="$classfound_1_1Stage.html" title=" " alt="" coords="199,498,355,538"/>
+<area shape="poly" id="edge20_Node000000_Node000020" title=" " alt="" coords="73,342,107,409,132,445,163,476,200,497,197,501,160,480,128,448,102,412,68,345"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1CalibrationAlgorithm.html" title=" " alt="" coords="461,17,663,43"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="402,49,468,40,468,45,403,54"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1LOSTCalibrationAlgorithm.html" title=" " alt="" coords="746,5,981,31"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="677,23,746,20,746,25,678,28"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1DistanceDeterminationAlgorithm.html" title=" " alt="" coords="453,119,671,159"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="372,154,452,146,452,152,372,159"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1EllipticDistanceDeterminationAlgorithm.html" title=" " alt="" coords="732,55,995,95"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="670,114,768,93,769,98,671,119"/>
+<area shape="rect" id="Node000007" href="$classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title=" " alt="" coords="771,119,955,159"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="685,137,771,137,771,142,685,142"/>
+<area shape="rect" id="Node000009" href="$classfound_1_1EdgeDetectionAlgorithm.html" title=" " alt="" coords="449,241,675,267"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="372,251,449,251,449,257,372,257"/>
+<area shape="rect" id="Node000010" href="$classfound_1_1LoCEdgeDetectionAlgorithm.html" title=" " alt="" coords="738,184,989,209"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="642,236,795,207,796,212,643,241"/>
+<area shape="rect" id="Node000011" href="$classfound_1_1SimpleEdgeDetectionAlgorithm.html" title=" " alt="" coords="760,234,967,274"/>
+<area shape="poly" id="edge11_Node000009_Node000011" title=" " alt="" coords="689,251,760,251,760,257,689,257"/>
+<area shape="rect" id="Node000013" href="$classfound_1_1OrbitPropagationAlgorithm.html" title=" " alt="" coords="441,305,683,331"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="406,315,441,315,441,321,406,321"/>
+<area shape="rect" id="Node000014" href="$classfound_1_1ApproximateOrbitPropagationAlgorithm.html" title=" " alt="" coords="733,298,994,338"/>
+<area shape="poly" id="edge14_Node000013_Node000014" title=" " alt="" coords="696,315,732,315,732,321,696,321"/>
+<area shape="rect" id="Node000016" href="$classfound_1_1VectorGenerationAlgorithm.html" title=" " alt="" coords="440,369,684,395"/>
+<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="398,379,440,379,440,385,398,385"/>
+<area shape="rect" id="Node000017" href="$classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html" title=" " alt="" coords="753,362,973,402"/>
+<area shape="poly" id="edge17_Node000016_Node000017" title=" " alt="" coords="698,379,753,379,753,385,698,385"/>
+<area shape="rect" id="Node000018" href="$classfound_1_1LOSTVectorGenerationAlgorithm.html" title=" " alt="" coords="757,426,970,466"/>
+<area shape="poly" id="edge18_Node000016_Node000018" title=" " alt="" coords="643,395,685,403,775,423,774,429,683,409,642,400"/>
+<area shape="rect" id="Node000021" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="455,419,669,473"/>
+<area shape="poly" id="edge21_Node000020_Node000021" title=" " alt="" coords="367,493,455,470,456,475,368,498"/>
+<area shape="rect" id="Node000022" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="473,498,651,538"/>
+<area shape="poly" id="edge22_Node000020_Node000022" title=" " alt="" coords="368,515,472,515,472,521,368,521"/>
+<area shape="rect" id="Node000023" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="460,562,664,602"/>
+<area shape="poly" id="edge23_Node000020_Node000023" title=" " alt="" coords="368,536,473,559,472,565,367,541"/>
+<area shape="rect" id="Node000024" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="477,626,647,666"/>
+<area shape="poly" id="edge24_Node000020_Node000024" title=" " alt="" coords="319,544,376,579,441,612,477,624,476,629,439,616,373,583,317,548"/>
+</map>
