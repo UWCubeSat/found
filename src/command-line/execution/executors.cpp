@@ -7,9 +7,9 @@
 
 namespace found {
 
-CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &options,
+CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &&options,
                                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm)
-                                                         : options_(options) {
+                                                         : options_(std::move(options)) {
     this->calibrationAlgorithm = std::move(calibrationAlgorithm);
     this->pipeline_.Complete(*this->calibrationAlgorithm);
 }
@@ -35,11 +35,11 @@ DistancePipelineExecutor::~DistancePipelineExecutor() {
     stbi_image_free(this->options_.image.image);
 }
 
-DistancePipelineExecutor::DistancePipelineExecutor(const DistanceOptions &options,
-                                                     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                                     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                                     std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
-                                                     : options_(options) {
+DistancePipelineExecutor::DistancePipelineExecutor(const DistanceOptions &&options,
+                                                   std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                                   std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                                   std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
+                                                   : options_(std::move(options)) {
     this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
     this->distanceAlgorithm = std::move(distanceAlgorithm);
     this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
@@ -61,6 +61,32 @@ void DistancePipelineExecutor::OutputResults() {
                                       << positionVector->y << ", "
                                       << positionVector->z << ") m");
     LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
+}
+
+OrbitPipelineExecutor::OrbitPipelineExecutor(const OrbitOptions &&options,
+                                             std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm)
+                                             : options_(std::move(options)) {
+    this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);
+    this->pipeline_.Complete(*this->orbitPropagationAlgorithm);
+}
+
+// TODO: Implement the ExecutePipeline and OutputResults methods for OrbitPipelineExecutor when
+// the Data Serialization branch is merged
+
+void OrbitPipelineExecutor::ExecutePipeline() {
+    // Results are stored within the pipeline, can also be accessed
+    // via this function call
+    this->pipeline_.Run(this->options_.positionData);
+}
+
+void OrbitPipelineExecutor::OutputResults() {
+    // TODO: Write the output to the datafile
+    [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
+    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
+                                             << futurePosition.position.y << ", "
+                                             << futurePosition.position.z << ") m"
+                                             << " at time "
+                                             << futurePosition.timestamp << " s");
 }
 
 }  // namespace found

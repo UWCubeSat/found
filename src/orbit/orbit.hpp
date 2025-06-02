@@ -2,76 +2,67 @@
 #define ORBIT_H
 
 #include <vector>
+#include <utility>
 
 #include "common/spatial/attitude-utils.hpp"
-#include "common/style.hpp"
 #include "common/pipeline.hpp"
+#include "common/style.hpp"
 
 namespace found {
 
 /**
- * An OrbitDeterminationAlgorithm is an object that houses the Orbit Projection Algorithm. This
- * algorithm finds the orbit path of the satellite from known position vectors relative to Earth
- * 
-*/
-class OrbitDeterminationAlgorithm : public Stage<std::vector<Vec3>, OrbitParams> {
+ * The OrbitPropagationAlgorithm is an algorithm that propagates an orbit
+ * over a specified time period.
+ */
+class OrbitPropagationAlgorithm : public Stage<LocationRecords, LocationRecords> {
  public:
-    // Destroys this
-    virtual ~OrbitDeterminationAlgorithm();
+    /// Constructs this
+    OrbitPropagationAlgorithm() = default;
+    /// Destroys this
+    virtual ~OrbitPropagationAlgorithm() {}
 };
 
 /**
- * An EllipticalOrbitDerminationAlgorithm is an object that houses the Orbit Projection Algorithm. 
- * This algorithm finds the orbit path of the satellite from known position vectors relative to Earth
- * by assuming that the orbital path is an ellipse that is spatially fixed.
- * 
-*/
-class EllipticalOrbitDerminationAlgorithm : public OrbitDeterminationAlgorithm {
+ * OrbitPropagationAlgorithm is a stage that propagates an orbit over a specified time period.
+ * It integrates the equations of motion to predict the satellite's trajectory using Runge-Kutta
+ * 4 (RK4).
+ */
+class ApproximateOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
  public:
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    EllipticalOrbitDerminationAlgorithm(/*Params to initialze fields for this object*/);
+    * @brief Constructs this OrbitPropagationAlgorithm.
+    * 
+    * @param totalTime The total time to predict over
+    * @param dt The time step for integration (seconds)
+    * @param radius The radius of the celestial body (default is for Earth, in km)
+    * @param mu The gravitational parameter (default is for Earth in km^3/s^2)
+    */
+    explicit ApproximateOrbitPropagationAlgorithm(decimal totalTime, decimal dt, decimal radius, decimal mu)
+        : totalTime_(totalTime), dt_(dt), radius_(radius), mu_(mu) {}
+
+    /// Destroys this
+    ~ApproximateOrbitPropagationAlgorithm();
 
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    ~EllipticalOrbitDerminationAlgorithm();
+     * Projects an orbit
+     * 
+     * @param data The past data to use
+     * 
+     * @return Predicted positions in the future
+     */
+    LocationRecords Run(const LocationRecords &data) override;
 
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    OrbitParams Run(const std::vector<Vec3> &positions /*Params to override the base class one*/) override;
  private:
-    // Fields specific to this algorithm go here, and helper methods
-};
-
-/**
- * An PrecessionOrbitDeterminationAlgorithm is an object that houses the Orbit Projection Algorithm. 
- * This algorithm finds the orbit path of the satellite from known position vectors relative to Earth
- * by assuming that the orbital path is a Ellipse that is geometrically constant and rotates as well.
- * 
-*/
-class PrecessionOrbitDeterminationAlgorithm : public OrbitDeterminationAlgorithm {
- public:
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    PrecessionOrbitDeterminationAlgorithm(/*Params to initialze fields for this object*/);
-
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    ~PrecessionOrbitDeterminationAlgorithm();
-
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    OrbitParams Run(const std::vector<Vec3> &positions /*Params to override the base class one*/) override;
- private:
-    // Fields specific to this algorithm go here, and helper methods
+    /// The total time to predict over
+    decimal totalTime_;
+    /// The time step for integration (seconds)
+    decimal dt_;
+    /// The radius of the celestial body (default is for Earth, in km)
+    decimal radius_;
+    /// The gravitational parameter (default is for Earth in km^3/s^2)
+    decimal mu_;
 };
 
 }  // namespace found
 
-#endif
+#endif  // ORBIT_H

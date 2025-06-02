@@ -25,12 +25,6 @@ execute_cmd() {
     fi
 }
 
-# Check if the script is running with root privileges
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script requires root privileges. Please run with sudo/root."
-    exit 1
-fi
-
 # Detect the operating system using uname
 OS="$(uname -s)"
 
@@ -44,11 +38,11 @@ case "$OS" in
         # Detect the package manager
         PM=""
         if command -v apt-get &> /dev/null; then
-            PM="apt-get"
-            execute_cmd apt-get -y update
-            execute_cmd apt-get -y dist-upgrade
+            PM="sudo apt-get"
+            execute_cmd sudo apt-get -y update
+            execute_cmd sudo apt-get -y dist-upgrade
         elif command -v yum &> /dev/null; then
-            PM="yum"
+            PM="sudo yum"
             execute_cmd yum -y update
         # elif command -v dnf &> /dev/null; then
         #     PM="dnf"
@@ -58,23 +52,24 @@ case "$OS" in
             exit 1
         fi
         INSTALL="$PM install -y"
+        # List of packages to install
+        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz"
         ;;
-    # Darwin*)
-    #     # Check if Homebrew is installed; install it if not
-    #     if ! command -v brew &> /dev/null; then
-    #         echo "Homebrew not found. Installing Homebrew..."
-    #         execute_cmd curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-    #     fi
-    #     INSTALL="brew install"
-    #     ;;
+    Darwin*)
+        # Check if Homebrew is installed; install it if not
+        if ! command -v brew &> /dev/null; then
+            echo "Homebrew not found. Installing Homebrew..."
+            execute_cmd "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+        fi
+        INSTALL="brew install"
+        # List of packages to install
+        PACKAGES="git gcc make cmake wget gnu-tar python pipx graphviz"
+        ;;
     *)
         echo "Unknown Operating System $OS"
         exit 1
         ;;
 esac
-
-# List of packages to install
-PACKAGES="git g++ make cmake wget tar valgrind python3 python3-pip pipx graphviz"
 
 # Install each package and echo the command
 for PACKAGE in $PACKAGES; do
@@ -86,26 +81,23 @@ done
 CMD="$INSTALL doxygen || ( \
     $INSTALL bison && \
     $INSTALL flex && \
-    wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.src.tar.gz && \
-    tar xf doxygen-1.8.17.src.tar.gz && \
-    cd doxygen-1.8.17 && \
+    wget https://sourceforge.net/projects/doxygen/files/rel-1.9.8/doxygen-1.9.8.src.tar.gz && \
+    tar xf doxygen-1.9.8.src.tar.gz && \
+    cd doxygen-1.9.8 && \
     mkdir build && cd build && cmake -G \"Unix Makefiles\" .. && make install && \
     cd ../.. && \
-    rm -rf doxygen-1.8.17* \
+    rm -rf doxygen-1.9.8* \
 )"
 execute_cmd $CMD
 
-# Prepare pipx
-execute_cmd "pipx ensurepath"
-
 # Python packages to install
-PYTHON_PACKAGES="cpplint==2.0.0 gcovr==8.3"
+PYTHON_PACKAGES="git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint git+https://github.com/gcovr/gcovr.git@8.3#egg=gcovr"
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
     CMD="pipx install $PACKAGE"
     execute_cmd $CMD
 done
+execute_cmd pipx ensurepath
 
-# Restart Terminal
-execute_cmd "source ~/.bashrc"
+printf "\n============Please Restart your Terminal============\n"

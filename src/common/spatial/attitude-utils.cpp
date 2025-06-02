@@ -3,7 +3,6 @@
 
 #include <math.h>
 #include <assert.h>
-#include <iostream>
 
 namespace found {
 
@@ -174,6 +173,10 @@ EulerAngles Quaternion::ToSpherical() const {
  * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+ * 
+ * @note Rotating a vector with this quaternion is equivalent to a backwards rotation
+ * (rotation into an absolute frame). This is opposite of normal quaternions, which
+ * rotate you into a relative frame.
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(roll >= 0.0 && roll <= 2*M_PI);
@@ -378,6 +381,11 @@ Vec2 Vec2::operator-(const Vec2 &other) const {
 /// Vector Subtraction
 Vec3 Vec3::operator-(const Vec3 &other) const {
     return { x - other.x, y - other.y, z - other.z };
+}
+
+/// Vector Negation
+Vec3 Vec3::operator-() const {
+    return { -x, -y, -z };
 }
 
 /**

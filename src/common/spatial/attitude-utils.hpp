@@ -112,6 +112,7 @@ class Vec3 {
     Vec3 operator*(const decimal &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
+    Vec3 operator-() const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 };
@@ -292,7 +293,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
-    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }
 
 // Spherical-Vector Conversions
 

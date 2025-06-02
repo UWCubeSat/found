@@ -65,6 +65,26 @@ struct Edge {
 /// A collection of Edges
 typedef std::vector<Edge> Edges;
 
+// TODO: Merge with Data Serialization branch
+/**
+ * @brief Represents a single location record containing a position and a timestamp.
+ */
+struct LocationRecord {
+    /**
+     * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
+     */
+    uint64_t timestamp;
+    /**
+     * @brief The 3D position vector associated with this location.
+     */
+    Vec3 position;
+};
+
+// TODO: Maybe change this to line up with the DataFile struct
+// so that we don't have to copy the data.
+/// A collection of Location Records
+typedef std::vector<LocationRecord> LocationRecords;
+
 /**
  * OrbitParams defines the orbital
  * parameters of a given orbit
@@ -146,8 +166,8 @@ typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPip
 /// Pipeline for Distance Determination
 typedef Pipeline<Image, PositionVector> DistancePipeline;
 
-/// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
-typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
+/// Pipeline for Orbital Determination
+typedef Pipeline<LocationRecords, LocationRecords> OrbitPipeline;
 
 }  // namespace found
 
