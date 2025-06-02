@@ -132,6 +132,7 @@ endef
 all: $(COMPILE_SETUP_TARGET) \
 	 $(COMPILE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TARGET) \
+	 $(TEST_SETUP_TARGET) \
 	 $(TEST_TARGET) \
 	 $(COVERAGE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TEST_TARGET) \
@@ -161,7 +162,7 @@ $(BIN): $(SRC_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 compile_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_TARGET))
 
@@ -212,7 +213,7 @@ $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
 	cpplint $(TEST) $(TEST_H)
 
 # The pre-processed artifacts target (private)
-private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
+$(PRIVATE_TARGET): $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
 $(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -E $< -o $@ $(SRC_LIBS)
