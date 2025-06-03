@@ -18,13 +18,13 @@ class SerializationTest : public ::testing::Test {
  protected:
     /**
      * @brief A valid DataFileHeader in network byte order for an empty file (0 positions).
-     * CRC is set to 313 (0x0139), calculated from the first 12 bytes.
+     * CRC is set to 1694280785 (0x64FCAC51), calculated from the first 12 bytes.
      */
     const unsigned char emptyTestHeader[16] = {
         'F', 'O', 'U', 'N',             // Magic Number
         0x00U, 0x00U, 0x00U, 0x01U,     // Version = 1
         0x00U, 0x00U, 0x00U, 0x00U,     // NumPositions = 0
-        0x95U, 0x36U, 0x85U, 0x7FU      // CRC = 2503378303 (0x9536857F)
+        0x64U, 0xFCU, 0xACU, 0x51U      // CRC = 1694280785 (0x64FCAC51)
     };
 
     /**
@@ -60,7 +60,10 @@ TEST_F(SerializationTest, CorrectHeader) {
     ASSERT_EQ(header.magic[2], 'U');
     ASSERT_EQ(header.magic[3], 'N');
     ASSERT_EQ(header.version, 1U);
-    ASSERT_EQ(calculateCRC32(emptyTestHeader, sizeof(DataFileHeader) - sizeof(uint32_t)), 2503378303U);
+    ASSERT_EQ(calculateCRC32(
+        reinterpret_cast<const char*>(&header),
+        sizeof(DataFileHeader) - sizeof(uint32_t)),
+        1694280785U);
 }
 
 /**
@@ -118,10 +121,9 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization) {
     memcpy(header.magic, "FOUN", 4);
     header.version = 1;
     header.num_positions = 1;
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
-
-    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.crc = htonl(header.crc);
 
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
@@ -192,9 +194,9 @@ TEST_F(SerializationTest, OnlyHeaderNoRelativeAttitude) {
     memcpy(header.magic, "FOUN", 4);
     header.version = 1;
     header.num_positions = 0;
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
-    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.crc = htonl(header.crc);
 
     std::ostringstream out;
@@ -217,9 +219,9 @@ TEST_F(SerializationTest, MissingPositions) {
     memcpy(header.magic, "FOUN", 4);
     header.version = 1;
     header.num_positions = 1;  // Add a position which is missing.
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
-    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.crc = htonl(header.crc);
 
     std::ostringstream out;

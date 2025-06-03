@@ -82,9 +82,8 @@ uint32_t calculateCRC32(const void* data, size_t length) {
 /// The number of positions in header must match the number of positions in entry.
 void serialize(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
-    hton(header);
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
-    header.crc = htonl(header.crc);
+    hton(header);
     stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
 
     EulerAngles relative_attitude = data.relative_attitude;
@@ -137,15 +136,15 @@ DataFileHeader readHeader(std::istream& stream) {
         throw std::ios_base::failure("Invalid magic number in header");
     }
 
-    // Validate CRC
-    uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
-    if (ntohl(header.crc) != expected_crc) {
-        std::cerr << "Expected CRC: " << expected_crc << ", Found CRC: " << ntohl(header.crc) << std::endl;
-        throw std::runtime_error("Header CRC validation failed: Corrupted file");
-    }
-
     // Convert version and other fields from network to host byte order
     ntoh(header);
+
+    // Validate CRC
+    uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    if (header.crc != expected_crc) {
+        std::cerr << "Expected CRC: " << expected_crc << ", Found CRC: " << header.crc << std::endl;
+        throw std::runtime_error("Header CRC validation failed: Corrupted file");
+    }
 
     return header;
 }
