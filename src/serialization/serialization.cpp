@@ -1,3 +1,4 @@
+#include <memory>
 #include <fstream>
 #include <iostream>
 #include "serialization/encoding.hpp"
@@ -77,10 +78,10 @@ uint32_t calculateCRC32(const void* data, size_t length) {
     return crc ^ 0xFFFFFFFFU;
 }
 
-/// Serializes a DataFile object to an output stream. The number of positions is updated before writing.
+/// Serializes a DataFile object to an output stream.
+/// The number of positions in header must match the number of positions in entry.
 void serialize(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
-    header.num_positions = data.positions.size();
     hton(header);
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.crc = htonl(header.crc);
@@ -90,8 +91,8 @@ void serialize(const DataFile& data, std::ostream& stream) {
     hton(relative_attitude);
     stream.write(reinterpret_cast<const char*>(&relative_attitude), sizeof(relative_attitude));
 
-    for (const auto& r : data.positions) {
-        LocationRecord record = r;
+    for (uint32_t i = 0; i < data.header.num_positions; ++i) {
+        LocationRecord record = data.positions[i];
         hton(record);
         stream.write(reinterpret_cast<const char*>(&record), sizeof(LocationRecord));
     }
@@ -108,15 +109,13 @@ DataFile deserialize(std::istream& stream) {
     }
     ntoh(data.relative_attitude);
 
-    data.positions.reserve(data.header.num_positions);
+    data.positions = std::make_unique<LocationRecord[]>(data.header.num_positions);
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
-        LocationRecord record;
-        stream.read(reinterpret_cast<char*>(&record), sizeof(LocationRecord));
+        stream.read(reinterpret_cast<char*>(&data.positions[i]), sizeof(LocationRecord));
         if (stream.gcount() != sizeof(LocationRecord)) {
             throw std::ios_base::failure("Failed to read location record");
         }
-        ntoh(record);
-        data.positions.push_back(record);
+        ntoh(data.positions[i]);
     }
 
     return data;

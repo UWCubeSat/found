@@ -1,7 +1,7 @@
 #ifndef DATA_FILE_H
 #define DATA_FILE_H
 
-#include <vector>
+#include <memory>
 #include <cstdint>
 #include <string>
 #include "common/spatial/attitude-utils.hpp"  // Includes Vec3 and EulerAngles
@@ -89,7 +89,7 @@ struct DataFile {
     /**
      * @brief Collection of location records in the file.
      */
-    std::vector<LocationRecord> positions;
+    std::unique_ptr<LocationRecord[]> positions;
 };
 
 }  // namespace found

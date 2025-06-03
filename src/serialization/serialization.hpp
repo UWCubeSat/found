@@ -9,6 +9,8 @@ namespace found {
 /**
  * @brief Serializes a DataFile object to an output stream.
  * 
+ * @pre The number of positions in the header must match the number of positions in the entry.
+ * 
  * @param data The DataFile object to serialize.
  * @param stream The output stream to write the serialized data to.
  */

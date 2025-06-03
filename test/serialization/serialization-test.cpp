@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <memory>
 #include <cstddef>
 #include <fstream>
 #include <sstream>
@@ -84,8 +85,9 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     LocationRecord loc1{{100, 200, 300}, 161803398};
     LocationRecord loc2{{-100, -200, -300}, 271828182};
 
-    data.positions.push_back(loc1);
-    data.positions.push_back(loc2);
+    data.positions = std::make_unique<LocationRecord[]>(2);
+    data.positions[0] = loc1;
+    data.positions[1] = loc2;
 
     std::ostringstream out;
     serialize(data, out);
@@ -101,7 +103,6 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     ASSERT_EQ(parsed.relative_attitude.ra, data.relative_attitude.ra);
     ASSERT_EQ(parsed.relative_attitude.de, data.relative_attitude.de);
 
-    ASSERT_EQ(parsed.positions.size(), 2U);
     EXPECT_EQ(parsed.positions[0].timestamp, loc1.timestamp);
     EXPECT_EQ(parsed.positions[0].position.x, loc1.position.x);
     EXPECT_EQ(parsed.positions[1].timestamp, loc2.timestamp);
@@ -179,7 +180,6 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     ASSERT_EQ(parsed.relative_attitude.roll, 0);
     ASSERT_EQ(parsed.relative_attitude.ra, 0);
     ASSERT_EQ(parsed.relative_attitude.de, 0);
-    ASSERT_TRUE(parsed.positions.empty());
 }
 
 /**
