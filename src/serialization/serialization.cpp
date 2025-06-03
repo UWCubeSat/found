@@ -14,11 +14,11 @@ void hton(DataFileHeader& header) {
     header.crc = htonl(header.crc);
 }
 
-/// Converts EulerAngles from host to network byte order.
-void hton(EulerAngles& angles) {
-    angles.roll = htondec(angles.roll);
-    angles.ra = htondec(angles.ra);
-    angles.de = htondec(angles.de);
+/// Converts a DataFileHeader from network to host byte order.
+void ntoh(DataFileHeader& header) {
+    header.version = ntohl(header.version);
+    header.num_positions = ntohl(header.num_positions);
+    header.crc = ntohl(header.crc);
 }
 
 /// Converts a Vec3 from host to network byte order.
@@ -28,11 +28,30 @@ void hton(Vec3& v) {
     v.z = htondec(v.z);
 }
 
-/// Converts a DataFileHeader from network to host byte order.
-void ntoh(DataFileHeader& header) {
-    header.version = ntohl(header.version);
-    header.num_positions = ntohl(header.num_positions);
-    header.crc = ntohl(header.crc);
+/// Converts a Vec3 from network to host byte order.
+void ntoh(Vec3& v) {
+    v.x = ntohdec(v.x);
+    v.y = ntohdec(v.y);
+    v.z = ntohdec(v.z);
+}
+
+/// Converts a LocationRecord from host to network byte order.
+void hton(LocationRecord& record) {
+    hton(record.position);
+    record.timestamp = htonl(record.timestamp);
+}
+
+/// Converts a LocationRecord from network to host byte order.
+void ntoh(LocationRecord& record) {
+    ntoh(record.position);
+    record.timestamp = ntohl(record.timestamp);
+}
+
+/// Converts EulerAngles from host to network byte order.
+void hton(EulerAngles& angles) {
+    angles.roll = htondec(angles.roll);
+    angles.ra = htondec(angles.ra);
+    angles.de = htondec(angles.de);
 }
 
 /// Converts EulerAngles from network to host byte order.
@@ -40,13 +59,6 @@ void ntoh(EulerAngles& angles) {
     angles.roll = ntohdec(angles.roll);
     angles.ra = ntohdec(angles.ra);
     angles.de = ntohdec(angles.de);
-}
-
-/// Converts a Vec3 from network to host byte order.
-void ntoh(Vec3& v) {
-    v.x = ntohdec(v.x);
-    v.y = ntohdec(v.y);
-    v.z = ntohdec(v.z);
 }
 
 /// Calculates the CRC32 checksum for a block of memory.
@@ -65,9 +77,10 @@ uint32_t calculateCRC32(const void* data, size_t length) {
     return crc ^ 0xFFFFFFFFU;
 }
 
-/// Serializes a DataFile object to an output stream.
+/// Serializes a DataFile object to an output stream. The number of positions is updated before writing.
 void serialize(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
+    header.num_positions = data.positions.size();
     hton(header);
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     header.crc = htonl(header.crc);
@@ -77,10 +90,9 @@ void serialize(const DataFile& data, std::ostream& stream) {
     hton(relative_attitude);
     stream.write(reinterpret_cast<const char*>(&relative_attitude), sizeof(relative_attitude));
 
-    for (auto& r : data.positions) {
+    for (const auto& r : data.positions) {
         LocationRecord record = r;
-        hton(record.position);
-        record.timestamp = htonl(record.timestamp);
+        hton(record);
         stream.write(reinterpret_cast<const char*>(&record), sizeof(LocationRecord));
     }
 }
@@ -103,8 +115,7 @@ DataFile deserialize(std::istream& stream) {
         if (stream.gcount() != sizeof(LocationRecord)) {
             throw std::ios_base::failure("Failed to read location record");
         }
-        ntoh(record.position);
-        record.timestamp = ntohl(record.timestamp);
+        ntoh(record);
         data.positions.push_back(record);
     }
 
