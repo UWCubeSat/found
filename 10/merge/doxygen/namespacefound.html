@@ -351,7 +351,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>ntoh</b> (<a class="e
 <tr class="memdesc:a1f2dac725ef029fb2c8434123b24b4d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts <a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a> from network to host byte order.  <br /></td></tr>
 <tr class="separator:a1f2dac725ef029fb2c8434123b24b4d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebd4b2e4ddb5eaf57792090fd0af08dd" id="r_aebd4b2e4ddb5eaf57792090fd0af08dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#aebd4b2e4ddb5eaf57792090fd0af08dd">serialize</a> (const <a class="el" href="structfound_1_1DataFile.html">DataFile</a> &amp;data, std::ostream &amp;stream)</td></tr>
-<tr class="memdesc:aebd4b2e4ddb5eaf57792090fd0af08dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream. The number of positions is updated before writing.  <br /></td></tr>
+<tr class="memdesc:aebd4b2e4ddb5eaf57792090fd0af08dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream.  <br /></td></tr>
 <tr class="separator:aebd4b2e4ddb5eaf57792090fd0af08dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac253869d26489987af530763dc2fc812" id="r_ac253869d26489987af530763dc2fc812"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfound_1_1DataFile.html">DataFile</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#ac253869d26489987af530763dc2fc812">deserialize</a> (std::istream &amp;stream)</td></tr>
 <tr class="memdesc:ac253869d26489987af530763dc2fc812"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object from an input stream.  <br /></td></tr>
@@ -1985,8 +1985,9 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
       </table>
 </div><div class="memdoc">
 
-<p>Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream. The number of positions is updated before writing. </p>
-<p>Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream.</p>
+<p>Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream. </p>
+<p>Serializes a <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to an output stream. The number of positions in header must match the number of positions in entry.</p>
+<dl class="section pre"><dt>Precondition</dt><dd>The number of positions in the header must match the number of positions in the entry.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>The <a class="el" href="structfound_1_1DataFile.html" title="Represents a complete serialized data file.">DataFile</a> object to serialize. </td></tr>
