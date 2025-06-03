@@ -16,16 +16,16 @@ void hton(DataFileHeader& header) {
 
 /// Converts EulerAngles from host to network byte order.
 void hton(EulerAngles& angles) {
-    angles.roll = htond(angles.roll);
-    angles.ra = htond(angles.ra);
-    angles.de = htond(angles.de);
+    angles.roll = htondec(angles.roll);
+    angles.ra = htondec(angles.ra);
+    angles.de = htondec(angles.de);
 }
 
 /// Converts a Vec3 from host to network byte order.
 void hton(Vec3& v) {
-    v.x = htond(v.x);
-    v.y = htond(v.y);
-    v.z = htond(v.z);
+    v.x = htondec(v.x);
+    v.y = htondec(v.y);
+    v.z = htondec(v.z);
 }
 
 /// Converts a DataFileHeader from network to host byte order.
@@ -37,16 +37,16 @@ void ntoh(DataFileHeader& header) {
 
 /// Converts EulerAngles from network to host byte order.
 void ntoh(EulerAngles& angles) {
-    angles.roll = ntohd(angles.roll);
-    angles.ra = ntohd(angles.ra);
-    angles.de = ntohd(angles.de);
+    angles.roll = ntohdec(angles.roll);
+    angles.ra = ntohdec(angles.ra);
+    angles.de = ntohdec(angles.de);
 }
 
 /// Converts a Vec3 from network to host byte order.
 void ntoh(Vec3& v) {
-    v.x = ntohd(v.x);
-    v.y = ntohd(v.y);
-    v.z = ntohd(v.z);
+    v.x = ntohdec(v.x);
+    v.y = ntohdec(v.y);
+    v.z = ntohdec(v.z);
 }
 
 /// Calculates the CRC32 checksum for a block of memory.
@@ -112,6 +112,7 @@ DataFile deserialize(std::istream& stream) {
 }
 
 
+/// Validates the magic number in the header.
 bool isValidMagicNumber(const char magic[4]) {
     return magic[0] == 'F' && magic[1] == 'O' && magic[2] == 'U' && magic[3] == 'N';
 }

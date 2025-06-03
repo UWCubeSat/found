@@ -1,7 +1,8 @@
+#include <gtest/gtest.h>
+#include <cstddef>
 #include <fstream>
 #include <sstream>
-#include <cstddef>
-#include <gtest/gtest.h>
+#include <string>
 
 #include "serialization/encoding.hpp"
 #include "serialization/serialization.hpp"
@@ -13,7 +14,7 @@ namespace found {
  * @brief Unit test fixture for serialization/deserialization functions.
  */
 class SerializationTest : public ::testing::Test {
-protected:
+ protected:
     /**
      * @brief A valid DataFileHeader in network byte order for an empty file (0 positions).
      * CRC is set to 313 (0x0139), calculated from the first 12 bytes.
@@ -215,7 +216,7 @@ TEST_F(SerializationTest, MissingPositions) {
     DataFileHeader header;
     memcpy(header.magic, "FOUN", 4);
     header.version = 1;
-    header.num_positions = 1; // Add a position which is missing.
+    header.num_positions = 1;  // Add a position which is missing.
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
     header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));

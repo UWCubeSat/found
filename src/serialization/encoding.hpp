@@ -73,7 +73,9 @@ inline uint64_t ntohl(uint64_t v) {
  * @brief Union for converting a 32-bit floating point number from host byte order to network byte order and vice versa.
  */
 union _f_u_ {
+    /// @brief Floating-point variable used for storing a single-precision value.
     float f;
+    /// @brief Unsigned 32-bit integer used for encoding or serialization purposes.
     uint32_t u;
 };
 
@@ -81,7 +83,9 @@ union _f_u_ {
  * @brief Union for converting a 64-bit floating point number from host byte order to network byte order and vice versa.
  */
 union _d_u_ {
+    /// @brief A variable to store a double-precision floating-point value.
     double d;
+    /// @brief Unsigned 64-bit integer used for encoding or serialization purposes.
     uint64_t u;
 };
 
