@@ -269,6 +269,11 @@ class Attitude {
     AttitudeType type;
 };
 
+// Vector operations
+Vec2 midpoint(const Vec2 &, const Vec2 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
+
 // DCM-Quaternion-Spherical Conversions
 
 Mat3 QuaternionToDCM(const Quaternion &);
