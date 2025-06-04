@@ -4,7 +4,7 @@
 #include "serialization/encoding.hpp"
 #include "serialization/serialization.hpp"
 #include "common/spatial/attitude-utils.hpp"
-
+#include "common/logging.hpp"
 
 namespace found {
 
@@ -91,9 +91,8 @@ void serialize(const DataFile& data, std::ostream& stream) {
     stream.write(reinterpret_cast<const char*>(&relative_attitude), sizeof(relative_attitude));
 
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
-        LocationRecord record = data.positions[i];
-        hton(record);
-        stream.write(reinterpret_cast<const char*>(&record), sizeof(LocationRecord));
+        hton(data.positions[i]);
+        stream.write(reinterpret_cast<const char*>(&data.positions[i]), sizeof(LocationRecord));
     }
 }
 
@@ -142,8 +141,8 @@ DataFileHeader readHeader(std::istream& stream) {
     // Validate CRC
     uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     if (header.crc != expected_crc) {
-        std::cerr << "Expected CRC: " << expected_crc << ", Found CRC: " << header.crc << std::endl;
-        throw std::runtime_error("Header CRC validation failed: Corrupted file");
+        LOG_ERROR("Expected CRC: " << expected_crc << ", Found CRC: " << ntohl(header.crc));
+        throw std::ios_base::failure("Header CRC validation failed: Corrupted file");
     }
 
     return header;
