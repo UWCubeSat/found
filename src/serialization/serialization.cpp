@@ -1,0 +1,151 @@
+#include <memory>
+#include <fstream>
+#include <iostream>
+#include "serialization/encoding.hpp"
+#include "serialization/serialization.hpp"
+#include "common/spatial/attitude-utils.hpp"
+#include "common/logging.hpp"
+
+namespace found {
+
+/// Converts a DataFileHeader from host to network byte order.
+void hton(DataFileHeader& header) {
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = htonl(header.crc);
+}
+
+/// Converts a DataFileHeader from network to host byte order.
+void ntoh(DataFileHeader& header) {
+    header.version = ntohl(header.version);
+    header.num_positions = ntohl(header.num_positions);
+    header.crc = ntohl(header.crc);
+}
+
+/// Converts a Vec3 from host to network byte order.
+void hton(Vec3& v) {
+    v.x = htondec(v.x);
+    v.y = htondec(v.y);
+    v.z = htondec(v.z);
+}
+
+/// Converts a Vec3 from network to host byte order.
+void ntoh(Vec3& v) {
+    v.x = ntohdec(v.x);
+    v.y = ntohdec(v.y);
+    v.z = ntohdec(v.z);
+}
+
+/// Converts a LocationRecord from host to network byte order.
+void hton(LocationRecord& record) {
+    hton(record.position);
+    record.timestamp = htonl(record.timestamp);
+}
+
+/// Converts a LocationRecord from network to host byte order.
+void ntoh(LocationRecord& record) {
+    ntoh(record.position);
+    record.timestamp = ntohl(record.timestamp);
+}
+
+/// Converts EulerAngles from host to network byte order.
+void hton(EulerAngles& angles) {
+    angles.roll = htondec(angles.roll);
+    angles.ra = htondec(angles.ra);
+    angles.de = htondec(angles.de);
+}
+
+/// Converts EulerAngles from network to host byte order.
+void ntoh(EulerAngles& angles) {
+    angles.roll = ntohdec(angles.roll);
+    angles.ra = ntohdec(angles.ra);
+    angles.de = ntohdec(angles.de);
+}
+
+/// Calculates the CRC32 checksum for a block of memory.
+uint32_t calculateCRC32(const void* data, size_t length) {
+    uint32_t crc = 0xFFFFFFFFU;
+    const uint8_t* bytes = static_cast<const uint8_t*>(data);
+    for (size_t i = 0; i < length; ++i) {
+        crc ^= bytes[i];
+        for (int j = 0; j < 8; ++j) {
+            if (crc & 1)
+                crc = (crc >> 1) ^ 0xEDB88320U;
+            else
+                crc = crc >> 1;
+        }
+    }
+    return crc ^ 0xFFFFFFFFU;
+}
+
+/// Serializes a DataFile object to an output stream.
+/// The number of positions in header must match the number of positions in entry.
+void serialize(const DataFile& data, std::ostream& stream) {
+    DataFileHeader header = data.header;
+    header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    hton(header);
+    stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
+
+    EulerAngles relative_attitude = data.relative_attitude;
+    hton(relative_attitude);
+    stream.write(reinterpret_cast<const char*>(&relative_attitude), sizeof(relative_attitude));
+
+    for (uint32_t i = 0; i < data.header.num_positions; ++i) {
+        hton(data.positions[i]);
+        stream.write(reinterpret_cast<const char*>(&data.positions[i]), sizeof(LocationRecord));
+    }
+}
+
+/// Deserializes a DataFile object from an input stream.
+DataFile deserialize(std::istream& stream) {
+    DataFile data;
+    data.header = readHeader(stream);
+
+    stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(EulerAngles));
+    if (stream.gcount() != sizeof(EulerAngles)) {
+        throw std::ios_base::failure("Failed to read relative_attitude");
+    }
+    ntoh(data.relative_attitude);
+
+    data.positions = std::make_unique<LocationRecord[]>(data.header.num_positions);
+    for (uint32_t i = 0; i < data.header.num_positions; ++i) {
+        stream.read(reinterpret_cast<char*>(&data.positions[i]), sizeof(LocationRecord));
+        if (stream.gcount() != sizeof(LocationRecord)) {
+            throw std::ios_base::failure("Failed to read location record");
+        }
+        ntoh(data.positions[i]);
+    }
+
+    return data;
+}
+
+
+/// Validates the magic number in the header.
+bool isValidMagicNumber(const char magic[4]) {
+    return magic[0] == 'F' && magic[1] == 'O' && magic[2] == 'U' && magic[3] == 'N';
+}
+
+DataFileHeader readHeader(std::istream& stream) {
+    DataFileHeader header;
+    stream.read(reinterpret_cast<char*>(&header), sizeof(DataFileHeader));
+    if (stream.gcount() != sizeof(header)) {
+        throw std::ios_base::failure("Failed to read header");
+    }
+    if (!isValidMagicNumber(header.magic)) {
+        throw std::ios_base::failure("Invalid magic number in header");
+    }
+
+    // Convert version and other fields from network to host byte order
+    ntoh(header);
+
+    // Validate CRC
+    uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    if (header.crc != expected_crc) {
+        LOG_ERROR("Expected CRC: " << expected_crc << ", Found CRC: " << ntohl(header.crc));
+        throw std::ios_base::failure("Header CRC validation failed: Corrupted file");
+    }
+
+    return header;
+}
+
+}  // namespace found
