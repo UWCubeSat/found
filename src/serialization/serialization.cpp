@@ -62,6 +62,139 @@ void ntoh(EulerAngles& angles) {
     angles.de = ntohdec(angles.de);
 }
 
+/**
+ *
+ * @brief Reads a decimal value from the given input stream.
+ *
+ */
+inline void read(std::istream& stream, decimal& value) {
+    stream.read(reinterpret_cast<char*>(&value), sizeof(decimal));
+    if (stream.gcount() != sizeof(decimal)) {
+        throw std::ios_base::failure("Failed to read decimal value");
+    }
+    value = ntohdec(value);
+}
+
+/**
+ *
+ * @brief Writes a decimal value to the given output stream in network byte order.
+ *
+ */
+inline void write(std::ostream& stream, const decimal& value) {
+    decimal v = htondec(value);
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(decimal));
+}
+
+/**
+ *
+ * @brief Writes a 64-bit unsigned integer to the given output stream in network byte order.
+ *
+ */
+inline void write(std::ostream& stream, const uint64_t& value) {
+    uint64_t v = htonl(value);
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(uint64_t));
+}
+
+/**
+ *
+ * @brief Reads a 64-bit unsigned integer from the given input stream.
+ *
+ */
+inline void read(std::istream& stream, uint64_t& value) {
+    stream.read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
+    if (stream.gcount() != sizeof(uint64_t)) {
+        throw std::ios_base::failure("Failed to read uint64_t value");
+    }
+    value = ntohl(value);
+}
+
+/**
+ *
+ * @brief Reads a 32-bit unsigned integer from the given input stream in network byte order.
+ *
+ */
+inline void read(std::istream& stream, uint32_t& value) {
+    stream.read(reinterpret_cast<char*>(&value), sizeof(uint32_t));
+    if (stream.gcount() != sizeof(uint32_t)) {
+        throw std::ios_base::failure("Failed to read uint32_t value");
+    }
+    value = ntohl(value);
+}
+
+/**
+ *
+ * @brief Writes a 32-bit unsigned integer to the given output stream in network byte order.
+ *
+ */
+inline void write(std::ostream& stream, const uint32_t& value) {
+    uint32_t v = htonl(value);
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(uint32_t));
+}
+
+/**
+ *
+ * @brief Serializes an EulerAngles object to the given output stream.
+ *
+ */
+inline void write(std::ostream& stream, const EulerAngles& angles) {
+    write(stream, angles.roll);
+    write(stream, angles.ra);
+    write(stream, angles.de);
+}
+
+/**
+ *
+ * @brief Reads EulerAngles data from an input stream.
+ *
+ */
+inline void read(std::istream& stream, EulerAngles& angles) {
+    read(stream, angles.roll);
+    read(stream, angles.ra);
+    read(stream, angles.de);
+}
+
+/**
+ *
+ * @brief Serializes a Vec3 object to the given output stream.
+ *
+ */
+inline void write(std::ostream& stream, const Vec3& v) {
+    write(stream, v.x);
+    write(stream, v.y);
+    write(stream, v.z);
+}
+
+/**
+ *
+ * @brief Serializes a LocationRecord object to the given output stream.
+ *
+ */
+inline void write(std::ostream& stream, const LocationRecord& record) {
+    write(stream, record.position);
+    write(stream, record.timestamp);
+}
+
+/**
+ *
+ * @brief Reads a Vec3 object from the given input stream.
+ *
+ */
+inline void read(std::istream& stream, Vec3& v) {
+    read(stream, v.x);
+    read(stream, v.y);
+    read(stream, v.z);
+}
+
+/**
+ *
+ * @brief Reads data from the input stream into a LocationRecord object.
+ *
+ */
+inline void read(std::istream& stream, LocationRecord& record) {
+    read(stream, record.position);
+    read(stream, record.timestamp);
+}
+
 /// Calculates the CRC32 checksum for a block of memory.
 uint32_t calculateCRC32(const void* data, size_t length) {
     uint32_t crc = 0xFFFFFFFFU;
@@ -86,13 +219,10 @@ void serialize(const DataFile& data, std::ostream& stream) {
     hton(header);
     stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
 
-    EulerAngles relative_attitude = data.relative_attitude;
-    hton(relative_attitude);
-    stream.write(reinterpret_cast<const char*>(&relative_attitude), sizeof(relative_attitude));
+    write(stream, data.relative_attitude);
 
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
-        hton(data.positions[i]);
-        stream.write(reinterpret_cast<const char*>(&data.positions[i]), sizeof(LocationRecord));
+        write(stream, data.positions[i]);
     }
 }
 
@@ -101,19 +231,11 @@ DataFile deserialize(std::istream& stream) {
     DataFile data;
     data.header = readHeader(stream);
 
-    stream.read(reinterpret_cast<char*>(&data.relative_attitude), sizeof(EulerAngles));
-    if (stream.gcount() != sizeof(EulerAngles)) {
-        throw std::ios_base::failure("Failed to read relative_attitude");
-    }
-    ntoh(data.relative_attitude);
+    read(stream, data.relative_attitude);
 
     data.positions = std::make_unique<LocationRecord[]>(data.header.num_positions);
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
-        stream.read(reinterpret_cast<char*>(&data.positions[i]), sizeof(LocationRecord));
-        if (stream.gcount() != sizeof(LocationRecord)) {
-            throw std::ios_base::failure("Failed to read location record");
-        }
-        ntoh(data.positions[i]);
+        read(stream, data.positions[i]);
     }
 
     return data;
