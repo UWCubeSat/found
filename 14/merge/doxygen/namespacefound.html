@@ -92,6 +92,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1Camera.html">Camera</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1Component.html">Component</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DateTime.html">DateTime</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1DistanceDeterminationAlgorithm.html">DistanceDeterminationAlgorithm</a></td></tr>
@@ -162,6 +164,10 @@ typedef __float128&#160;</td><td class="memItemRight" valign="bottom"><b>Precise
 typedef std::vector&lt; <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Edges</b></td></tr>
 <tr class="memdesc:a12b2a675381c9a2f96dc2afc874b0c0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A collection of Edges. <br /></td></tr>
 <tr class="separator:a12b2a675381c9a2f96dc2afc874b0c0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bb521ef53dc4f64afe7bee531c2b7c5" id="r_a0bb521ef53dc4f64afe7bee531c2b7c5"><td class="memItemLeft" align="right" valign="top"><a id="a0bb521ef53dc4f64afe7bee531c2b7c5" name="a0bb521ef53dc4f64afe7bee531c2b7c5"></a>
+typedef std::vector&lt; <a class="el" href="structfound_1_1Component.html">Component</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Components</b></td></tr>
+<tr class="memdesc:a0bb521ef53dc4f64afe7bee531c2b7c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">A collection of <a class="el" href="structfound_1_1Image.html">Image</a> Pixels. <br /></td></tr>
+<tr class="separator:a0bb521ef53dc4f64afe7bee531c2b7c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45893998fd13e01478e171684678009b" id="r_a45893998fd13e01478e171684678009b"><td class="memItemLeft" align="right" valign="top"><a id="a45893998fd13e01478e171684678009b" name="a45893998fd13e01478e171684678009b"></a>
 typedef std::vector&lt; <a class="el" href="structfound_1_1LocationRecord.html">LocationRecord</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>LocationRecords</b></td></tr>
 <tr class="memdesc:a45893998fd13e01478e171684678009b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A collection of Location Records. <br /></td></tr>
@@ -255,12 +261,12 @@ Functions</h2></td></tr>
 <tr class="separator:a2ed28938a1adc90bd03aecd3e93e83af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a532a003b6775ad0c1e340256e492be0a" id="r_a532a003b6775ad0c1e340256e492be0a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a532a003b6775ad0c1e340256e492be0a">LabelPresent</a> (int label, int *adjacentLabels, int size)</td></tr>
 <tr class="separator:a532a003b6775ad0c1e340256e492be0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad88d57ec95e3045961185bf5204bf571" id="r_ad88d57ec95e3045961185bf5204bf571"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#ad88d57ec95e3045961185bf5204bf571">UpdateEdge</a> (<a class="el" href="structfound_1_1Edge.html">Edge</a> &amp;edge, <a class="el" href="structfound_1_1Vec2.html">Vec2</a> &amp;pixel)</td></tr>
-<tr class="separator:ad88d57ec95e3045961185bf5204bf571"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bb8d587616f836f63bc256031e2b45a" id="r_a3bb8d587616f836f63bc256031e2b45a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a3bb8d587616f836f63bc256031e2b45a">NWayEquivalenceAdd</a> (<a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, uint64_t index, int &amp;L, int adjacentLabels[4], int size, std::unordered_map&lt; int, <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt; &amp;edges, std::unordered_map&lt; int, int &gt; &amp;equivalencies)</td></tr>
-<tr class="separator:a3bb8d587616f836f63bc256031e2b45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a456b6b4e94c6aad743ac99f88076626d" id="r_a456b6b4e94c6aad743ac99f88076626d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a12b2a675381c9a2f96dc2afc874b0c0b">Edges</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a456b6b4e94c6aad743ac99f88076626d">ConnectedComponentsAlgorithm</a> (<a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, bool(*Criteria)(uint64_t, <a class="el" href="structfound_1_1Image.html">Image</a> &amp;))</td></tr>
-<tr class="separator:a456b6b4e94c6aad743ac99f88076626d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19e0751672c939b693c5383d3ee7dcde" id="r_a19e0751672c939b693c5383d3ee7dcde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a19e0751672c939b693c5383d3ee7dcde">UpdateComponent</a> (<a class="el" href="structfound_1_1Component.html">Component</a> &amp;component, uint64_t index, <a class="el" href="structfound_1_1Vec2.html">Vec2</a> &amp;pixel)</td></tr>
+<tr class="separator:a19e0751672c939b693c5383d3ee7dcde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a657b11b0e8cc9f2b173ae544adf5c43e" id="r_a657b11b0e8cc9f2b173ae544adf5c43e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a657b11b0e8cc9f2b173ae544adf5c43e">NWayEquivalenceAdd</a> (const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, uint64_t index, int &amp;L, int adjacentLabels[4], int size, std::unordered_map&lt; int, <a class="el" href="structfound_1_1Component.html">Component</a> &gt; &amp;components, std::unordered_map&lt; int, int &gt; &amp;equivalencies)</td></tr>
+<tr class="separator:a657b11b0e8cc9f2b173ae544adf5c43e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a034272a473435b1dc801e78399e739a5" id="r_a034272a473435b1dc801e78399e739a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a0bb521ef53dc4f64afe7bee531c2b7c5">Components</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a034272a473435b1dc801e78399e739a5">ConnectedComponentsAlgorithm</a> (const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, std::function&lt; bool(uint64_t, const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;)&gt; Criteria)</td></tr>
+<tr class="separator:a034272a473435b1dc801e78399e739a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94f29456fb18c7892af920755a4d33c9" id="r_a94f29456fb18c7892af920755a4d33c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfound_1_1EarthSphericalVec3.html">EarthSphericalVec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a94f29456fb18c7892af920755a4d33c9">GetEarthCoordinates</a> (<a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;celestialVector, decimal gmst)</td></tr>
 <tr class="separator:a94f29456fb18c7892af920755a4d33c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60ee66e81bce477a178b2470285de1dd" id="r_a60ee66e81bce477a178b2470285de1dd"><td class="memItemLeft" align="right" valign="top">decimal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a60ee66e81bce477a178b2470285de1dd">strtodecimal</a> (const std::string &amp;str)</td></tr>
@@ -466,22 +472,22 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
 
 </div>
 </div>
-<a id="a456b6b4e94c6aad743ac99f88076626d" name="a456b6b4e94c6aad743ac99f88076626d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a456b6b4e94c6aad743ac99f88076626d">&#9670;&#160;</a></span>ConnectedComponentsAlgorithm()</h2>
+<a id="a034272a473435b1dc801e78399e739a5" name="a034272a473435b1dc801e78399e739a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a034272a473435b1dc801e78399e739a5">&#9670;&#160;</a></span>ConnectedComponentsAlgorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacefound.html#a12b2a675381c9a2f96dc2afc874b0c0b">Edges</a> found::ConnectedComponentsAlgorithm </td>
+          <td class="memname"><a class="el" href="namespacefound.html#a0bb521ef53dc4f64afe7bee531c2b7c5">Components</a> found::ConnectedComponentsAlgorithm </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool(*)(uint64_t, <a class="el" href="structfound_1_1Image.html">Image</a> &amp;)&#160;</td>
+          <td class="paramtype">std::function&lt; bool(uint64_t, const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;)&gt;&#160;</td>
           <td class="paramname"><em>Criteria</em>&#160;</td>
         </tr>
         <tr>
@@ -491,15 +497,15 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Computes the groups of edges within the image</p>
+<p>Computes the groups of components within the image</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">image</td><td>The image that defines the possible pixels </td></tr>
-    <tr><td class="paramname">Criteria</td><td>A function that accepts a pixel index and the image and returns true iff the pixel is part of the edge</td></tr>
+    <tr><td class="paramname">Criteria</td><td>A function that accepts a pixel index and the image and returns true iff the pixel is part of the component</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Edges The edges that are part of the image</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Components The components that are part of the image</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This function iterates through each pixel in the image, but treats the image as 2D, not 3D. You must program Criteria correctly to handle cases where there are multiple channels (i.e. This algorithm doesn't know how many channels are involved). </dd></dl>
 
 </div>
@@ -1268,8 +1274,8 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
 
 </div>
 </div>
-<a id="a3bb8d587616f836f63bc256031e2b45a" name="a3bb8d587616f836f63bc256031e2b45a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bb8d587616f836f63bc256031e2b45a">&#9670;&#160;</a></span>NWayEquivalenceAdd()</h2>
+<a id="a657b11b0e8cc9f2b173ae544adf5c43e" name="a657b11b0e8cc9f2b173ae544adf5c43e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a657b11b0e8cc9f2b173ae544adf5c43e">&#9670;&#160;</a></span>NWayEquivalenceAdd()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1280,7 +1286,7 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
         <tr>
           <td class="memname">int found::NWayEquivalenceAdd </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;&#160;</td>
           <td class="paramname"><em>image</em>, </td>
         </tr>
         <tr>
@@ -1310,8 +1316,8 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::unordered_map&lt; int, <a class="el" href="structfound_1_1Edge.html">Edge</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>edges</em>, </td>
+          <td class="paramtype">std::unordered_map&lt; int, <a class="el" href="structfound_1_1Component.html">Component</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>components</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1331,21 +1337,21 @@ const char&#160;</td><td class="memItemRight" valign="bottom"><b>kNoDefaultArgum
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Adds a pixel to some edge, creating a new edge if necessary</p>
+<p>Adds a pixel to some component, creating a new component if necessary</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">image</td><td>The image to which the pixel belongs </td></tr>
     <tr><td class="paramname">index</td><td>The index of the pixel </td></tr>
     <tr><td class="paramname">L</td><td>The current label </td></tr>
-    <tr><td class="paramname">adjacentLabels</td><td>The labels of the adjacent edges </td></tr>
+    <tr><td class="paramname">adjacentLabels</td><td>The labels of the adjacent components </td></tr>
     <tr><td class="paramname">size</td><td>The number of adjacent labels </td></tr>
-    <tr><td class="paramname">edges</td><td>The edges that are part of the image </td></tr>
+    <tr><td class="paramname">components</td><td>The components that are part of the image </td></tr>
     <tr><td class="paramname">equivalencies</td><td>The labels that are equivalent to each other</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The label of the edge point that was added</dd></dl>
-<p>Updates edges with the new pixel as appropriate </p>
+<dl class="section return"><dt>Returns</dt><dd>The label of the component point that was added</dd></dl>
+<p>Updates components with the new pixel as appropriate </p>
 
 </div>
 </div>
@@ -2071,8 +2077,8 @@ Rotating a vector with this quaternion is equivalent to a backwards rotation (ro
 
 </div>
 </div>
-<a id="ad88d57ec95e3045961185bf5204bf571" name="ad88d57ec95e3045961185bf5204bf571"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad88d57ec95e3045961185bf5204bf571">&#9670;&#160;</a></span>UpdateEdge()</h2>
+<a id="a19e0751672c939b693c5383d3ee7dcde" name="a19e0751672c939b693c5383d3ee7dcde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19e0751672c939b693c5383d3ee7dcde">&#9670;&#160;</a></span>UpdateComponent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2081,10 +2087,16 @@ Rotating a vector with this quaternion is equivalent to a backwards rotation (ro
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void found::UpdateEdge </td>
+          <td class="memname">void found::UpdateComponent </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structfound_1_1Edge.html">Edge</a> &amp;&#160;</td>
-          <td class="paramname"><em>edge</em>, </td>
+          <td class="paramtype"><a class="el" href="structfound_1_1Component.html">Component</a> &amp;&#160;</td>
+          <td class="paramname"><em>component</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2104,15 +2116,16 @@ Rotating a vector with this quaternion is equivalent to a backwards rotation (ro
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Updates the edge with the given pixel</p>
+<p>Updates the component with the given pixel</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">edge</td><td>The edge to update </td></tr>
+    <tr><td class="paramname">component</td><td>The component to update </td></tr>
+    <tr><td class="paramname">index</td><td>The index to add </td></tr>
     <tr><td class="paramname">pixel</td><td>The pixel to add</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section pre"><dt>Precondition</dt><dd>UpdateEdge must be called in order of increasing index </dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Must be called in order of increasing index </dd></dl>
 
 </div>
 </div>

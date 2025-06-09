@@ -114,9 +114,12 @@ Collaboration diagram for found::SimpleEdgeDetectionAlgorithm:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a32cc5516171ac2740b0c8e39c7ed6245" id="r_a32cc5516171ac2740b0c8e39c7ed6245"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#a32cc5516171ac2740b0c8e39c7ed6245">SimpleEdgeDetectionAlgorithm</a> ()</td></tr>
-<tr class="separator:a32cc5516171ac2740b0c8e39c7ed6245"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afad693edfdc643c402b50a3fa92a8c30" id="r_afad693edfdc643c402b50a3fa92a8c30"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#afad693edfdc643c402b50a3fa92a8c30">~SimpleEdgeDetectionAlgorithm</a> ()</td></tr>
+<tr class="memitem:ae05f2c26df717cebd0f3c931543656d7" id="r_ae05f2c26df717cebd0f3c931543656d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#ae05f2c26df717cebd0f3c931543656d7">SimpleEdgeDetectionAlgorithm</a> (unsigned char threshold, int borderLength)</td></tr>
+<tr class="memdesc:ae05f2c26df717cebd0f3c931543656d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new <a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html">SimpleEdgeDetectionAlgorithm</a>.  <br /></td></tr>
+<tr class="separator:ae05f2c26df717cebd0f3c931543656d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afad693edfdc643c402b50a3fa92a8c30" id="r_afad693edfdc643c402b50a3fa92a8c30"><td class="memItemLeft" align="right" valign="top"><a id="afad693edfdc643c402b50a3fa92a8c30" name="afad693edfdc643c402b50a3fa92a8c30"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~SimpleEdgeDetectionAlgorithm</b> ()</td></tr>
+<tr class="memdesc:afad693edfdc643c402b50a3fa92a8c30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the algorithm. <br /></td></tr>
 <tr class="separator:afad693edfdc643c402b50a3fa92a8c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b32dd8b47f526f89f5caa8772ab3c5d" id="r_a2b32dd8b47f526f89f5caa8772ab3c5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a3a330ad13da94ed1167841028f562311">Points</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#a2b32dd8b47f526f89f5caa8772ab3c5d">Run</a> (const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;image) override</td></tr>
 <tr class="separator:a2b32dd8b47f526f89f5caa8772ab3c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,26 +150,8 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The SimpleEdgeDetection Algorithm class houses the <a class="el" href="structfound_1_1Edge.html">Edge</a> Detection Algorithm. This algorithm uses a picture of Earth and finds all points on the horizon within the picture by employing thresholding to filter out edge components </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a32cc5516171ac2740b0c8e39c7ed6245" name="a32cc5516171ac2740b0c8e39c7ed6245"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32cc5516171ac2740b0c8e39c7ed6245">&#9670;&#160;</a></span>SimpleEdgeDetectionAlgorithm()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Place documentation here. Press enter to automatically make a new line </p>
-
-</div>
-</div>
-<a id="afad693edfdc643c402b50a3fa92a8c30" name="afad693edfdc643c402b50a3fa92a8c30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afad693edfdc643c402b50a3fa92a8c30">&#9670;&#160;</a></span>~SimpleEdgeDetectionAlgorithm()</h2>
+<a id="ae05f2c26df717cebd0f3c931543656d7" name="ae05f2c26df717cebd0f3c931543656d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae05f2c26df717cebd0f3c931543656d7">&#9670;&#160;</a></span>SimpleEdgeDetectionAlgorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,19 +160,38 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual found::SimpleEdgeDetectionAlgorithm::~SimpleEdgeDetectionAlgorithm </td>
+          <td class="memname">found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">unsigned char&#160;</td>
+          <td class="paramname"><em>threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>borderLength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Place documentation here. Press enter to automatically make a new line </p>
+
+<p>Constructs a new <a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html">SimpleEdgeDetectionAlgorithm</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">threshold</td><td>The threshold to use for detecting space </td></tr>
+    <tr><td class="paramname">borderLength</td><td>The "length" of the image's borders, to account for noise along the edge </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -10,10 +10,12 @@ var searchData=
   ['channels_7',['channels',['../structfound_1_1Image.html#a15de072688537c0eb30a64f96af2070b',1,'found::Image']]],
   ['column_8',['Column',['../classfound_1_1Mat3.html#af76b9c014a93ec1f2f9ffbee9a5a1def',1,'found::Mat3']]],
   ['complete_9',['Complete',['../classfound_1_1Pipeline.html#a2be74f428704c0bc058000726ce85bca',1,'found::Pipeline']]],
-  ['conjugate_10',['Conjugate',['../classfound_1_1Quaternion.html#a75750d18a8b0e79ea3f0aa6fba5ee708',1,'found::Quaternion']]],
-  ['connectedcomponentsalgorithm_11',['ConnectedComponentsAlgorithm',['../namespacefound.html#a456b6b4e94c6aad743ac99f88076626d',1,'found']]],
-  ['createcalibrationpipelineexecutor_12',['CreateCalibrationPipelineExecutor',['../namespacefound.html#a33ccbbbcf6bd9be1c3d26495d4a2b321',1,'found']]],
-  ['createdistancepipelineexecutor_13',['CreateDistancePipelineExecutor',['../namespacefound.html#a21d3781dfb8397d64b8758781f0c2e1b',1,'found']]],
-  ['createorbitpipelineexecutor_14',['CreateOrbitPipelineExecutor',['../namespacefound.html#a5f4887ebc2460ab90303a25a77da19af',1,'found']]],
-  ['crossproduct_15',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
+  ['component_10',['Component',['../structfound_1_1Component.html',1,'found']]],
+  ['components_11',['Components',['../namespacefound.html#a0bb521ef53dc4f64afe7bee531c2b7c5',1,'found']]],
+  ['conjugate_12',['Conjugate',['../classfound_1_1Quaternion.html#a75750d18a8b0e79ea3f0aa6fba5ee708',1,'found::Quaternion']]],
+  ['connectedcomponentsalgorithm_13',['ConnectedComponentsAlgorithm',['../namespacefound.html#a034272a473435b1dc801e78399e739a5',1,'found']]],
+  ['createcalibrationpipelineexecutor_14',['CreateCalibrationPipelineExecutor',['../namespacefound.html#a33ccbbbcf6bd9be1c3d26495d4a2b321',1,'found']]],
+  ['createdistancepipelineexecutor_15',['CreateDistancePipelineExecutor',['../namespacefound.html#a21d3781dfb8397d64b8758781f0c2e1b',1,'found']]],
+  ['createorbitpipelineexecutor_16',['CreateOrbitPipelineExecutor',['../namespacefound.html#a5f4887ebc2460ab90303a25a77da19af',1,'found']]],
+  ['crossproduct_17',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
 ];

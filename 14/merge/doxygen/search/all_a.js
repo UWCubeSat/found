@@ -8,5 +8,5 @@ var searchData=
   ['longitude_5',['longitude',['../structfound_1_1EarthSphericalVec3.html#a7a1a4c9e56d669be780510b9db864bb6',1,'found::EarthSphericalVec3']]],
   ['lostcalibrationalgorithm_6',['LOSTCalibrationAlgorithm',['../classfound_1_1LOSTCalibrationAlgorithm.html',1,'found']]],
   ['lostvectorgenerationalgorithm_7',['lostvectorgenerationalgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html',1,'found::LOSTVectorGenerationAlgorithm'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a29a6972b8eb3c8dba96bbf52628a0c6e',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a3d7b70a44dde02449fd647b0380201b4',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion orientation)']]],
-  ['lowerright_8',['lowerRight',['../structfound_1_1Edge.html#a45486626a9bfa52d80927034ce3b6a3f',1,'found::Edge']]]
+  ['lowerright_8',['lowerright',['../structfound_1_1Edge.html#a45486626a9bfa52d80927034ce3b6a3f',1,'found::Edge::lowerRight'],['../structfound_1_1Component.html#a079fce519452a1d6af1dea71611a6a4b',1,'found::Component::lowerRight']]]
 ];
