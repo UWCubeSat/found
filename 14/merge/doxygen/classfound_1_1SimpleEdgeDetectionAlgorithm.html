@@ -114,9 +114,9 @@ Collaboration diagram for found::SimpleEdgeDetectionAlgorithm:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae05f2c26df717cebd0f3c931543656d7" id="r_ae05f2c26df717cebd0f3c931543656d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#ae05f2c26df717cebd0f3c931543656d7">SimpleEdgeDetectionAlgorithm</a> (unsigned char threshold, int borderLength)</td></tr>
-<tr class="memdesc:ae05f2c26df717cebd0f3c931543656d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new <a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html">SimpleEdgeDetectionAlgorithm</a>.  <br /></td></tr>
-<tr class="separator:ae05f2c26df717cebd0f3c931543656d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60861160e18079f4035cef885826e55a" id="r_a60861160e18079f4035cef885826e55a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html#a60861160e18079f4035cef885826e55a">SimpleEdgeDetectionAlgorithm</a> (unsigned char threshold, int borderLength, decimal offset)</td></tr>
+<tr class="memdesc:a60861160e18079f4035cef885826e55a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a new <a class="el" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html">SimpleEdgeDetectionAlgorithm</a>.  <br /></td></tr>
+<tr class="separator:a60861160e18079f4035cef885826e55a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afad693edfdc643c402b50a3fa92a8c30" id="r_afad693edfdc643c402b50a3fa92a8c30"><td class="memItemLeft" align="right" valign="top"><a id="afad693edfdc643c402b50a3fa92a8c30" name="afad693edfdc643c402b50a3fa92a8c30"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~SimpleEdgeDetectionAlgorithm</b> ()</td></tr>
 <tr class="memdesc:afad693edfdc643c402b50a3fa92a8c30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the algorithm. <br /></td></tr>
@@ -148,10 +148,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a1e6b9a9dc3e1c93dc0eeca103c353616 inherit pro_attribs_classfound_1_1Stage"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The SimpleEdgeDetection Algorithm class houses the <a class="el" href="structfound_1_1Edge.html">Edge</a> Detection Algorithm. This algorithm uses a picture of Earth and finds all points on the horizon within the picture by employing thresholding to filter out edge components </p>
+<div class="textblock"><p>The SimpleEdgeDetection Algorithm class houses the <a class="el" href="structfound_1_1Edge.html">Edge</a> Detection Algorithm. This algorithm uses a picture of Earth and finds all points on the horizon within the picture by employing thresholding to identify "space", and then figure out the contour of "space" that is shared by Earth's edge, returning that as the result </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae05f2c26df717cebd0f3c931543656d7" name="ae05f2c26df717cebd0f3c931543656d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae05f2c26df717cebd0f3c931543656d7">&#9670;&#160;</a></span>SimpleEdgeDetectionAlgorithm()</h2>
+<a id="a60861160e18079f4035cef885826e55a" name="a60861160e18079f4035cef885826e55a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60861160e18079f4035cef885826e55a">&#9670;&#160;</a></span>SimpleEdgeDetectionAlgorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -169,7 +169,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>borderLength</em>&#160;</td>
+          <td class="paramname"><em>borderLength</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">decimal&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -188,7 +194,8 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">threshold</td><td>The threshold to use for detecting space </td></tr>
-    <tr><td class="paramname">borderLength</td><td>The "length" of the image's borders, to account for noise along the edge </td></tr>
+    <tr><td class="paramname">borderLength</td><td>The thickness of the image's borders </td></tr>
+    <tr><td class="paramname">offset</td><td>The offset to apply to edge points </td></tr>
   </table>
   </dd>
 </dl>
@@ -219,7 +226,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Place documentation here. Press enter to automatically make a new line </p>
+<p>Provides an estimate of the edge points of Earth, as the shared edge between space and Earth.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">image</td><td>The image of Earth</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The points on Earth's edge in image</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>The edge points returned are in polar order, i.e. if we define the centroid of the points as P, for any three consecutive points A B and C, angle APB is less than angle APC </dd></dl>
 
 <p>Implements <a class="el" href="classfound_1_1Stage.html#a76f980d2fdce66333c6d7e7057e92f73">found::Stage&lt; Image, Points &gt;</a>.</p>
 
