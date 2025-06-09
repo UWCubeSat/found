@@ -2,6 +2,7 @@
 #define EDGE_H
 
 #include <memory>
+#include <functional>
 
 #include "common/style.hpp"
 #include "common/pipeline.hpp"
@@ -22,21 +23,26 @@ class EdgeDetectionAlgorithm : public Stage<Image, Points> {};
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  public:
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    SimpleEdgeDetectionAlgorithm(/*Put more fields here!*/);
+     * @brief Constructs a new SimpleEdgeDetectionAlgorithm
+     * 
+     * @param threshold The threshold to use for detecting space
+     * @param borderLength The "length" of the image's borders,
+     * to account for noise along the edge
+     */
+    SimpleEdgeDetectionAlgorithm(unsigned char threshold, int borderLength) :
+        threshold_(threshold), borderLength_(borderLength) {}
+
+    /// @brief Destroys the algorithm
+    virtual ~SimpleEdgeDetectionAlgorithm();
 
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    virtual ~SimpleEdgeDetectionAlgorithm(/*Put more fields here!*/);
-
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    Points Run(const Image &image/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
+    unsigned char threshold_;
+    int borderLength_;
 };
 
 /**
@@ -65,19 +71,19 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
- * Computes the groups of edges within the image
+ * Computes the groups of components within the image
  * 
  * @param image The image that defines the possible pixels
  * @param Criteria A function that accepts a pixel index and the image and returns 
- * true iff the pixel is part of the edge
+ * true iff the pixel is part of the component
  * 
- * @return Edges The edges that are part of the image
+ * @return Components The components that are part of the image
  * 
  * @note This function iterates through each pixel in the image, but treats the image
  * as 2D, not 3D. You must program Criteria correctly to handle cases where there 
  * are multiple channels (i.e. This algorithm doesn't know how many channels are involved).
  */
-Edges ConnectedComponentsAlgorithm(Image &image, bool (*Criteria)(uint64_t, Image &));
+Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
 
 }  // namespace found
 

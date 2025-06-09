@@ -65,6 +65,24 @@ struct Edge {
 /// A collection of Edges
 typedef std::vector<Edge> Edges;
 
+/**
+ * Represents a connected component in an image
+ * 
+ * @note This must be carried with the original
+ * image, as there's no such field in this struct
+ */
+struct Component {
+    /// The points in this component
+    std::vector<uint64_t> points;
+    /// The lowest point (left upper edge)
+    Vec2 upperLeft;
+    /// The highest point (right lower edge)
+    Vec2 lowerRight;
+};
+
+/// A collection of Image Pixels
+typedef std::vector<Component> Components;
+
 // TODO: Merge with Data Serialization branch
 /**
  * @brief Represents a single location record containing a position and a timestamp.
