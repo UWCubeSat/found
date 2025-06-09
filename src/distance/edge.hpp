@@ -50,6 +50,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * angle APC
      */
     Points Run(const Image &image) override;
+
  private:
     // useful fields specific to this algorithm and helper methods
     unsigned char threshold_;
