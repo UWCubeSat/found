@@ -18,7 +18,8 @@ class EdgeDetectionAlgorithm : public Stage<Image, Points> {};
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture by employing thresholding
- * to filter out edge components
+ * to identify "space", and then figure out the contour of "space" that is shared by Earth's edge, returning
+ * that as the result
 */
 class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  public:
@@ -26,23 +27,34 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * @brief Constructs a new SimpleEdgeDetectionAlgorithm
      * 
      * @param threshold The threshold to use for detecting space
-     * @param borderLength The "length" of the image's borders,
-     * to account for noise along the edge
+     * @param borderLength The thickness of the image's borders
+     * @param offset The offset to apply to edge points
      */
-    SimpleEdgeDetectionAlgorithm(unsigned char threshold, int borderLength) :
-        threshold_(threshold), borderLength_(borderLength) {}
+    SimpleEdgeDetectionAlgorithm(unsigned char threshold, int borderLength, decimal offset) :
+        threshold_(threshold), borderLength_(borderLength), offset_(offset) {}
 
     /// @brief Destroys the algorithm
     virtual ~SimpleEdgeDetectionAlgorithm();
 
     /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
+     * Provides an estimate of the edge points of Earth, as
+     * the shared edge between space and Earth.
+     * 
+     * @param image The image of Earth
+     * 
+     * @return The points on Earth's edge in image
+     * 
+     * @post The edge points returned are in polar order, i.e.
+     * if we define the centroid of the points as P, for any
+     * three consecutive points A B and C, angle APB is less than
+     * angle APC
+     */
     Points Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
     unsigned char threshold_;
     int borderLength_;
+    decimal offset_;
 };
 
 /**
