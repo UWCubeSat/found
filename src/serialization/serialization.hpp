@@ -44,30 +44,6 @@ void hton(DataFileHeader& header);
  */
 void ntoh(DataFileHeader& header);
 
-/**
- * @brief Converts EulerAngles from host to network byte order.
- * @param angles The EulerAngles to convert.
- */
-void hton(EulerAngles& angles);
-
-/**
- * @brief Converts EulerAngles from network to host byte order.
- * @param angles The EulerAngles to convert.
- */
-void ntoh(EulerAngles& angles);
-
-/**
- * @brief Converts a Vec3 from host to network byte order.
- * @param v The Vec3 to convert.
- */
-void hton(Vec3& v);
-
-/**
- * @brief Converts a Vec3 from network to host byte order.
- * @param v The Vec3 to convert.
- */
-void ntoh(Vec3& v);
-
 }  // namespace found
 
 #endif  // SERIALIZATION_H

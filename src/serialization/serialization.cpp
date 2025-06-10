@@ -22,46 +22,6 @@ void ntoh(DataFileHeader& header) {
     header.crc = ntohl(header.crc);
 }
 
-/// Converts a Vec3 from host to network byte order.
-void hton(Vec3& v) {
-    v.x = htondec(v.x);
-    v.y = htondec(v.y);
-    v.z = htondec(v.z);
-}
-
-/// Converts a Vec3 from network to host byte order.
-void ntoh(Vec3& v) {
-    v.x = ntohdec(v.x);
-    v.y = ntohdec(v.y);
-    v.z = ntohdec(v.z);
-}
-
-/// Converts a LocationRecord from host to network byte order.
-void hton(LocationRecord& record) {
-    hton(record.position);
-    record.timestamp = htonl(record.timestamp);
-}
-
-/// Converts a LocationRecord from network to host byte order.
-void ntoh(LocationRecord& record) {
-    ntoh(record.position);
-    record.timestamp = ntohl(record.timestamp);
-}
-
-/// Converts EulerAngles from host to network byte order.
-void hton(EulerAngles& angles) {
-    angles.roll = htondec(angles.roll);
-    angles.ra = htondec(angles.ra);
-    angles.de = htondec(angles.de);
-}
-
-/// Converts EulerAngles from network to host byte order.
-void ntoh(EulerAngles& angles) {
-    angles.roll = ntohdec(angles.roll);
-    angles.ra = ntohdec(angles.ra);
-    angles.de = ntohdec(angles.de);
-}
-
 /**
  *
  * @brief Reads a decimal value from the given input stream.
