@@ -47,6 +47,10 @@ TEST(ConvertersTest, TestDecimal) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.9876), strtodecimal("0.9876"));
 }
 
+TEST(ConvertersTest, TestUnsignedChar) {
+    ASSERT_EQ(172, strtouc("172"));
+}
+
 TEST(ConvertersTest, TestImageNotExistentImage) {
     ASSERT_THROW(strtoimage("not_existent.png"), std::runtime_error);
 }

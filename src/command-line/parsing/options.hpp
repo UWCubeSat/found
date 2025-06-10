@@ -43,7 +43,10 @@ FOUND_CLI_OPTION("reference-as-orientation", bool              , refAsOrientatio
 FOUND_CLI_OPTION("camera-focal-length"     , decimal           , focalLength     , 0.012                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("camera-pixel-size"       , decimal           , pixelSize       , 20E-6                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("reference-orientation"   , found::EulerAngles, refOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN)
+FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("seda-threshold"          , unsigned char     , SEDAThreshold   , 25                         , found::strtouc(optarg)     , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("seda-border-len"         , int               , SEDABorderLen   , 1                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN) \
+FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN)
 
 
 // Orbit Flags

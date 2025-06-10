@@ -182,7 +182,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 16;
+    int argc = 22;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "example.found",
@@ -190,7 +190,10 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--camera-focal-length", "1.5",
         "--camera-pixel-size", "4E-12",
         "--reference-orientation", "1.1 1.2 1.3",
-        "--relative-orientation", "1.4 1.5 1.6"};
+        "--relative-orientation", "1.4 1.5 1.6",
+        "--seda-threshold", "62",
+        "--seda-border-len", "10",
+        "--seda-offset", "9.2"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
@@ -204,6 +207,9 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
     ASSERT_EA_EQ_DEFAULT(expectedRefOrientation, options.refOrientation);
     ASSERT_EA_EQ_DEFAULT(expectedRelOrientation, options.relOrientation);
+    ASSERT_EQ(62, options.SEDAThreshold);
+    ASSERT_EQ(10, options.SEDABorderLen);
+    ASSERT_EQ(9.2, options.SEDAOffset);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory

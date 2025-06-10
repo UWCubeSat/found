@@ -21,6 +21,21 @@
 namespace found {
 
 /**
+ * Converts a string to an unsigned char
+ * 
+ * @param str The string to convert
+ * 
+ * @return The unsigned char the string
+ * represents
+ * 
+ * @pre str represents a number between 0
+ * and 255
+ */
+inline unsigned char strtouc(const std::string &str) {
+    return static_cast<unsigned char>(std::strtoul(str.c_str(), nullptr, 10));
+}
+
+/**
  * Converts a string to a decimal
  * 
  * @param str The string to convert
