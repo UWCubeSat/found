@@ -269,6 +269,8 @@ Functions</h2></td></tr>
 <tr class="separator:a034272a473435b1dc801e78399e739a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94f29456fb18c7892af920755a4d33c9" id="r_a94f29456fb18c7892af920755a4d33c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfound_1_1EarthSphericalVec3.html">EarthSphericalVec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a94f29456fb18c7892af920755a4d33c9">GetEarthCoordinates</a> (<a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;celestialVector, decimal gmst)</td></tr>
 <tr class="separator:a94f29456fb18c7892af920755a4d33c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ae382a686bf6519fbc52e2d21bbfe9a" id="r_a6ae382a686bf6519fbc52e2d21bbfe9a"><td class="memItemLeft" align="right" valign="top">unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a">strtouc</a> (const std::string &amp;str)</td></tr>
+<tr class="separator:a6ae382a686bf6519fbc52e2d21bbfe9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60ee66e81bce477a178b2470285de1dd" id="r_a60ee66e81bce477a178b2470285de1dd"><td class="memItemLeft" align="right" valign="top">decimal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a60ee66e81bce477a178b2470285de1dd">strtodecimal</a> (const std::string &amp;str)</td></tr>
 <tr class="separator:a60ee66e81bce477a178b2470285de1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9988f2bdf59bfd6635e1ca1cbae850b" id="r_ab9988f2bdf59bfd6635e1ca1cbae850b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b">strtoea</a> (const std::string &amp;str)</td></tr>
@@ -2074,6 +2076,41 @@ Rotating a vector with this quaternion is equivalent to a backwards rotation (ro
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The vector of location records that the string represents</dd></dl>
 <dl class="section pre"><dt>Precondition</dt><dd>str must refer to a file, either the Data File, or a space delinated file with the following format on each line: Timestamp(int) PositionX(decimal) PositionY(decimal) PositionZ(decimal) </dd></dl>
+
+</div>
+</div>
+<a id="a6ae382a686bf6519fbc52e2d21bbfe9a" name="a6ae382a686bf6519fbc52e2d21bbfe9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ae382a686bf6519fbc52e2d21bbfe9a">&#9670;&#160;</a></span>strtouc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned char found::strtouc </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Converts a string to an unsigned char</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>The string to convert</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The unsigned char the string represents</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd>str represents a number between 0 and 255 </dd></dl>
 
 </div>
 </div>

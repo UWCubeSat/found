@@ -23,5 +23,6 @@ var searchData=
   ['strtodecimal_20',['strtodecimal',['../namespacefound.html#a60ee66e81bce477a178b2470285de1dd',1,'found']]],
   ['strtoea_21',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]],
   ['strtoimage_22',['strtoimage',['../namespacefound.html#a5715a57bc3e4ab1219f13fc289735f96',1,'found']]],
-  ['strtolr_23',['strtolr',['../namespacefound.html#a162f8964394b0e61d95983cb6935ad3e',1,'found']]]
+  ['strtolr_23',['strtolr',['../namespacefound.html#a162f8964394b0e61d95983cb6935ad3e',1,'found']]],
+  ['strtouc_24',['strtouc',['../namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a',1,'found']]]
 ];
