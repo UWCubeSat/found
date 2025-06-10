@@ -34,7 +34,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
         threshold_(threshold), borderLength_(borderLength), offset_(offset) {}
 
     /// @brief Destroys the algorithm
-    virtual ~SimpleEdgeDetectionAlgorithm();
+    virtual ~SimpleEdgeDetectionAlgorithm() {}
 
     /**
      * Provides an estimate of the edge points of Earth, as

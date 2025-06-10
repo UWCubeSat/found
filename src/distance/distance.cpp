@@ -1,6 +1,5 @@
 #include <cmath>
 #include <utility>
-#include <iomanip>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"

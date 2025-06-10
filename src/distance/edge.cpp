@@ -14,108 +14,129 @@ namespace found {
 
 ////// Simple Edge Detection Algorithm //////
 
-// Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
-//     // Step 1: Obtain the component that represents space
-//     Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
-//         return (image.image[index] +
-//                 image.image[image.width * image.height + index] +
-//                 image.image[2 * image.width * image.height + index]) / 3 < this->threshold_;
-//     });
-//     Component *space = nullptr;
-//     for (auto &component : spaces) {
-//         // Basically, if the component is within the border, and its the biggest one,
-//         // we assume it is space
-//         if ((component.upperLeft.x < this->borderLength_ ||
-//             component.upperLeft.y < this->borderLength_ ||
-//             component.lowerRight.x >= image.width - this->borderLength_ ||
-//             component.lowerRight.y >= image.height - this->borderLength_) &&
-//             component.points.size() > space->points.size()) {
-//             space = &component;
-//         }
-//     }
-//     if (space == nullptr) return Points();
-//     std::unordered_set<uint64_t> points(space->points.begin(), space->points.end());
+Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 0: Define Common Variables
+    uint64_t imageSize = image.width * image.height;
 
-//     // Step 2: Identify the edge as the edge of space
+    // Step 1: Obtain the component that represents space
+    Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
+        // Average the pixel, then threshold it
+        int sum = 0;
+        for (int i = 0; i < image.channels; i++) sum += image.image[index + i * image.width * image.height];
+        return sum / image.channels < this->threshold_;
+    });
+    Component *space = nullptr;
+    for (auto &component : spaces) {
+        // Basically, if the component touches the border, and its the biggest one,
+        // we assume it is space
+        if ((component.upperLeft.x < this->borderLength_ ||
+            component.upperLeft.y < this->borderLength_ ||
+            component.lowerRight.x >= image.width - this->borderLength_ ||
+            component.lowerRight.y >= image.height - this->borderLength_)) {
+            if (!space || component.points.size() > space->points.size())
+            space = &component;
+        }
+    }
+    if (space == nullptr || space->points.size() == imageSize) return Points();
+    std::unordered_set<uint64_t> points(space->points.begin(), space->points.end());
 
-//     // Step 2a: Figure out the span of the space:
-//     int x_span = space->lowerRight.x - space->upperLeft.x;
-//     int y_span = space->lowerRight.y - space->upperLeft.y;
+    // Step 2: Identify the edge as the edge of space
 
-//     // Step 2b: Figure out how to iterate through the image,
-//     // iterating into the component that space occupies
-//     Points result;
-//     if (x_span > y_span) {
-//         // Determine which direction we want to iterate,
-//         // (we want to iterate into the space)
-//         uint64_t update;
-//         uint64_t start;
-//         double offset;
-//         if (space->upperLeft.y <= this->borderLength_) {
-//             // Iterate up, and start at the bottom left corner
-//             update = -image.width;
-//             start = static_cast<uint64_t>(space->lowerRight.y * image.width + space->upperLeft.x);
-//             offset = -this->offset_;
-//         } else {
-//             // Iterate down, and start at the top left corner
-//             update = image.width;
-//             start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
-//             offset = this->offset_;
-//         }
-//         // Step 2c: Get all edge points along the edge, identifying the edge
-//         // as the first point that is found inside space
-//         for (int col = space->upperLeft.x; col <= space->lowerRight.x; col++) {
-//             for (uint64_t index = start;
-//                  0 < index &&
-//                      index < static_cast<uint64_t>(image.width * image.height);
-//                  index += update) {
-//                 if (points.find(index) != points.end()) {
-//                     // Use the last pixel (it doesn't matter if its out of bounds here)
-//                     index -= update;
-//                     result.push_back({DECIMAL(index % image.width) - offset,
-//                                       DECIMAL(index / image.width) - offset});
-//                     break;
-//                 }
-//             }
-//             start++;
-//         }
-//     } else {
-//         // Determine which direction we want to iterate
-//         uint64_t update;
-//         uint64_t start;
-//         double offset;
-//         if (space->upperLeft.x <= this->borderLength_) {
-//             // Iterate left, and start at the top right corner
-//             update = -1;
-//             start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->lowerRight.x);
-//             offset = -this->offset_;
-//         } else {
-//             // Iterate right, and start at the top left corner
-//             update = 1;
-//             start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
-//             offset = this->offset_;
-//         }
-//         // Step 2c: Get all edge points along the edge, identifying the edge
-//         // as the first point that is found inside space
-//         for (int row = space->upperLeft.y; row <= space->lowerRight.y; row++) {
-//             for (uint64_t index = start;
-//                  0 < index &&
-//                      index < static_cast<uint64_t>(image.width * image.height);
-//                  index += update) {
-//                 if (points.find(index) != points.end()) {
-//                     // Use the last pixel (it doesn't matter if its out of bounds here)
-//                     index -= update;
-//                     result.push_back({DECIMAL(index % image.width) - offset, DECIMAL(index / image.width) - offset});
-//                     break;
-//                 }
-//             }
-//             start += image.width;
-//         }
-//     }
+    // Step 2a: Figure out the centroids of space and the planet
+    Vec2 planetCentroid{0, 0};
+    Vec2 spaceCentroid{0, 0};
+    int64_t planetSize = 0;
+    int64_t spaceSize = 0;
+    for (uint64_t i = 0; i < imageSize; i++) {
+        if (points.find(i) == points.end()) {
+            planetCentroid.x += DECIMAL(i % image.width);
+            planetCentroid.y += DECIMAL(i / image.width);
+            planetSize++;
+        } else {
+            spaceCentroid.x += DECIMAL(i % image.width);
+            spaceCentroid.y += DECIMAL(i / image.width);
+            spaceSize++;
+        }
+    }
+    planetCentroid.x /= planetSize;
+    planetCentroid.y /= planetSize;
+    spaceCentroid.x /= spaceSize;
+    spaceCentroid.y /= spaceSize;
 
-//     // Step 4: Return the points
-//     return result;
-// }
+    Vec2 itrDirection = spaceCentroid - planetCentroid;
+
+    // Step 2b: Figure out how to iterate through the image,
+    // iterating from the planet into space
+    Points result;
+    if (std::abs(itrDirection.y) > std::abs(itrDirection.x)) {
+        // Determine which direction we want to iterate,
+        // (we want to iterate into the space)
+        uint64_t update;
+        uint64_t start;
+        double offset;
+        uint64_t edge_condition;
+        if (itrDirection.y < 0) {
+            // Iterate up, and start at the bottom left corner
+            update = -image.width;
+            start = static_cast<uint64_t>(space->lowerRight.y * image.width + space->upperLeft.x);
+            offset = -this->offset_;
+            edge_condition = image.height - 1;
+        } else {
+            // Iterate down, and start at the top left corner
+            update = image.width;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            offset = this->offset_;
+            edge_condition = 0;
+        }
+        // Step 2c: Get all edge points along the edge, identifying the edge
+        // as the first point that is found inside space
+        for (int col = space->upperLeft.x; col <= space->lowerRight.x; col++) {
+            // because index is uint64_t, going below zero will overflow, and it will indeed be past the dimensions
+            uint64_t index = start;
+            while (points.find(index) == points.end()) index += update;
+            if (index / image.width != edge_condition) {
+                index -= update;
+                result.push_back({DECIMAL(index % image.width),
+                                    DECIMAL(index / image.width) - offset});
+            }
+            start++;
+        }
+    } else {
+        // Determine which direction we want to iterate
+        uint64_t update;
+        uint64_t start;
+        double offset;
+        uint64_t edge_condition;
+        if (itrDirection.x < 0) {
+            // Iterate left, and start at the top right corner
+            update = -1;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->lowerRight.x);
+            offset = -this->offset_;
+            edge_condition = image.width - 1;
+        } else {
+            // Iterate right, and start at the top left corner
+            update = 1;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            offset = this->offset_;
+            edge_condition = 0;
+        }
+        // Step 2c: Get all edge points along the edge, identifying the edge
+        // as the first point that is found inside space
+        for (int row = space->upperLeft.y; row <= space->lowerRight.y; row++) {
+            uint64_t index = start;
+            while (points.find(index) == points.end()) index += update;
+            if (index % image.width != edge_condition) {
+                index -= update;
+                result.push_back({DECIMAL(index % image.width) - offset,
+                                    DECIMAL(index / image.width)});
+            }
+            start += image.width;
+        }
+    }
+
+    // Step 4: Return the points
+    return result;
+}
 
 ////// Connected Components Algorithm //////
 
@@ -246,7 +267,8 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         componentPoints.insert({0, L});
     }
 
-    for (uint64_t i = 1; i < static_cast<uint64_t>(image.width * image.height); i++) {
+    uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
+    for (uint64_t i = 1; i < imageSize; i++) {
         // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
             continue;

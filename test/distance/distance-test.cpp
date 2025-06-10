@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <iostream>
-#include <iomanip>
 #include <cmath>
 
 #include "common/style.hpp"
