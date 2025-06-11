@@ -1,11 +1,19 @@
 var searchData=
 [
-  ['edge_0',['Edge',['../structfound_1_1Edge.html',1,'found']]],
-  ['edgedetectionalgorithm_1',['EdgeDetectionAlgorithm',['../classfound_1_1EdgeDetectionAlgorithm.html',1,'found']]],
-  ['edges_2',['Edges',['../namespacefound.html#a12b2a675381c9a2f96dc2afc874b0c0b',1,'found']]],
-  ['ellipticalorbitderminationalgorithm_3',['ellipticalorbitderminationalgorithm',['../classfound_1_1EllipticalOrbitDerminationAlgorithm.html',1,'found::EllipticalOrbitDerminationAlgorithm'],['../classfound_1_1EllipticalOrbitDerminationAlgorithm.html#a7172f10936593c0b57e86c6aee032462',1,'found::EllipticalOrbitDerminationAlgorithm::EllipticalOrbitDerminationAlgorithm()']]],
-  ['ellipticdistancedeterminationalgorithm_4',['ellipticdistancedeterminationalgorithm',['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html',1,'found::EllipticDistanceDeterminationAlgorithm'],['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html#a85d81a76c7ae26a37398b9e843a9c083',1,'found::EllipticDistanceDeterminationAlgorithm::EllipticDistanceDeterminationAlgorithm()']]],
-  ['eulerangles_5',['eulerangles',['../classfound_1_1EulerAngles.html',1,'found::EulerAngles'],['../classfound_1_1EulerAngles.html#ab3620b54d03a44b9f730416c3e5138b1',1,'found::EulerAngles::EulerAngles()']]],
-  ['euleriankinematicprofilingalgorithm_6',['euleriankinematicprofilingalgorithm',['../classfound_1_1EulerianKinematicProfilingAlgorithm.html',1,'found::EulerianKinematicProfilingAlgorithm'],['../classfound_1_1EulerianKinematicProfilingAlgorithm.html#aa2f02a7417fa9b6429bed0ba8342a3db',1,'found::EulerianKinematicProfilingAlgorithm::EulerianKinematicProfilingAlgorithm()']]],
-  ['executepipeline_7',['executepipeline',['../classfound_1_1PipelineExecutor.html#a47f19752bf81a790a171b547a9af10be',1,'found::PipelineExecutor::ExecutePipeline()'],['../classfound_1_1CalibrationPipelineExecutor.html#a9a3db902cd25c7942868726813f80f5e',1,'found::CalibrationPipelineExecutor::ExecutePipeline()'],['../classfound_1_1DistancePipelineExecutor.html#a6954f4181204ca14112e7d0b0503ba70',1,'found::DistancePipelineExecutor::ExecutePipeline()'],['../classfound_1_1OrbitPipelineExecutor.html#a1ecb89b64a3e0dacdefdc537e7d64eba',1,'found::OrbitPipelineExecutor::ExecutePipeline()']]]
+  ['d_0',['d',['../unionfound_1_1__d__u__.html#aa6ae088c71fadcff7c21602a34666c7d',1,'found::_d_u_']]],
+  ['data_5ffile_2ehpp_1',['data_file.hpp',['../data__file_8hpp.html',1,'']]],
+  ['datafile_2',['DataFile',['../structfound_1_1DataFile.html',1,'found']]],
+  ['datafileheader_3',['DataFileHeader',['../structfound_1_1DataFileHeader.html',1,'found']]],
+  ['dcmtoquaternion_4',['DCMToQuaternion',['../namespacefound.html#ab48ff1388e2ad9c1d0f5cdc5b0318d5d',1,'found']]],
+  ['de_5',['de',['../classfound_1_1EulerAngles.html#ad2a3eb2f0ef98d6becc9aafc2bda0236',1,'found::EulerAngles']]],
+  ['degtorad_6',['DegToRad',['../namespacefound.html#a72f2580bdbdbf490ff73a61c60f28a01',1,'found']]],
+  ['deserialize_7',['deserialize',['../namespacefound.html#ac253869d26489987af530763dc2fc812',1,'found']]],
+  ['deserializevec3_8',['DeserializeVec3',['../namespacefound.html#a5125b2053fdce0da74814f82aa4e6535',1,'found']]],
+  ['det_9',['Det',['../classfound_1_1Mat3.html#a25652f0fa565e68c33446bb11f4f93b7',1,'found::Mat3']]],
+  ['distance_10',['distance',['../namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed',1,'found::Distance(const Vec3 &amp;v1, const Vec3 &amp;v2)'],['../namespacefound.html#a52941ab54fcbb3625f21c7fa5433c59a',1,'found::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)']]],
+  ['distancedeterminationalgorithm_11',['DistanceDeterminationAlgorithm',['../classfound_1_1DistanceDeterminationAlgorithm.html',1,'found']]],
+  ['distanceoptions_12',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
+  ['distancepipeline_13',['DistancePipeline',['../namespacefound.html#ac96a51e9bd06b83169c0aa3658c0005f',1,'found']]],
+  ['distancepipelineexecutor_14',['distancepipelineexecutor',['../classfound_1_1DistancePipelineExecutor.html#a53e2079290f10c4bb2bf66a9d60cae5b',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()'],['../classfound_1_1DistancePipelineExecutor.html',1,'found::DistancePipelineExecutor']]],
+  ['doaction_15',['doaction',['../classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed',1,'found::Stage::DoAction()'],['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()']]]
 ];

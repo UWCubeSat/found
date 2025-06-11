@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['orbitdeterminationalgorithm_0',['OrbitDeterminationAlgorithm',['../classfound_1_1OrbitDeterminationAlgorithm.html',1,'found']]],
-  ['orbitoptions_1',['OrbitOptions',['../classOrbitOptions.html',1,'']]],
-  ['orbitparams_2',['OrbitParams',['../structfound_1_1OrbitParams.html',1,'found']]],
-  ['orbitpipelineexecutor_3',['OrbitPipelineExecutor',['../classfound_1_1OrbitPipelineExecutor.html',1,'found']]]
+  ['mat3_0',['Mat3',['../classfound_1_1Mat3.html',1,'found']]]
 ];

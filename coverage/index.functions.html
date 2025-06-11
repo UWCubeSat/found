@@ -25,23 +25,23 @@
                 </div>
                 <span>src/</span>
             </div>
-            <div>Date: 2025-06-01 05:16:33</div>
+            <div>Date: 2025-06-11 01:53:05</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">213/213</div>
-                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
+                <div class="mr-2" style="margin: auto;">334/341</div>
+                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">97.9%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
-                <div class="mr-2" style="margin: auto;">104/104</div>
-                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
+                <div class="mr-2" style="margin: auto;">128/129</div>
+                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">99.2%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">258/258</div>
-                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
+                <div class="mr-2" style="margin: auto;">305/324</div>
+                <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">94.1%</span></div>
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@
   <tr><td><a href="index.executors.cpp.e9b98b39c9afbf7cbf6d1ccd26bee4c2.html#l17">found::CalibrationPipelineExecutor::ExecutePipeline() (src/command-line/execution/executors.cpp:17)</a></td><td>called 2 times</td><td>73.0%</td></tr>
   <tr><td><a href="index.executors.cpp.e9b98b39c9afbf7cbf6d1ccd26bee4c2.html#l24">found::CalibrationPipelineExecutor::OutputResults() (src/command-line/execution/executors.cpp:24)</a></td><td>called 2 times</td><td>80.0%</td></tr>
   <tr><td><a href="index.edge.cpp.540e04e8d6c922e3a86cc2c6c2d51bbd.html#l119">found::ConnectedComponentsAlgorithm(found::Image&amp;, bool (*)(unsigned long, found::Image&amp;)) (src/distance/edge.cpp:119)</a></td><td>called 20 times</td><td>73.0%</td></tr>
+  <tr><td><a href="index.data_file.cpp.a53b15d8e921227c6973e8387c7d295a.html#l19">found::DataFileHeader::validate() (src/serialization/data_file.cpp:19)</a></td><td>not called</td><td>0.0%</td></tr>
   <tr><td><a href="index.distance.hpp.080369cb6800af409e5ea5270e98ae31.html#l18">found::DistanceDeterminationAlgorithm::DistanceDeterminationAlgorithm() (src/distance/distance.hpp:18)</a></td><td>called 17 times</td><td>100.0%</td></tr>
   <tr><td><a href="index.distance.hpp.080369cb6800af409e5ea5270e98ae31.html#l20">found::DistanceDeterminationAlgorithm::~DistanceDeterminationAlgorithm() (src/distance/distance.hpp:20)</a></td><td>called 17 times</td><td>100.0%</td></tr>
   <tr><td><a href="index.executors.cpp.e9b98b39c9afbf7cbf6d1ccd26bee4c2.html#l38">found::DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions const&amp;, std::unique_ptr&lt;found::EdgeDetectionAlgorithm, std::default_delete&lt;found::EdgeDetectionAlgorithm&gt; &gt;, std::unique_ptr&lt;found::DistanceDeterminationAlgorithm, std::default_delete&lt;found::DistanceDeterminationAlgorithm&gt; &gt;, std::unique_ptr&lt;found::VectorGenerationAlgorithm, std::default_delete&lt;found::VectorGenerationAlgorithm&gt; &gt;) (src/command-line/execution/executors.cpp:38)</a></td><td>called 2 times</td><td>73.0%</td></tr>
@@ -211,7 +212,31 @@
   <tr><td><a href="index.edge.cpp.540e04e8d6c922e3a86cc2c6c2d51bbd.html#l40">found::UpdateEdge(found::Edge&amp;, found::Vec2&amp;) (src/distance/edge.cpp:40)</a></td><td>called 97 times</td><td>100.0%</td></tr>
   <tr><td><a href="index.vectorize.hpp.93946b998ea54e0b2564b3efdf08be34.html#l18">found::VectorGenerationAlgorithm::VectorGenerationAlgorithm() (src/distance/vectorize.hpp:18)</a></td><td>called 2 times</td><td>100.0%</td></tr>
   <tr><td><a href="index.vectorize.hpp.93946b998ea54e0b2564b3efdf08be34.html#l20">found::VectorGenerationAlgorithm::~VectorGenerationAlgorithm() (src/distance/vectorize.hpp:20)</a></td><td>called 2 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l159">found::calculateCRC32(void const*, unsigned long) (src/serialization/serialization.cpp:159)</a></td><td>called 28 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l190">found::deserialize(std::istream&amp;) (src/serialization/serialization.cpp:190)</a></td><td>called 10 times</td><td>89.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l12">found::hton(found::DataFileHeader&amp;) (src/serialization/serialization.cpp:12)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l182">found::htond(double) (src/serialization/encoding.hpp:182)</a></td><td>called 54 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l199">found::htondec(double) (src/serialization/encoding.hpp:199)</a></td><td>called 24 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l44">found::htonl(unsigned int) (src/serialization/encoding.hpp:44)</a></td><td>called 36 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l72">found::htonl(unsigned long) (src/serialization/encoding.hpp:72)</a></td><td>called 58 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l206">found::isValidMagicNumber(char const*) (src/serialization/serialization.cpp:206)</a></td><td>called 16 times</td><td>100.0%</td></tr>
   <tr><td><a href="index.parser.cpp.0db481cad706341a0b28d9af39560358.html#l59">found::main(int, char**) (src/command-line/parsing/parser.cpp:59)</a></td><td>called 4 times</td><td>71.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l19">found::ntoh(found::DataFileHeader&amp;) (src/serialization/serialization.cpp:19)</a></td><td>called 14 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l213">found::ntohdec(double) (src/serialization/encoding.hpp:213)</a></td><td>called 30 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l58">found::ntohl(unsigned int) (src/serialization/encoding.hpp:58)</a></td><td>called 44 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.encoding.hpp.a32bdf3298cb76c72059e4e134ed0491.html#l90">found::ntohl(unsigned long) (src/serialization/encoding.hpp:90)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l30">found::read(std::istream&amp;, double&amp;) (src/serialization/serialization.cpp:30)</a></td><td>called 36 times</td><td>80.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l110">found::read(std::istream&amp;, found::EulerAngles&amp;) (src/serialization/serialization.cpp:110)</a></td><td>called 10 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l153">found::read(std::istream&amp;, found::LocationRecord&amp;) (src/serialization/serialization.cpp:153)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l142">found::read(std::istream&amp;, found::Vec3&amp;) (src/serialization/serialization.cpp:142)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l63">found::read(std::istream&amp;, unsigned long&amp;) (src/serialization/serialization.cpp:63)</a></td><td>called 4 times</td><td>40.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l210">found::readHeader(std::istream&amp;) (src/serialization/serialization.cpp:210)</a></td><td>called 16 times</td><td>65.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l176">found::serialize(found::DataFile const&amp;, std::ostream&amp;) (src/serialization/serialization.cpp:176)</a></td><td>called 4 times</td><td>93.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l43">found::write(std::ostream&amp;, double const&amp;) (src/serialization/serialization.cpp:43)</a></td><td>called 24 times</td><td>86.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l99">found::write(std::ostream&amp;, found::EulerAngles const&amp;) (src/serialization/serialization.cpp:99)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l132">found::write(std::ostream&amp;, found::LocationRecord const&amp;) (src/serialization/serialization.cpp:132)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l121">found::write(std::ostream&amp;, found::Vec3 const&amp;) (src/serialization/serialization.cpp:121)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+  <tr><td><a href="index.serialization.cpp.30a08155e998d4334acc70ee004e0741.html#l53">found::write(std::ostream&amp;, unsigned long const&amp;) (src/serialization/serialization.cpp:53)</a></td><td>called 4 times</td><td>86.0%</td></tr>
 </table>
 
           <hr/>

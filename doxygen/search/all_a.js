@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['labelpresent_0',['LabelPresent',['../namespacefound.html#a532a003b6775ad0c1e340256e492be0a',1,'found']]],
-  ['locedgedetectionalgorithm_1',['locedgedetectionalgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html',1,'found::LoCEdgeDetectionAlgorithm'],['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a66171d921010bb784930003cb5a14ade',1,'found::LoCEdgeDetectionAlgorithm::LoCEdgeDetectionAlgorithm()']]],
-  ['lostcalibrationalgorithm_2',['LOSTCalibrationAlgorithm',['../classfound_1_1LOSTCalibrationAlgorithm.html',1,'found']]],
-  ['lostvectorgenerationalgorithm_3',['lostvectorgenerationalgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html',1,'found::LOSTVectorGenerationAlgorithm'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a29a6972b8eb3c8dba96bbf52628a0c6e',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a3d7b70a44dde02449fd647b0380201b4',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion orientation)']]],
-  ['lowerright_4',['lowerRight',['../structfound_1_1Edge.html#a45486626a9bfa52d80927034ce3b6a3f',1,'found::Edge']]]
+  ['k_0',['k',['../classfound_1_1Quaternion.html#ae0dce74b1767ab95c9a1647017f8085e',1,'found::Quaternion']]],
+  ['keplerkinematicprofilingalgorithm_1',['keplerkinematicprofilingalgorithm',['../classfound_1_1KeplerKinematicProfilingAlgorithm.html',1,'found::KeplerKinematicProfilingAlgorithm'],['../classfound_1_1KeplerKinematicProfilingAlgorithm.html#a3d6ccaf3d96a7569d82616f78d039d91',1,'found::KeplerKinematicProfilingAlgorithm::KeplerKinematicProfilingAlgorithm()']]],
+  ['kidentitymat3_2',['kIdentityMat3',['../namespacefound.html#a20aeec4e79581e3fb094a248d762676d',1,'found']]],
+  ['kinematicprediction_3',['KinematicPrediction',['../namespacefound.html#aefe13c4bfa4e0ae99e393a3141fd6f88',1,'found']]],
+  ['kinematicprofilingalgorithm_4',['KinematicProfilingAlgorithm',['../classfound_1_1KinematicProfilingAlgorithm.html',1,'found']]],
+  ['knodefaultargument_5',['kNoDefaultArgument',['../namespacefound.html#a83cb77a20df682f59375ad760da89b4b',1,'found']]]
 ];

@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['points_0',['points',['../structfound_1_1Edge.html#a5360412472ad1910758928c0ffb64c47',1,'found::Edge']]],
-  ['position_1',['position',['../structfound_1_1OrbitParams.html#a640c86fd0d8b581c751c313fda2304c7',1,'found::OrbitParams']]],
-  ['product_2',['product',['../classfound_1_1Stage.html#a1e6b9a9dc3e1c93dc0eeca103c353616',1,'found::Stage']]]
+  ['num_5fpositions_0',['num_positions',['../structfound_1_1DataFileHeader.html#abd86dada0574499097a5e29f8ff94f67',1,'found::DataFileHeader']]]
 ];

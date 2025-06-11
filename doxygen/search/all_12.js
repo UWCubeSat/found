@@ -1,6 +1,28 @@
 var searchData=
 [
-  ['tospherical_0',['tospherical',['../classfound_1_1Quaternion.html#adc189bf5e924b2505f69c1d65d95343e',1,'found::Quaternion::ToSpherical()'],['../classfound_1_1Attitude.html#a41c6b6b15fabdf08f70c3ad6ceb3e18d',1,'found::Attitude::ToSpherical()']]],
-  ['trace_1',['Trace',['../classfound_1_1Mat3.html#a442a7fcf8012e3056a2f708dfe1118f4',1,'found::Mat3']]],
-  ['transpose_2',['Transpose',['../classfound_1_1Mat3.html#acd127d627657f84b969157b5602224e7',1,'found::Mat3']]]
+  ['serialize_0',['serialize',['../namespacefound.html#aebd4b2e4ddb5eaf57792090fd0af08dd',1,'found']]],
+  ['serializelengthvec3_1',['SerializeLengthVec3',['../namespacefound.html#a7aabae2b067c4e67b12ed0bfd663cd73',1,'found']]],
+  ['serializevec3_2',['SerializeVec3',['../namespacefound.html#ab084af9a457818d313399c33239cd274',1,'found']]],
+  ['setangle_3',['SetAngle',['../classfound_1_1Quaternion.html#aa96441c7f87b94c546f55e9a8a3a545e',1,'found::Quaternion']]],
+  ['setfocallength_4',['SetFocalLength',['../classfound_1_1Camera.html#af5acf428687056de2a4a9b122298a8a0',1,'found::Camera']]],
+  ['setvector_5',['SetVector',['../classfound_1_1Quaternion.html#af94cca484c9c4f7c8b814855e4fc91b8',1,'found::Quaternion']]],
+  ['simpleedgedetectionalgorithm_6',['simpleedgedetectionalgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html',1,'found::SimpleEdgeDetectionAlgorithm'],['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a32cc5516171ac2740b0c8e39c7ed6245',1,'found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm()']]],
+  ['spatialtocamera_7',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
+  ['spatialtospherical_8',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
+  ['sphericaldistancedeterminationalgorithm_9',['sphericaldistancedeterminationalgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html',1,'found::SphericalDistanceDeterminationAlgorithm'],['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#af84a2c7f57007f3997a57dc599dda58d',1,'found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm()']]],
+  ['sphericaltoquaternion_10',['sphericaltoquaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found::SphericalToQuaternion(decimal ra, decimal dec, decimal roll)'],['../namespacefound.html#a00d185e68e6373ac81872eeb3326ac28',1,'found::SphericalToQuaternion(EulerAngles angles)']]],
+  ['sphericaltospatial_11',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
+  ['stage_12',['stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage::Stage()'],['../classfound_1_1Stage.html',1,'found::Stage&lt; Input, Output &gt;']]],
+  ['stage_3c_20image_2c_20points_20_3e_13',['Stage&lt; Image, Points &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20image_2c_20positionvector_20_3e_14',['Stage&lt; Image, PositionVector &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20orbitparams_2c_20kinematicprediction_20_3e_15',['Stage&lt; OrbitParams, KinematicPrediction &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20points_2c_20positionvector_20_3e_16',['Stage&lt; Points, PositionVector &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20positionvector_2c_20positionvector_20_3e_17',['Stage&lt; PositionVector, PositionVector &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20std_3a_3apair_3c_20eulerangles_2c_20eulerangles_20_3e_2c_20quaternion_20_3e_18',['Stage&lt; std::pair&lt; EulerAngles, EulerAngles &gt;, Quaternion &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20std_3a_3avector_3c_20positionvector_20_3e_2c_20orbitparams_20_3e_19',['Stage&lt; std::vector&lt; PositionVector &gt;, OrbitParams &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['stage_3c_20std_3a_3avector_3c_20vec3_20_3e_2c_20orbitparams_20_3e_20',['Stage&lt; std::vector&lt; Vec3 &gt;, OrbitParams &gt;',['../classfound_1_1Stage.html',1,'found']]],
+  ['strtobool_21',['strtobool',['../namespacefound.html#a7024f78e6740e032817c2bc20a71962e',1,'found']]],
+  ['strtodecimal_22',['strtodecimal',['../namespacefound.html#a60ee66e81bce477a178b2470285de1dd',1,'found']]],
+  ['strtoea_23',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]],
+  ['strtoimage_24',['strtoimage',['../namespacefound.html#a5715a57bc3e4ab1219f13fc289735f96',1,'found']]]
 ];

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['magnitude_0',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()']]],
-  ['magnitudesq_1',['magnitudesq',['../structfound_1_1Vec2.html#ab4d7bbb2908f7962e50263a2e6731788',1,'found::Vec2::MagnitudeSq()'],['../classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23',1,'found::Vec3::MagnitudeSq()']]],
-  ['main_2',['main',['../namespacefound.html#a25eef2e6e20aa0e29f7d5c1140b6bad0',1,'found']]],
-  ['midpoint_3',['midpoint',['../namespacefound.html#a96b3f0a10aa405667ef50b187ac67cc3',1,'found::midpoint(const Vec2 &amp;vec1, const Vec2 &amp;vec2)'],['../namespacefound.html#aca55ee32d90cc1728b61fb9033857a87',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2)'],['../namespacefound.html#a1d5a4a735107bd122f573b26ce0f6f2b',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2, const Vec3 &amp;vec3)']]]
+  ['labelpresent_0',['LabelPresent',['../namespacefound.html#a532a003b6775ad0c1e340256e492be0a',1,'found']]],
+  ['locedgedetectionalgorithm_1',['LoCEdgeDetectionAlgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a66171d921010bb784930003cb5a14ade',1,'found::LoCEdgeDetectionAlgorithm']]],
+  ['lostvectorgenerationalgorithm_2',['lostvectorgenerationalgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a29a6972b8eb3c8dba96bbf52628a0c6e',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a3d7b70a44dde02449fd647b0380201b4',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion orientation)']]]
 ];

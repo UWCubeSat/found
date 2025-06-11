@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['getdcm_0',['GetDCM',['../classfound_1_1Attitude.html#ae2c0a79e2fc3680008469be345393f6d',1,'found::Attitude']]],
-  ['getdeclination_1',['getDeclination',['../classfound_1_1Vec3.html#a16ffac45f45a61b17d7183c87a1ac9d4',1,'found::Vec3']]],
-  ['getproduct_2',['GetProduct',['../classfound_1_1Stage.html#a39d11b5cda4f9d30317e8d41b1b1d567',1,'found::Stage']]],
-  ['getquaternion_3',['GetQuaternion',['../classfound_1_1Attitude.html#a40f21f587bb724c8c90a3401d28b3eb5',1,'found::Attitude']]],
-  ['getresource_4',['GetResource',['../classfound_1_1Stage.html#a1605d8680d9f5ce6cb567757cfe17a12',1,'found::Stage']]],
-  ['getrightascension_5',['getRightAscension',['../classfound_1_1Vec3.html#a3cad134f2e7e2d676515f0d2074755c9',1,'found::Vec3']]]
+  ['f_0',['f',['../unionfound_1_1__f__u__.html#af4a9ef19131ae6ec41070d03c98dc827',1,'found::_f_u_']]],
+  ['featuredetectionvectorgenerationalgorithm_1',['featuredetectionvectorgenerationalgorithm',['../classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html',1,'found::FeatureDetectionVectorGenerationAlgorithm'],['../classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html#acc94b724644988e317d59194d57f44db',1,'found::FeatureDetectionVectorGenerationAlgorithm::FeatureDetectionVectorGenerationAlgorithm()']]],
+  ['focallength_2',['FocalLength',['../classfound_1_1Camera.html#ada8e9f1a75a2a83eb713f73b5919e2c3',1,'found::Camera']]],
+  ['focallengthtofov_3',['FocalLengthToFov',['../namespacefound.html#ab88840d833bf7485c797570f7c8c045f',1,'found']]],
+  ['found_4',['found',['../namespacefound.html',1,'']]],
+  ['fov_5',['Fov',['../classfound_1_1Camera.html#a7bc976036514b890d86c3c9d510dc44e',1,'found::Camera']]],
+  ['fovtofocallength_6',['FovToFocalLength',['../namespacefound.html#a62fa83965c3b82ae30673901b3bd9104',1,'found']]]
 ];

@@ -1,19 +1,10 @@
 var searchData=
 [
-  ['calibrationalgorithm_0',['CalibrationAlgorithm',['../classfound_1_1CalibrationAlgorithm.html',1,'found']]],
-  ['calibrationoptions_1',['CalibrationOptions',['../classCalibrationOptions.html',1,'']]],
-  ['calibrationpipeline_2',['CalibrationPipeline',['../namespacefound.html#a181f3d2c287db56479c957d4aa27708e',1,'found']]],
-  ['calibrationpipelineexecutor_3',['calibrationpipelineexecutor',['../classfound_1_1CalibrationPipelineExecutor.html',1,'found::CalibrationPipelineExecutor'],['../classfound_1_1CalibrationPipelineExecutor.html#ad3916b91f485cf1eae2f681fc50f37a9',1,'found::CalibrationPipelineExecutor::CalibrationPipelineExecutor()']]],
-  ['camera_4',['camera',['../classfound_1_1Camera.html',1,'found::Camera'],['../classfound_1_1Camera.html#a7646fa97175464b65773cba9e0abd0a3',1,'found::Camera::Camera(const Camera &amp;)=default'],['../classfound_1_1Camera.html#ae0e3ad0472a3448d5e81e67d54406846',1,'found::Camera::Camera(decimal focalLength, decimal pixelSize, decimal xCenter, decimal yCenter, int xResolution, int yResolution)'],['../classfound_1_1Camera.html#a6595353db35cf85a22688f9775b28595',1,'found::Camera::Camera(decimal focalLength, decimal pixelSize, int xResolution, int yResolution)']]],
-  ['cameratospatial_5',['CameraToSpatial',['../classfound_1_1Camera.html#ade55392bda37e2e62c6a07b78ea3af9a',1,'found::Camera']]],
-  ['canonicalize_6',['Canonicalize',['../classfound_1_1Quaternion.html#a845cd9f18792c3d147dfec403dedf004',1,'found::Quaternion']]],
-  ['channels_7',['channels',['../structfound_1_1Image.html#a15de072688537c0eb30a64f96af2070b',1,'found::Image']]],
-  ['column_8',['Column',['../classfound_1_1Mat3.html#af76b9c014a93ec1f2f9ffbee9a5a1def',1,'found::Mat3']]],
-  ['complete_9',['Complete',['../classfound_1_1Pipeline.html#a2be74f428704c0bc058000726ce85bca',1,'found::Pipeline']]],
-  ['conjugate_10',['Conjugate',['../classfound_1_1Quaternion.html#a75750d18a8b0e79ea3f0aa6fba5ee708',1,'found::Quaternion']]],
-  ['connectedcomponentsalgorithm_11',['ConnectedComponentsAlgorithm',['../namespacefound.html#a456b6b4e94c6aad743ac99f88076626d',1,'found']]],
-  ['createcalibrationpipelineexecutor_12',['CreateCalibrationPipelineExecutor',['../namespacefound.html#a713648fcf5d351fbc211784446e4dc1a',1,'found']]],
-  ['createdistancepipelineexecutor_13',['CreateDistancePipelineExecutor',['../namespacefound.html#ab2ae0f29a9e0b9b691f847e77262f62b',1,'found']]],
-  ['createorbitpipelineexecutor_14',['CreateOrbitPipelineExecutor',['../namespacefound.html#a73e68bbe1ba9a04afd4a0b27ef827bd3',1,'found']]],
-  ['crossproduct_15',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
+  ['action_0',['Action',['../classfound_1_1Action.html',1,'found']]],
+  ['addstage_1',['AddStage',['../classfound_1_1Pipeline.html#a9b9e918fdf7443c0bb855bf8e029d24e',1,'found::Pipeline']]],
+  ['angle_2',['angle',['../classfound_1_1Quaternion.html#a05f87920a68264d12073eb1193ff96a2',1,'found::Quaternion::Angle()'],['../namespacefound.html#ae5a3e28ba836851084cc7fcd5231484d',1,'found::Angle(const Vec3 &amp;vec1, const Vec3 &amp;vec2)']]],
+  ['angleunit_3',['AngleUnit',['../namespacefound.html#a162d0ac77ad1a7b9bdb73b5964b01dcd',1,'found']]],
+  ['arcsectorad_4',['ArcSecToRad',['../namespacefound.html#a008cc2bc660a2b7ff3fa263e6629252b',1,'found']]],
+  ['at_5',['At',['../classfound_1_1Mat3.html#a9d67e1e3604b2f07ba5b75441e008bf7',1,'found::Mat3']]],
+  ['attitude_6',['attitude',['../classfound_1_1Attitude.html',1,'found::Attitude'],['../classfound_1_1Attitude.html#a8bdd7582354631f77504c8e1fe7ca569',1,'found::Attitude::Attitude(const Quaternion &amp;)'],['../classfound_1_1Attitude.html#a8bd8d8716f8ad6d4a8fbbab94e36df02',1,'found::Attitude::Attitude(const Mat3 &amp;dcm)']]]
 ];
