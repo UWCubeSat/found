@@ -4,6 +4,7 @@
 #include <memory>
 #include <cstdint>
 #include <string>
+
 #include "common/spatial/attitude-utils.hpp"  // Includes Vec3 and EulerAngles
 #include "common/style.hpp"
 
@@ -73,6 +74,13 @@ struct DataFile {
      * @brief Collection of location records in the file.
      */
     std::unique_ptr<LocationRecord[]> positions;
+
+    /**
+     * The path of this DataFile.
+     * 
+     * @note This is not a saved field
+     */
+    std::string path;
 
     /// Constructs this
     DataFile() = default;

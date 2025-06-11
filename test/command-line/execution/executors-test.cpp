@@ -6,21 +6,25 @@
 #include <string>
 #include <sstream>
 #include <cstdio>
+#include <fstream>
+#include <ctime>
 
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
 #include "test/common/common.hpp"
 
 #include "src/providers/converters.hpp"
+#include "src/datafile/datafile.hpp"
+#include "src/datafile/serialization.hpp"
 
-#include "calibrate/calibrate.hpp"
+#include "src/calibrate/calibrate.hpp"
 
-#include "distance/edge.hpp"
-#include "distance/distance.hpp"
-#include "distance/vectorize.hpp"
+#include "src/distance/edge.hpp"
+#include "src/distance/distance.hpp"
+#include "src/distance/vectorize.hpp"
 
-// TODO(nguy8tri): Include statement for Orbit Pipeline
-// TODO: Fully Implement this after everything is well defined
+// TODO: Fully Implement orbit stuff this after orbit stage is implemented
+// TODO: Include statement for Orbit Pipeline
 
 #include "src/command-line/execution/executors.hpp"
 
@@ -66,6 +70,15 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
                    << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    DataFile expected{
+        {},
+        LOSTCalibrationAlgorithm().Run({options.lclOrientation, options.refOrientation})
+    };
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+    ASSERT_DF_EQ(expected, actual, 1);
 
     std::remove(temp_df);
 }
@@ -136,6 +149,17 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
                    << "Distance from Earth: 8.77496 m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    DataFile expected{
+        {{'F', 'O', 'U', 'N'}, 1U, 1},
+        {},
+        std::make_unique<LocationRecord[]>(1)
+    };
+    expected.positions[0] = {145295, {4, 5, 6}};
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+    ASSERT_DF_EQ(expected, actual, 1);
 
     std::remove(temp_df);
 }

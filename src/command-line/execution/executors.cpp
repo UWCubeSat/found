@@ -60,7 +60,6 @@ void DistancePipelineExecutor::ExecutePipeline() {
 }
 
 void DistancePipelineExecutor::OutputResults() {
-    // TODO: Write the output to the datafile
     PositionVector *&positionVector = this->pipeline_.GetProduct();
     LOG_INFO("Calculated Position: (" << positionVector->x << ", "
                                       << positionVector->y << ", "
@@ -70,14 +69,18 @@ void DistancePipelineExecutor::OutputResults() {
     // since we're saving it into the exact same file, there should be an easy way
     // to simply modify the file directly instead of this mess.
     DataFile outputDF{};
-    // TODO: Make another branch if no data file was given
-    outputDF.header = this->options_.calibrationData.header;
-    outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
-    outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
-    std::memcpy(outputDF.positions.get(),
-                this->options_.calibrationData.positions.get(),
-                outputDF.header.num_positions);
-    outputDF.positions[outputDF.header.num_positions] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
+    if (this->options_.calibrationData.header.version != emptyDFVer) {
+        outputDF.header = this->options_.calibrationData.header;
+        outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
+        outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
+        std::memcpy(outputDF.positions.get(),
+                    this->options_.calibrationData.positions.get(),
+                    outputDF.header.num_positions);
+    } else {
+        outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
+        outputDF.positions = std::make_unique<LocationRecord[]>(1);
+    }
+    outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
     std::ofstream outputFile(this->options_.outputFile);
     serializeDataFile(outputDF, outputFile);
 }
@@ -88,9 +91,6 @@ OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
     this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);
     this->pipeline_.Complete(*this->orbitPropagationAlgorithm);
 }
-
-// TODO: Implement the ExecutePipeline and OutputResults methods for OrbitPipelineExecutor when
-// the Data Serialization branch is merged
 
 void OrbitPipelineExecutor::ExecutePipeline() {
     // Results are stored within the pipeline, can also be accessed

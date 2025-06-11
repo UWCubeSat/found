@@ -16,7 +16,7 @@
 #include "orbit/orbit.hpp"
 
 // TODO(nguy8tri): Include statement for Orbit Pipeline
-// TODO: Fully Implement this after everything is well defined
+// TODO: Fully Implement this when orbit stage is implemented
 
 #include "common/decimal.hpp"
 
@@ -70,13 +70,19 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
 std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
-    Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
-    // TODO: If the relative Orientation is 0, then attempt to parse it out of the file
-    if (options.refAsOrientation) {
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+    if (options.calibrationData.header.version != emptyDFVer) {
+        LOG_INFO("Using DataFile for calibration information");
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
+                                                               referenceOrientation);
+    } else {
+        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
+        if (options.refAsOrientation) {
+            LOG_INFO("Using provided reference orientation for calibration information");
+            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+        }
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
-    return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
 }
 
 // TODO: Uncomment when orbit stage is implemented

@@ -78,7 +78,7 @@ inline EulerAngles strtoea(const std::string &str) {
 
     result[index] = strtodecimal(str.substr(start));
 
-    return EulerAngles(result[0], result[1], result[2]);
+    return EulerAngles(DegToRad(result[0]), DegToRad(result[1]), DegToRad(result[2]));
 }
 
 /**
@@ -152,7 +152,7 @@ inline LocationRecords strtolr(const std::string &str) {
  */
 inline DataFile strtodf(const std::string &str) {
     std::ifstream stream(str);
-    return deserializeDataFile(stream);
+    return deserializeDataFile(stream, str);
 }
 
 }  // namespace found

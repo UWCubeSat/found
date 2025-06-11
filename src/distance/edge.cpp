@@ -22,7 +22,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
         // Average the pixel, then threshold it
         int sum = 0;
-        for (int i = 0; i < image.channels; i++) sum += image.image[index + i * image.width * image.height];
+        for (int i = 0; i < image.channels; i++) sum += image.image[image.channels * index + i];
         return sum / image.channels < this->threshold_;
     });
     Component *space = nullptr;

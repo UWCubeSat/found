@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <istream>
+#include <cstdio>
 
 #include "stb_image/stb_image.h"
 
@@ -17,10 +18,16 @@
 
 namespace found {
 
+/// The default arc second tolerance
+#define DEFAULT_ARC_SEC_TOL 1500  // Equivalent to 5/12 of a degree
+/// The default magnitude error tolerance
+#define DEFAULT_MAG_ERR_TOL 0.01  // Equivalent to 1%
+
 class IntegrationTest : public testing::Test {
  protected:
     void TearDown() override {
         optind = 2;
+        std::remove(temp_df);
     }
 };
 
@@ -50,6 +57,7 @@ TEST_F(IntegrationTest, TestMainHelp) {
     ASSERT_NE(static_cast<size_t>(0), output1.size());
 
     argv[1] = "--help";
+    optind = 2;
 
     testing::internal::CaptureStdout();  // Start capturing stdout
 
@@ -103,7 +111,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
     ASSERT_DF_EQ(expected, actual, 1);
 }
 
-TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientation) {
+TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
     int argc = 6;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -126,7 +134,7 @@ TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientation) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
-TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientation) {
+TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     int argc = 5;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -140,12 +148,72 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientation) {
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;
-    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+    expectedOutput << ".*\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
                    << "Calculated Position: \\(-?0, -?0, -?0\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
                    << "Distance from Earth: 0 m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+}
+
+TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
+    int argc = 13;
+    const char *argv[] = {"found", "distance",
+                        "--image", example_earth1.path,
+                        "--reference-as-orientation",
+                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
+                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
+                        "--reference-orientation", "140,0,0",
+                        "--output-file", temp_df};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
+    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
+              (example_earth1.position - actual.positions[0].position).Magnitude()
+                / example_earth1.position.Magnitude());
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+}
+
+TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
+    int argc1 = 8;
+    const char *argv1[] = {"found", "calibration",
+                        "--reference-orientation", "20,0,0",
+                        "--local-orientation", "50,0,0",
+                        "--output-file", temp_df};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc1, const_cast<char **>(argv1)));
+
+    optind = 2;
+
+    int argc2 = 14;
+    const char *argv2[] = {"found", "distance",
+                        "--image", example_earth1.path,
+                        "--calibration-data", temp_df,
+                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
+                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
+                        "--reference-orientation", "190,0,0",
+                        "--output-file", temp_df};
+    // The relative orientation is EulerAngles{-30, 0, 0}, while the
+    // reference orientation is {190,0,0}, which adds to a total
+    // orientation of {140, 0, 0} (they add up in this case, but
+    // in general, they do not)
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc2, const_cast<char **>(argv2)));
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
+    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
+    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
+              (example_earth1.position - actual.positions[0].position).Magnitude()
+                / example_earth1.position.Magnitude());
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
 // TODO: Uncomment when orbit stage is implemented

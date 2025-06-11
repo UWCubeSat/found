@@ -2,6 +2,7 @@
 #define SERIALIZATION_H
 
 #include <string>
+
 #include "datafile/datafile.hpp"  // Include the header for DataFile and DataFileHeader
 
 namespace found {
@@ -24,6 +25,16 @@ void serializeDataFile(const DataFile& data, std::ostream& stream);
  * @return The deserialized DataFile object.
  */
 DataFile deserializeDataFile(std::istream& stream);
+
+/**
+ * @brief Deserializes a DataFile object from an input stream.
+ * 
+ * @param stream The input stream to read the serialized data from.
+ * @param path The path to associate the resulting struct with
+ * 
+ * @return The deserialized DataFile object, with the given path.
+ */
+DataFile deserializeDataFile(std::istream& stream, const std::string &path);
 
 /**
  * @brief Reads only the header of a DataFile from an input stream.

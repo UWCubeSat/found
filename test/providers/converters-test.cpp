@@ -17,17 +17,17 @@ TEST(ConvertersTest, TestEAComma) {
     EulerAngles angles = strtoea(str);
 
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(45), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(90), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 4, angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 2, angles.roll);
 }
 
 TEST(ConvertersTest, TestEASpace) {
     std::string str = "4.2 3.9 -9.5";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4.2), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3.9), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.5), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(4.2)), angles.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(3.9)), angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(-9.5)), angles.roll);
 }
 
 TEST(ConvertersTest, TestBoolFalse) {

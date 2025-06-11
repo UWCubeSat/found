@@ -39,13 +39,13 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
         "--output-file", temp_df};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(2), options.lclOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(1), options.lclOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(2), options.lclOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3), options.lclOrientation.roll);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3.0), options.refOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3.0), options.refOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(-9.0), options.refOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(27.2), options.refOrientation.roll);
 
     ASSERT_EQ(temp_df, options.outputFile);
 }
@@ -75,7 +75,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(emptyImage, options.image);
-    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);  // TODO: Change this once implemented
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.012), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(20E-6), options.pixelSize);
@@ -100,8 +100,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
-    EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
-    EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    EulerAngles expectedRefOrientation(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3));
+    EulerAngles expectedRelOrientation(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6));
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);

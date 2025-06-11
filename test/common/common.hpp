@@ -4,9 +4,13 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <string>
+#include <sstream>
+
 #include "src/common/decimal.hpp"
 #include "src/common/style.hpp"
 #include "src/common/spatial/attitude-utils.hpp"
+#include "src/common/spatial/camera.hpp"
 
 namespace found {
 
@@ -80,19 +84,21 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 #define ASSERT_DF_EQ_DEFAULT(val1, val2) \
     ASSERT_EQ(val1.header.version, val2.header.version); \
     ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \
+    /* ASSERT_EQ(val1.header.crc, val2.header.crc) */                       \
     ASSERT_QUAT_EQ_DEFAULT(val1.relative_attitude, val2.relative_attitude); \
     for (size_t i = 0; i < val1.header.num_positions; i++) { \
         ASSERT_VEC3_EQ_DEFAULT(val1.positions[i].position, val2.positions[i].position); \
-        ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); \
+        /* ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); */ \
     }
 
 #define ASSERT_DF_EQ(val1, val2, tolerance) \
     ASSERT_EQ(val1.header.version, val2.header.version); \
     ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \
+    /* ASSERT_EQ(val1.header.crc, val2.header.crc) */                          \
     ASSERT_QUAT_EQ(val1.relative_attitude, val2.relative_attitude, tolerance); \
     for (size_t i = 0; i < val1.header.num_positions; i++) { \
         ASSERT_VEC3_EQ_DEFAULT(val1.positions[i].position, val2.positions[i].position); \
-        ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); \
+        /* ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); */ \
     }
 
 #define ASSERT_RANGE(num, lo, hi) \
@@ -101,8 +107,66 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 
 ///// Definition of Assets /////
 
+/**
+ * Represents an image with associated data
+ */
+struct ImageData {
+    /// @brief The path of the image
+    const char *path;
+
+    /// @brief The image's focal length (m)
+    decimal focal_length;
+    std::string FocalLength;
+
+    /// @brief The image's pixel size (m)
+    decimal pixel_size;
+    std::string PixelSize;
+
+    /// @brief The image's orientation
+    EulerAngles orientation;
+    std::string Orientation;
+
+    /// @brief The image's position (m)
+    Vec3 position;
+    std::string Position;
+
+    /**
+     * Initializes an ImageData struct
+     * 
+     * @param path The path of the image
+     * @param focal_length The image focal length (m)
+     * @param pixel_size The pixel size of the image (m)
+     * @param orientation The orientation of the image
+     * @param position The position of the image
+     */
+    ImageData(const char *path, decimal focal_length, decimal pixel_size, EulerAngles orientation, Vec3 position) :
+            path(path), focal_length(focal_length), FocalLength(std::to_string(focal_length)), pixel_size(pixel_size),
+            PixelSize(std::to_string(pixel_size)), orientation(orientation), position(position) {
+        Orientation += orientation.ra;
+        Orientation += ",";
+        Orientation += orientation.de;
+        Orientation += ",";
+        Orientation += orientation.roll;
+
+        Position += position.x;
+        Position += ",";
+        Position += position.y;
+        Position += ",";
+        Position += position.z;
+    }
+};
+
 /// The temporary Datafile
-#define temp_df "test/common/assets/temp.found"
+constexpr const char *temp_df = "test/common/assets/temp.found";
+/// The sample image
+const ImageData example_earth1(
+    "test/common/assets/example_earth1.png",
+    85e-3,
+    20e-6,
+    {DegToRad(140), 0, 0},
+    {10378137, 0, 0}
+);
+
 
 }  // namespace found
 

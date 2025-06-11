@@ -1,10 +1,13 @@
 #include <memory>
 #include <fstream>
 #include <iostream>
-#include "datafile/encoding.hpp"
-#include "datafile/serialization.hpp"
+#include <string>
+
 #include "common/spatial/attitude-utils.hpp"
 #include "common/logging.hpp"
+
+#include "datafile/encoding.hpp"
+#include "datafile/serialization.hpp"
 
 namespace found {
 
@@ -255,6 +258,13 @@ DataFile deserializeDataFile(std::istream& stream) {
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
         read(stream, data.positions[i]);
     }
+
+    return data;
+}
+
+DataFile deserializeDataFile(std::istream& stream, const std::string &path) {
+    DataFile data = deserializeDataFile(stream);
+    data.path = path;
 
     return data;
 }
