@@ -23,6 +23,8 @@ namespace found {
  */
 class PipelineExecutor {
  public:
+    /// Destroys this
+    virtual ~PipelineExecutor() = default;
     /**
      * Executes the relavent Pipeline
      */

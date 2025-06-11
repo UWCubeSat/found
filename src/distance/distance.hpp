@@ -36,11 +36,22 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      */
-    SphericalDistanceDeterminationAlgorithm(float radius, Camera &cam) : cam_(cam), radius_(radius) {}
+    SphericalDistanceDeterminationAlgorithm(float radius, Camera &&cam) : cam_(cam), radius_(radius) {}
     ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**
-     * Place documentation here. Press enter to automatically make a new line
+     * Obtains the position of the planet relative to the camera
+     * 
+     * @param p The points on the edge of Earth (in the image taken
+     * by the camera given to this)
+     * 
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
+     * 
+     * @pre p must refer to points taken by the camera that was passed to
+     * this
+     * 
+     * @post If p.size() < 3, then the result is exactly the zero vector
      * */
     PositionVector Run(const Points &p) override;
 

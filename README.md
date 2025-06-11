@@ -30,7 +30,7 @@ FOUND will have the following components/modules, which all function together pr
 
 ## Edge Detection
 After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:
-- [ ] Simple Edge Detection via Simple Thresholding
+- [X] Simple Edge Detection via Space/Ether Identification
 - [ ] Laplacian of Gaussian (LoG) Filtered Edge Detection
 
 ## Distance Determination

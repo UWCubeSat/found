@@ -30,7 +30,6 @@
 #define CALIBRATION \
 FOUND_CLI_OPTION("local-orientation"    , found::EulerAngles, lclOrientation    , found::EulerAngles(0, 0, 0), found::strtoea(optarg)  , kNoDefaultArgument, REQ_ASSIGN) \
 FOUND_CLI_OPTION("reference-orientation", found::EulerAngles, refOrientation    , found::EulerAngles(0, 0, 0), found::strtoea(optarg)  , kNoDefaultArgument, REQ_ASSIGN) \
-FOUND_CLI_OPTION("use-same-orientation" , bool              , useSameOrientation, false                      , found::strtobool(optarg), true              , OPT_ASSIGN) \
 FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        , ""                         , optarg                  , kNoDefaultArgument, REQ_ASSIGN)
 
 

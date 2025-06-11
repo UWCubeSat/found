@@ -35,6 +35,7 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
                                     ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }
 
+// TODO: Uncomment this method after ApproximateOrbitPropagationAlgorithm is implemented
 /**
  * Creates an OrbitPipelineExecutor
  * 
@@ -42,10 +43,10 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
  * 
  * @return A OrbitPipelineExecutor
  */
-inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &&options) {
-    return std::make_unique<OrbitPipelineExecutor>(std::forward<OrbitOptions>(options),
-                                    ProvideOrbitPropagationAlgorithm(std::forward<OrbitOptions>(options)));
-}
+// inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &&options) {
+//     return std::make_unique<OrbitPipelineExecutor>(std::forward<OrbitOptions>(options),
+//                                     ProvideOrbitPropagationAlgorithm(std::forward<OrbitOptions>(options)));
+// }
 
 }  // namespace found
 

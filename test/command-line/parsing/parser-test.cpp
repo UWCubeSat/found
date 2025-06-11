@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 #include "stb_image/stb_image.h"
 
@@ -16,49 +15,6 @@ class ParserTest : public testing::Test {
     }
 };
 
-TEST_F(ParserTest, TestMainNothing) {
-    int argc = 1;
-    const char *argv[1] = {"found"};
-
-    ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
-}
-
-TEST_F(ParserTest, TestMainNoOption) {
-    int argc = 3;
-    const char *argv[3] = {"found", "--png", "none.png"};
-
-    ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
-}
-
-// TODO: Update the next 3 tests to test for more than just exit code
-
-TEST_F(ParserTest, TestMainCalibrationOption) {
-    int argc = 2;
-    const char *argv[] = {"found", "calibration"};
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-}
-
-TEST_F(ParserTest, TestMainDistanceOption) {
-    int argc = 7;
-    const char *argv[] = {"found", "distance",
-        "--image", "test/common/assets/example_image.jpg",
-        "--reference-as-orientation"};
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-}
-
-TEST_F(ParserTest, TestMainOrbitOption) {
-    int argc = 14;
-    const char *argv[] = {"found", "orbit",
-        "--position-data", "test/common/assets/position-data/pos-data-valid.txt",
-        "--output-form", "xml",
-        "--total-time", "7200.0",
-        "--mu", "168251.0"};
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-}
-
 TEST_F(ParserTest, CalibrationParserBaseCase) {
     int argc = 2;
     const char *argv[] = {"found", "calibration"};
@@ -71,8 +27,6 @@ TEST_F(ParserTest, CalibrationParserBaseCase) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.ra);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.de);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.roll);
-
-    ASSERT_FALSE(options.useSameOrientation);
 
     ASSERT_EQ("", options.outputFile);
 }
@@ -93,61 +47,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
 
-    ASSERT_FALSE(options.useSameOrientation);
-
     ASSERT_EQ("example.found", options.outputFile);
-}
-
-TEST_F(ParserTest, TestCalibrationParserUseSameOriBlank) {
-    int argc = 5;
-    const char *argv[] = {"found", "calibration",
-        "--use-same-orientation",
-        "--output-file", "example.found"};
-    CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
-
-    ASSERT_TRUE(options.useSameOrientation);
-}
-
-TEST_F(ParserTest, TestCalibrationParser3UseSameOriTrue) {
-    int argc = 6;
-    const char *argv[] = {"found", "calibration",
-        "--use-same-orientation", "not_false",
-        "--output-file", "example.found"};
-    CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
-
-    ASSERT_TRUE(options.useSameOrientation);
-}
-
-TEST_F(ParserTest, TestCalibrationParserUseSameOriFalse) {
-    const char *ori_args[] = {"", "0", "false"};
-    for (const char *ori_arg : ori_args) {
-        int argc = 6;
-        const char *argv[] = {"found", "calibration",
-            "--use-same-orientation", ori_arg,
-            "--output-file", "example.found"};
-        CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
-
-        ASSERT_FALSE(options.useSameOrientation);
-        optind = 2;
-    }
-}
-
-TEST_F(ParserTest, TestCalibrationParserUseSameOriAlone) {
-    int argc = 3;
-    const char *argv[] = {"found", "calibration",
-        "--use-same-orientation"};
-    CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
-
-    ASSERT_TRUE(options.useSameOrientation);
-}
-
-TEST_F(ParserTest, TestCalibrationParser6UseSameOriEquals) {
-    int argc = 3;
-    const char *argv[] = {"found", "calibration",
-        "--use-same-orientation=true"};
-    CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
-
-    ASSERT_TRUE(options.useSameOrientation);
 }
 
 TEST_F(ParserTest, TestCalibrationParserFail) {

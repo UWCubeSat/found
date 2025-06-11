@@ -41,7 +41,9 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
 std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm([[maybe_unused]] DistanceOptions &&options) {
-    return std::make_unique<SimpleEdgeDetectionAlgorithm>();
+    return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
+                                                          options.SEDABorderLen,
+                                                          options.SEDAOffset);
 }
 
 /**
@@ -53,7 +55,11 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm([[maybe_un
  */
 std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
                                                         [[maybe_unused]] DistanceOptions &&options) {
-    return std::make_unique<SphericalDistanceDeterminationAlgorithm>(DECIMAL_M_R_E);
+    return std::make_unique<SphericalDistanceDeterminationAlgorithm>(DECIMAL_M_R_E,
+                                                                     Camera(options.focalLength,
+                                                                            options.pixelSize,
+                                                                            options.image.width,
+                                                                            options.image.height));
 }
 
 /**
@@ -73,6 +79,7 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
     return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
 }
 
+// TODO: Uncomment this method after ApproximateOrbitPropagationAlgorithm is implemented
 /**
  * Provides an OrbitPropagationAlgorithm
  * 
@@ -80,12 +87,12 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
  * 
  * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
  */
-std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
-    return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
-                                                                  options.dt,
-                                                                  options.radius,
-                                                                  options.mu);
-}
+// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
+//     return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
+//                                                                   options.dt,
+//                                                                   options.radius,
+//                                                                   options.mu);
+// }
 
 }  // namespace found
 

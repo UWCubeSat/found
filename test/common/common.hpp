@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "src/common/decimal.hpp"
 #include "src/common/style.hpp"

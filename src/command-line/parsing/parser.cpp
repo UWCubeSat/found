@@ -3,13 +3,14 @@
 #include <getopt.h>
 
 #include <string>
+#include <memory>
 
 #include "common/logging.hpp"
 #include "common/style.hpp"
 #include "command-line/parsing/options.hpp"
 
 // TODO: Uncomment once all stages are implemented
-// #include "providers/factory.hpp"
+#include "providers/factory.hpp"
 
 /// This defines the global variable optind, used
 /// for keeping track of parsing for command-line
@@ -70,22 +71,21 @@ int main(int argc, char **argv) {
     }
     std::string command(argv[1]);
 
-    // TODO: Uncomment once all stages are implemented
-    // std::unique_ptr<PipelineExecutor> executor;
-
+    std::unique_ptr<PipelineExecutor> executor;
     if (command == "calibration") {
-    //     executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
+        executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
     } else if (command == "distance") {
-    //     executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
-    } else if (command == "orbit") {
+        executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
+    // TODO: Uncomment this when all orbit stages are implemented
+    // } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
     } else {
         LOG_ERROR("Unrecognized Command: " << command);
         return EXIT_FAILURE;
     }
 
-    // executor->ExecutePipeline();
-    // executor->OutputResults();
+    executor->ExecutePipeline();
+    executor->OutputResults();
 
     return EXIT_SUCCESS;
 }

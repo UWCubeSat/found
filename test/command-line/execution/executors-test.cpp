@@ -44,7 +44,6 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
     CalibrationOptions options = {
         {DECIMAL_M_PI / 3, 0, 0},
         {DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0},
-        false,
         "example.found"
     };
 
@@ -75,7 +74,10 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         0.012,
         20E-6,
         {0, 0, 0},
-        {0, 0, 0}
+        {0, 0, 0},
+        25,
+        1,
+        0.0
     };
     Points points = {
         {0, 0},
