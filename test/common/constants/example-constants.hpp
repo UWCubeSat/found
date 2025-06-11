@@ -4,8 +4,6 @@
  * aim to define ANY variable or function that you tend to use
  * repeatedly in a constants file
  */
-
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <memory>

@@ -18,6 +18,10 @@ namespace found {
 
 /**
  * @brief Converts a 16-bit integer from host byte order to network byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in network byte order.
  */
 inline uint16_t htons(uint16_t v) {
 #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -29,6 +33,10 @@ inline uint16_t htons(uint16_t v) {
 
 /**
  * @brief Converts a 16-bit integer from network byte order to host byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in host byte order.
  */
 inline uint16_t ntohs(uint16_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -40,6 +48,10 @@ inline uint16_t ntohs(uint16_t v) {
 
 /**
  * @brief Converts a 32-bit integer from host byte order to network byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in network byte order.
  */
 inline uint32_t htonl(uint32_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -54,6 +66,10 @@ inline uint32_t htonl(uint32_t v) {
 
 /**
  * @brief Converts a 32-bit integer from network byte order to host byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in host byte order.
  */
 inline uint32_t ntohl(uint32_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -68,6 +84,10 @@ inline uint32_t ntohl(uint32_t v) {
 
 /**
  * @brief Converts a 64-bit integer from host byte order to network byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in network byte order.
  */
 inline uint64_t htonl(uint64_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -86,6 +106,10 @@ inline uint64_t htonl(uint64_t v) {
 
 /**
  * @brief Converts a 64-bit integer from network byte order to host byte order.
+ * 
+ * @param v The integer to convert
+ * 
+ * @return The integer in host byte order.
  */
 inline uint64_t ntohl(uint64_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -140,10 +164,11 @@ inline float htonf(float v) {
 }
 
 /**
- * @brief Converts a float from host byte order to network byte order.
+ * @brief Converts a float from network byte order to host byte order.
  * 
  * @param v The float value to convert.
- * @return The converted float value in network byte order.
+ * 
+ * @return The converted float value in host byte order.
  */
 inline float ntohf(float v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -157,10 +182,11 @@ inline float ntohf(float v) {
 }
 
 /**
- * @brief Converts a double from host byte order to network byte order.
+ * @brief Converts a double from network byte order to host byte order.
  * 
  * @param v The double value to convert.
- * @return The converted double value in network byte order.
+ * 
+ * @return The converted double value in host byte order.
  */
 inline double ntohd(double v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -174,10 +200,11 @@ inline double ntohd(double v) {
 }
 
 /**
- * @brief Converts a double from network byte order to host byte order.
+ * @brief Converts a double from host byte order to network byte order.
  * 
  * @param v The double value to convert.
- * @return The converted double value in host byte order.
+ * 
+ * @return The converted double value in network byte order.
  */
 inline double htond(double v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
@@ -194,28 +221,30 @@ inline double htond(double v) {
  * @brief Converts a decimal from host byte order to network byte order.
  * 
  * @param v The decimal value to convert.
+ * 
  * @return The converted decimal value in network byte order.
  */
 inline decimal htondec(decimal v) {
-#if FOUND_FLOAT_MODE
-    return htonf(v);
-#else
-    return htond(v);
-#endif
+    #ifdef FOUND_FLOAT_MODE
+        return htonf(v);
+    #else
+        return htond(v);
+    #endif
 }
 
 /**
  * @brief Converts a decimal from network byte order to host byte order.
  * 
  * @param v The decimal value to convert.
+ * 
  * @return The converted decimal value in host byte order.
  */
 inline decimal ntohdec(decimal v) {
-#if FOUND_FLOAT_MODE
-    return htonf(v);
-#else
-    return htond(v);
-#endif
+    #ifdef FOUND_FLOAT_MODE
+        return htonf(v);
+    #else
+        return htond(v);
+    #endif
 }
 
 /**
@@ -223,6 +252,7 @@ inline decimal ntohdec(decimal v) {
  * 
  * @param data Pointer to the data buffer.
  * @param length The size of the data buffer in bytes.
+ * 
  * @return The calculated CRC32 checksum.
  */
 uint32_t calculateCRC32(const void* data, size_t length);

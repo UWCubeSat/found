@@ -5,8 +5,10 @@
 #include <sstream>
 #include <string>
 
-#include "serialization/encoding.hpp"
-#include "serialization/serialization.hpp"
+#include "common/decimal.hpp"
+
+#include "datafile/encoding.hpp"
+#include "datafile/serialization.hpp"
 
 namespace found {
 
@@ -16,6 +18,11 @@ namespace found {
  */
 class SerializationTest : public ::testing::Test {
  protected:
+    /**
+     * @brief A very invalid DataFileHeader
+     */
+    const std::string nonsenseHeader = "blablabla";
+
     /**
      * @brief A valid DataFileHeader in network byte order for an empty file (0 positions).
      * CRC is set to 1694280785 (0x64FCAC51), calculated from the first 12 bytes.
@@ -76,6 +83,15 @@ TEST_F(SerializationTest, IncorrectHeader) {
 }
 
 /**
+ * @test Ensures that an incorrect CRC value triggers a runtime error.
+ */
+TEST_F(SerializationTest, IncorrectSizeHeader) {
+    std::string incorrectStr(nonsenseHeader.c_str(), nonsenseHeader.size());
+    std::istringstream stream(incorrectStr);
+    ASSERT_THROW(readHeader(stream), std::runtime_error);
+}
+
+/**
  * @test Serializes and deserializes a DataFile object and verifies round-trip consistency.
  */
 TEST_F(SerializationTest, RoundTripSerialization) {
@@ -83,10 +99,10 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     memcpy(data.header.magic, "FOUN", 4);
     data.header.version = 1;
     data.header.num_positions = 2;
-    data.relative_attitude = {123456789, 987654321, 111111111};
+    data.relative_attitude = {123456789., 987654321., 111111111.};
 
-    LocationRecord loc1{{100, 200, 300}, 161803398};
-    LocationRecord loc2{{-100, -200, -300}, 271828182};
+    LocationRecord loc1{161803398, {100, 200, 300}};
+    LocationRecord loc2{271828182, {-100, -200, -300}};
 
     data.positions = std::make_unique<LocationRecord[]>(2);
     data.positions[0] = loc1;
@@ -115,7 +131,7 @@ TEST_F(SerializationTest, RoundTripSerialization) {
 /**
  * @test Simulates a corrupted input stream by writing partial position data and expects failure.
  */
-TEST_F(SerializationTest, CorruptedPositionDeserialization) {
+TEST_F(SerializationTest, CorruptedPositionDeserialization1) {
     std::ostringstream out;
     DataFileHeader header;
     memcpy(header.magic, "FOUN", 4);
@@ -127,7 +143,33 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization) {
     header.crc = htonl(header.crc);
 
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-    out.write("bad", 3);  // Incomplete LocationRecord
+    out.write("bad", 3);  // Incomplete LocationRecord, specifically incomplete Vec3
+
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    EXPECT_THROW({
+        found::deserialize(in);
+    }, std::ios_base::failure);
+}
+
+/**
+ * @test Simulates a corrupted input stream by writing partial position data and expects failure.
+ */
+TEST_F(SerializationTest, CorruptedPositionDeserialization2) {
+    std::ostringstream out;
+    DataFileHeader header;
+    memcpy(header.magic, "FOUN", 4);
+    header.version = 1;
+    header.num_positions = 1;
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = htonl(header.crc);
+
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    LocationRecord dummy = {1000, {1, 2, 3}};
+    out.write(reinterpret_cast<const char *>(&dummy), sizeof(Vec3) + 1);  // Incomplete LocationRecord
 
     std::string buffer = out.str();
     std::istringstream in(buffer);
@@ -140,10 +182,76 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization) {
 /**
  * @test Provides a header with an invalid magic number and expects validation failure.
  */
-TEST_F(SerializationTest, MagicNumberMismatch) {
+TEST_F(SerializationTest, MagicNumberMismatch1) {
+    std::ostringstream out;
+    DataFileHeader header;
+    memcpy(header.magic, "MEEP", 4);  // Invalid magic
+    header.version = 1;
+    header.num_positions = 0;
+
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.crc = htonl(header.crc);
+
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    EXPECT_THROW(readHeader(in), std::runtime_error);
+}
+
+/**
+ * @test Provides a header with an invalid magic number and expects validation failure.
+ */
+TEST_F(SerializationTest, MagicNumberMismatch2) {
     std::ostringstream out;
     DataFileHeader header;
     memcpy(header.magic, "FAIL", 4);  // Invalid magic
+    header.version = 1;
+    header.num_positions = 0;
+
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.crc = htonl(header.crc);
+
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    EXPECT_THROW(readHeader(in), std::runtime_error);
+}
+
+/**
+ * @test Provides a header with an invalid magic number and expects validation failure.
+ */
+TEST_F(SerializationTest, MagicNumberMismatch3) {
+    std::ostringstream out;
+    DataFileHeader header;
+    memcpy(header.magic, "FOIL", 4);  // Invalid magic
+    header.version = 1;
+    header.num_positions = 0;
+
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.crc = htonl(header.crc);
+
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    EXPECT_THROW(readHeader(in), std::runtime_error);
+}
+
+/**
+ * @test Provides a header with an invalid magic number and expects validation failure.
+ */
+TEST_F(SerializationTest, MagicNumberMismatch4) {
+    std::ostringstream out;
+    DataFileHeader header;
+    memcpy(header.magic, "FOUL", 4);  // Invalid magic
     header.version = 1;
     header.num_positions = 0;
 

@@ -68,9 +68,6 @@ jobs:
     needs: [build, lint, coverage]
     steps:
     - uses: actions/checkout@v4
-
-    - name: Coverage
-      run: make coverage
     
     - name: Doxygen
       run: make doxygen_generate

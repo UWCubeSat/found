@@ -13,8 +13,6 @@
  * surface level example of how to use a mock
  */
 
-#include <gmock/gmock.h>
-
 #include "src/distance/edge.hpp"
 #include "src/common/style.hpp"
 

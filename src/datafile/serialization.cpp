@@ -1,21 +1,19 @@
 #include <memory>
 #include <fstream>
 #include <iostream>
-#include "serialization/encoding.hpp"
-#include "serialization/serialization.hpp"
+#include "datafile/encoding.hpp"
+#include "datafile/serialization.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/logging.hpp"
 
 namespace found {
 
-/// Converts a DataFileHeader from host to network byte order.
 void hton(DataFileHeader& header) {
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
     header.crc = htonl(header.crc);
 }
 
-/// Converts a DataFileHeader from network to host byte order.
 void ntoh(DataFileHeader& header) {
     header.version = ntohl(header.version);
     header.num_positions = ntohl(header.num_positions);
@@ -24,7 +22,27 @@ void ntoh(DataFileHeader& header) {
 
 /**
  *
+ * @brief Writes a decimal value to the given output stream in network byte order.
+ *
+ * @param stream The stream to write into
+ * @param value The value to read from
+ * 
+ * @post stream has value written into it, in network byte order
+ */
+inline void write(std::ostream& stream, const decimal& value) {
+    decimal v = htondec(value);
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(decimal));
+}
+
+/**
+ *
  * @brief Reads a decimal value from the given input stream.
+ * 
+ * @param stream The stream to read from
+ * @param value The value to write into
+ * 
+ * @post value is now the decimal value that is at the position
+ * where stream is, in host byte order
  *
  */
 inline void read(std::istream& stream, decimal& value) {
@@ -37,17 +55,12 @@ inline void read(std::istream& stream, decimal& value) {
 
 /**
  *
- * @brief Writes a decimal value to the given output stream in network byte order.
- *
- */
-inline void write(std::ostream& stream, const decimal& value) {
-    decimal v = htondec(value);
-    stream.write(reinterpret_cast<const char*>(&v), sizeof(decimal));
-}
-
-/**
- *
  * @brief Writes a 64-bit unsigned integer to the given output stream in network byte order.
+ * 
+ * @param stream The stream to write into
+ * @param value The value to read from
+ * 
+ * @post stream has value written into it, in network byte order
  *
  */
 inline void write(std::ostream& stream, const uint64_t& value) {
@@ -58,11 +71,17 @@ inline void write(std::ostream& stream, const uint64_t& value) {
 /**
  *
  * @brief Reads a 64-bit unsigned integer from the given input stream.
+ * 
+ * @param stream The stream to read from
+ * @param value The value to write into
+ * 
+ * @post value is now the integer value that is at the position
+ * where stream is, in host byte order
  *
  */
 inline void read(std::istream& stream, uint64_t& value) {
     stream.read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
-    if (stream.gcount() != sizeof(uint64_t)) {
+    if (stream.gcount() != sizeof(uint64_t)) {  // GCOVR_EXCL_LINE (impossible to be true at this time)
         throw std::ios_base::failure("Failed to read uint64_t value");
     }
     value = ntohl(value);
@@ -70,7 +89,28 @@ inline void read(std::istream& stream, uint64_t& value) {
 
 /**
  *
+ * @brief Writes a 32-bit unsigned integer to the given output stream in network byte order.
+ * 
+ * @param stream The stream to write into
+ * @param value The value to read from
+ * 
+ * @post stream has value written into it, in network byte order
+ *
+ */
+inline void write(std::ostream& stream, const uint32_t& value) {
+    uint32_t v = htonl(value);
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(uint32_t));
+}
+
+/**
+ *
  * @brief Reads a 32-bit unsigned integer from the given input stream in network byte order.
+ * 
+ * @param stream The stream to read from
+ * @param value The value to write into
+ * 
+ * @post value is now the integer value that is at the position
+ * where stream is, in host byte order
  *
  */
 inline void read(std::istream& stream, uint32_t& value) {
@@ -83,17 +123,12 @@ inline void read(std::istream& stream, uint32_t& value) {
 
 /**
  *
- * @brief Writes a 32-bit unsigned integer to the given output stream in network byte order.
- *
- */
-inline void write(std::ostream& stream, const uint32_t& value) {
-    uint32_t v = htonl(value);
-    stream.write(reinterpret_cast<const char*>(&v), sizeof(uint32_t));
-}
-
-/**
- *
  * @brief Serializes an EulerAngles object to the given output stream.
+ * 
+ * @param stream The stream to write into
+ * @param angles The angles to read from
+ * 
+ * @post stream has all fields of angles written into it, each in network byte order.
  *
  */
 inline void write(std::ostream& stream, const EulerAngles& angles) {
@@ -105,6 +140,11 @@ inline void write(std::ostream& stream, const EulerAngles& angles) {
 /**
  *
  * @brief Reads EulerAngles data from an input stream.
+ * 
+ * @param stream The stream to read from
+ * @param angles The angles to write into
+ * 
+ * @post angles has the values that stream held
  *
  */
 inline void read(std::istream& stream, EulerAngles& angles) {
@@ -116,6 +156,11 @@ inline void read(std::istream& stream, EulerAngles& angles) {
 /**
  *
  * @brief Serializes a Vec3 object to the given output stream.
+ * 
+ * @param stream The stream to write into
+ * @param v The Vec3 to read from
+ * 
+ * @post stream has all fields of v written into it, each in network byte order.
  *
  */
 inline void write(std::ostream& stream, const Vec3& v) {
@@ -126,17 +171,12 @@ inline void write(std::ostream& stream, const Vec3& v) {
 
 /**
  *
- * @brief Serializes a LocationRecord object to the given output stream.
- *
- */
-inline void write(std::ostream& stream, const LocationRecord& record) {
-    write(stream, record.position);
-    write(stream, record.timestamp);
-}
-
-/**
- *
  * @brief Reads a Vec3 object from the given input stream.
+ * 
+ * @param stream The stream to read from
+ * @param v The Vec3 to write into
+ * 
+ * @post v has the values that stream held
  *
  */
 inline void read(std::istream& stream, Vec3& v) {
@@ -147,7 +187,27 @@ inline void read(std::istream& stream, Vec3& v) {
 
 /**
  *
+ * @brief Serializes a LocationRecord object to the given output stream.
+ * 
+ * @param stream The stream to read from
+ * @param record The record to write into
+ * 
+ * @post record has the values that stream held
+ *
+ */
+inline void write(std::ostream& stream, const LocationRecord& record) {
+    write(stream, record.position);
+    write(stream, record.timestamp);
+}
+
+/**
+ *
  * @brief Reads data from the input stream into a LocationRecord object.
+ * 
+ * @param stream The stream to read from
+ * @param record The LocationRecord to write into
+ * 
+ * @post record has the values that stream held
  *
  */
 inline void read(std::istream& stream, LocationRecord& record) {
@@ -155,7 +215,6 @@ inline void read(std::istream& stream, LocationRecord& record) {
     read(stream, record.timestamp);
 }
 
-/// Calculates the CRC32 checksum for a block of memory.
 uint32_t calculateCRC32(const void* data, size_t length) {
     uint32_t crc = 0xFFFFFFFFU;
     const uint8_t* bytes = static_cast<const uint8_t*>(data);
@@ -171,8 +230,6 @@ uint32_t calculateCRC32(const void* data, size_t length) {
     return crc ^ 0xFFFFFFFFU;
 }
 
-/// Serializes a DataFile object to an output stream.
-/// The number of positions in header must match the number of positions in entry.
 void serialize(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
@@ -186,7 +243,6 @@ void serialize(const DataFile& data, std::ostream& stream) {
     }
 }
 
-/// Deserializes a DataFile object from an input stream.
 DataFile deserialize(std::istream& stream) {
     DataFile data;
     data.header = readHeader(stream);
@@ -202,7 +258,13 @@ DataFile deserialize(std::istream& stream) {
 }
 
 
-/// Validates the magic number in the header.
+/**
+ * Validates the magic number in the header.
+ * 
+ * @param magic The magic number to validate
+ * 
+ * @return true iff magic == "FOUN"
+ */
 bool isValidMagicNumber(const char magic[4]) {
     return magic[0] == 'F' && magic[1] == 'O' && magic[2] == 'U' && magic[3] == 'N';
 }

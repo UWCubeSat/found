@@ -1,6 +1,5 @@
 #include <cmath>
 #include <utility>
-#include <iomanip>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
@@ -11,6 +10,8 @@
 namespace found {
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3) return {0, 0, 0};
+
     Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
                       cam_.CameraToSpatial(p[1]).Normalize(),
                       cam_.CameraToSpatial(p[2]).Normalize()};

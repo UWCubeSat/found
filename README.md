@@ -4,16 +4,14 @@ FOUND is a system that Earth satellites can use to calculate their orbits using 
 
 # Installation
 
-If you are using Windows, we recommend downloading Windows Subsystem for Linux, and following the instructions for Linux.
+If you are using Windows, you must download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default) to run the following
+code.
 
 ## Prerequisites
-For Linux Ubuntu/Oracle (uses either `apt-get` or `yum`) obtain the required packages for this software:
+For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtain the required packages for this software:
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
-For macOS, install the following dependencies (I recommend using Homebrew `brew` to install this):
-- Unix-like Dependencies: `git g++ make cmake wget tar valgrind python3 python3-pip doxygen graphviz`
-- Python Dependencies: `gcovr cpplint`
 
 ## Building FOUND
 - Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)
@@ -22,8 +20,7 @@ For macOS, install the following dependencies (I recommend using Homebrew `brew`
 - Execute the executable (`./build/bin/found`)
 - Execute the test suite (`./build/bin/found-test`)
 
-If you modify the local copy of this repository, only the last 2 instructions need to be repeated (unless you have `cd`'ed into another folder)
-
+As this repository uses GNU Make to generate its artifacts, you'll need to rerun `make` everytime you change the code.
 
 # Usage
 FOUND is still in development! Come back in about 3 to 6 months to see how to run FOUND.
@@ -33,25 +30,20 @@ FOUND will have the following components/modules, which all function together pr
 
 ## Edge Detection
 After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:
-- [ ] Simple Edge Detection via Simple Thresholding
+- [X] Simple Edge Detection via Space/Ether Identification
 - [ ] Laplacian of Gaussian (LoG) Filtered Edge Detection
 
 ## Distance Determination
 The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND will be capable of:
-- [ ] Distance Determination with a Spherical Earth Assumption
+- [X] Distance Determination with a Spherical Earth Assumption
 - [ ] Distance Determination with an Ellipsoid Earth Assumption
 
 ## Vector Generation
 The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND will be capable of:
-- [ ] Star-Tracker Assisted Vector Generation via LOST
+- [X] Star-Tracker Assisted Vector Generation via LOST
 - [ ] Feature Detection Assisted Vector Generation (to be developed for future mission)
 
 ## Orbit Determination
 This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
-- [ ] Stable Elliptical Orbit Determination
-- [ ] Preceding Elliptical Orbit Determination
-
-## Kinematic Profiling
-This stage then takes the projected path of travel and matches it to the speed of the satellite, providing the position and velocity vectors of the satellite at any future time. FOUND will be capable of:
-- [ ] Eulerian-based Kinematic Profiling
-- [ ] Keplerian-based Kinematic Profiling
+- [ ] Runge-Kutta Based Orbital Prediction
+- [ ] Lambert's Problem-Based Orbital Prediction
