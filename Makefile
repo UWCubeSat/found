@@ -63,7 +63,7 @@ PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TE
 SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
-ifdef ENABLE_LOGGING
+ifndef DISABLE_LOGGING
 	ifdef LOGGING_LEVEL
 		LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=$(LOGGING_LEVEL)
   	else

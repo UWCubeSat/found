@@ -4,12 +4,13 @@
 
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "common/logging.hpp"
 #include "common/style.hpp"
 #include "command-line/parsing/options.hpp"
 
-// TODO: Uncomment once all stages are implemented
+// TODO: Uncomment when orbit stage is implemented
 #include "providers/factory.hpp"
 
 /// This defines the global variable optind, used
@@ -66,7 +67,7 @@ const char kNoDefaultArgument = 0;
 
 int main(int argc, char **argv) {
     if (argc == 1) {
-        LOG_INFO("Seems you don't want to be found");
+        LOG_ERROR("Seems you don't want to be found. Use --help or -h for help");
         return EXIT_FAILURE;
     }
     std::string command(argv[1]);
@@ -76,11 +77,49 @@ int main(int argc, char **argv) {
         executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
     } else if (command == "distance") {
         executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
-    // TODO: Uncomment this when all orbit stages are implemented
+    // TODO: Uncomment when orbit stage is implemented
     // } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
+    } else if (command == "--help" || command == "-h") {
+        std::cout << "Usage: ./found <option> [flags]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Finds absolute position of Images relative to Earth "
+                  << "and projects for orbit given multiple images. " << std::endl
+                  << "Current Capabilities include: " << std::endl;
+        std::cout << "\t1. Calibrates the algorithm to produce a relative attitude (option: calibration)" << std::endl;
+        std::cout << "\t2. Finds the distance from a given image to a planet (option: distance)" << std::endl;
+        // TODO: Uncomment when orbit stage is implemented
+        // std::cout << "\t3. Projects an orbit from multiple position vectors (option: distance)" << std::endl;
+        std::cout << std::endl;
+        std::cout << "==================== Calibration Options ====================" << std::endl;
+        std::cout << std::endl;
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                std::cout << "    --" << name << std::endl;                                        \
+                std::cout << "\t\t" << doc << std::endl;
+        CALIBRATION
+        #undef FOUND_CLI_OPTION
+        std::cout << std::endl;
+        std::cout << "==================== Distance Options ====================" << std::endl;
+        std::cout << std::endl;
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                std::cout << "    --" << name << std::endl;                                        \
+                std::cout << "\t\t" << doc << std::endl;
+        DISTANCE
+        #undef FOUND_CLI_OPTION
+        // TODO: Uncomment when orbit stage is implemented
+        // std::cout << std::endl;
+        // std::cout << "==================== Orbit Options ====================" << std::endl;
+        // std::cout << std::endl;
+        /*
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                std::cout << "\t\t--" << name << std::endl;                                        \
+                std::cout << "\t\t\t\t--" << doc << std::endl;                                     \
+        ORBIT
+        #undef FOUND_CLI_OPTION
+        */
+        return EXIT_SUCCESS;
     } else {
-        LOG_ERROR("Unrecognized Command: " << command);
+        LOG_ERROR("Unrecognized Command: " << command << ". Use --help or -h for help");
         return EXIT_FAILURE;
     }
 
@@ -94,7 +133,7 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 prop,
         CALIBRATION
         #undef FOUND_CLI_OPTION
@@ -103,7 +142,7 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
     // Define an array of options, which defines the traits pertaining to each
     // expected command-line entry
     static option long_options[] = {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 {name,                                                                        \
                 defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
                 0,                                                                            \
@@ -124,7 +163,7 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
     // particular parameter (as a string) to its actual type
     while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
         switch (option) {
-            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                     case static_cast<int>(ClientOption::prop):                                    \
                         ASSIGN(options, prop, converter, defaultArg)                              \
                         break;
@@ -144,7 +183,7 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv) {
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 prop,
         DISTANCE
         #undef FOUND_CLI_OPTION
@@ -153,7 +192,7 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv) {
     // Define an array of options, which defines the traits pertaining to each
     // expected command-line entry
     static option long_options[] = {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 {name,                                                                        \
                 defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
                 0,                                                                            \
@@ -174,7 +213,7 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv) {
     // particular parameter (as a string) to its actual type
     while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
         switch (option) {
-            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                     case static_cast<int>(ClientOption::prop):                                    \
                         ASSIGN(options, prop, converter, defaultArg)                              \
                         break;
@@ -194,7 +233,7 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv) {
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 prop,
         ORBIT
         #undef FOUND_CLI_OPTION
@@ -203,7 +242,7 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv) {
     // Define an array of options, which defines the traits pertaining to each
     // expected command-line entry
     static option long_options[] = {
-        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 {name,                                                                        \
                 defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
                 0,                                                                            \
@@ -224,7 +263,7 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv) {
     // particular parameter (as a string) to its actual type
     while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
         switch (option) {
-            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN) \
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                     case static_cast<int>(ClientOption::prop):                                    \
                         ASSIGN(options, prop, converter, defaultArg)                              \
                         break;

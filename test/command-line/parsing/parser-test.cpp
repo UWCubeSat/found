@@ -82,7 +82,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 22;
+    int argc = 24;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "example.found",
@@ -93,7 +93,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--relative-orientation", "1.4 1.5 1.6",
         "--seda-threshold", "62",
         "--seda-border-len", "10",
-        "--seda-offset", "9.2"};
+        "--seda-offset", "9.2",
+        "--planetary-radius", "1964.4"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
@@ -110,6 +111,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
     ASSERT_EQ(9.2, options.SEDAOffset);
+    ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory
@@ -170,7 +172,7 @@ TEST_F(ParserTest, OrbitParserBaseCase) {
     ASSERT_EQ("", options.output);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3600.0), options.totalTime);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.01), options.dt);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(6378.0), options.radius);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_R_E, options.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(398600.4418), options.mu);
 }
 

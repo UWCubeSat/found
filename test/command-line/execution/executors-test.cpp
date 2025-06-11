@@ -75,6 +75,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         20E-6,
         {0, 0, 0},
         {0, 0, 0},
+        DECIMAL_M_E,
         25,
         1,
         0.0

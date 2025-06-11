@@ -32,6 +32,27 @@ TEST_F(ParserTest, TestMainNoOption) {
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
 }
 
+TEST_F(ParserTest, TestMainHelp) {
+    int argc = 2;
+    const char *argv[2] = {"found", "-h"};
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::string output1 = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    ASSERT_NE(static_cast<size_t>(0), output1.size());
+
+    argv[1] = "--help";
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::string output2 = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    ASSERT_NE(static_cast<size_t>(0), output2.size());
+}
+
 // TODO: Update the next 3 tests to test once we get meaningful outputs,
 // and expand to even more tests to cover a range of inputs and outputs
 
@@ -97,7 +118,7 @@ TEST_F(ParserTest, TestMainDistanceOptionReferenceAsOrientation) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
-// TODO: Uncomment this when the orbit stages are fully implemented
+// TODO: Uncomment when orbit stage is implemented
 // TEST_F(ParserTest, TestMainOrbitOption) {
 //     int argc = 14;
 //     const char *argv[] = {"found", "orbit",

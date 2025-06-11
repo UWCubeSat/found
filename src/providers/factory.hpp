@@ -35,7 +35,7 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
                                     ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }
 
-// TODO: Uncomment this method after ApproximateOrbitPropagationAlgorithm is implemented
+// TODO: Uncomment when orbit stage is implemented
 /**
  * Creates an OrbitPipelineExecutor
  * 
