@@ -66,6 +66,44 @@ struct Edge {
 typedef std::vector<Edge> Edges;
 
 /**
+ * Represents a connected component in an image
+ * 
+ * @note This must be carried with the original
+ * image, as there's no such field in this struct
+ */
+struct Component {
+    /// The points in this component
+    std::vector<uint64_t> points;
+    /// The lowest point (left upper edge)
+    Vec2 upperLeft;
+    /// The highest point (right lower edge)
+    Vec2 lowerRight;
+};
+
+/// A collection of Image Pixels
+typedef std::vector<Component> Components;
+
+/**
+ * @brief Represents a single spatial data point with position and timestamp.
+ */
+struct LocationRecord {
+    /**
+     * @brief Timestamp associated with the position, in microseconds or appropriate units.
+     */
+    uint64_t timestamp;
+
+    /**
+     * @brief 3D position of the recorded data point.
+     */
+    Vec3 position;
+};
+
+// TODO: Maybe change this to line up with the DataFile struct
+// so that we don't have to copy the data.
+/// A collection of Location Records
+typedef std::vector<LocationRecord> LocationRecords;
+
+/**
  * OrbitParams defines the orbital
  * parameters of a given orbit
  */
@@ -146,8 +184,8 @@ typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPip
 /// Pipeline for Distance Determination
 typedef Pipeline<Image, PositionVector> DistancePipeline;
 
-/// Pipeline for Orbital Determination [TODO(nguy8tri): Replace this statement after merge with Data Serialization]
-typedef Pipeline<std::vector<PositionVector>, OrbitParams> OrbitPipeline;
+/// Pipeline for Orbital Determination
+typedef Pipeline<LocationRecords, LocationRecords> OrbitPipeline;
 
 }  // namespace found
 

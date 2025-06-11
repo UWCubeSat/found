@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <iostream>
-#include <iomanip>
 #include <cmath>
+#include <utility>
 
 #include "common/style.hpp"
 #include "common/spatial/attitude-utils.hpp"
@@ -83,7 +82,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
 
@@ -120,7 +119,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
 
@@ -149,7 +148,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
 
@@ -178,7 +177,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     // actual = actual * static_cast<decimal>(0.00002);
@@ -240,7 +239,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
 
@@ -268,7 +267,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -297,7 +296,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom2) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -326,7 +325,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom3) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -355,7 +354,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom4) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -384,7 +383,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom5) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -413,7 +412,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom6) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -442,7 +441,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom7) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -471,7 +470,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom8) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -500,7 +499,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom9) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -529,7 +528,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom10) {
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, cam);
+        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);

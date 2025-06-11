@@ -63,7 +63,7 @@ PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TE
 SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
-ifdef ENABLE_LOGGING
+ifndef DISABLE_LOGGING
 	ifdef LOGGING_LEVEL
 		LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=$(LOGGING_LEVEL)
   	else
@@ -78,14 +78,13 @@ LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
-ifdef OMIT_ASAN
-	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
-else
-	CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
+CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
+CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
+ifndef OMIT_ASAN
+	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
 CXXFLAGS += $(LOGGING_MACROS)
-LDFLAGS := # Any dynamic libraries go here
+LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o # Any external libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
 # Targets
@@ -133,6 +132,7 @@ endef
 all: $(COMPILE_SETUP_TARGET) \
 	 $(COMPILE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TARGET) \
+	 $(TEST_SETUP_TARGET) \
 	 $(TEST_TARGET) \
 	 $(COVERAGE_TARGET) \
 	 $(GOOGLE_STYLECHECK_TEST_TARGET) \
@@ -147,21 +147,23 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
 	mkdir -p $(STB_IMAGE_CACHE_DIR)
+	mkdir -p $(CACHE_DIR)
 compile_setup_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
-$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT)
+$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT) $(BUILD_DIR)
 	cp -r $(STB_IMAGE_CACHE_DIR) $(BUILD_LIBRARY_SRC_DIR)
 $(STB_IMAGE_CACHE_ARTIFACT):
 	wget $(STB_IMAGE_URL) -P $(STB_IMAGE_CACHE_DIR)
 	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
+	$(CXX) $(CXXFLAGS) -I$(CACHE_DIR) -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(shell find $(BUILD_LIBRARY_SRC_DIR) -name "*.cpp") $(SRC_OBJS) $(LDFLAGS)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
+	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 compile_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_TARGET))
 
@@ -190,7 +192,7 @@ test_setup_message:
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
 $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
-	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(shell find $(BUILD_LIBRARY_SRC_DIR) -name "*.cpp") $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) $(TEST_LIBS) $(COVERAGE_FLAGS) -c $< -o $@
@@ -212,7 +214,7 @@ $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
 	cpplint $(TEST) $(TEST_H)
 
 # The pre-processed artifacts target (private)
-private: $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
+$(PRIVATE_TARGET): $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
 $(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -E $< -o $@ $(SRC_LIBS)

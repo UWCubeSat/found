@@ -1,15 +1,20 @@
-#ifndef DATA_FILE_H
-#define DATA_FILE_H
+#ifndef DATAFILE_H
+#define DATAFILE_H
 
 #include <memory>
 #include <cstdint>
 #include <string>
 #include "common/spatial/attitude-utils.hpp"  // Includes Vec3 and EulerAngles
+#include "common/style.hpp"
 
 /**
- * @file data_file.hpp
+ * @file datafile.hpp
  * @brief Declares data structures for serialized spatial data files, including headers,
  *        location records, and full data file representations.
+ * 
+ * @note To analyze a datafile, the definition of decimal must be the same
+ * for the program that generated the datafile and for the program that
+ * is reading it
  */
 
 namespace found {
@@ -46,28 +51,6 @@ struct DataFileHeader {
      * @brief CRC32 checksum of the header (excluding this field) for validation.
      */
     uint32_t crc;
-
-    /**
-     * @brief Validates the integrity of the header using the magic string and CRC.
-     *
-     * Throws a runtime error if validation fails.
-     */
-    void validate();
-};
-
-/**
- * @brief Represents a single spatial data point with position and timestamp.
- */
-struct LocationRecord {
-    /**
-     * @brief 3D position of the recorded data point.
-     */
-    Vec3 position;
-
-    /**
-     * @brief Timestamp associated with the position, in microseconds or appropriate units.
-     */
-    uint64_t timestamp;
 };
 
 /**
@@ -94,4 +77,4 @@ struct DataFile {
 
 }  // namespace found
 
-#endif  // DATA_FILE_H
+#endif  // DATAFILE_H

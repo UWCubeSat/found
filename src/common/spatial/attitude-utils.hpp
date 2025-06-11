@@ -112,6 +112,7 @@ class Vec3 {
     Vec3 operator*(const decimal &) const;
     Vec3 operator*(const Mat3 &) const;
     Vec3 operator-(const Vec3 &) const;
+    Vec3 operator-() const;
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 };
@@ -258,14 +259,22 @@ class Attitude {
     Vec3 Rotate(const Vec3 &) const;
 
  private:
+    /// Represents what internal representation for attitude
+    /// is being used
     enum AttitudeType {
+        /// No Internal representation
         NullType,
+        /// Quaternion Internal Representation
         QuaternionType,
+        /// DCM Internal Representation
         DCMType,
     };
 
+    /// Internal Quaternion Representation
     Quaternion quaternion;
-    Mat3 dcm;  // direction cosine matrix
+    /// Internal DCM Representation
+    Mat3 dcm;
+    /// Internal Representation Type
     AttitudeType type;
 };
 
@@ -292,7 +301,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
-    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }
 
 // Spherical-Vector Conversions
 
