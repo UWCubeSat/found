@@ -55,8 +55,11 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     void OutputResults() override;
 
  private:
+    /// The Calibration options being used
     const CalibrationOptions options_;
+    /// The Calibration pipeline
     CalibrationPipeline pipeline_;
+    /// The Calibration Algorithm used
     std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
 
@@ -92,10 +95,15 @@ class DistancePipelineExecutor : public PipelineExecutor {
     void OutputResults() override;
 
  private:
+    /// The DistanceOptions being used
     const DistanceOptions options_;
+    /// The Distance pipeline being used
     DistancePipeline pipeline_;
+    /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The Distance Determination Algorithm being used
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    /// The Vectorization/Rotation Algorithm being used
     std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
 
@@ -118,8 +126,11 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     void OutputResults() override;
 
  private:
+    /// The Orbit options being used
     const OrbitOptions options_;
+    /// The Orbit pipeline
     OrbitPipeline pipeline_;
+    /// The Orbit Propagation Algorithm being used
     std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 

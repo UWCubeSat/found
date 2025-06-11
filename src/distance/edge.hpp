@@ -52,9 +52,11 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     Points Run(const Image &image) override;
 
  private:
-    // useful fields specific to this algorithm and helper methods
+    /// The space-ether threshold to use
     unsigned char threshold_;
+    /// The border length to use
     int borderLength_;
+    /// The edge offset to use
     decimal offset_;
 };
 

@@ -259,14 +259,22 @@ class Attitude {
     Vec3 Rotate(const Vec3 &) const;
 
  private:
+    /// Represents what internal representation for attitude
+    /// is being used
     enum AttitudeType {
+        /// No Internal representation
         NullType,
+        /// Quaternion Internal Representation
         QuaternionType,
+        /// DCM Internal Representation
         DCMType,
     };
 
+    /// Internal Quaternion Representation
     Quaternion quaternion;
-    Mat3 dcm;  // direction cosine matrix
+    /// Internal DCM Representation
+    Mat3 dcm;
+    /// Internal Representation Type
     AttitudeType type;
 };
 

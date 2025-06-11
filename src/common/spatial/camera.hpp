@@ -96,9 +96,18 @@ class Camera {
 
  private:
     // TODO: distortion
-    decimal focalLength; decimal pixelSize;
-    decimal xCenter; decimal yCenter;
-    int xResolution; int yResolution;
+    /// The focal length (m)
+    decimal focalLength;
+    /// The pixel size (m)
+    decimal pixelSize;
+    /// The x center (pixels)
+    decimal xCenter;
+    /// The y center (pixels)
+    decimal yCenter;
+    /// The x resolution (pixels)
+    int xResolution;
+    /// The y resolution (pixels)
+    int yResolution;
 };
 
 // Conversions from FOV to Focal Length

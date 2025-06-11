@@ -65,7 +65,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
  private:
     // Fields specific to this algorithm go here, and helper methods
 
-    // Orientation from LOST
+    /// Orientation from LOST
     Quaternion orientation;
 };
 
