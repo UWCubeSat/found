@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['second_0',['second',['../structfound_1_1DateTime.html#a94c4514223469e9f832d31300661b50f',1,'found::DateTime']]]
+  ['quaternion_0',['quaternion',['../classfound_1_1Attitude.html#a50ff148715bb842c9583b44da83e83f9',1,'found::Attitude']]]
 ];

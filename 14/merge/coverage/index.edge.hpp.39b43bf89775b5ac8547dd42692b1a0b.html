@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: distance/edge.hpp</div>
-            <div>Date: 2025-06-11 03:03:14</div>
+            <div>Date: 2025-06-11 03:36:11</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -461,7 +461,7 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// useful fields specific to this algorithm and helper methods</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The space-ether threshold to use</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
@@ -475,259 +475,259 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">borderLength_</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The border length to use</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">offset_</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">borderLength_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">};</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The edge offset to use</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l60" href="#l60">60</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">offset_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">/**</span></td>
+                <td class="src "><span class="p">};</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses </span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l63" href="#l63">63</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * a picture of Earth and finds all points on the horizon within the picture by employing a </span></td>
+                <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Laplacian of Gaussian (LoC) filter to the image.</span></td>
+                <td class="src "><span class="cm"> * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">*/</span></td>
+                <td class="src "><span class="cm"> * a picture of Earth and finds all points on the horizon within the picture by employing a </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l66" href="#l66">66</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">LoCEdgeDetectionAlgorithm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">EdgeDetectionAlgorithm</span><span class="w"> </span><span class="p">{</span></td>
+                <td class="src "><span class="cm"> * Laplacian of Gaussian (LoC) filter to the image.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span></td>
+                <td class="src "><span class="cm">*/</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l68" href="#l68">68</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">LoCEdgeDetectionAlgorithm</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">EdgeDetectionAlgorithm</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l69" href="#l69">69</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
+                <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l70" href="#l70">70</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * */</span></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l71" href="#l71">71</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">LoCEdgeDetectionAlgorithm</span><span class="p">(</span><span class="cm">/*Put more fields here!*/</span><span class="p">);</span></td>
+                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">     * */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l73" href="#l73">73</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="w">    </span><span class="n">LoCEdgeDetectionAlgorithm</span><span class="p">(</span><span class="cm">/*Put more fields here!*/</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l74" href="#l74">74</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l75" href="#l75">75</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * */</span></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l76" href="#l76">76</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">LoCEdgeDetectionAlgorithm</span><span class="p">(</span><span class="cm">/*Put more fields here!*/</span><span class="p">);</span></td>
+                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">     * */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l78" href="#l78">78</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">LoCEdgeDetectionAlgorithm</span><span class="p">(</span><span class="cm">/*Put more fields here!*/</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l79" href="#l79">79</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l80" href="#l80">80</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * */</span></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l81" href="#l81">81</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Points</span><span class="w"> </span><span class="n">Run</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="cm">/*parameters all algorithms will need (Override this plz)*/</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span></td>
+                <td class="src "><span class="cm">     * Place documentation here. Press enter to automatically make a new line</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l82" href="#l82">82</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span></td>
+                <td class="src "><span class="cm">     * */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l83" href="#l83">83</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// useful fields specific to this algorithm and helper methods</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Points</span><span class="w"> </span><span class="n">Run</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="cm">/*parameters all algorithms will need (Override this plz)*/</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l84" href="#l84">84</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">};</span></td>
+                <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l85" href="#l85">85</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="w">    </span><span class="c1">// useful fields specific to this algorithm and helper methods</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l86" href="#l86">86</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">/**</span></td>
+                <td class="src "><span class="p">};</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l87" href="#l87">87</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Computes the groups of components within the image</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l88" href="#l88">88</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param image The image that defines the possible pixels</span></td>
+                <td class="src "><span class="cm"> * Computes the groups of components within the image</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l90" href="#l90">90</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param Criteria A function that accepts a pixel index and the image and returns </span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l91" href="#l91">91</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * true iff the pixel is part of the component</span></td>
+                <td class="src "><span class="cm"> * @param image The image that defines the possible pixels</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm"> * @param Criteria A function that accepts a pixel index and the image and returns </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return Components The components that are part of the image</span></td>
+                <td class="src "><span class="cm"> * true iff the pixel is part of the component</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
@@ -741,49 +741,49 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @note This function iterates through each pixel in the image, but treats the image</span></td>
+                <td class="src "><span class="cm"> * @return Components The components that are part of the image</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l96" href="#l96">96</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * as 2D, not 3D. You must program Criteria correctly to handle cases where there </span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * are multiple channels (i.e. This algorithm doesn&#39;t know how many channels are involved).</span></td>
+                <td class="src "><span class="cm"> * @note This function iterates through each pixel in the image, but treats the image</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * as 2D, not 3D. You must program Criteria correctly to handle cases where there </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="n">Components</span><span class="w"> </span><span class="nf">ConnectedComponentsAlgorithm</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="p">);</span></td>
+                <td class="src "><span class="cm"> * are multiple channels (i.e. This algorithm doesn&#39;t know how many channels are involved).</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm"> */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+                <td class="src "><span class="n">Components</span><span class="w"> </span><span class="nf">ConnectedComponentsAlgorithm</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">bool</span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Criteria</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
@@ -797,10 +797,24 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cp">#endif</span></td>
+                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l105" href="#l105">105</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cp">#endif</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

@@ -6,5 +6,5 @@ var searchData=
   ['approximateorbitpropagationalgorithm_3',['ApproximateOrbitPropagationAlgorithm',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a1556b5f65d1f7b02b7d61414fcbaf313',1,'found::ApproximateOrbitPropagationAlgorithm']]],
   ['arcsectorad_4',['ArcSecToRad',['../namespacefound.html#a008cc2bc660a2b7ff3fa263e6629252b',1,'found']]],
   ['at_5',['At',['../classfound_1_1Mat3.html#a9d67e1e3604b2f07ba5b75441e008bf7',1,'found::Mat3']]],
-  ['attitude_6',['attitude',['../classfound_1_1Attitude.html#a8bdd7582354631f77504c8e1fe7ca569',1,'found::Attitude::Attitude(const Quaternion &amp;)'],['../classfound_1_1Attitude.html#a8bd8d8716f8ad6d4a8fbbab94e36df02',1,'found::Attitude::Attitude(const Mat3 &amp;dcm)']]]
+  ['attitude_6',['attitude',['../classfound_1_1Attitude.html#a10f48b4c7544ae9f068f625ed9c9d225',1,'found::Attitude::Attitude()=default'],['../classfound_1_1Attitude.html#a8bdd7582354631f77504c8e1fe7ca569',1,'found::Attitude::Attitude(const Quaternion &amp;)'],['../classfound_1_1Attitude.html#a8bd8d8716f8ad6d4a8fbbab94e36df02',1,'found::Attitude::Attitude(const Mat3 &amp;dcm)']]]
 ];

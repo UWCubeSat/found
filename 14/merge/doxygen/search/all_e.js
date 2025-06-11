@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['operator_2a_0',['operator*',['../structfound_1_1Vec2.html#aaae4e538383fb7070f2697487587a680',1,'found::Vec2::operator*(const Vec2 &amp;) const'],['../structfound_1_1Vec2.html#a296f195753a34b78aaaaa5131ea5bb71',1,'found::Vec2::operator*(const decimal &amp;) const'],['../classfound_1_1Vec3.html#a40d14968a4f043a24add292ead492353',1,'found::Vec3::operator*(const Vec3 &amp;) const'],['../classfound_1_1Vec3.html#a1bfc696be1f8802f65c9b9e83933e1b9',1,'found::Vec3::operator*(const decimal &amp;) const'],['../classfound_1_1Vec3.html#ad5add9d1b66d16d8df2d70982d56cfde',1,'found::Vec3::operator*(const Mat3 &amp;) const'],['../classfound_1_1Mat3.html#afd2af228d5ed7d0af123f333e6172542',1,'found::Mat3::operator*(const Mat3 &amp;) const'],['../classfound_1_1Mat3.html#af88418205883d482f775830cb68b8c86',1,'found::Mat3::operator*(const Vec3 &amp;) const'],['../classfound_1_1Mat3.html#adfb48c6345f2c9bf4b80d996e8cdb169',1,'found::Mat3::operator*(const decimal &amp;) const'],['../classfound_1_1Quaternion.html#ac69a96f1e450db30aa013f19672960c8',1,'found::Quaternion::operator*()']]],
-  ['operator_2b_1',['operator+',['../classfound_1_1Mat3.html#a537f8cdc22541b46c94b1f1ffbd87df1',1,'found::Mat3::operator+()'],['../structfound_1_1Vec2.html#a6154b33ff208ff5994253a41fffcfd49',1,'found::Vec2::operator+()']]],
-  ['operator_2d_2',['operator-',['../classfound_1_1Vec3.html#a1a4fc50bcaecc2bf747519c3e72e122a',1,'found::Vec3::operator-() const'],['../classfound_1_1Vec3.html#a6c9f87daf429fa98560b87c06aad9cd9',1,'found::Vec3::operator-(const Vec3 &amp;) const'],['../structfound_1_1Vec2.html#a90f34e81204c2e5a6cdbf78886e13b99',1,'found::Vec2::operator-()'],['../classfound_1_1Quaternion.html#ace2f1fab97a8d65cdf330def433af507',1,'found::Quaternion::operator-()']]],
-  ['orbitoptions_3',['OrbitOptions',['../classOrbitOptions.html',1,'']]],
-  ['orbitparams_4',['orbitparams',['../namespacefound.html#a2731cf682fa0b6482db0998744ee09f6',1,'found::OrbitParams'],['../structfound_1_1OrbitParams.html',1,'found::OrbitParams']]],
-  ['orbitpipeline_5',['OrbitPipeline',['../namespacefound.html#ab0f380390178121e0b5e8ac07ab64255',1,'found']]],
-  ['orbitpipelineexecutor_6',['orbitpipelineexecutor',['../classfound_1_1OrbitPipelineExecutor.html#ab153d58140aaf814b4952f75a0154d18',1,'found::OrbitPipelineExecutor::OrbitPipelineExecutor()'],['../classfound_1_1OrbitPipelineExecutor.html',1,'found::OrbitPipelineExecutor']]],
-  ['orbitpropagationalgorithm_7',['orbitpropagationalgorithm',['../classfound_1_1OrbitPropagationAlgorithm.html',1,'found::OrbitPropagationAlgorithm'],['../classfound_1_1OrbitPropagationAlgorithm.html#a329cfa1389c3e3666b3ebf61c771cba7',1,'found::OrbitPropagationAlgorithm::OrbitPropagationAlgorithm()']]],
-  ['outerproduct_8',['OuterProduct',['../classfound_1_1Vec3.html#a01d9c2a1cd0d3a96d48881d252c612a0',1,'found::Vec3']]],
-  ['outplanerotation_9',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]],
-  ['outputresults_10',['outputresults',['../classfound_1_1PipelineExecutor.html#ac3f6227556a80c3f48e03514d41fefe7',1,'found::PipelineExecutor::OutputResults()'],['../classfound_1_1CalibrationPipelineExecutor.html#a619e401cf1d9cabc1c36c55ab8c04b2b',1,'found::CalibrationPipelineExecutor::OutputResults()'],['../classfound_1_1DistancePipelineExecutor.html#a4f9c505716f27df1e27e6f01b5e6912a',1,'found::DistancePipelineExecutor::OutputResults()'],['../classfound_1_1OrbitPipelineExecutor.html#a4dce6a26baf961bc6d7ff76be84b5562',1,'found::OrbitPipelineExecutor::OutputResults()']]]
+  ['normalize_0',['normalize',['../structfound_1_1Vec2.html#aa320910a8dbba3e7fec6e8ba500c9ead',1,'found::Vec2::Normalize()'],['../classfound_1_1Vec3.html#ad0f53a4ff60ad7d64e9195c696fb587d',1,'found::Vec3::Normalize()']]],
+  ['ntoh_1',['ntoh',['../namespacefound.html#ac1edda17e3c125f50c39833c2295fe09',1,'found']]],
+  ['ntohd_2',['ntohd',['../namespacefound.html#acadf0a45c76d4fef081b18f6faedc041',1,'found']]],
+  ['ntohdec_3',['ntohdec',['../namespacefound.html#a97b7aaf3cafa6bb2386bcf72de312fff',1,'found']]],
+  ['ntohf_4',['ntohf',['../namespacefound.html#a66314d0d44969b3ac98f522d2de5f7a6',1,'found']]],
+  ['ntohl_5',['ntohl',['../namespacefound.html#a5021a2d865ed05bd52e805cf43998b8a',1,'found::ntohl(uint32_t v)'],['../namespacefound.html#ad32e7cd379f3c8a3ce7baf46161d75de',1,'found::ntohl(uint64_t v)']]],
+  ['ntohs_6',['ntohs',['../namespacefound.html#ae601d3e20d19972de84436bbca3bed08',1,'found']]],
+  ['nulltype_7',['NullType',['../classfound_1_1Attitude.html#a72ecb692024cc00fc1b91668443b1dc2a4487fc10e171f517ec46afe92baf675b',1,'found::Attitude']]],
+  ['num_5fpositions_8',['num_positions',['../structfound_1_1DataFileHeader.html#abd86dada0574499097a5e29f8ff94f67',1,'found::DataFileHeader']]],
+  ['nwayequivalenceadd_9',['NWayEquivalenceAdd',['../namespacefound.html#a657b11b0e8cc9f2b173ae544adf5c43e',1,'found']]]
 ];

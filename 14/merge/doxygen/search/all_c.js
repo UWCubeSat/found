@@ -1,13 +1,17 @@
 var searchData=
 [
-  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
-  ['magnitude_1',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()']]],
-  ['magnitudesq_2',['magnitudesq',['../structfound_1_1Vec2.html#ab4d7bbb2908f7962e50263a2e6731788',1,'found::Vec2::MagnitudeSq()'],['../classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23',1,'found::Vec3::MagnitudeSq()']]],
-  ['main_3',['main',['../namespacefound.html#a25eef2e6e20aa0e29f7d5c1140b6bad0',1,'found']]],
-  ['majoraxis_4',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
-  ['mat3_5',['Mat3',['../classfound_1_1Mat3.html',1,'found']]],
-  ['midpoint_6',['midpoint',['../namespacefound.html#a96b3f0a10aa405667ef50b187ac67cc3',1,'found::midpoint(const Vec2 &amp;vec1, const Vec2 &amp;vec2)'],['../namespacefound.html#aca55ee32d90cc1728b61fb9033857a87',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2)'],['../namespacefound.html#a1d5a4a735107bd122f573b26ce0f6f2b',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2, const Vec3 &amp;vec3)']]],
-  ['minoraxis_7',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
-  ['minute_8',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
-  ['month_9',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]]
+  ['labelpresent_0',['LabelPresent',['../namespacefound.html#a532a003b6775ad0c1e340256e492be0a',1,'found']]],
+  ['lastproduct_1',['lastProduct',['../classfound_1_1Pipeline.html#a80560c08eea079b8e59d00bd59425688',1,'found::Pipeline']]],
+  ['lattitude_2',['lattitude',['../structfound_1_1EarthSphericalVec3.html#a3ce9b700cdeb87df0c1bf15172b4cb54',1,'found::EarthSphericalVec3']]],
+  ['locationrecord_3',['LocationRecord',['../structfound_1_1LocationRecord.html',1,'found']]],
+  ['locationrecords_4',['LocationRecords',['../namespacefound.html#a45893998fd13e01478e171684678009b',1,'found']]],
+  ['locedgedetectionalgorithm_5',['locedgedetectionalgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html',1,'found::LoCEdgeDetectionAlgorithm'],['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a66171d921010bb784930003cb5a14ade',1,'found::LoCEdgeDetectionAlgorithm::LoCEdgeDetectionAlgorithm()']]],
+  ['log_5ferror_6',['LOG_ERROR',['../logging_8hpp.html#a7ebf4c3b4fb05d6f9094089ded75cbdd',1,'logging.hpp']]],
+  ['log_5finfo_7',['LOG_INFO',['../logging_8hpp.html#ac8e803773221119947b55f6ae85a9c63',1,'logging.hpp']]],
+  ['log_5fwarn_8',['LOG_WARN',['../logging_8hpp.html#aeaf09e51c5a1f84078e5c6aa59dc48de',1,'logging.hpp']]],
+  ['logging_2ehpp_9',['logging.hpp',['../logging_8hpp.html',1,'']]],
+  ['longitude_10',['longitude',['../structfound_1_1EarthSphericalVec3.html#a7a1a4c9e56d669be780510b9db864bb6',1,'found::EarthSphericalVec3']]],
+  ['lostcalibrationalgorithm_11',['lostcalibrationalgorithm',['../classfound_1_1LOSTCalibrationAlgorithm.html#a8c640b1ea3cf3b79972830ece635ea51',1,'found::LOSTCalibrationAlgorithm::LOSTCalibrationAlgorithm()'],['../classfound_1_1LOSTCalibrationAlgorithm.html',1,'found::LOSTCalibrationAlgorithm']]],
+  ['lostvectorgenerationalgorithm_12',['lostvectorgenerationalgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a29a6972b8eb3c8dba96bbf52628a0c6e',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a3d7b70a44dde02449fd647b0380201b4',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion orientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html',1,'found::LOSTVectorGenerationAlgorithm']]],
+  ['lowerright_13',['lowerright',['../structfound_1_1Edge.html#a45486626a9bfa52d80927034ce3b6a3f',1,'found::Edge::lowerRight'],['../structfound_1_1Component.html#a079fce519452a1d6af1dea71611a6a4b',1,'found::Component::lowerRight']]]
 ];

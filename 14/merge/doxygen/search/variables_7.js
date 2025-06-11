@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['i_0',['i',['../classfound_1_1Quaternion.html#a8e9cc49e2a7ee775910c8a40047e82ac',1,'found::Quaternion']]],
-  ['image_1',['image',['../structfound_1_1Image.html#a02d428a46444c8f7001e8916cbed7f49',1,'found::Image']]],
-  ['initialcondition_2',['initialCondition',['../structfound_1_1OrbitParams.html#a67613adafcaf9a4507e4637a7e7067c1',1,'found::OrbitParams']]],
-  ['inplanerotation_3',['inPlaneRotation',['../structfound_1_1OrbitParams.html#a82aa7a79b4ace0a4b3f348da96560fcb',1,'found::OrbitParams']]]
+  ['header_0',['header',['../structfound_1_1DataFile.html#abe152ebab9b43fc3d700a4ba244c5d56',1,'found::DataFile']]],
+  ['height_1',['height',['../structfound_1_1Image.html#a5da8f80aad3f4f046fb3184bbfceae2a',1,'found::Image']]],
+  ['hour_2',['hour',['../structfound_1_1DateTime.html#a2a2297c02b3a82415a45a0335ebf2f1d',1,'found::DateTime']]]
 ];

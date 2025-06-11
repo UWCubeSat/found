@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['x_0',['x',['../structfound_1_1Vec2.html#a6f4c436cc2c0f1a07a1ecabaa1047472',1,'found::Vec2::x'],['../classfound_1_1Vec3.html#ac8fa88312e572766a0a09fe19c609a25',1,'found::Vec3::x'],['../classfound_1_1Mat3.html#ae38489abeaed5e8591653287141418e7',1,'found::Mat3::x']]],
-  ['xresolution_1',['XResolution',['../classfound_1_1Camera.html#a1a23d5d3d8781d3d8b79f03bebc7c718',1,'found::Camera']]]
+  ['width_0',['width',['../structfound_1_1Image.html#a91329ae629aff2bd53c72e2bba67811d',1,'found::Image']]],
+  ['write_1',['write',['../namespacefound.html#ace8602da81895c1dcf1c7764f8936559',1,'found::write(std::ostream &amp;stream, const decimal &amp;value)'],['../namespacefound.html#a4ab136c894d44a3fbbdea4bee86875a2',1,'found::write(std::ostream &amp;stream, const uint64_t &amp;value)'],['../namespacefound.html#aded29c22ba0e9973f4481bf2ab33047a',1,'found::write(std::ostream &amp;stream, const uint32_t &amp;value)'],['../namespacefound.html#a8ee665f7fc41731f16d49d524cf874ba',1,'found::write(std::ostream &amp;stream, const EulerAngles &amp;angles)'],['../namespacefound.html#ac717cbe0df7d3e43a3414c2a1ed244d0',1,'found::write(std::ostream &amp;stream, const Vec3 &amp;v)'],['../namespacefound.html#a0363db5f8d5f53efed167c6df05c8a58',1,'found::write(std::ostream &amp;stream, const LocationRecord &amp;record)']]]
 ];

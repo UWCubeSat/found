@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['outplanerotation_0',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]]
+  ['num_5fpositions_0',['num_positions',['../structfound_1_1DataFileHeader.html#abd86dada0574499097a5e29f8ff94f67',1,'found::DataFileHeader']]]
 ];

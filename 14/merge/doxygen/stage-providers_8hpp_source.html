@@ -81,27 +81,27 @@ $(document).ready(function() { init_codefold(0); });
   <div class="headertitle"><div class="title">stage-providers.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef STAGE_PROVIDERS_H_</span></div>
+<a href="stage-providers_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef STAGE_PROVIDERS_H_</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define STAGE_PROVIDERS_H_</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;command-line/parsing/options.hpp&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="options_8hpp.html">command-line/parsing/options.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;common/pipeline.hpp&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="pipeline_8hpp.html">common/pipeline.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;calibrate/calibrate.hpp&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;<a class="code" href="calibrate_8hpp.html">calibrate/calibrate.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;distance/edge.hpp&quot;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;distance/distance.hpp&quot;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;distance/vectorize.hpp&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="edge_8hpp.html">distance/edge.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="distance_8hpp.html">distance/distance.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="vectorize_8hpp.html">distance/vectorize.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;orbit/orbit.hpp&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="orbit_8hpp.html">orbit/orbit.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment">// TODO(nguy8tri): Include statement for Orbit Pipeline</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">// TODO: Fully Implement this after everything is well defined</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;common/decimal.hpp&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;<a class="code" href="decimal_8hpp.html">common/decimal.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
@@ -153,16 +153,24 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>}  <span class="comment">// namespace found</span></div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="preprocessor">#endif  </span><span class="comment">// STAGE_PROVIDERS_H_</span></div>
+<div class="ttc" id="acalibrate_8hpp_html"><div class="ttname"><a href="calibrate_8hpp.html">calibrate.hpp</a></div></div>
 <div class="ttc" id="aclassCalibrationOptions_html"><div class="ttname"><a href="classCalibrationOptions.html">CalibrationOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:65</div></div>
 <div class="ttc" id="aclassDistanceOptions_html"><div class="ttname"><a href="classDistanceOptions.html">DistanceOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:73</div></div>
 <div class="ttc" id="aclassfound_1_1Camera_html"><div class="ttname"><a href="classfound_1_1Camera.html">found::Camera</a></div><div class="ttdef"><b>Definition</b> camera.hpp:17</div></div>
 <div class="ttc" id="aclassfound_1_1Quaternion_html"><div class="ttname"><a href="classfound_1_1Quaternion.html">found::Quaternion</a></div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:199</div></div>
+<div class="ttc" id="adecimal_8hpp_html"><div class="ttname"><a href="decimal_8hpp.html">decimal.hpp</a></div></div>
+<div class="ttc" id="adistance_8hpp_html"><div class="ttname"><a href="distance_8hpp.html">distance.hpp</a></div></div>
+<div class="ttc" id="aedge_8hpp_html"><div class="ttname"><a href="edge_8hpp.html">edge.hpp</a></div></div>
 <div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
 <div class="ttc" id="anamespacefound_html_a47afb4703927f20278c728ae9697471b"><div class="ttname"><a href="namespacefound.html#a47afb4703927f20278c728ae9697471b">found::ProvideEdgeDetectionAlgorithm</a></div><div class="ttdeci">std::unique_ptr&lt; EdgeDetectionAlgorithm &gt; ProvideEdgeDetectionAlgorithm(DistanceOptions &amp;&amp;options)</div><div class="ttdef"><b>Definition</b> stage-providers.hpp:43</div></div>
 <div class="ttc" id="anamespacefound_html_aa765be64839ae3c22e8df425935c6b2a"><div class="ttname"><a href="namespacefound.html#aa765be64839ae3c22e8df425935c6b2a">found::ProvideCalibrationAlgorithm</a></div><div class="ttdeci">std::unique_ptr&lt; CalibrationAlgorithm &gt; ProvideCalibrationAlgorithm(CalibrationOptions &amp;&amp;options)</div><div class="ttdef"><b>Definition</b> stage-providers.hpp:32</div></div>
 <div class="ttc" id="anamespacefound_html_aabcf4fcd2889daa18b8aef44dc334a75"><div class="ttname"><a href="namespacefound.html#aabcf4fcd2889daa18b8aef44dc334a75">found::ProvideDistanceDeterminationAlgorithm</a></div><div class="ttdeci">std::unique_ptr&lt; DistanceDeterminationAlgorithm &gt; ProvideDistanceDeterminationAlgorithm(DistanceOptions &amp;&amp;options)</div><div class="ttdef"><b>Definition</b> stage-providers.hpp:56</div></div>
 <div class="ttc" id="anamespacefound_html_ac459e8dc23006b2b79987909ef0e8042"><div class="ttname"><a href="namespacefound.html#ac459e8dc23006b2b79987909ef0e8042">found::ProvideVectorGenerationAlgorithm</a></div><div class="ttdeci">std::unique_ptr&lt; VectorGenerationAlgorithm &gt; ProvideVectorGenerationAlgorithm(DistanceOptions &amp;&amp;options)</div><div class="ttdef"><b>Definition</b> stage-providers.hpp:72</div></div>
 <div class="ttc" id="anamespacefound_html_ad42cc33dcaec977f225a7609f9d7cd0c"><div class="ttname"><a href="namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c">found::SphericalToQuaternion</a></div><div class="ttdeci">Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll)</div><div class="ttdef"><b>Definition</b> attitude-utils.cpp:181</div></div>
+<div class="ttc" id="aoptions_8hpp_html"><div class="ttname"><a href="options_8hpp.html">options.hpp</a></div></div>
+<div class="ttc" id="aorbit_8hpp_html"><div class="ttname"><a href="orbit_8hpp.html">orbit.hpp</a></div></div>
+<div class="ttc" id="apipeline_8hpp_html"><div class="ttname"><a href="pipeline_8hpp.html">pipeline.hpp</a></div></div>
+<div class="ttc" id="avectorize_8hpp_html"><div class="ttname"><a href="vectorize_8hpp.html">vectorize.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

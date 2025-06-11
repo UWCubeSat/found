@@ -99,23 +99,69 @@ Collaboration diagram for found::DataFile:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:abe152ebab9b43fc3d700a4ba244c5d56" id="r_abe152ebab9b43fc3d700a4ba244c5d56"><td class="memItemLeft" align="right" valign="top"><a id="abe152ebab9b43fc3d700a4ba244c5d56" name="abe152ebab9b43fc3d700a4ba244c5d56"></a>
-<a class="el" href="structfound_1_1DataFileHeader.html">DataFileHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><b>header</b></td></tr>
-<tr class="memdesc:abe152ebab9b43fc3d700a4ba244c5d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metadata header for the file (includes magic, version, and CRC). <br /></td></tr>
+<tr class="memitem:abe152ebab9b43fc3d700a4ba244c5d56" id="r_abe152ebab9b43fc3d700a4ba244c5d56"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfound_1_1DataFileHeader.html">DataFileHeader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFile.html#abe152ebab9b43fc3d700a4ba244c5d56">header</a></td></tr>
+<tr class="memdesc:abe152ebab9b43fc3d700a4ba244c5d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metadata header for the file (includes magic, version, and CRC).  <br /></td></tr>
 <tr class="separator:abe152ebab9b43fc3d700a4ba244c5d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bec02e5c8e42f7fd85c028f4442631e" id="r_a8bec02e5c8e42f7fd85c028f4442631e"><td class="memItemLeft" align="right" valign="top"><a id="a8bec02e5c8e42f7fd85c028f4442631e" name="a8bec02e5c8e42f7fd85c028f4442631e"></a>
-<a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><b>relative_attitude</b> = <a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>(0, 0, 0)</td></tr>
-<tr class="memdesc:a8bec02e5c8e42f7fd85c028f4442631e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relative orientation (attitude) of the object as Euler angles. <br /></td></tr>
+<tr class="memitem:a8bec02e5c8e42f7fd85c028f4442631e" id="r_a8bec02e5c8e42f7fd85c028f4442631e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFile.html#a8bec02e5c8e42f7fd85c028f4442631e">relative_attitude</a> = <a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>(0, 0, 0)</td></tr>
+<tr class="memdesc:a8bec02e5c8e42f7fd85c028f4442631e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relative orientation (attitude) of the object as Euler angles.  <br /></td></tr>
 <tr class="separator:a8bec02e5c8e42f7fd85c028f4442631e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89f82815dac4cc58f2247d85b6050a58" id="r_a89f82815dac4cc58f2247d85b6050a58"><td class="memItemLeft" align="right" valign="top"><a id="a89f82815dac4cc58f2247d85b6050a58" name="a89f82815dac4cc58f2247d85b6050a58"></a>
-std::unique_ptr&lt; <a class="el" href="structfound_1_1LocationRecord.html">LocationRecord</a>[]&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>positions</b></td></tr>
-<tr class="memdesc:a89f82815dac4cc58f2247d85b6050a58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collection of location records in the file. <br /></td></tr>
+<tr class="memitem:a89f82815dac4cc58f2247d85b6050a58" id="r_a89f82815dac4cc58f2247d85b6050a58"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structfound_1_1LocationRecord.html">LocationRecord</a>[]&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFile.html#a89f82815dac4cc58f2247d85b6050a58">positions</a></td></tr>
+<tr class="memdesc:a89f82815dac4cc58f2247d85b6050a58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Collection of location records in the file.  <br /></td></tr>
 <tr class="separator:a89f82815dac4cc58f2247d85b6050a58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a complete serialized data file. </p>
 <p>Contains the file header, relative orientation of the sensor, and a list of spatial position records. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="abe152ebab9b43fc3d700a4ba244c5d56" name="abe152ebab9b43fc3d700a4ba244c5d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe152ebab9b43fc3d700a4ba244c5d56">&#9670;&#160;</a></span>header</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structfound_1_1DataFileHeader.html">DataFileHeader</a> found::DataFile::header</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Metadata header for the file (includes magic, version, and CRC). </p>
+
+</div>
+</div>
+<a id="a89f82815dac4cc58f2247d85b6050a58" name="a89f82815dac4cc58f2247d85b6050a58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89f82815dac4cc58f2247d85b6050a58">&#9670;&#160;</a></span>positions</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structfound_1_1LocationRecord.html">LocationRecord</a>[]&gt; found::DataFile::positions</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Collection of location records in the file. </p>
+
+</div>
+</div>
+<a id="a8bec02e5c8e42f7fd85c028f4442631e" name="a8bec02e5c8e42f7fd85c028f4442631e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bec02e5c8e42f7fd85c028f4442631e">&#9670;&#160;</a></span>relative_attitude</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a> found::DataFile::relative_attitude = <a class="el" href="classfound_1_1EulerAngles.html">EulerAngles</a>(0, 0, 0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Relative orientation (attitude) of the object as Euler angles. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/datafile/<a class="el" href="datafile_8hpp_source.html">datafile.hpp</a></li>
 </ul>
 </div><!-- contents -->
