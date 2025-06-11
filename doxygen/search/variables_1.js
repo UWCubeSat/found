@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['d_0',['d',['../unionfound_1_1__d__u__.html#aa6ae088c71fadcff7c21602a34666c7d',1,'found::_d_u_']]],
-  ['de_1',['de',['../classfound_1_1EulerAngles.html#ad2a3eb2f0ef98d6becc9aafc2bda0236',1,'found::EulerAngles']]]
+  ['borderlength_5f_0',['borderLength_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a5199a0d2bf57d0a4c24bb27d6d80e596',1,'found::SimpleEdgeDetectionAlgorithm']]]
 ];

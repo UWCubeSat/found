@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
-  ['majoraxis_1',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
-  ['minoraxis_2',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]]
+  ['i_0',['i',['../classfound_1_1Quaternion.html#a8e9cc49e2a7ee775910c8a40047e82ac',1,'found::Quaternion']]],
+  ['image_1',['image',['../structfound_1_1Image.html#a02d428a46444c8f7001e8916cbed7f49',1,'found::Image']]],
+  ['initialcondition_2',['initialCondition',['../structfound_1_1OrbitParams.html#a67613adafcaf9a4507e4637a7e7067c1',1,'found::OrbitParams']]],
+  ['inplanerotation_3',['inPlaneRotation',['../structfound_1_1OrbitParams.html#a82aa7a79b4ace0a4b3f348da96560fcb',1,'found::OrbitParams']]]
 ];

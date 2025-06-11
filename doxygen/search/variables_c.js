@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['ra_0',['ra',['../classfound_1_1EulerAngles.html#a06428650d165be6e9a411336eb2d08da',1,'found::EulerAngles']]],
-  ['real_1',['real',['../classfound_1_1Quaternion.html#a68e88d9765ca79f899ef1ce306634ad2',1,'found::Quaternion']]],
-  ['relative_5fattitude_2',['relative_attitude',['../structfound_1_1DataFile.html#a8bec02e5c8e42f7fd85c028f4442631e',1,'found::DataFile']]],
-  ['resource_3',['resource',['../classfound_1_1Stage.html#a91a27c6a882620582eea17316edb1b10',1,'found::Stage']]],
-  ['roll_4',['roll',['../classfound_1_1EulerAngles.html#ae37fefb43e9dd8fd1c9facfdf2c8fd78',1,'found::EulerAngles']]]
+  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
+  ['majoraxis_1',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
+  ['minoraxis_2',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
+  ['minute_3',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
+  ['month_4',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
+  ['mu_5f_5',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

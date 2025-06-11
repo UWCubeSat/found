@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xresolution_0',['XResolution',['../classfound_1_1Camera.html#a1a23d5d3d8781d3d8b79f03bebc7c718',1,'found::Camera']]]
+  ['yresolution_0',['YResolution',['../classfound_1_1Camera.html#ae00e10429c6301f6b0116ea093857169',1,'found::Camera']]]
 ];
