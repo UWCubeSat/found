@@ -67,7 +67,7 @@ struct DataFile {
     /**
      * @brief Relative orientation (attitude) of the object as Euler angles.
      */
-    EulerAngles relative_attitude = EulerAngles(0, 0, 0);
+    Quaternion relative_attitude;
 
     /**
      * @brief Collection of location records in the file.

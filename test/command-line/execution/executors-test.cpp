@@ -5,6 +5,7 @@
 #include <utility>
 #include <string>
 #include <sstream>
+#include <cstdio>
 
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
@@ -44,7 +45,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
     CalibrationOptions options = {
         {DECIMAL_M_PI / 3, 0, 0},
         {DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0},
-        "test/common/assets/empty-df.found"
+        "test/common/assets/temp.found"
     };
 
     CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
@@ -64,6 +65,8 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
                    << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    std::remove("test/common/assets/temp.found");
 }
 
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
@@ -78,7 +81,8 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         DECIMAL_M_E,
         25,
         1,
-        0.0
+        0.0,
+        "test/common/assets/temp.found"
     };
     Points points = {
         {0, 0},
@@ -131,6 +135,8 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
                    << "Distance from Earth: 8.77496 m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    std::remove("test/common/assets/temp.found");
 }
 
 TEST(ExecutorsTest, TestOrbitPipelineExecutor) {

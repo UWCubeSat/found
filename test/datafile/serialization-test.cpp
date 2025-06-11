@@ -5,10 +5,12 @@
 #include <sstream>
 #include <string>
 
-#include "common/decimal.hpp"
+#include "test/common/common.hpp"
 
-#include "datafile/encoding.hpp"
-#include "datafile/serialization.hpp"
+#include "src/common/decimal.hpp"
+
+#include "src/datafile/encoding.hpp"
+#include "src/datafile/serialization.hpp"
 
 namespace found {
 
@@ -95,37 +97,27 @@ TEST_F(SerializationTest, IncorrectSizeHeader) {
  * @test Serializes and deserializes a DataFile object and verifies round-trip consistency.
  */
 TEST_F(SerializationTest, RoundTripSerialization) {
-    DataFile data;
-    memcpy(data.header.magic, "FOUN", 4);
-    data.header.version = 1;
-    data.header.num_positions = 2;
-    data.relative_attitude = {123456789., 987654321., 111111111.};
+    DataFile expected;
+    memcpy(expected.header.magic, "FOUN", 4);
+    expected.header.version = 1;
+    expected.header.num_positions = 2;
+    expected.relative_attitude = {0, 123456789., 987654321., 111111111.};
 
     LocationRecord loc1{161803398, {100, 200, 300}};
     LocationRecord loc2{271828182, {-100, -200, -300}};
 
-    data.positions = std::make_unique<LocationRecord[]>(2);
-    data.positions[0] = loc1;
-    data.positions[1] = loc2;
+    expected.positions = std::make_unique<LocationRecord[]>(2);
+    expected.positions[0] = loc1;
+    expected.positions[1] = loc2;
 
     std::ostringstream out;
-    serializeDataFile(data, out);
+    serializeDataFile(expected, out);
     std::string buffer = out.str();
 
     std::istringstream in(buffer);
-    DataFile parsed = deserializeDataFile(in);
+    DataFile actual = deserializeDataFile(in);
 
-    ASSERT_EQ(parsed.header.version, 1U);
-    ASSERT_EQ(parsed.header.num_positions, 2U);
-
-    ASSERT_EQ(parsed.relative_attitude.roll, data.relative_attitude.roll);
-    ASSERT_EQ(parsed.relative_attitude.ra, data.relative_attitude.ra);
-    ASSERT_EQ(parsed.relative_attitude.de, data.relative_attitude.de);
-
-    EXPECT_EQ(parsed.positions[0].timestamp, loc1.timestamp);
-    EXPECT_EQ(parsed.positions[0].position.x, loc1.position.x);
-    EXPECT_EQ(parsed.positions[1].timestamp, loc2.timestamp);
-    EXPECT_EQ(parsed.positions[1].position.y, loc2.position.y);
+    ASSERT_DF_EQ(expected, actual);
 }
 
 /**
@@ -275,7 +267,7 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     memcpy(data.header.magic, "FOUN", 4);
     data.header.version = 1;
     data.header.num_positions = 0;
-    data.relative_attitude = {0, 0, 0};
+    data.relative_attitude = {0, 0, 0, 0};
     // No positions added
 
     std::ostringstream out;
@@ -285,11 +277,7 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     std::istringstream in(buffer);
     DataFile parsed = deserializeDataFile(in);
 
-    ASSERT_EQ(parsed.header.version, 1U);
-    ASSERT_EQ(parsed.header.num_positions, 0U);
-    ASSERT_EQ(parsed.relative_attitude.roll, 0);
-    ASSERT_EQ(parsed.relative_attitude.ra, 0);
-    ASSERT_EQ(parsed.relative_attitude.de, 0);
+    ASSERT_DF_EQ(data, parsed);
 }
 
 /**

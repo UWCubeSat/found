@@ -2,8 +2,10 @@
 
 #include <memory>
 #include <utility>
+#include <cstring>
 
 #include "common/logging.hpp"
+#include "common/time/time.hpp"
 
 namespace found {
 
@@ -22,13 +24,16 @@ void CalibrationPipelineExecutor::ExecutePipeline() {
 }
 
 void CalibrationPipelineExecutor::OutputResults() {
-    // TODO: Write the output to the datafile
     // Output the results of the calibration
-    [[maybe_unused]] Quaternion *&calibrationQuaternion = this->pipeline_.GetProduct();
+    Quaternion *&calibrationQuaternion = this->pipeline_.GetProduct();
     LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->real << ", "
                                          << calibrationQuaternion->i << ", "
                                          << calibrationQuaternion->j << ", "
                                          << calibrationQuaternion->k << ")");
+    DataFile outputDF{};
+    outputDF.relative_attitude = *calibrationQuaternion;
+    std::ofstream outputFile(this->options_.outputFile);
+    serializeDataFile(outputDF, outputFile);
 }
 
 DistancePipelineExecutor::~DistancePipelineExecutor() {
@@ -56,11 +61,24 @@ void DistancePipelineExecutor::ExecutePipeline() {
 
 void DistancePipelineExecutor::OutputResults() {
     // TODO: Write the output to the datafile
-    [[maybe_unused]] PositionVector *&positionVector = this->pipeline_.GetProduct();
+    PositionVector *&positionVector = this->pipeline_.GetProduct();
     LOG_INFO("Calculated Position: (" << positionVector->x << ", "
                                       << positionVector->y << ", "
                                       << positionVector->z << ") m");
     LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
+    // TODO: Figure out a much more optimized way of doing this please, especially
+    // since we're saving it into the exact same file, there should be an easy way
+    // to simply modify the file directly instead of this mess.
+    DataFile outputDF{};
+    outputDF.header = this->options_.calibrationData.header;
+    outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
+    outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
+    std::memcpy(outputDF.positions.get(),
+                this->options_.calibrationData.positions.get(),
+                outputDF.header.num_positions);
+    outputDF.positions[outputDF.header.num_positions] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
+    std::ofstream outputFile(this->options_.outputFile);
+    serializeDataFile(outputDF, outputFile);
 }
 
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
@@ -80,7 +98,7 @@ void OrbitPipelineExecutor::ExecutePipeline() {
 }
 
 void OrbitPipelineExecutor::OutputResults() {
-    // TODO: Write the output to the datafile
+    // TODO: Output this somewhere
     [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
     LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
                                              << futurePosition.position.y << ", "

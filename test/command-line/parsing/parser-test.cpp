@@ -36,7 +36,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     const char *argv[] = {"found", "calibration",
         "--local-orientation", "1 2 3",
         "--reference-orientation", "3.0,-9.0,27.2",
-        "--output-file", "test/common/assets/empty-df.found"};
+        "--output-file", "test/common/assets/temp.found"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
@@ -47,7 +47,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
 
-    ASSERT_EQ("test/common/assets/empty-df.found", options.outputFile);
+    ASSERT_EQ("test/common/assets/temp.found", options.outputFile);
 }
 
 TEST_F(ParserTest, TestCalibrationParserFail) {
@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 24;
+    int argc = 26;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "test/common/assets/empty-df.found",
@@ -96,7 +96,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--seda-threshold", "62",
         "--seda-border-len", "10",
         "--seda-offset", "9.2",
-        "--planetary-radius", "1964.4"};
+        "--planetary-radius", "1964.4",
+        "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
@@ -115,6 +116,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EQ(10, options.SEDABorderLen);
     ASSERT_EQ(9.2, options.SEDAOffset);
     ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
+    ASSERT_EQ("example.found", options.outputFile);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory

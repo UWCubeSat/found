@@ -48,7 +48,8 @@ FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation 
 FOUND_CLI_OPTION("planetary-radius"        , decimal           , radius          , DECIMAL_M_R_E              , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The planetary radius to use (m)"                           ) \
 FOUND_CLI_OPTION("seda-threshold"          , unsigned char     , SEDAThreshold   , 25                         , found::strtouc(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "Threshold for the SEDA Algorithm ([0,255])"                ) \
 FOUND_CLI_OPTION("seda-border-len"         , int               , SEDABorderLen   , 1                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The border thickness for SEDA (pixels)"                    ) \
-FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The edge offset for SEDA (pixels)"                         )
+FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The edge offset for SEDA (pixels)"                         ) \
+FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (.found)"                                  ) \
 
 
 // Orbit Flags

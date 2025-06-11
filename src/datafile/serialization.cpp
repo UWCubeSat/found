@@ -123,34 +123,36 @@ inline void read(std::istream& stream, uint32_t& value) {
 
 /**
  *
- * @brief Serializes an EulerAngles object to the given output stream.
+ * @brief Serializes an Quaternion to the given output stream.
  * 
  * @param stream The stream to write into
- * @param angles The angles to read from
+ * @param quat The angles to read from
  * 
- * @post stream has all fields of angles written into it, each in network byte order.
+ * @post stream has all fields of quat written into it, each in network byte order.
  *
  */
-inline void write(std::ostream& stream, const EulerAngles& angles) {
-    write(stream, angles.roll);
-    write(stream, angles.ra);
-    write(stream, angles.de);
+inline void write(std::ostream& stream, const Quaternion& quat) {
+    write(stream, quat.real);
+    write(stream, quat.i);
+    write(stream, quat.j);
+    write(stream, quat.k);
 }
 
 /**
  *
- * @brief Reads EulerAngles data from an input stream.
+ * @brief Reads Quaternion data from an input stream.
  * 
  * @param stream The stream to read from
- * @param angles The angles to write into
+ * @param quat The angles to write into
  * 
- * @post angles has the values that stream held
+ * @post quat has the values that stream held
  *
  */
-inline void read(std::istream& stream, EulerAngles& angles) {
-    read(stream, angles.roll);
-    read(stream, angles.ra);
-    read(stream, angles.de);
+inline void read(std::istream& stream, Quaternion& quat) {
+    read(stream, quat.real);
+    read(stream, quat.i);
+    read(stream, quat.j);
+    read(stream, quat.k);
 }
 
 /**
