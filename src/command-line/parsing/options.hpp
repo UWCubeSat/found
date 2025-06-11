@@ -22,6 +22,8 @@
 #include "common/style.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "providers/converters.hpp"
+#include "datafile/datafile.hpp"
+#include "datafile/serialization.hpp"
 
 // TODO(nguy8tri): Change std::string values to proper values (i.e. output/input files should become streams, etc.)
 
@@ -34,11 +36,10 @@ FOUND_CLI_OPTION("reference-orientation", found::EulerAngles, refOrientation    
 FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        , ""                         , optarg                  , kNoDefaultArgument, REQ_ASSIGN, "The output file (.found)")
 
 
-// TODO: Fix calibration-data to actually parse a datafile
 /// Distance Flags
 #define DISTANCE \
 FOUND_CLI_OPTION("image"                   , found::Image      , image           , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN, "The image to process"                                      ) \
-FOUND_CLI_OPTION("calibration-data"        , std::string       , calibrationData , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The calibration data (.found)"                             ) \
+FOUND_CLI_OPTION("calibration-data"        , found::DataFile   , calibrationData , {}                         , found::strtodf(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "The calibration data (.found)"                             ) \
 FOUND_CLI_OPTION("reference-as-orientation", bool              , refAsOrientation, false                      , found::strtobool(optarg)   , true              , OPT_ASSIGN, "Use reference-orientation as the orientation of the camera") \
 FOUND_CLI_OPTION("camera-focal-length"     , decimal           , focalLength     , 0.012                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The camera focal length (m)"                               ) \
 FOUND_CLI_OPTION("camera-pixel-size"       , decimal           , pixelSize       , 20E-6                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The camera pixel size (m)"                                 ) \

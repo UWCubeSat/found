@@ -11,6 +11,8 @@
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
+#include "datafile/datafile.hpp"
+#include "datafile/serialization.hpp"
 
 // NOTE: Throwing exceptions is allowed in this file, as these functions
 // must successfully parse data for any pipeline to function properly.
@@ -143,6 +145,14 @@ inline LocationRecords strtolr(const std::string &str) {
 
     file.close();
     return records;
+}
+
+/**
+ * 
+ */
+inline DataFile strtodf(const std::string &str) {
+    std::ifstream stream(str);
+    return deserializeDataFile(stream);
 }
 
 }  // namespace found

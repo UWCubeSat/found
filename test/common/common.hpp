@@ -79,6 +79,16 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
         ASSERT_EQ(val1.image[i], val2.image[i]); \
     }
 
+#define ASSERT_DF_EQ(val1, val2) \
+    ASSERT_EQ(val1.header.version, val2.header.version); \
+    ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \
+    ASSERT_EQ(val1.header.crc, val2.header.crc); \
+    ASSERT_EA_EQ_DEFAULT(val1.relative_attitude, val2.relative_attitude); \
+    for (size_t i = 0; i < val1.header.num_positions; i++) { \
+        ASSERT_VEC3_EQ_DEFAULT(val1.positions[i].position, val2.positions[i].position); \
+        ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); \
+    }
+
 }  // namespace found
 
 #endif  // COMMON_H

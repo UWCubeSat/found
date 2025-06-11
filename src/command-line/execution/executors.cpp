@@ -35,7 +35,7 @@ DistancePipelineExecutor::~DistancePipelineExecutor() {
     stbi_image_free(this->options_.image.image);
 }
 
-DistancePipelineExecutor::DistancePipelineExecutor(const DistanceOptions &&options,
+DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                                                    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
                                                    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                                    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
@@ -63,7 +63,7 @@ void DistancePipelineExecutor::OutputResults() {
     LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
 }
 
-OrbitPipelineExecutor::OrbitPipelineExecutor(const OrbitOptions &&options,
+OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
                                              std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm)
                                              : options_(std::move(options)) {
     this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);

@@ -11,28 +11,28 @@
 
 namespace found {
 
-class ParserTest : public testing::Test {
+class IntegrationTest : public testing::Test {
  protected:
     void TearDown() override {
         optind = 2;
     }
 };
 
-TEST_F(ParserTest, TestMainNothing) {
+TEST_F(IntegrationTest, TestMainNothing) {
     int argc = 1;
     const char *argv[1] = {"found"};
 
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
 }
 
-TEST_F(ParserTest, TestMainNoOption) {
+TEST_F(IntegrationTest, TestMainNoOption) {
     int argc = 3;
     const char *argv[3] = {"found", "--png", "none.png"};
 
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
 }
 
-TEST_F(ParserTest, TestMainHelp) {
+TEST_F(IntegrationTest, TestMainHelp) {
     int argc = 2;
     const char *argv[2] = {"found", "-h"};
 
@@ -56,7 +56,7 @@ TEST_F(ParserTest, TestMainHelp) {
 // TODO: Update the next 3 tests to test once we get meaningful outputs,
 // and expand to even more tests to cover a range of inputs and outputs
 
-TEST_F(ParserTest, TestMainCalibrationOptionBlank) {
+TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     int argc = 2;
     const char *argv[] = {"found", "calibration"};
 
@@ -73,7 +73,7 @@ TEST_F(ParserTest, TestMainCalibrationOptionBlank) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
-TEST_F(ParserTest, TestMainDistanceOption) {
+TEST_F(IntegrationTest, TestMainDistanceOption) {
     int argc = 6;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -96,7 +96,7 @@ TEST_F(ParserTest, TestMainDistanceOption) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
-TEST_F(ParserTest, TestMainDistanceOptionReferenceAsOrientation) {
+TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientation) {
     int argc = 5;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
@@ -119,7 +119,7 @@ TEST_F(ParserTest, TestMainDistanceOptionReferenceAsOrientation) {
 }
 
 // TODO: Uncomment when orbit stage is implemented
-// TEST_F(ParserTest, TestMainOrbitOption) {
+// TEST_F(IntegrationTest, TestMainOrbitOption) {
 //     int argc = 14;
 //     const char *argv[] = {"found", "orbit",
 //         "--position-data", "test/common/assets/position-data/pos-data-valid.txt",

@@ -36,7 +36,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     const char *argv[] = {"found", "calibration",
         "--local-orientation", "1 2 3",
         "--reference-orientation", "3.0,-9.0,27.2",
-        "--output-file", "example.found"};
+        "--output-file", "test/common/assets/empty-df.found"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
@@ -47,7 +47,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
 
-    ASSERT_EQ("example.found", options.outputFile);
+    ASSERT_EQ("test/common/assets/empty-df.found", options.outputFile);
 }
 
 TEST_F(ParserTest, TestCalibrationParserFail) {
@@ -65,15 +65,17 @@ TEST_F(ParserTest, TestDistanceParserBadFlag) {
 }
 
 TEST_F(ParserTest, TestDistanceParserBaseCase) {
-    int argc = 2;
-    const char *argv[] = {"found", "distance"};
-    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    int argc = 4;
+    const char *argv[] = {"found", "distance",
+                          "--calibration-data", "test/common/assets/empty-df.found"};
+    DistanceOptions options(ParseDistanceOptions(argc, const_cast<char **>(argv)));
 
     Image emptyImage{0, 0, 0, nullptr};
     EulerAngles emptyEA(0, 0, 0);
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(emptyImage, options.image);
-    ASSERT_EQ("", options.calibrationData);  // TODO: Change this once implemented
+    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);  // TODO: Change this once implemented
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.012), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(20E-6), options.pixelSize);
@@ -85,7 +87,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     int argc = 24;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--calibration-data", "example.found",
+        "--calibration-data", "test/common/assets/empty-df.found",
         "--reference-as-orientation", "false",
         "--camera-focal-length", "1.5",
         "--camera-pixel-size", "4E-12",
@@ -99,10 +101,11 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
     EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_EQ("example.found", options.calibrationData);
+    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1.5), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
@@ -122,15 +125,16 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--reference-as-orientation",
-        "--calibration-data", "example.found"};
+        "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
     EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_EQ("example.found", options.calibrationData);
+    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);
     ASSERT_TRUE(options.refAsOrientation);
 
     stbi_image_free(expectedImage.image);  // Free the image memory

@@ -14,7 +14,7 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
 ## Building FOUND
-- Clone this repository (`git clone https://github.com/UWCubeSat/found.git`)
+- Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
 - Compile the executable (`make`)
 - Execute the executable (`./build/bin/found`)

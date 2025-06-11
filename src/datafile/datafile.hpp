@@ -73,6 +73,23 @@ struct DataFile {
      * @brief Collection of location records in the file.
      */
     std::unique_ptr<LocationRecord[]> positions;
+
+    /// Constructs this
+    DataFile() = default;
+
+    /**
+     * Moves another DataFile
+     * 
+     * @param other The file to copy
+     */
+    DataFile(DataFile &&other) noexcept = default;
+
+    /**
+     * Moves another DataFile
+     * 
+     * @param other The file to copy
+     */
+    DataFile& operator=(DataFile &&other) = default;
 };
 
 }  // namespace found

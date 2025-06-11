@@ -44,7 +44,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
     CalibrationOptions options = {
         {DECIMAL_M_PI / 3, 0, 0},
         {DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0},
-        "example.found"
+        "test/common/assets/empty-df.found"
     };
 
     CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
@@ -69,7 +69,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     DistanceOptions options = {
         strtoimage("test/common/assets/example_image.jpg"),
-        "example.found",
+        strtodf("test/common/assets/empty-df.found"),
         false,
         0.012,
         20E-6,

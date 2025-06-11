@@ -14,7 +14,7 @@ namespace found {
  * 
  * @pre The number of positions in the header must match the number of positions in the entry.
  */
-void serialize(const DataFile& data, std::ostream& stream);
+void serializeDataFile(const DataFile& data, std::ostream& stream);
 
 /**
  * @brief Deserializes a DataFile object from an input stream.
@@ -23,7 +23,7 @@ void serialize(const DataFile& data, std::ostream& stream);
  * 
  * @return The deserialized DataFile object.
  */
-DataFile deserialize(std::istream& stream);
+DataFile deserializeDataFile(std::istream& stream);
 
 /**
  * @brief Reads only the header of a DataFile from an input stream.

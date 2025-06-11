@@ -230,7 +230,7 @@ uint32_t calculateCRC32(const void* data, size_t length) {
     return crc ^ 0xFFFFFFFFU;
 }
 
-void serialize(const DataFile& data, std::ostream& stream) {
+void serializeDataFile(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     hton(header);
@@ -243,7 +243,7 @@ void serialize(const DataFile& data, std::ostream& stream) {
     }
 }
 
-DataFile deserialize(std::istream& stream) {
+DataFile deserializeDataFile(std::istream& stream) {
     DataFile data;
     data.header = readHeader(stream);
 

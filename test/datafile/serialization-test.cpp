@@ -109,11 +109,11 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     data.positions[1] = loc2;
 
     std::ostringstream out;
-    serialize(data, out);
+    serializeDataFile(data, out);
     std::string buffer = out.str();
 
     std::istringstream in(buffer);
-    DataFile parsed = deserialize(in);
+    DataFile parsed = deserializeDataFile(in);
 
     ASSERT_EQ(parsed.header.version, 1U);
     ASSERT_EQ(parsed.header.num_positions, 2U);
@@ -149,7 +149,7 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization1) {
     std::istringstream in(buffer);
 
     EXPECT_THROW({
-        found::deserialize(in);
+        found::deserializeDataFile(in);
     }, std::ios_base::failure);
 }
 
@@ -175,7 +175,7 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization2) {
     std::istringstream in(buffer);
 
     EXPECT_THROW({
-        found::deserialize(in);
+        found::deserializeDataFile(in);
     }, std::ios_base::failure);
 }
 
@@ -279,11 +279,11 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     // No positions added
 
     std::ostringstream out;
-    serialize(data, out);
+    serializeDataFile(data, out);
     std::string buffer = out.str();
 
     std::istringstream in(buffer);
-    DataFile parsed = deserialize(in);
+    DataFile parsed = deserializeDataFile(in);
 
     ASSERT_EQ(parsed.header.version, 1U);
     ASSERT_EQ(parsed.header.num_positions, 0U);
@@ -314,7 +314,7 @@ TEST_F(SerializationTest, OnlyHeaderNoRelativeAttitude) {
 
     // Should throw because relative_attitude is missing
     EXPECT_THROW({
-        found::deserialize(in);
+        found::deserializeDataFile(in);
     }, std::ios_base::failure);
 }
 
@@ -342,7 +342,7 @@ TEST_F(SerializationTest, MissingPositions) {
 
     // Should throw because relative_attitude is missing
     EXPECT_THROW({
-        found::deserialize(in);
+        found::deserializeDataFile(in);
     }, std::ios_base::failure);
 }
 
