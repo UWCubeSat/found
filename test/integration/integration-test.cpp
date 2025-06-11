@@ -2,12 +2,18 @@
 
 #include <sstream>
 #include <string>
+#include <istream>
 
 #include "stb_image/stb_image.h"
 
 #include "test/common/common.hpp"
 
-#include "command-line/parsing/parser.hpp"
+#include "src/datafile/datafile.hpp"
+#include "src/datafile/serialization.hpp"
+
+#include "src/calibrate/calibrate.hpp"
+
+#include "src/command-line/parsing/parser.hpp"
 
 namespace found {
 
@@ -73,7 +79,31 @@ TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
-TEST_F(IntegrationTest, TestMainDistanceOption) {
+TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
+    int argc = 8;
+    const char *argv[] = {"found", "calibration",
+                          "--reference-orientation", "1.1,1.2,1.3",
+                          "--local-orientation", "1.4,1.5,1.6",
+                          "--output-file", temp_df};
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    DataFile expected{
+        {},
+        LOSTCalibrationAlgorithm().Run({{1.1,1.2,1.3}, {1.4,1.5,1.6}})
+    };
+
+    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+
+    ASSERT_DF_EQ(expected, actual, 1);
+}
+
+TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientation) {
     int argc = 6;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",

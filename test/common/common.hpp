@@ -10,9 +10,7 @@
 
 namespace found {
 
-#define ASSERT_RANGE(num, lo, hi) \
-    ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
-    ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
+///// Definition of custom ASSERT_* statements /////
 
 #define DEFAULT_TOLERANCE 1e-3
 
@@ -79,7 +77,7 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
         ASSERT_EQ(val1.image[i], val2.image[i]); \
     }
 
-#define ASSERT_DF_EQ(val1, val2) \
+#define ASSERT_DF_EQ_DEFAULT(val1, val2) \
     ASSERT_EQ(val1.header.version, val2.header.version); \
     ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \
     ASSERT_QUAT_EQ_DEFAULT(val1.relative_attitude, val2.relative_attitude); \
@@ -87,6 +85,24 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
         ASSERT_VEC3_EQ_DEFAULT(val1.positions[i].position, val2.positions[i].position); \
         ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); \
     }
+
+#define ASSERT_DF_EQ(val1, val2, tolerance) \
+    ASSERT_EQ(val1.header.version, val2.header.version); \
+    ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \
+    ASSERT_QUAT_EQ(val1.relative_attitude, val2.relative_attitude, tolerance); \
+    for (size_t i = 0; i < val1.header.num_positions; i++) { \
+        ASSERT_VEC3_EQ_DEFAULT(val1.positions[i].position, val2.positions[i].position); \
+        ASSERT_EQ(val1.positions[i].timestamp, val2.positions[i].timestamp); \
+    }
+
+#define ASSERT_RANGE(num, lo, hi) \
+    ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
+    ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
+
+///// Definition of Assets /////
+
+/// The temporary Datafile
+#define temp_df "test/common/assets/temp.found"
 
 }  // namespace found
 

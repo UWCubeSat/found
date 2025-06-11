@@ -36,7 +36,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     const char *argv[] = {"found", "calibration",
         "--local-orientation", "1 2 3",
         "--reference-orientation", "3.0,-9.0,27.2",
-        "--output-file", "test/common/assets/temp.found"};
+        "--output-file", temp_df};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
@@ -47,7 +47,7 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
 
-    ASSERT_EQ("test/common/assets/temp.found", options.outputFile);
+    ASSERT_EQ(temp_df, options.outputFile);
 }
 
 TEST_F(ParserTest, TestCalibrationParserFail) {
@@ -75,7 +75,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(emptyImage, options.image);
-    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);  // TODO: Change this once implemented
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);  // TODO: Change this once implemented
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.012), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(20E-6), options.pixelSize);
@@ -106,7 +106,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1.5), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
@@ -136,7 +136,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_DF_EQ(expectedDataFile, options.calibrationData);
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_TRUE(options.refAsOrientation);
 
     stbi_image_free(expectedImage.image);  // Free the image memory

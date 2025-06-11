@@ -70,6 +70,7 @@ void DistancePipelineExecutor::OutputResults() {
     // since we're saving it into the exact same file, there should be an easy way
     // to simply modify the file directly instead of this mess.
     DataFile outputDF{};
+    // TODO: Make another branch if no data file was given
     outputDF.header = this->options_.calibrationData.header;
     outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
     outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);

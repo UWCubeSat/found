@@ -117,7 +117,7 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     std::istringstream in(buffer);
     DataFile actual = deserializeDataFile(in);
 
-    ASSERT_DF_EQ(expected, actual);
+    ASSERT_DF_EQ_DEFAULT(expected, actual);
 }
 
 /**
@@ -277,7 +277,7 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     std::istringstream in(buffer);
     DataFile parsed = deserializeDataFile(in);
 
-    ASSERT_DF_EQ(data, parsed);
+    ASSERT_DF_EQ_DEFAULT(data, parsed);
 }
 
 /**

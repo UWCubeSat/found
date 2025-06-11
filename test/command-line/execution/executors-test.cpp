@@ -9,6 +9,7 @@
 
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
+#include "test/common/common.hpp"
 
 #include "src/providers/converters.hpp"
 
@@ -45,7 +46,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
     CalibrationOptions options = {
         {DECIMAL_M_PI / 3, 0, 0},
         {DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0},
-        "test/common/assets/temp.found"
+        temp_df
     };
 
     CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
@@ -66,7 +67,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 
-    std::remove("test/common/assets/temp.found");
+    std::remove(temp_df);
 }
 
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
@@ -82,7 +83,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         25,
         1,
         0.0,
-        "test/common/assets/temp.found"
+        temp_df
     };
     Points points = {
         {0, 0},
@@ -136,7 +137,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 
-    std::remove("test/common/assets/temp.found");
+    std::remove(temp_df);
 }
 
 TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
