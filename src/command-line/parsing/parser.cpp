@@ -81,7 +81,8 @@ int main(int argc, char **argv) {
     // } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
     } else if (command == "--help" || command == "-h") {
-        std::cout << "Usage: ./found <option> [flags]" << std::endl;
+        // Usage and primary details
+        std::cout << "Usage: ./found <option> [[flag value]...] [[flag=value]...]" << std::endl;
         std::cout << std::endl;
         std::cout << "Finds absolute position of Images relative to Earth "
                   << "and projects for orbit given multiple images. " << std::endl
@@ -91,7 +92,9 @@ int main(int argc, char **argv) {
         // TODO: Uncomment when orbit stage is implemented
         // std::cout << "\t3. Projects an orbit from multiple position vectors (option: distance)" << std::endl;
         std::cout << std::endl;
-        std::cout << "==================== Calibration Options ====================" << std::endl;
+
+        // Flag usage details
+        std::cout << "==================== Calibration Flags ====================" << std::endl;
         std::cout << std::endl;
         #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 std::cout << "    --" << name << std::endl;                                        \
@@ -99,7 +102,7 @@ int main(int argc, char **argv) {
         CALIBRATION
         #undef FOUND_CLI_OPTION
         std::cout << std::endl;
-        std::cout << "==================== Distance Options ====================" << std::endl;
+        std::cout << "==================== Distance Flags ====================" << std::endl;
         std::cout << std::endl;
         #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
                 std::cout << "    --" << name << std::endl;                                        \
@@ -108,7 +111,7 @@ int main(int argc, char **argv) {
         #undef FOUND_CLI_OPTION
         // TODO: Uncomment when orbit stage is implemented
         // std::cout << std::endl;
-        // std::cout << "==================== Orbit Options ====================" << std::endl;
+        // std::cout << "==================== Orbit Flags ====================" << std::endl;
         // std::cout << std::endl;
         /*
         #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
