@@ -83,17 +83,17 @@ struct Component {
 /// A collection of Image Pixels
 typedef std::vector<Component> Components;
 
-// TODO: Merge with Data Serialization branch
 /**
- * @brief Represents a single location record containing a position and a timestamp.
+ * @brief Represents a single spatial data point with position and timestamp.
  */
 struct LocationRecord {
     /**
-     * @brief The timestamp corresponding to this location (in microseconds or appropriate unit).
+     * @brief Timestamp associated with the position, in microseconds or appropriate units.
      */
     uint64_t timestamp;
+
     /**
-     * @brief The 3D position vector associated with this location.
+     * @brief 3D position of the recorded data point.
      */
     Vec3 position;
 };

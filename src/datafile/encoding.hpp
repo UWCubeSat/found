@@ -197,11 +197,11 @@ inline double htond(double v) {
  * @return The converted decimal value in network byte order.
  */
 inline decimal htondec(decimal v) {
-#if FOUND_FLOAT_MODE
-    return htonf(v);
-#else
-    return htond(v);
-#endif
+    #if FOUND_FLOAT_MODE
+        return htonf(v);
+    #else
+        return htond(v);
+    #endif
 }
 
 /**
@@ -211,11 +211,11 @@ inline decimal htondec(decimal v) {
  * @return The converted decimal value in host byte order.
  */
 inline decimal ntohdec(decimal v) {
-#if FOUND_FLOAT_MODE
-    return htonf(v);
-#else
-    return htond(v);
-#endif
+    #if FOUND_FLOAT_MODE
+        return htonf(v);
+    #else
+        return htond(v);
+    #endif
 }
 
 /**
