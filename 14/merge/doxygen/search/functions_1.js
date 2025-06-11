@@ -10,6 +10,5 @@ var searchData=
   ['connectedcomponentsalgorithm_7',['ConnectedComponentsAlgorithm',['../namespacefound.html#a034272a473435b1dc801e78399e739a5',1,'found']]],
   ['createcalibrationpipelineexecutor_8',['CreateCalibrationPipelineExecutor',['../namespacefound.html#a33ccbbbcf6bd9be1c3d26495d4a2b321',1,'found']]],
   ['createdistancepipelineexecutor_9',['CreateDistancePipelineExecutor',['../namespacefound.html#a21d3781dfb8397d64b8758781f0c2e1b',1,'found']]],
-  ['createorbitpipelineexecutor_10',['CreateOrbitPipelineExecutor',['../namespacefound.html#a5f4887ebc2460ab90303a25a77da19af',1,'found']]],
-  ['crossproduct_11',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
+  ['crossproduct_10',['CrossProduct',['../classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2',1,'found::Vec3']]]
 ];

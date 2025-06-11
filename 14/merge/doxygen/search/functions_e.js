@@ -8,7 +8,7 @@ var searchData=
   ['simpleedgedetectionalgorithm_5',['SimpleEdgeDetectionAlgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a60861160e18079f4035cef885826e55a',1,'found::SimpleEdgeDetectionAlgorithm']]],
   ['spatialtocamera_6',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
   ['spatialtospherical_7',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
-  ['sphericaldistancedeterminationalgorithm_8',['SphericalDistanceDeterminationAlgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#af84a2c7f57007f3997a57dc599dda58d',1,'found::SphericalDistanceDeterminationAlgorithm']]],
+  ['sphericaldistancedeterminationalgorithm_8',['SphericalDistanceDeterminationAlgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a8d443a039bd968423d59d86e82dc2f10',1,'found::SphericalDistanceDeterminationAlgorithm']]],
   ['sphericaltoquaternion_9',['sphericaltoquaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found::SphericalToQuaternion(decimal ra, decimal dec, decimal roll)'],['../namespacefound.html#a00d185e68e6373ac81872eeb3326ac28',1,'found::SphericalToQuaternion(EulerAngles angles)']]],
   ['sphericaltospatial_10',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
   ['stage_11',['Stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage']]],

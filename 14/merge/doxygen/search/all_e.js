@@ -16,6 +16,5 @@ var searchData=
   ['providecalibrationalgorithm_13',['ProvideCalibrationAlgorithm',['../namespacefound.html#aa765be64839ae3c22e8df425935c6b2a',1,'found']]],
   ['providedistancedeterminationalgorithm_14',['ProvideDistanceDeterminationAlgorithm',['../namespacefound.html#aabcf4fcd2889daa18b8aef44dc334a75',1,'found']]],
   ['provideedgedetectionalgorithm_15',['ProvideEdgeDetectionAlgorithm',['../namespacefound.html#a47afb4703927f20278c728ae9697471b',1,'found']]],
-  ['provideorbitpropagationalgorithm_16',['ProvideOrbitPropagationAlgorithm',['../namespacefound.html#ab602cb96e30906ade906b184b90b9b73',1,'found']]],
-  ['providevectorgenerationalgorithm_17',['ProvideVectorGenerationAlgorithm',['../namespacefound.html#ac459e8dc23006b2b79987909ef0e8042',1,'found']]]
+  ['providevectorgenerationalgorithm_16',['ProvideVectorGenerationAlgorithm',['../namespacefound.html#ac459e8dc23006b2b79987909ef0e8042',1,'found']]]
 ];
