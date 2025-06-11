@@ -11,6 +11,10 @@
  * @file datafile.hpp
  * @brief Declares data structures for serialized spatial data files, including headers,
  *        location records, and full data file representations.
+ * 
+ * @note To analyze a datafile, the definition of decimal must be the same
+ * for the program that generated the datafile and for the program that
+ * is reading it
  */
 
 namespace found {

@@ -73,7 +73,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
         // (we want to iterate into the space)
         uint64_t update;
         uint64_t start;
-        double offset;
+        decimal offset;
         uint64_t edge_condition;
         if (itrDirection.y < 0) {
             // Iterate up, and start at the bottom left corner
@@ -105,7 +105,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
         // Determine which direction we want to iterate
         uint64_t update;
         uint64_t start;
-        double offset;
+        decimal offset;
         uint64_t edge_condition;
         if (itrDirection.x < 0) {
             // Iterate left, and start at the top right corner

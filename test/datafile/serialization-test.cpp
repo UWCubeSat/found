@@ -99,7 +99,7 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     memcpy(data.header.magic, "FOUN", 4);
     data.header.version = 1;
     data.header.num_positions = 2;
-    data.relative_attitude = {123456789, 987654321, 111111111};
+    data.relative_attitude = {123456789., 987654321., 111111111.};
 
     LocationRecord loc1{161803398, {100, 200, 300}};
     LocationRecord loc2{271828182, {-100, -200, -300}};
