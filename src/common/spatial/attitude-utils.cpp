@@ -174,9 +174,8 @@ EulerAngles Quaternion::ToSpherical() const {
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
  * 
- * @note Rotating a vector with this quaternion is equivalent to a backwards rotation
- * (rotation into an absolute frame). This is opposite of normal quaternions, which
- * rotate you into a relative frame.
+ * @note Rotating a vector with this quaternion is equivalent to a forwards rotation (rotation into
+ * the absolute frame)
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(roll >= 0.0 && roll <= 2*M_PI);
@@ -230,28 +229,6 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
     if (ra < 0)
         ra += M_PI*2;
     de = asin(vec.z);
-}
-
-/**
- * Converts an angle in radians to degrees
- * 
- * @param rad The rad of the angle
- * 
- * @return The degrees of the angle
-*/
-decimal RadToDeg(decimal rad) {
-    return rad*180.0/M_PI;
-}
-
-/**
- * Converts an angle in degrees to radians
- * 
- * @param deg The degrees of the angle
- * 
- * @return The radians of the angle
-*/
-decimal DegToRad(decimal deg) {
-    return deg/180.0*M_PI;
 }
 
 /**

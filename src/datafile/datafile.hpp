@@ -4,6 +4,7 @@
 #include <memory>
 #include <cstdint>
 #include <string>
+
 #include "common/spatial/attitude-utils.hpp"  // Includes Vec3 and EulerAngles
 #include "common/style.hpp"
 
@@ -12,9 +13,8 @@
  * @brief Declares data structures for serialized spatial data files, including headers,
  *        location records, and full data file representations.
  * 
- * @note To analyze a datafile, the definition of decimal must be the same
- * for the program that generated the datafile and for the program that
- * is reading it
+ * @note All decimal variables are written as type double regardless of underlying
+ * definition
  */
 
 namespace found {
@@ -67,12 +67,36 @@ struct DataFile {
     /**
      * @brief Relative orientation (attitude) of the object as Euler angles.
      */
-    EulerAngles relative_attitude = EulerAngles(0, 0, 0);
+    Quaternion relative_attitude;
 
     /**
      * @brief Collection of location records in the file.
      */
     std::unique_ptr<LocationRecord[]> positions;
+
+    /**
+     * The path of this DataFile.
+     * 
+     * @note This is not a saved field
+     */
+    std::string path;
+
+    /// Constructs this
+    DataFile() = default;
+
+    /**
+     * Moves another DataFile
+     * 
+     * @param other The file to copy
+     */
+    DataFile(DataFile &&other) noexcept = default;
+
+    /**
+     * Moves another DataFile
+     * 
+     * @param other The file to copy
+     */
+    DataFile& operator=(DataFile &&other) = default;
 };
 
 }  // namespace found

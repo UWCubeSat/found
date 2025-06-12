@@ -18,12 +18,46 @@ std::function<bool(uint64_t, const Image &)> criteria = [](uint64_t index, const
 };
 
 MATCHER_P(ComponentEqual, expected, "") {
-    return std::is_permutation(expected.points.begin(),
-                               expected.points.end(),
-                               arg.points.begin(),
-                               arg.points.end()) &&
+    return expected.points == arg.points &&
            vectorEqual(arg.upperLeft, expected.upperLeft) &&
            vectorEqual(arg.lowerRight, expected.lowerRight);
+}
+
+TEST(ConnectedComponentsTest, TestInvalidImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        1,
+        -1,
+        0,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image, criteria));
+}
+
+TEST(ConnectedComponentsTest, TestEmptyImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        0,
+        0,
+        0,
+        imageData,
+    };
+
+    Components expected = {
+        {
+        }
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
 }
 
 TEST(ConnectedComponentsTest, TestOnePixelBase) {

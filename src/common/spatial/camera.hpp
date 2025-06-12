@@ -83,6 +83,13 @@ class Camera {
      */
     decimal FocalLength() const { return focalLength; }
 
+    /**
+     * Returns the pixel size of this camera
+     * 
+     * @return The pixel size of this
+     */
+    decimal PixelSize() const { return pixelSize; }
+
     decimal Fov() const;
 
     // Mutator Method for Cameras

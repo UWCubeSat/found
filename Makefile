@@ -71,6 +71,10 @@ ifndef DISABLE_LOGGING
   	endif
 endif
 
+ifdef FLOAT_MODE
+	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wno-narrowing
+endif
+
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO -DINFO_STREAM=std::cout -DWARN_STREAM=std::cerr -DERROR_STREAM=std::cerr
 
 # Compiler flags
@@ -78,7 +82,7 @@ LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
+CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
 CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
@@ -143,14 +147,16 @@ all: $(COMPILE_SETUP_TARGET) \
 $(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
-	mkdir -p $(BIN_DIR)
-	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
 	mkdir -p $(STB_IMAGE_CACHE_DIR)
 	mkdir -p $(CACHE_DIR)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+$(BUILD_LIBRARY_SRC_DIR):
+	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 compile_setup_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
-$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT) $(BUILD_DIR)
+$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT) $(BUILD_LIBRARY_SRC_DIR)
 	cp -r $(STB_IMAGE_CACHE_DIR) $(BUILD_LIBRARY_SRC_DIR)
 $(STB_IMAGE_CACHE_ARTIFACT):
 	wget $(STB_IMAGE_URL) -P $(STB_IMAGE_CACHE_DIR)
@@ -160,10 +166,10 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -c $< -o $@
 compile_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_TARGET))
 
@@ -173,18 +179,17 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	cpplint $(SRC) $(SRC_H)
 
 # The test setup target (sets up directories and gtest)
-$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
-$(BUILD_LIBRARY_TEST_DIR):
-	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
+$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_DOCUMENTATION_COVERAGE_DIR) $(GTEST_DIR)
+$(BUILD_DOCUMENTATION_COVERAGE_DIR):
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
-	mkdir -p $(CACHE_DIR)
 $(GTEST_DIR): $(GTEST_CACHE_DIR)
+	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
 	cp -r $(GTEST_CACHE_DIR) $(BUILD_LIBRARY_TEST_DIR)
 $(GTEST_CACHE_DIR):
 	wget $(GTEST_URL) -P $(CACHE_DIR)
 	tar -xzf $(GTEST_CACHE_ARTIFACT) -C $(CACHE_DIR)
 	mkdir -p $(GTEST_CACHE_BUILD_DIR)
-	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && make
+	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && make -j16
 	rm $(GTEST_CACHE_ARTIFACT)
 test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))

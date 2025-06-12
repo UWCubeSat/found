@@ -24,8 +24,12 @@ using found::SphericalDistanceDeterminationAlgorithm;
 
 // Radius of Earth (m)
 #define RADIUS_OF_EARTH (static_cast<decimal>(6378137.0))
-// Default DoubleEquals Tolerance (So big because of floating point problems)
-#define DEFAULT_TOLERANCE 0.01
+// Default DoubleEquals Tolerance (So big for float because of floating point problems)
+#ifdef FOUND_FLOAT_MODE
+    #define DEFAULT_TOLERANCE 600.0
+#else
+    #define DEFAULT_TOLERANCE 1e-3
+#endif
 // Tolerance for Generator-Derived Points
 
 
@@ -65,15 +69,15 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) {
     // Step II: Figure out my projection points
 
     // a) Find the angle
-    decimal alpha = asin(RADIUS_OF_EARTH / x_E);
+    decimal alpha = DECIMAL_ASIN(RADIUS_OF_EARTH / x_E);
 
     // b) Find the distance away from each projection point
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
 
     // c) Use 3 easy projections
-    Vec3 p1 = {static_cast<decimal>(p * cos(alpha)), static_cast<decimal>(p * sin(alpha)), 0};
-    Vec3 p2 = {static_cast<decimal>(p * cos(alpha)), static_cast<decimal>(-p * sin(alpha)), 0};
-    Vec3 p3 = {static_cast<decimal>(p * cos(alpha)), 0, static_cast<decimal>(p * sin(alpha))};
+    Vec3 p1 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(p * sin(alpha)), 0};
+    Vec3 p2 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(-p * sin(alpha)), 0};
+    Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * sin(alpha))};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),
@@ -100,17 +104,17 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
     // Step II: Figure out my projection points
 
     // a) Find the angle
-    decimal alpha = asin(RADIUS_OF_EARTH / x_E);
+    decimal alpha = DECIMAL_ASIN(RADIUS_OF_EARTH / x_E);
 
     // b) Find the distance away from each projection point
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
-    decimal centerMag = static_cast<decimal>(p * cos(alpha));
+    decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
     decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
 
     // c) Use 3 easy projections
-    Vec3 p1 = {centerMag, projectionRadiusMag * -std::cos(0.1), projectionRadiusMag * std::sin(0.1)};
+    Vec3 p1 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
     Vec3 p2 = {centerMag, projectionRadiusMag, 0};
-    Vec3 p3 = {centerMag, projectionRadiusMag * -std::cos(-0.1), projectionRadiusMag * std::sin(-0.1)};
+    Vec3 p3 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),
@@ -184,67 +188,69 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
-TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
-    // Step 0: Determine Quaterion rotation
-    found::Quaternion positionDirection = found::SphericalToQuaternion(
-        static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).Conjugate();
+#ifndef FOUND_FLOAT_MODE
+    TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
+        // Step 0: Determine Quaterion rotation
+        found::Quaternion positionDirection = found::SphericalToQuaternion(
+            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).Conjugate();
 
-    // Step I: Pick some distance (m) and a Camera
-    decimal y_E = RADIUS_OF_EARTH + 10000000;
-    int imageWidth = 100000;
-    int imageHeight = 100000;
-    Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {0, y_E, 0};
+        // Step I: Pick some distance (m) and a Camera
+        decimal y_E = RADIUS_OF_EARTH + 10000000;
+        int imageWidth = 100000;
+        int imageHeight = 100000;
+        Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
+        PositionVector expected = {0, y_E, 0};
 
-    // Step II: Figure out my projection points
+        // Step II: Figure out my projection points
 
-    // a) Find the angle
-    decimal alpha = asin(RADIUS_OF_EARTH / y_E);
+        // a) Find the angle
+        decimal alpha = DECIMAL_ASIN(RADIUS_OF_EARTH / y_E);
 
-    // b) Find the distance away from each projection point
-    decimal p = sqrt(y_E * y_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
-    decimal centerMag = static_cast<decimal>(p * cos(alpha));
-    decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
+        // b) Find the distance away from each projection point
+        decimal p = sqrt(y_E * y_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
+        decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
+        decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
 
-    // c) Use 3 easy projections
-    Vec3 p1 = {centerMag, -projectionRadiusMag * std::cos(0.1), projectionRadiusMag * std::sin(0.1)};
-    Vec3 p2 = {centerMag, -projectionRadiusMag, 0};
-    Vec3 p3 = {centerMag, -projectionRadiusMag * std::cos(-0.1), projectionRadiusMag * std::sin(-0.1)};
+        // c) Use 3 easy projections
+        Vec3 p1 = {centerMag, -projectionRadiusMag * DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
+        Vec3 p2 = {centerMag, -projectionRadiusMag, 0};
+        Vec3 p3 = {centerMag, -projectionRadiusMag * DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
 
-    // Logging information
-    // std::stringstream ss1;
+        // Logging information
+        // std::stringstream ss1;
 
-    // ss1 << p1.x << " " << p1.y << " " << p1.z;
+        // ss1 << p1.x << " " << p1.y << " " << p1.z;
 
-    // LOG_INFO(ss1.str());
+        // LOG_INFO(ss1.str());
 
-    Vec3 p1Rotated = positionDirection.Rotate(p1);
-    Vec3 p2Rotated = positionDirection.Rotate(p2);
-    Vec3 p3Rotated = positionDirection.Rotate(p3);
+        Vec3 p1Rotated = positionDirection.Rotate(p1);
+        Vec3 p2Rotated = positionDirection.Rotate(p2);
+        Vec3 p3Rotated = positionDirection.Rotate(p3);
 
-    // std::stringstream ss;
-    // ss << p1Rotated.x << " " << p1Rotated.y << " " << p1Rotated.z;
+        // std::stringstream ss;
+        // ss << p1Rotated.x << " " << p1Rotated.y << " " << p1Rotated.z;
 
-    // LOG_INFO(ss.str());
+        // LOG_INFO(ss.str());
 
-    // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1Rotated),
-                cam.SpatialToCamera(p2Rotated),
-                cam.SpatialToCamera(p3Rotated)};
+        // Step III: Use CTS to convert to 2D vectors
+        Points pts = {cam.SpatialToCamera(p1Rotated),
+                    cam.SpatialToCamera(p2Rotated),
+                    cam.SpatialToCamera(p3Rotated)};
 
-    // Points pts = {cam.SpatialToCamera(p1),
-    //     cam.SpatialToCamera(p2),
-    //     cam.SpatialToCamera(p3)};
+        // Points pts = {cam.SpatialToCamera(p1),
+        //     cam.SpatialToCamera(p2),
+        //     cam.SpatialToCamera(p3)};
 
 
-    // Step IV: Run It and Test!
-    SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
+        // Step IV: Run It and Test!
+        SphericalDistanceDeterminationAlgorithm algo =
+            SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
-    PositionVector actual = algo.Run(pts);
+        PositionVector actual = algo.Run(pts);
 
-    VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
-}
+        VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
+    }
+#endif
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom) {
     // Step I: Pick some distance (m) and a Camera
@@ -389,34 +395,36 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom5) {
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
-TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom6) {
-    // Step I: Pick some distance (m) and a Camera
-    int imageWidth = 1024;
-    int imageHeight = 1024;
-    Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected ={static_cast<decimal>(54043203.25303997844457626342773437500000),
-                              static_cast<decimal>(8435671.34863081201910972595214843750000),
-                              static_cast<decimal>(-49841910.58559905737638473510742187500000)};
+#ifndef FOUND_FLOAT_MODE
+    TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom6) {
+        // Step I: Pick some distance (m) and a Camera
+        int imageWidth = 1024;
+        int imageHeight = 1024;
+        Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
+        PositionVector expected ={static_cast<decimal>(54043203.25303997844457626342773437500000),
+                                static_cast<decimal>(8435671.34863081201910972595214843750000),
+                                static_cast<decimal>(-49841910.58559905737638473510742187500000)};
 
-    // Step II: Figure out my projection points
+        // Step II: Figure out my projection points
 
-    // Step III: Use CTS to convert to 2D vectors
-    Points pts = {
-        {static_cast<decimal>(445.31674167128113595026661641895771),
-            static_cast<decimal>(980.10941674657453859254019334912300)},
-        {static_cast<decimal>(449.85090050041014819726115092635155),
-            static_cast<decimal>(982.30626786287666618591174483299255)},
-        {static_cast<decimal>(472.65429568256860193287138827145100),
-            static_cast<decimal>(1003.57878217427446543297264724969864)}
-    };
+        // Step III: Use CTS to convert to 2D vectors
+        Points pts = {
+            {static_cast<decimal>(445.31674167128113595026661641895771),
+                static_cast<decimal>(980.10941674657453859254019334912300)},
+            {static_cast<decimal>(449.85090050041014819726115092635155),
+                static_cast<decimal>(982.30626786287666618591174483299255)},
+            {static_cast<decimal>(472.65429568256860193287138827145100),
+                static_cast<decimal>(1003.57878217427446543297264724969864)}
+        };
 
-    // Step IV: Run It and Test!
-    SphericalDistanceDeterminationAlgorithm algo =
-        SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
+        // Step IV: Run It and Test!
+        SphericalDistanceDeterminationAlgorithm algo =
+            SphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam));
 
-    PositionVector actual = algo.Run(pts);
-    VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
-}
+        PositionVector actual = algo.Run(pts);
+        VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
+    }
+#endif
 
 TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRandom7) {
     // Step I: Pick some distance (m) and a Camera

@@ -1,10 +1,13 @@
 #include <memory>
 #include <fstream>
 #include <iostream>
-#include "datafile/encoding.hpp"
-#include "datafile/serialization.hpp"
+#include <string>
+
 #include "common/spatial/attitude-utils.hpp"
 #include "common/logging.hpp"
+
+#include "datafile/encoding.hpp"
+#include "datafile/serialization.hpp"
 
 namespace found {
 
@@ -30,8 +33,12 @@ void ntoh(DataFileHeader& header) {
  * @post stream has value written into it, in network byte order
  */
 inline void write(std::ostream& stream, const decimal& value) {
-    decimal v = htondec(value);
-    stream.write(reinterpret_cast<const char*>(&v), sizeof(decimal));
+    #ifdef FOUND_FLOAT_MODE
+        double v = htond(static_cast<double>(value));
+    #else
+        double v = htondec(value);
+    #endif
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(double));
 }
 
 /**
@@ -43,14 +50,22 @@ inline void write(std::ostream& stream, const decimal& value) {
  * 
  * @post value is now the decimal value that is at the position
  * where stream is, in host byte order
- *
  */
 inline void read(std::istream& stream, decimal& value) {
-    stream.read(reinterpret_cast<char*>(&value), sizeof(decimal));
-    if (stream.gcount() != sizeof(decimal)) {
+    #ifdef FOUND_FLOAT_MODE
+        double temp;
+        stream.read(reinterpret_cast<char*>(&temp), sizeof(double));
+    #else
+        stream.read(reinterpret_cast<char*>(&value), sizeof(double));
+    #endif
+    if (stream.gcount() != sizeof(double)) {
         throw std::ios_base::failure("Failed to read decimal value");
     }
-    value = ntohdec(value);
+    #ifdef FOUND_FLOAT_MODE
+        value = DECIMAL(ntohd(temp));
+    #else
+        value = ntohdec(value);
+    #endif
 }
 
 /**
@@ -81,7 +96,7 @@ inline void write(std::ostream& stream, const uint64_t& value) {
  */
 inline void read(std::istream& stream, uint64_t& value) {
     stream.read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
-    if (stream.gcount() != sizeof(uint64_t)) {  // GCOVR_EXCL_LINE (impossible to be true at this time)
+    if (stream.gcount() != sizeof(uint64_t)) {
         throw std::ios_base::failure("Failed to read uint64_t value");
     }
     value = ntohl(value);
@@ -123,34 +138,36 @@ inline void read(std::istream& stream, uint32_t& value) {
 
 /**
  *
- * @brief Serializes an EulerAngles object to the given output stream.
+ * @brief Serializes an Quaternion to the given output stream.
  * 
  * @param stream The stream to write into
- * @param angles The angles to read from
+ * @param quat The angles to read from
  * 
- * @post stream has all fields of angles written into it, each in network byte order.
+ * @post stream has all fields of quat written into it, each in network byte order.
  *
  */
-inline void write(std::ostream& stream, const EulerAngles& angles) {
-    write(stream, angles.roll);
-    write(stream, angles.ra);
-    write(stream, angles.de);
+inline void write(std::ostream& stream, const Quaternion& quat) {
+    write(stream, quat.real);
+    write(stream, quat.i);
+    write(stream, quat.j);
+    write(stream, quat.k);
 }
 
 /**
  *
- * @brief Reads EulerAngles data from an input stream.
+ * @brief Reads Quaternion data from an input stream.
  * 
  * @param stream The stream to read from
- * @param angles The angles to write into
+ * @param quat The angles to write into
  * 
- * @post angles has the values that stream held
+ * @post quat has the values that stream held
  *
  */
-inline void read(std::istream& stream, EulerAngles& angles) {
-    read(stream, angles.roll);
-    read(stream, angles.ra);
-    read(stream, angles.de);
+inline void read(std::istream& stream, Quaternion& quat) {
+    read(stream, quat.real);
+    read(stream, quat.i);
+    read(stream, quat.j);
+    read(stream, quat.k);
 }
 
 /**
@@ -196,8 +213,8 @@ inline void read(std::istream& stream, Vec3& v) {
  *
  */
 inline void write(std::ostream& stream, const LocationRecord& record) {
-    write(stream, record.position);
     write(stream, record.timestamp);
+    write(stream, record.position);
 }
 
 /**
@@ -211,8 +228,8 @@ inline void write(std::ostream& stream, const LocationRecord& record) {
  *
  */
 inline void read(std::istream& stream, LocationRecord& record) {
-    read(stream, record.position);
     read(stream, record.timestamp);
+    read(stream, record.position);
 }
 
 uint32_t calculateCRC32(const void* data, size_t length) {
@@ -230,7 +247,7 @@ uint32_t calculateCRC32(const void* data, size_t length) {
     return crc ^ 0xFFFFFFFFU;
 }
 
-void serialize(const DataFile& data, std::ostream& stream) {
+void serializeDataFile(const DataFile& data, std::ostream& stream) {
     DataFileHeader header = data.header;
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     hton(header);
@@ -243,7 +260,7 @@ void serialize(const DataFile& data, std::ostream& stream) {
     }
 }
 
-DataFile deserialize(std::istream& stream) {
+DataFile deserializeDataFile(std::istream& stream) {
     DataFile data;
     data.header = readHeader(stream);
 
@@ -253,6 +270,13 @@ DataFile deserialize(std::istream& stream) {
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
         read(stream, data.positions[i]);
     }
+
+    return data;
+}
+
+DataFile deserializeDataFile(std::istream& stream, const std::string &path) {
+    DataFile data = deserializeDataFile(stream);
+    data.path = path;
 
     return data;
 }

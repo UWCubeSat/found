@@ -18,6 +18,9 @@
 /// arguments
 int optind = 2;
 
+/// Defines the help message
+#define HELP_MSG "Use ./found --help or ./found -h for help"
+
 /**
  * Determines whether the current flag allows an optional argument AND
  * if that argument exists
@@ -67,7 +70,7 @@ const char kNoDefaultArgument = 0;
 
 int main(int argc, char **argv) {
     if (argc == 1) {
-        LOG_ERROR("Seems you don't want to be found. Use --help or -h for help");
+        LOG_ERROR("Seems you don't want to be found. " << HELP_MSG);
         return EXIT_FAILURE;
     }
     std::string command(argv[1]);
@@ -122,7 +125,7 @@ int main(int argc, char **argv) {
         */
         return EXIT_SUCCESS;
     } else {
-        LOG_ERROR("Unrecognized Command: " << command << ". Use --help or -h for help");
+        LOG_ERROR("Unrecognized Command: " << command << ". " << HELP_MSG);
         return EXIT_FAILURE;
     }
 
@@ -173,7 +176,7 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
             CALIBRATION
             #undef FOUND_CLI_OPTION
             default:
-                LOG_ERROR("Illegal flag detected");
+                LOG_ERROR("Illegal flag detected. " << HELP_MSG);
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -223,7 +226,7 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv) {
             DISTANCE
             #undef FOUND_CLI_OPTION
             default:
-                LOG_ERROR("Illegal flag detected");
+                LOG_ERROR("Illegal flag detected. " << HELP_MSG);
                 exit(EXIT_FAILURE);
                 break;
         }
@@ -273,7 +276,7 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv) {
             ORBIT
             #undef FOUND_CLI_OPTION
             default:
-                LOG_ERROR("Illegal flag detected");
+                LOG_ERROR("Illegal flag detected. " << HELP_MSG);
                 exit(EXIT_FAILURE);
                 break;
         }

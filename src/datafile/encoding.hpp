@@ -2,6 +2,9 @@
 #define ENCODING_H
 
 #include <endian.h>
+#include <stdint.h>
+
+#include "common/decimal.hpp"
 
 #ifdef __BYTE_ORDER__
     #define ENDIANESS __BYTE_ORDER__
@@ -9,10 +12,6 @@
     // manual definition
     #define ENDIANESS __ORDER_LITTLE_ENDIAN__
 #endif
-
-#include <stdint.h>
-
-#include "common/decimal.hpp"
 
 namespace found {
 
