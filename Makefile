@@ -71,7 +71,7 @@ ifndef DISABLE_LOGGING
   	endif
 endif
 
-ifdef FOUND_FLOAT_MODE
+ifdef FLOAT_MODE
 	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wno-narrowing
 endif
 
@@ -179,12 +179,11 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	cpplint $(SRC) $(SRC_H)
 
 # The test setup target (sets up directories and gtest)
-$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_LIBRARY_TEST_DIR) $(GTEST_DIR)
-$(BUILD_LIBRARY_TEST_DIR):
-	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
+$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_DOCUMENTATION_COVERAGE_DIR) $(GTEST_DIR)
+$(BUILD_DOCUMENTATION_COVERAGE_DIR):
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
-	mkdir -p $(CACHE_DIR)
-$(GTEST_DIR): $(GTEST_CACHE_DIR) # It doesn't like it when I add $(BUILD_LIBRARY_TEST_DIR) here for some reason
+$(GTEST_DIR): $(GTEST_CACHE_DIR)
+	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
 	cp -r $(GTEST_CACHE_DIR) $(BUILD_LIBRARY_TEST_DIR)
 $(GTEST_CACHE_DIR):
 	wget $(GTEST_URL) -P $(CACHE_DIR)

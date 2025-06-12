@@ -13,9 +13,8 @@
  * @brief Declares data structures for serialized spatial data files, including headers,
  *        location records, and full data file representations.
  * 
- * @note To analyze a datafile, the definition of decimal must be the same
- * for the program that generated the datafile and for the program that
- * is reading it
+ * @note All decimal variables are written as type double regardless of underlying
+ * definition
  */
 
 namespace found {

@@ -133,9 +133,10 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization1) {
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
     header.crc = htonl(header.crc);
-
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-    out.write("bad", 3);  // Incomplete LocationRecord, specifically incomplete relative attitude
+
+    // Incomplete LocationRecord, specifically incomplete relative attitude
+    out.write("bad", 3);
 
     std::string buffer = out.str();
     std::istringstream in(buffer);
@@ -158,12 +159,20 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization2) {
     header.version = htonl(header.version);
     header.num_positions = htonl(header.num_positions);
     header.crc = htonl(header.crc);
-
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-    Quaternion relative_attitude{};
-    out.write(reinterpret_cast<const char *>(&relative_attitude), sizeof(relative_attitude));
-    LocationRecord dummy = {1000, {1, 2, 3}};
-    out.write(reinterpret_cast<const char *>(&dummy), sizeof(Vec3) + 1);  // Incomplete LocationRecord
+
+    // Now write a quaternion in file format (all fields are double, so that it works for FOUND_FLOAT_MODE too)
+    struct Quat {
+        double real = 1.2;
+        double i = -2.16;
+        double j = 0.6;
+        double k = -0.2;
+    } quaternion_field;
+    out.write(reinterpret_cast<const char *>(&quaternion_field), sizeof(quaternion_field));
+
+    // Now write a location record, but only part of the first field
+    LocationRecord locationRecord = {1000, {1, 2, 3}};
+    out.write(reinterpret_cast<const char *>(&locationRecord.position), 1);  // Incomplete LocationRecord
 
     std::string buffer = out.str();
     std::istringstream in(buffer);

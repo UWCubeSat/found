@@ -213,8 +213,8 @@ inline void read(std::istream& stream, Vec3& v) {
  *
  */
 inline void write(std::ostream& stream, const LocationRecord& record) {
-    write(stream, record.position);
     write(stream, record.timestamp);
+    write(stream, record.position);
 }
 
 /**
@@ -228,8 +228,8 @@ inline void write(std::ostream& stream, const LocationRecord& record) {
  *
  */
 inline void read(std::istream& stream, LocationRecord& record) {
-    read(stream, record.position);
     read(stream, record.timestamp);
+    read(stream, record.position);
 }
 
 uint32_t calculateCRC32(const void* data, size_t length) {

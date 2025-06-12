@@ -40,9 +40,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all (Twice)
-      run: (make compile FOUND_FLOAT_MODE=true -j16 || make compile FOUND_FLOAT_MODE=true -j16)
+      run: (make compile FLOAT_MODE=true -j16 || make compile FLOAT_MODE=true -j16)
     - name: Coverage (Twice)
-      run: (make coverage FOUND_FLOAT_MODE=true -j16 || make coverage FOUND_FLOAT_MODE=true -j16)     
+      run: (make coverage FLOAT_MODE=true -j16 || make coverage FLOAT_MODE=true -j16)     
 
   lint:
     runs-on: ubuntu-latest
