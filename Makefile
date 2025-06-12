@@ -165,7 +165,7 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
 	mkdir -p $(@D)
@@ -184,7 +184,7 @@ $(BUILD_LIBRARY_TEST_DIR):
 	mkdir -p $(BUILD_LIBRARY_TEST_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
 	mkdir -p $(CACHE_DIR)
-$(GTEST_DIR): $(GTEST_CACHE_DIR)
+$(GTEST_DIR): $(GTEST_CACHE_DIR) # It doesn't like it when I add $(BUILD_LIBRARY_TEST_DIR) here for some reason
 	cp -r $(GTEST_CACHE_DIR) $(BUILD_LIBRARY_TEST_DIR)
 $(GTEST_CACHE_DIR):
 	wget $(GTEST_URL) -P $(CACHE_DIR)

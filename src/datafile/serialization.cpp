@@ -96,7 +96,7 @@ inline void write(std::ostream& stream, const uint64_t& value) {
  */
 inline void read(std::istream& stream, uint64_t& value) {
     stream.read(reinterpret_cast<char*>(&value), sizeof(uint64_t));
-    if (stream.gcount() != sizeof(uint64_t)) {  // GCOVR_EXCL_LINE (impossible to be true at this time)
+    if (stream.gcount() != sizeof(uint64_t)) {
         throw std::ios_base::failure("Failed to read uint64_t value");
     }
     value = ntohl(value);

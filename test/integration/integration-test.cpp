@@ -67,8 +67,7 @@ TEST_F(IntegrationTest, TestMainHelp) {
     ASSERT_NE(static_cast<size_t>(0), output2.size());
 }
 
-// TODO: Update the next 3 tests to test once we get meaningful outputs,
-// and expand to even more tests to cover a range of inputs and outputs
+// TODO: Add more integration tests here to make this more complete
 
 TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     int argc = 2;
@@ -260,7 +259,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
 // TEST_F(IntegrationTest, TestMainOrbitOption) {
 //     int argc = 14;
 //     const char *argv[] = {"found", "orbit",
-//         "--position-data", "test/common/assets/position-data/pos-data-valid.txt",
+//         "--position-data", pos_data,
 //         "--output-form", "xml",
 //         "--total-time", "7200.0",
 //         "--mu", "168251.0"};

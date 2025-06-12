@@ -135,7 +135,7 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization1) {
     header.crc = htonl(header.crc);
 
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
-    out.write("bad", 3);  // Incomplete LocationRecord, specifically incomplete Vec3
+    out.write("bad", 3);  // Incomplete LocationRecord, specifically incomplete relative attitude
 
     std::string buffer = out.str();
     std::istringstream in(buffer);
@@ -160,6 +160,8 @@ TEST_F(SerializationTest, CorruptedPositionDeserialization2) {
     header.crc = htonl(header.crc);
 
     out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    Quaternion relative_attitude{};
+    out.write(reinterpret_cast<const char *>(&relative_attitude), sizeof(relative_attitude));
     LocationRecord dummy = {1000, {1, 2, 3}};
     out.write(reinterpret_cast<const char *>(&dummy), sizeof(Vec3) + 1);  // Incomplete LocationRecord
 

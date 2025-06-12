@@ -185,7 +185,7 @@ TEST_F(ParserTest, OrbitParserBaseCase) {
 TEST_F(ParserTest, OrbitParserGeneral) {
     int argc = 14;
     const char *argv[] = {"found", "orbit",
-        "--position-data", "test/common/assets/position-data/pos-data-valid.txt",
+        "--position-data", pos_data,
         "--output-form", "json",
         "--total-time", "7200.0",
         "--time-step", "0.02",

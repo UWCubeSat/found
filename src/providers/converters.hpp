@@ -8,6 +8,8 @@
 
 #include "stb_image/stb_image.h"
 
+#include "common/logging.hpp"
+
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -70,13 +72,15 @@ inline EulerAngles strtoea(const std::string &str) {
     size_t end = str.find(delimiter);
     size_t index = 0;
 
-    while (index != 3 && end != std::string::npos) {
+    while (index != 2 && end != std::string::npos) {
         result[index++] = strtodecimal(str.substr(start, end - start));
         start = end + 1;
         end = str.find(delimiter, start);
     }
 
-    result[index] = strtodecimal(str.substr(start));
+    result[index++] = strtodecimal(str.substr(start));
+
+    while (index != 3) result[index++] = 0;
 
     return EulerAngles(DegToRad(result[0]), DegToRad(result[1]), DegToRad(result[2]));
 }
@@ -114,6 +118,14 @@ inline Image strtoimage(const std::string &str) {
 }
 
 /**
+ * 
+ */
+inline DataFile strtodf(const std::string &str) {
+    std::ifstream stream(str);
+    return deserializeDataFile(stream, str);
+}
+
+/**
  * Converts a string to a vector of location records
  * 
  * @param str The string to convert
@@ -125,8 +137,16 @@ inline Image strtoimage(const std::string &str) {
  * Timestamp(int) PositionX(decimal) PositionY(decimal) PositionZ(decimal)
  */
 inline LocationRecords strtolr(const std::string &str) {
+    if (str.size() >= 6) {
+        if (str.substr(str.size() - 6) == ".found") {
+            LOG_INFO("Getting Position Data from Data File (*.found)");
+            DataFile data = strtodf(str);
+            return LocationRecords(data.positions.get(), data.positions.get() + data.header.num_positions);
+        }
+    }
+
+    LOG_INFO("Getting Position Data from non-Data File (not *.found)");
     LocationRecords records;
-    // TODO: If the file is a Data File, then parse it differently
     std::ifstream file(str);
     if (!file.is_open()) {
         throw std::runtime_error("Could not open file " + str);
@@ -138,21 +158,13 @@ inline LocationRecords strtolr(const std::string &str) {
         LocationRecord record;
         if (!(iss >> record.timestamp >> record.position.x >> record.position.y >> record.position.z)) {
             file.close();
-            throw std::runtime_error("Invalid format in file " + str + ": " + line);
+            throw std::runtime_error("Invalid format for file " + str + ": " + line);
         }
         records.push_back(record);
     }
 
     file.close();
     return records;
-}
-
-/**
- * 
- */
-inline DataFile strtodf(const std::string &str) {
-    std::ifstream stream(str);
-    return deserializeDataFile(stream, str);
 }
 
 }  // namespace found

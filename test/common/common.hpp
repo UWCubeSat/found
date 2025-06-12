@@ -158,6 +158,8 @@ struct ImageData {
 
 /// The temporary Datafile
 constexpr const char *temp_df = "test/common/assets/temp.found";
+/// The valid Position Data text
+constexpr const char *pos_data = "test/common/assets/position-data/pos-data-valid.txt";
 /// The sample image
 const ImageData example_earth1(
     "test/common/assets/example_earth1.png",
@@ -166,7 +168,6 @@ const ImageData example_earth1(
     {DegToRad(140), 0, 0},
     {10378137, 0, 0}
 );
-
 
 }  // namespace found
 

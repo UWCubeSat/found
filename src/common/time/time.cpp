@@ -35,7 +35,7 @@ DateTime getUTCTime() {
 DateTime getUT1Time() {
     // TODO: For simplicity, we return an approximation of UT1,
     // whose formula is UT1 = UTC + Delta UT1. This should be
-    // replaced with either a table lookup or a function.
+    // replaced with either a table lookup or some curve function.
     //
     // Based on https://maia.usno.navy.mil/ser7/ser7.dat, which
     // provides Delta UT1 values from 2025 to 2026, the average is
