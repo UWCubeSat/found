@@ -190,14 +190,13 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
 
     optind = 2;
 
-    int argc2 = 14;
+    int argc2 = 12;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
-                        "--reference-orientation", "190,0,0",
-                        "--output-file", temp_df};
+                        "--reference-orientation", "190,0,0"};
     // The relative orientation is EulerAngles{-30, 0, 0}, while the
     // reference orientation is {190,0,0}, which adds to a total
     // orientation of {140, 0, 0} (they add up in this case, but
@@ -208,12 +207,59 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     std::ifstream file(temp_df);
     DataFile actual = deserializeDataFile(file);
 
+    std::cout << "Tolerances: " << (example_earth1.position - actual.positions[0].position).Magnitude()
+        / example_earth1.position.Magnitude() << " " << RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)) << std::endl;
+
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
               (example_earth1.position - actual.positions[0].position).Magnitude()
                 / example_earth1.position.Magnitude());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+}
+
+TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
+    int argc1 = 8;
+    const char *argv1[] = {"found", "calibration",
+                        "--reference-orientation", "20,0,0",
+                        "--local-orientation", "50,0,0",
+                        "--output-file", temp_df};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc1, const_cast<char **>(argv1)));
+
+    optind = 2;
+
+    const char *other_path = "test/common/assets/other.found";
+
+    int argc2 = 14;
+    const char *argv2[] = {"found", "distance",
+                        "--image", example_earth1.path,
+                        "--calibration-data", temp_df,
+                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
+                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
+                        "--reference-orientation", "190,0,0",
+                        "--output-file", other_path};
+    // The relative orientation is EulerAngles{-30, 0, 0}, while the
+    // reference orientation is {190,0,0}, which adds to a total
+    // orientation of {140, 0, 0} (they add up in this case, but
+    // in general, they do not)
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc2, const_cast<char **>(argv2)));
+
+    std::ifstream file(other_path);
+    DataFile actual = deserializeDataFile(file);
+
+    std::cout << "Tolerances: " << (example_earth1.position - actual.positions[0].position).Magnitude()
+        / example_earth1.position.Magnitude() << " " << RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)) << std::endl;
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
+    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
+    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
+              (example_earth1.position - actual.positions[0].position).Magnitude()
+                / example_earth1.position.Magnitude());
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+
+    std::remove(other_path);
 }
 
 // TODO: Uncomment when orbit stage is implemented

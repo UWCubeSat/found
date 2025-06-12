@@ -23,10 +23,90 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 As this repository uses GNU Make to generate its artifacts, you'll need to rerun `make` everytime you change the code.
 
 # Usage
-FOUND is still in development! Come back in about 3 to 6 months to see how to run FOUND.
+The main executable, which is found in `./build/bin/found`, operates as a standard command-line based program. The usage is:
+<div align="center">
+
+`./build/bin/found <option> [flags]`
+
+</div>
+There are currently two options:
+
+1. `calibration`: FOUND needs to know its own camera attitude, but does not find that information. Thus, this step produces a relative attitude based on a reference attitude that is always known, and one measurement of the FOUND camera's attitude. The output is to a `.found` file that stores this information.
+2. `distance`: FOUND then uses an image taken from space together with a `.found` file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible).
+
+To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`.
+
+## Example Usage
+Here, we present a common usage for this program. After generating the binary via `make` or simply `make compile`, execute the command:
+
+```bash
+./build/bin/found calibration        \
+    --reference-orientation "20,0,0" \
+    --local-orientation "50,0,0"     \
+    --output-file "example-df.found"
+```
+Here's what the flags mean:
+1. A reference attitude is given (degrees) in terms of right ascension, declination and roll.
+2. Another attitude is given for the local orientation, which is the orientation of FOUND.
+3. There is an output file to put our calibrational data in.
+
+You will notice in the your current directory the file `example-df.found` has now appeared. You cannot directly read this file, but in particular, this file records a required Z rotation of -30 degrees to go from the reference to FOUND's attitude.
+
+We can then use this calibration information to now make some position estimates of our satellite. Execute the command:
+
+```bash
+./build/bin/found distance                         \
+    --image test/common/assets/example_earth1.png  \
+    --calibration-data example-df.found            \
+    --camera-focal-length 85e-3                    \
+    --camera-pixel-size 20e-6                      \
+    --reference-orientation 190,0,0
+```
+
+For the distance flags:
+1. The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases
+2. We then specify our calibration data, which we generated above
+3. We can specify camera parameters, like the focal length (m)
+4. Or the pixel size (m)
+5. We then have our reference orientation, which we need to use in conjunction with our calibration data
+
+Feeding all this information, the program now analyzes the image, the calibration data and the rest of the parameters to give us its estimate, which is seen below:
+
+```text
+[INFO 2025-06-11 20:58:06 PDT] Using DataFile for calibration information
+[INFO 2025-06-11 20:58:06 PDT] Calculated Position: (1.0456e+07, -67903.8, -972.935) m
+[INFO 2025-06-11 20:58:06 PDT] Distance from Earth: 1.04562e+07 m
+```
+
+This is close to the actual position, which is `{10378137, 0, 0} m`. To be specific, the difference is 0.995379% in magnitude and 1339.65 arcsec in direction (this is especially good since we're using low quality edge detection).
+
+Another thing to point out is the reference orientation, which was `{190,0,0}`. The image specified in the command was taken at an attitude of `{140,0,0}`, which if you remember, `{190,0,0}-{30,0,0}={140,0,0}` (this doesn't general hold, since attitude "subtraction" doesn't actually look like this). This of course is important to specify, otherwise, you'll get the same magnitude, but wrong direction. Should you not want to use the calibration file to do this odd math, you can instead do the equivalent command:
+
+```bash
+./build/bin/found distance                           \
+    --image "test/common/assets/example_earth1.png"  \
+    --reference-as-orientation                       \
+    --camera-focal-length 85e-3                      \
+    --camera-pixel-size 20e-6                        \
+    --reference-orientation "140,0,0"
+```
+Where `--reference-as-orientation` tells the program to use whatever `--reference-orientation` is as the orientation of FOUND.
+
+Lastly, one thing you will not notice is that the `temp.found` file has changed. In addition to storing calibration infomration, it also stores the calculated positions and their time stamps. This is important for the `orbit` stage, which is currently not implemented. If you should not want to output to the same file, you can instead do:
+
+```bash
+./build/bin/found distance                         \
+    --image test/common/assets/example_earth1.png  \
+    --calibration-data example-df.found            \
+    --camera-focal-length 85e-3                    \
+    --camera-pixel-size 20e-6                      \
+    --reference-orientation 190,0,0                \
+    --output-file other.found
+```
+
 
 # Capabilities
-FOUND will have the following components/modules, which all function together produce an orbital projection for a given satellite.
+FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.
 
 ## Edge Detection
 After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:

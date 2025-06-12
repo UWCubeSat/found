@@ -81,8 +81,13 @@ void DistancePipelineExecutor::OutputResults() {
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
     outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
-    std::ofstream outputFile(this->options_.outputFile);
-    serializeDataFile(outputDF, outputFile);
+    if (this->options_.outputFile != "") {
+        std::ofstream outputFile(this->options_.outputFile);
+        serializeDataFile(outputDF, outputFile);
+    } else {
+        std::ofstream outputFile(this->options_.calibrationData.path);
+        serializeDataFile(outputDF, outputFile);
+    }
 }
 
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
