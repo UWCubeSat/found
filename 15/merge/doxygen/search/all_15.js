@@ -4,5 +4,5 @@ var searchData=
   ['universal_20navigation_20determiner_1',['FOUND: FOUND Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['updatecomponent_2',['UpdateComponent',['../namespacefound.html#a19e0751672c939b693c5383d3ee7dcde',1,'found']]],
   ['upperleft_3',['upperleft',['../structfound_1_1Edge.html#a0660753a6166809163354b7f54c59259',1,'found::Edge::upperLeft'],['../structfound_1_1Component.html#a413f7638e42236b43c54534d39d69e67',1,'found::Component::upperLeft']]],
-  ['usage_4',['Usage',['../index.html#autotoc_md4',1,'']]]
+  ['usage_4',['usage',['../index.html#autotoc_md5',1,'Example Usage'],['../index.html#autotoc_md4',1,'Usage']]]
 ];
