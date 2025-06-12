@@ -27,11 +27,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Test (Twice)
-      run: (make test || make test)
+    - name: Test (FOUND_FLOAT_MODE, Twice)
+      run: |
+        (make test FOUND_FLOAT_MODE=true || make test FOUND_FLOAT_MODE=true)
+        ./build/bin/found-test
     - name: Memory Check
       run: (make clean) && (make test OMIT_ASAN=true) && ((valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test))
-  
+
   lint:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest

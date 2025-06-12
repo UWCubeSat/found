@@ -62,12 +62,15 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
 
-    // Expected Output: 0.965926, -8.65956e-17, 0.258819, 8.65956e-17
-    // Took actual output and confirmed it conformed to this, then used it in
-    // the regex
+    // Both expected outputs are confirmed to conform to expectation
     std::stringstream expectedOutput;
-    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
+    #ifdef FOUND_FLOAT_MODE
+        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                    << "Calibration Quaternion: \\((0.965926, 0, 0.258819, 0)\\)\\s*";
+    #else
+        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                    << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
+    #endif
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 

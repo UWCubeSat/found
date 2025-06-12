@@ -52,7 +52,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesGeneral1) {
     decimal gmst = 54;
     EarthSphericalVec3 actual = GetEarthCoordinates(celestialVector, gmst);
     EulerAngles expected = {-DegToRad(gmst) + atan2(celestialVector.y, celestialVector.x),
-                          asin(celestialVector.z/celestialVector.Magnitude()),
+                          DECIMAL_ASIN(celestialVector.z/celestialVector.Magnitude()),
                           0};
 
     ASSERT_DECIMAL_EQ_DEFAULT((expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra),
@@ -69,7 +69,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesGeneral2) {
     EulerAngles expected = {-DegToRad(std::fmod(gmst, 360.0))
                                 + atan2(celestialVector.y, celestialVector.x)
                                 + 2 * DECIMAL_M_PI,  // I manually adjust for this
-                          asin(celestialVector.z/celestialVector.Magnitude()),
+                          DECIMAL_ASIN(celestialVector.z/celestialVector.Magnitude()),
                           0};
 
     ASSERT_DECIMAL_EQ_DEFAULT((expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra),

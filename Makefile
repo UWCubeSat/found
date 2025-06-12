@@ -71,6 +71,10 @@ ifndef DISABLE_LOGGING
   	endif
 endif
 
+ifdef FOUND_FLOAT_MODE
+	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wno-narrowing
+endif
+
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO -DINFO_STREAM=std::cout -DWARN_STREAM=std::cerr -DERROR_STREAM=std::cerr
 
 # Compiler flags
@@ -78,7 +82,7 @@ LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS)
+CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
 CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code

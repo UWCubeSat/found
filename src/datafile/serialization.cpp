@@ -33,8 +33,12 @@ void ntoh(DataFileHeader& header) {
  * @post stream has value written into it, in network byte order
  */
 inline void write(std::ostream& stream, const decimal& value) {
-    decimal v = htondec(value);
-    stream.write(reinterpret_cast<const char*>(&v), sizeof(decimal));
+    #ifdef FOUND_FLOAT_MODE
+        double v = htond(static_cast<double>(value));
+    #else
+        double v = htondec(value);
+    #endif
+    stream.write(reinterpret_cast<const char*>(&v), sizeof(double));
 }
 
 /**
@@ -46,14 +50,22 @@ inline void write(std::ostream& stream, const decimal& value) {
  * 
  * @post value is now the decimal value that is at the position
  * where stream is, in host byte order
- *
  */
 inline void read(std::istream& stream, decimal& value) {
-    stream.read(reinterpret_cast<char*>(&value), sizeof(decimal));
-    if (stream.gcount() != sizeof(decimal)) {
+    #ifdef FOUND_FLOAT_MODE
+        double temp;
+        stream.read(reinterpret_cast<char*>(&temp), sizeof(double));
+    #else
+        stream.read(reinterpret_cast<char*>(&value), sizeof(double));
+    #endif
+    if (stream.gcount() != sizeof(double)) {
         throw std::ios_base::failure("Failed to read decimal value");
     }
-    value = ntohdec(value);
+    #ifdef FOUND_FLOAT_MODE
+        value = DECIMAL(ntohd(temp));
+    #else
+        value = ntohdec(value);
+    #endif
 }
 
 /**

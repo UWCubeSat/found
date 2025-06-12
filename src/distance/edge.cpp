@@ -14,6 +14,8 @@ namespace found {
 
 ////// Simple Edge Detection Algorithm //////
 
+// TODO: Investigate if the use of the DECIMAL(x) cast is taking up too much time
+
 Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 0: Define Common Variables
     uint64_t imageSize = image.width * image.height;
@@ -49,12 +51,12 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     int64_t spaceSize = 0;
     for (uint64_t i = 0; i < imageSize; i++) {
         if (points.find(i) == points.end()) {
-            planetCentroid.x += DECIMAL(i % image.width);
-            planetCentroid.y += DECIMAL(i / image.width);
+            planetCentroid.x += i % image.width;
+            planetCentroid.y += i / image.width;
             planetSize++;
         } else {
-            spaceCentroid.x += DECIMAL(i % image.width);
-            spaceCentroid.y += DECIMAL(i / image.width);
+            spaceCentroid.x += i % image.width;
+            spaceCentroid.y += i / image.width;
             spaceSize++;
         }
     }

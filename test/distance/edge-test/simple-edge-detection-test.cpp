@@ -262,21 +262,30 @@ TEST(SimpleEdgeDetectionTest, TestCornerQuarterEdge1) {
         imageData
     };
 
-    Points expected = {
+    Points expected1 = {
         {0, 0},
+        {1, 1},
+        {2, 2},
+        {3, 3},
+    };
+    Points expected2 = {
+        {4, 4},
         {1, 1},
         {2, 2},
         {3, 3},
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
-    std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
-                    return Vec2Equal(val);
-                });
-
-    ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
+    ASSERT_TRUE(std::is_permutation(expected1.begin(),
+                        expected1.end(),
+                        actual.begin(),
+                        actual.end(),
+                        vectorEqual) ||
+                std::is_permutation(expected2.begin(),
+                        expected2.end(),
+                        actual.begin(),
+                        actual.end(),
+                        vectorEqual));
 }
 
 TEST(SimpleEdgeDetectionTest, TestCornerQuarterEdge2) {

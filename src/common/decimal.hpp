@@ -4,6 +4,9 @@
 #include <cmath>
 #include <string>
 
+// Use FOUND_FLOAT_MODE to distinguish
+// the real type of float, and to change
+// code accordingly.
 #ifdef FOUND_FLOAT_MODE
     typedef float decimal;
     #define STR_TO_DECIMAL(x) std::stof(x)

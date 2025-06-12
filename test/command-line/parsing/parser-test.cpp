@@ -114,7 +114,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EA_EQ_DEFAULT(expectedRelOrientation, options.relOrientation);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
-    ASSERT_EQ(9.2, options.SEDAOffset);
+    ASSERT_DECIMAL_EQ_DEFAULT(9.2, options.SEDAOffset);
     ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
     ASSERT_EQ("example.found", options.outputFile);
 
