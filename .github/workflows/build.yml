@@ -17,12 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build all (Normal Mode, Twice)
+    - name: Build all (Twice)
       run: (make compile -j8 || make compile -j8)
-    - name: Build all (FOUND_FLOAT_MODE, Twice)
-      run: |
-        make clean
-        (make compile FOUND_FLOAT_MODE=true -j8 || make compile FOUND_FLOAT_MODE=true -j8)
   
   test:
     runs-on: ubuntu-latest
@@ -31,12 +27,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Test (FOUND_FLOAT_MODE, Twice)
-      run: |
-        (make test FOUND_FLOAT_MODE=true -j8 || make test FOUND_FLOAT_MODE=true -j8)
-        ./build/bin/found-test
     - name: Memory Check
       run: (make clean) && (make test OMIT_ASAN=true -j8) && ((valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test))
+  
+  float:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all (Twice)
+      run: (make compile FOUND_FLOAT_MODE=true -j8 || make compile FOUND_FLOAT_MODE=true -j8)
+    - name: Coverage (Twice)
+      run: (make coverage FOUND_FLOAT_MODE=true -j8 || make coverage FOUND_FLOAT_MODE=true -j8)     
 
   lint:
     runs-on: ubuntu-latest
