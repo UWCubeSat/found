@@ -153,24 +153,32 @@ Example Usage</h2>
 Capabilities</h1>
 <p>FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.</p>
 <h2><a class="anchor" id="autotoc_md7"></a>
-Edge Detection</h2>
-<p>After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:</p><ul>
-<li>[X] Simple Edge Detection via Space/Ether Identification</li>
-<li>[ ] Laplacian of Gaussian (LoG) Filtered Edge Detection</li>
+Calibration</h2>
+<p>This is a "simplistic" algorithm, and simply figures out the relative attitude between our local and reference attitude. The main algorithm responsible for this is:</p><ul>
+<li>[X] LOST-based Calibration Algorithm (LOST is the reference)</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md8"></a>
 Distance Determination</h2>
-<p>The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND will be capable of:</p><ul>
+<p>This algorithm is comprised of 3 main steps</p>
+<h3><a class="anchor" id="autotoc_md9"></a>
+Edge Detection</h3>
+<p>After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND is capable of:</p><ul>
+<li>[X] Simple Edge Detection via Space/Ether Identification</li>
+<li>[ ] Laplacian of Gaussian (LoG) Filtered Edge Detection</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md10"></a>
+Distance Determination</h3>
+<p>The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND is capable of:</p><ul>
 <li>[X] Distance Determination with a Spherical Earth Assumption</li>
 <li>[ ] Distance Determination with an Ellipsoid Earth Assumption</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md9"></a>
-Vector Generation</h2>
-<p>The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND will be capable of:</p><ul>
-<li>[X] Star-Tracker Assisted Vector Generation via LOST</li>
+<h3><a class="anchor" id="autotoc_md11"></a>
+Vector Generation</h3>
+<p>The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND is capable of:</p><ul>
+<li>[X] Star-Tracker Assisted Vector Generation via LOST-based Calibration</li>
 <li>[ ] Feature Detection Assisted Vector Generation (to be developed for future mission)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Orbit Determination</h2>
 <p>This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:</p><ul>
 <li>[ ] Runge-Kutta Based Orbital Prediction</li>

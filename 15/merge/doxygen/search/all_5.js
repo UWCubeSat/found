@@ -2,7 +2,7 @@ var searchData=
 [
   ['earthsphericalvec3_0',['EarthSphericalVec3',['../structfound_1_1EarthSphericalVec3.html',1,'found']]],
   ['edge_1',['Edge',['../structfound_1_1Edge.html',1,'found']]],
-  ['edge_20detection_2',['Edge Detection',['../index.html#autotoc_md7',1,'']]],
+  ['edge_20detection_2',['Edge Detection',['../index.html#autotoc_md9',1,'']]],
   ['edge_2ecpp_3',['edge.cpp',['../edge_8cpp.html',1,'']]],
   ['edge_2ehpp_4',['edge.hpp',['../edge_8hpp.html',1,'']]],
   ['edgedetectionalgorithm_5',['edgedetectionalgorithm',['../classfound_1_1EdgeDetectionAlgorithm.html',1,'found::EdgeDetectionAlgorithm'],['../classfound_1_1DistancePipelineExecutor.html#a0737d66b3d4811c2e07524ad0ef8b7ff',1,'found::DistancePipelineExecutor::edgeDetectionAlgorithm']]],
