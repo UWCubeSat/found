@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all (Twice)
-      run: (make compile -j8 || make compile -j8)
+      run: (make compile -j16 || make compile -j16)
   
   test:
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
 
     - name: Memory Check
       run: |
-        make test OMIT_ASAN=true -j8
+        make test OMIT_ASAN=true -j16
         (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
   
   float:
@@ -40,9 +40,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all (Twice)
-      run: (make compile FOUND_FLOAT_MODE=true -j8 || make compile FOUND_FLOAT_MODE=true -j8)
+      run: (make compile FOUND_FLOAT_MODE=true -j16 || make compile FOUND_FLOAT_MODE=true -j16)
     - name: Coverage (Twice)
-      run: (make coverage FOUND_FLOAT_MODE=true -j8 || make coverage FOUND_FLOAT_MODE=true -j8)     
+      run: (make coverage FOUND_FLOAT_MODE=true -j16 || make coverage FOUND_FLOAT_MODE=true -j16)     
 
   lint:
     runs-on: ubuntu-latest
@@ -66,7 +66,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Coverage (Twice)
-      run: (make coverage -j8 || make coverage -j8)
+      run: (make coverage -j16 || make coverage -j16)
     
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4

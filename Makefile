@@ -190,7 +190,7 @@ $(GTEST_CACHE_DIR):
 	wget $(GTEST_URL) -P $(CACHE_DIR)
 	tar -xzf $(GTEST_CACHE_ARTIFACT) -C $(CACHE_DIR)
 	mkdir -p $(GTEST_CACHE_BUILD_DIR)
-	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && make
+	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && make -j16
 	rm $(GTEST_CACHE_ARTIFACT)
 test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
