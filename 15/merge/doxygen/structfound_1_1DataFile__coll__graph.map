@@ -1,0 +1,7 @@
+<map id="found::DataFile" name="found::DataFile">
+<area shape="rect" id="Node000001" title="Represents a complete serialized data file." alt="" coords="117,93,238,119"/>
+<area shape="rect" id="Node000002" href="$structfound_1_1DataFileHeader.html" title="Represents the header of a data file used in the serialization process." alt="" coords="5,5,173,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,38,167,91,163,95,109,42"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Quaternion.html" title=" " alt="" coords="197,5,336,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,42,192,95,188,91,243,38"/>
+</map>

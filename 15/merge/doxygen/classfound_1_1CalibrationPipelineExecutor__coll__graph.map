@@ -1,0 +1,15 @@
+<map id="found::CalibrationPipelineExecutor" name="found::CalibrationPipelineExecutor">
+<area shape="rect" id="Node000001" title=" " alt="" coords="773,47,964,87"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title=" " alt="" coords="467,5,642,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="655,30,750,45,774,49,773,54,749,50,655,35"/>
+<area shape="rect" id="Node000003" href="$classCalibrationOptions.html" title=" " alt="" coords="483,55,626,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="640,65,773,65,773,70,640,70"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="448,104,661,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="674,104,772,84,774,89,675,110"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Stage.html" title=" " alt="" coords="163,71,319,111"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="333,100,448,115,448,120,332,106"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1Action.html" title=" " alt="" coords="5,79,113,104"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="127,89,162,89,162,94,127,94"/>
+<area shape="rect" id="Node000007" href="$classfound_1_1Quaternion.html" title=" " alt="" coords="171,136,310,161"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="324,141,448,135,448,140,324,147"/>
+</map>
