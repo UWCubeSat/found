@@ -108,19 +108,26 @@ Lastly, one thing you will not notice is that the `temp.found` file has changed.
 # Capabilities
 FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.
 
-## Edge Detection
-After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND will be capable of:
+## Calibration
+This is a "simplistic" algorithm, and simply figures out the relative attitude between our local and reference attitude. The main algorithm responsible for this is:
+- [X] LOST-based Calibration Algorithm (LOST is the reference)
+
+## Distance Determination
+This algorithm is comprised of 3 main steps
+
+### Edge Detection
+After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND is capable of:
 - [X] Simple Edge Detection via Space/Ether Identification
 - [ ] Laplacian of Gaussian (LoG) Filtered Edge Detection
 
-## Distance Determination
-The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND will be capable of:
+### Distance Determination
+The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND is capable of:
 - [X] Distance Determination with a Spherical Earth Assumption
 - [ ] Distance Determination with an Ellipsoid Earth Assumption
 
-## Vector Generation
-The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND will be capable of:
-- [X] Star-Tracker Assisted Vector Generation via LOST
+### Vector Generation
+The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND is capable of:
+- [X] Star-Tracker Assisted Vector Generation via LOST-based Calibration
 - [ ] Feature Detection Assisted Vector Generation (to be developed for future mission)
 
 ## Orbit Determination
