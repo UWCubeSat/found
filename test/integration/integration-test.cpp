@@ -207,9 +207,6 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     std::ifstream file(temp_df);
     DataFile actual = deserializeDataFile(file);
 
-    std::cout << "Tolerances: " << (example_earth1.position - actual.positions[0].position).Magnitude()
-        / example_earth1.position.Magnitude() << " " << RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)) << std::endl;
-
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
@@ -248,9 +245,6 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
 
     std::ifstream file(other_path);
     DataFile actual = deserializeDataFile(file);
-
-    std::cout << "Tolerances: " << (example_earth1.position - actual.positions[0].position).Magnitude()
-        / example_earth1.position.Magnitude() << " " << RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)) << std::endl;
 
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
