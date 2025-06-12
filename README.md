@@ -40,9 +40,9 @@ To learn more about the different flags, execute `./build/bin/found --help` or `
 Here, we present a common usage for this program. After generating the binary via `make` or simply `make compile`, execute the command:
 
 ```bash
-./build/bin/found calibration        \
-    --reference-orientation "20,0,0" \
-    --local-orientation "50,0,0"     \
+./build/bin/found calibration         \
+    --reference-orientation "20,0,0"  \
+    --local-orientation "50,0,0"      \
     --output-file "example-df.found"
 ```
 Here's what the flags mean:
