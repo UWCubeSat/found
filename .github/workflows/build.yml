@@ -28,7 +28,9 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Memory Check
-      run: (make clean) && (make test OMIT_ASAN=true -j8) && ((valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test))
+      run: |
+        make test OMIT_ASAN=true -j8
+        (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
   
   float:
     runs-on: ubuntu-latest
