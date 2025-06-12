@@ -215,7 +215,7 @@ inline int NWayEquivalenceAdd(const Image &image,
             // Two adjacent labels, first is smaller
             UpdateComponent(components[adjacentLabels[0]], index, pixel);
             if (equivalencies.find(adjacentLabels[1]) == equivalencies.end()) {
-                equivalencies.insert({adjacentLabels[1], adjacentLabels[0]});
+                equivalencies.try_emplace(adjacentLabels[1], adjacentLabels[0]);
             } else {
                 equivalencies[adjacentLabels[1]] = std::min(equivalencies[adjacentLabels[1]], adjacentLabels[0]);
             }
@@ -225,7 +225,7 @@ inline int NWayEquivalenceAdd(const Image &image,
         // Two adjacent labels, second is smaller
         UpdateComponent(components[adjacentLabels[1]], index, pixel);
         if (equivalencies.find(adjacentLabels[0]) == equivalencies.end()) {
-            equivalencies.insert({adjacentLabels[0], adjacentLabels[1]});
+            equivalencies.try_emplace(adjacentLabels[0], adjacentLabels[1]);
         } else {
             equivalencies[adjacentLabels[0]] = std::min(equivalencies[adjacentLabels[0]], adjacentLabels[1]);
         }
@@ -241,7 +241,7 @@ inline int NWayEquivalenceAdd(const Image &image,
     for (int i = 0; i < size; i++) {
         if (adjacentLabels[i] != minLabel) {
             if (equivalencies.find(adjacentLabels[i]) == equivalencies.end()) {
-                equivalencies.insert({adjacentLabels[i], minLabel});
+                equivalencies.try_emplace(adjacentLabels[i], minLabel);
             } else {
                 equivalencies[adjacentLabels[i]] = std::min(equivalencies[adjacentLabels[i]], minLabel);
             }
@@ -254,9 +254,9 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     // Step 0: Setup the Problem
     std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
-    std::unordered_map<uint64_t, int> componentPoints;
+    std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
 
-    int L = -1;
+    int L = 0;
     int adjacentLabels[4];
     int size = 0;
 
@@ -266,7 +266,7 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     // Step 1a: Tackle the First Pixel
     if (Criteria(0, image)) {
         components.insert({++L, {{0}, {0, 0}, {0, 0}}});
-        componentPoints.insert({0, L});
+        componentPoints[0] = L;
     }
 
     uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
@@ -279,58 +279,58 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         // Step 1c: Figure out all adjacent labels
         if (i / image.width == 0) {
             // Top Row (1 other pixel)
-            if (auto left = componentPoints.find(i - 1); left != componentPoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
         } else if (i % image.width == 0) {
             // Left Column (2 other pixels)
-            if (auto top = componentPoints.find(i - image.width); top != componentPoints.end()) {
-                adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                adjacentLabels[size++] = top;
             }
-            if (auto topRight = componentPoints.find(i - image.width + 1); topRight != componentPoints.end()) {
-                if (!LabelPresent(topRight->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topRight->second;
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+                if (!LabelPresent(topRight, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topRight;
                 }
             }
         } else if ((i + 1) % image.width == 0) {
             // Right Column (3 other pixels)
-            if (auto left = componentPoints.find(i - 1); left != componentPoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints.find(i - image.width - 1); topLeft != componentPoints.end()) {
-                if (!LabelPresent(topLeft->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topLeft->second;
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+                if (!LabelPresent(topLeft, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints.find(i - image.width); top != componentPoints.end()) {
-                if (!LabelPresent(top->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                if (!LabelPresent(top, adjacentLabels, size)) {
+                    adjacentLabels[size++] = top;
                 }
             }
         } else {
             // All others pixels (4 other pixels)
-            if (auto left = componentPoints.find(i - 1); left != componentPoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints.find(i - image.width - 1); topLeft != componentPoints.end()) {
-                if (!LabelPresent(topLeft->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topLeft->second;
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+                if (!LabelPresent(topLeft, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints.find(i - image.width); top != componentPoints.end()) {
-                if (!LabelPresent(top->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                if (!LabelPresent(top, adjacentLabels, size)) {
+                    adjacentLabels[size++] = top;
                 }
             }
-            if (auto topRight = componentPoints.find(i - image.width + 1); topRight != componentPoints.end()) {
-                if (!LabelPresent(topRight->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topRight->second;
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+                if (!LabelPresent(topRight, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topRight;
                 }
             }
         }
 
         // Step 1d: Add the pixel to the appropriate component and prepare for the next iteration
-        componentPoints.insert({i, NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies)});
+        componentPoints[i] = NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies);
         size = 0;
     }
 

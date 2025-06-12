@@ -166,10 +166,10 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
-	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
+	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -c $< -o $@
 compile_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_TARGET))
 

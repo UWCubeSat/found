@@ -23,6 +23,43 @@ MATCHER_P(ComponentEqual, expected, "") {
            vectorEqual(arg.lowerRight, expected.lowerRight);
 }
 
+TEST(ConnectedComponentsTest, TestInvalidImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        1,
+        -1,
+        0,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image, criteria));
+}
+
+TEST(ConnectedComponentsTest, TestEmptyImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        0,
+        0,
+        0,
+        imageData,
+    };
+
+    Components expected = {
+        {
+        }
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
+}
+
 TEST(ConnectedComponentsTest, TestOnePixelBase) {
     // Setup Dependencies
     unsigned char imageData[4] = {1, 0,
