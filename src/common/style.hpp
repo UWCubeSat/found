@@ -80,7 +80,7 @@ typedef std::vector<Edge> Edges;
  */
 struct Component {
     /// The points in this component
-    std::vector<uint64_t> points;
+    std::unordered_set<uint64_t> points;
     /// The lowest point (left upper edge)
     Vec2 upperLeft;
     /// The highest point (right lower edge)

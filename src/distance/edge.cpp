@@ -40,7 +40,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
         }
     }
     if (space == nullptr || space->points.size() == imageSize) return Points();
-    std::unordered_set<uint64_t> points(space->points.begin(), space->points.end());
+    std::unordered_set<uint64_t> &points = space->points;
 
     // Step 2: Identify the edge as the edge of space
 
@@ -171,7 +171,7 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
  * @pre Must be called in order of increasing index
  */
 inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
-    component.points.push_back(index);
+    component.points.insert(index);
     if (component.upperLeft.x > pixel.x) component.upperLeft.x = pixel.x;
     else if (component.lowerRight.x < pixel.x) component.lowerRight.x = pixel.x;
     // We skip this statement, since its impossible:
@@ -349,7 +349,7 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         // compIt is guarenteed to exist, so we do not perform a check here
         auto &compToMerge = compIt->second;
         auto &lowestComp = components[lowestLabel];
-        lowestComp.points.insert(lowestComp.points.end(),compToMerge.points.begin(), compToMerge.points.end());
+        lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
         if (compToMerge.upperLeft.x < lowestComp.upperLeft.x) lowestComp.upperLeft.x = compToMerge.upperLeft.x;
         if (compToMerge.lowerRight.x > lowestComp.lowerRight.x) lowestComp.lowerRight.x = compToMerge.lowerRight.x;
         // We skip this statement, because its impossible (a higher component is level or lower than a lower component):

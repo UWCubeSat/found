@@ -18,10 +18,7 @@ std::function<bool(uint64_t, const Image &)> criteria = [](uint64_t index, const
 };
 
 MATCHER_P(ComponentEqual, expected, "") {
-    return std::is_permutation(expected.points.begin(),
-                               expected.points.end(),
-                               arg.points.begin(),
-                               arg.points.end()) &&
+    return expected.points == arg.points &&
            vectorEqual(arg.upperLeft, expected.upperLeft) &&
            vectorEqual(arg.lowerRight, expected.lowerRight);
 }
