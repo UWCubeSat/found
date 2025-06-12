@@ -147,10 +147,11 @@ all: $(COMPILE_SETUP_TARGET) \
 $(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
-	mkdir -p $(BIN_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
 	mkdir -p $(STB_IMAGE_CACHE_DIR)
 	mkdir -p $(CACHE_DIR)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 $(BUILD_LIBRARY_SRC_DIR):
 	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 compile_setup_message:
@@ -166,7 +167,7 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
 $(BIN): $(SRC_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 compile_message:
