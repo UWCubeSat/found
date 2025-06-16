@@ -1,6 +1,6 @@
 var classfound_1_1SphericalDistanceDeterminationAlgorithm =
 [
-    [ "SphericalDistanceDeterminationAlgorithm", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a8d443a039bd968423d59d86e82dc2f10", null ],
+    [ "SphericalDistanceDeterminationAlgorithm", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html#adefb605cbf6ad19b698a7e5000bf67e3", null ],
     [ "~SphericalDistanceDeterminationAlgorithm", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a2be71aee87de7532d92d8e43003ef9f5", null ],
     [ "getCenter", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a40fbe05fc8f83c43d25c95f8014bef39", null ],
     [ "getDistance", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a0e9fb0cba410dfc3559e1de6732557f3", null ],

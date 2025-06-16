@@ -22,6 +22,7 @@ var annotated_dup =
       [ "EulerAngles", "classfound_1_1EulerAngles.html", "classfound_1_1EulerAngles" ],
       [ "FeatureDetectionVectorGenerationAlgorithm", "classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html", "classfound_1_1FeatureDetectionVectorGenerationAlgorithm" ],
       [ "Image", "structfound_1_1Image.html", "structfound_1_1Image" ],
+      [ "IterativeSphericalDistanceDeterminationAlgorithm", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm" ],
       [ "LocationRecord", "structfound_1_1LocationRecord.html", "structfound_1_1LocationRecord" ],
       [ "LoCEdgeDetectionAlgorithm", "classfound_1_1LoCEdgeDetectionAlgorithm.html", "classfound_1_1LoCEdgeDetectionAlgorithm" ],
       [ "LOSTCalibrationAlgorithm", "classfound_1_1LOSTCalibrationAlgorithm.html", "classfound_1_1LOSTCalibrationAlgorithm" ],

@@ -11,7 +11,9 @@ var hierarchy =
       [ "found::Stage< Points, PositionVector >", "classfound_1_1Stage.html", [
         [ "found::DistanceDeterminationAlgorithm", "classfound_1_1DistanceDeterminationAlgorithm.html", [
           [ "found::EllipticDistanceDeterminationAlgorithm", "classfound_1_1EllipticDistanceDeterminationAlgorithm.html", null ],
-          [ "found::SphericalDistanceDeterminationAlgorithm", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html", null ]
+          [ "found::SphericalDistanceDeterminationAlgorithm", "classfound_1_1SphericalDistanceDeterminationAlgorithm.html", [
+            [ "found::IterativeSphericalDistanceDeterminationAlgorithm", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html", null ]
+          ] ]
         ] ]
       ] ],
       [ "found::Stage< Image, Points >", "classfound_1_1Stage.html", [
