@@ -309,7 +309,8 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>PositionVector The position vector of the Earth relative to the camera</dd></dl>
 <dl class="section pre"><dt>Precondition</dt><dd>p must refer to points taken by the camera that was passed to this</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>If p.size() &lt; 3, then the result is exactly the zero vector </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>If p.size() &lt; 3, then the result is exactly the zero vector</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If minimumIterations (from constructor) is less than the size of p, then it will increase the number of iterations to cover all of p </dd></dl>
 
 <p>Implements <a class="el" href="classfound_1_1Stage.html#a76f980d2fdce66333c6d7e7057e92f73">found::Stage&lt; Points, PositionVector &gt;</a>.</p>
 
