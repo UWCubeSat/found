@@ -1,11 +1,13 @@
+#include "distance/distance.hpp"
+
 #include <cmath>
 #include <utility>
+#include <random>
+#include <algorithm>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/style.hpp"
-
-#include "distance/distance.hpp"
 
 namespace found {
 
@@ -78,6 +80,36 @@ Vec3 center) {
 
 PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
     return radius_*sqrt(r * r + c * c)/r;
+}
+
+PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
+    // Return zero if the number of points is less than 0
+    if (p.size() < 3) return {0, 0, 0};
+
+    // Determine the number of iterations
+    size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
+
+    // Iterate through a shuffled points and take the sum
+    // of all calls
+    size_t i = 0;
+    size_t j = 0;
+    std::random_device device;
+    std::mt19937 dist(device());
+    Points points = p;
+    PositionVector result{};
+    while (i < numIterations) {
+        if (i % p.size() == 0) {
+            std::shuffle(points.begin(), points.end(), dist);
+        }
+        if (!(j < p.size())) j = 0;
+        result += SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]});
+
+        j += 3;
+        i++;
+    }
+
+    // Return the average
+    return result / numIterations;
 }
 
 }  // namespace found

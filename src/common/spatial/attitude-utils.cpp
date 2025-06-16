@@ -365,6 +365,20 @@ Vec3 Vec3::operator-() const {
     return { -x, -y, -z };
 }
 
+/// Vector Addition
+Vec3 &Vec3::operator+=(const Vec3 &other) {
+    this->x += other.x;
+    this->y += other.y;
+    this->z += other.z;
+
+    return *this;
+}
+
+/// Vector division
+Vec3 Vec3::operator/(const decimal &divisor) const {
+    return { x / divisor, y / divisor, z / divisor };
+}
+
 /**
  * Computes the cross (vector) product between this and another vector
  * 
