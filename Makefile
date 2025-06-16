@@ -140,6 +140,10 @@ define PRINT_TARGET_HEADER
 	printf "\n"
 endef
 
+# The release target
+release: OPTIMIZATION := -O3
+release: $(COMPILE_TARGET)
+
 # The default target (all)
 all: $(COMPILE_SETUP_TARGET) \
 	 $(COMPILE_TARGET) \
