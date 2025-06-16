@@ -14,7 +14,7 @@ var searchData=
   ['spatialtocamera_11',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
   ['spatialtospherical_12',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
   ['sphericaldistancedeterminationalgorithm_13',['sphericaldistancedeterminationalgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#adefb605cbf6ad19b698a7e5000bf67e3',1,'found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm()'],['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html',1,'found::SphericalDistanceDeterminationAlgorithm']]],
-  ['sphericaltoquaternion_14',['sphericaltoquaternion',['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found::SphericalToQuaternion(decimal ra, decimal dec, decimal roll)'],['../namespacefound.html#a00d185e68e6373ac81872eeb3326ac28',1,'found::SphericalToQuaternion(EulerAngles angles)']]],
+  ['sphericaltoquaternion_14',['sphericaltoquaternion',['../namespacefound.html#a00d185e68e6373ac81872eeb3326ac28',1,'found::SphericalToQuaternion(EulerAngles angles)'],['../namespacefound.html#ad42cc33dcaec977f225a7609f9d7cd0c',1,'found::SphericalToQuaternion(decimal ra, decimal dec, decimal roll)']]],
   ['sphericaltospatial_15',['SphericalToSpatial',['../namespacefound.html#a343128d3a03d505a732fddcd468ebce1',1,'found']]],
   ['stage_16',['stage',['../classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063',1,'found::Stage::Stage()'],['../classfound_1_1Stage.html',1,'found::Stage&lt; Input, Output &gt;']]],
   ['stage_2dproviders_2ehpp_17',['stage-providers.hpp',['../stage-providers_8hpp.html',1,'']]],
@@ -32,6 +32,7 @@ var searchData=
   ['strtoea_29',['strtoea',['../namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b',1,'found']]],
   ['strtoimage_30',['strtoimage',['../namespacefound.html#a5715a57bc3e4ab1219f13fc289735f96',1,'found']]],
   ['strtolr_31',['strtolr',['../namespacefound.html#a162f8964394b0e61d95983cb6935ad3e',1,'found']]],
-  ['strtouc_32',['strtouc',['../namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a',1,'found']]],
-  ['style_2ehpp_33',['style.hpp',['../style_8hpp.html',1,'']]]
+  ['strtosize_32',['strtosize',['../namespacefound.html#a60bbd710f035570791547d551bdb96b2',1,'found']]],
+  ['strtouc_33',['strtouc',['../namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a',1,'found']]],
+  ['style_2ehpp_34',['style.hpp',['../style_8hpp.html',1,'']]]
 ];

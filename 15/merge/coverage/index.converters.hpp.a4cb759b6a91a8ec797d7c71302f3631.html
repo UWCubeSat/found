@@ -26,17 +26,17 @@
                 <span>src/</span>
             </div>
             <div>File: providers/converters.hpp</div>
-            <div>Date: 2025-06-16 23:09:58</div>
+            <div>Date: 2025-06-16 23:47:44</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">52/52</div>
+                <div class="mr-2" style="margin: auto;">54/54</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
                 <div class="mr-2">Functions:</div>
-                <div class="mr-2" style="margin: auto;">7/7</div>
+                <div class="mr-2" style="margin: auto;">8/8</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
@@ -59,12 +59,13 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l96">found::strtobool(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 96)</a></td><td>called 28 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l52">found::strtodecimal(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 52)</a></td><td>called 228 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l123">found::strtodf(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 123)</a></td><td>called 40 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::strtoea(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 67)</a></td><td>called 64 times</td><td>77.0%</td></tr>
-    <tr><td><a href="#l111">found::strtoimage(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 111)</a></td><td>called 40 times</td><td>63.0%</td></tr>
-    <tr><td><a href="#l139">found::strtolr(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 139)</a></td><td>called 29 times</td><td>74.0%</td></tr>
+    <tr><td><a href="#l100">found::strtobool(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 100)</a></td><td>called 28 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l56">found::strtodecimal(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 56)</a></td><td>called 228 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l127">found::strtodf(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 127)</a></td><td>called 40 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l71">found::strtoea(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 71)</a></td><td>called 64 times</td><td>77.0%</td></tr>
+    <tr><td><a href="#l115">found::strtoimage(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 115)</a></td><td>called 40 times</td><td>63.0%</td></tr>
+    <tr><td><a href="#l143">found::strtolr(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 143)</a></td><td>called 29 times</td><td>74.0%</td></tr>
+    <tr><td><a href="#l42">found::strtosize(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 42)</a></td><td>called 2 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l38">found::strtouc(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;) (line 38)</a></td><td>called 6 times</td><td>100.0%</td></tr>
   </table>
 </details>
@@ -374,186 +375,214 @@
                 <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">/**</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="nf">strtosize</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Converts a string to a decimal</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">atoi</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">c_str</span><span class="p">()));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return The decimal numeber this string</span></td>
+                <td class="src "><span class="cm"> * Converts a string to a decimal</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * represents</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @pre The str must actually represent a decimal</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * @return The decimal numeber this string</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">228</td>
-                <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="nf">strtodecimal</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * represents</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l53" href="#l53">53</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">228</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">STR_TO_DECIMAL</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l54" href="#l54">54</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span></td>
+                <td class="src "><span class="cm"> * @pre The str must actually represent a decimal</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l55" href="#l55">55</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm"> */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">/**</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">228</td>
+                <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="nf">strtodecimal</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l57" href="#l57">57</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Converts a string to euler angles.</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">228</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">STR_TO_DECIMAL</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l60" href="#l60">60</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return An EulerAngle corresponding</span></td>
+                <td class="src "><span class="cm"> * Converts a string to euler angles.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * to the string, if the str is valid</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l63" href="#l63">63</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @pre The string must have 3 decimal</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * values seperated by commas or spaces</span></td>
+                <td class="src "><span class="cm"> * @return An EulerAngle corresponding</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l66" href="#l66">66</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * to the string, if the str is valid</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * </span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l68" href="#l68">68</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * @pre The string must have 3 decimal</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l69" href="#l69">69</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * values seperated by commas or spaces</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l70" href="#l70">70</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> */</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l71" href="#l71">71</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">EulerAngles</span><span class="w"> </span><span class="nf">strtoea</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l68" href="#l68">68</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -567,39 +596,11 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="sc">&#39; &#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="sc">&#39;,&#39;</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l69" href="#l69">69</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l70" href="#l70">70</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l71" href="#l71">71</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">delimiter</span><span class="p">);</span></td>
-            </tr>
-            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l73" href="#l73">73</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l74" href="#l74">74</a></td>
@@ -610,6 +611,34 @@
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l75" href="#l75">75</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l76" href="#l76">76</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">delimiter</span><span class="p">);</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l78" href="#l78">78</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l79" href="#l79">79</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>4/4</summary>
@@ -625,7 +654,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l76" href="#l76">76</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l80" href="#l80">80</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -639,35 +668,35 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="n">result</span><span class="p">[</span><span class="n">index</span><span class="o">++</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strtodecimal</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">));</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l81" href="#l81">81</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">124</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l78" href="#l78">78</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l82" href="#l82">82</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">124</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">delimiter</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l79" href="#l79">79</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l83" href="#l83">83</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l80" href="#l80">80</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l84" href="#l84">84</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l81" href="#l81">81</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l85" href="#l85">85</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -681,14 +710,14 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="n">result</span><span class="p">[</span><span class="n">index</span><span class="o">++</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strtodecimal</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">start</span><span class="p">));</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l82" href="#l82">82</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l86" href="#l86">86</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l83" href="#l83">83</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l87" href="#l87">87</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -702,98 +731,98 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="n">index</span><span class="o">++</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l84" href="#l84">84</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l88" href="#l88">88</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l85" href="#l85">85</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">128</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">EulerAngles</span><span class="p">(</span><span class="n">DegToRad</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">DegToRad</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="n">DegToRad</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]));</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l86" href="#l86">86</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l90" href="#l90">90</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l87" href="#l87">87</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l91" href="#l91">91</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l88" href="#l88">88</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * Converts the string to a bool</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l90" href="#l90">90</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l91" href="#l91">91</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return true iff the string represents</span></td>
-            </tr>
-            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * a true value</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l95" href="#l95">95</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l96" href="#l96">96</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * </span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * @return true iff the string represents</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * a true value</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> */</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">28</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">strtobool</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>6/6</summary>
@@ -811,60 +840,32 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;false&quot;</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Converts a string to an image</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l105" href="#l105">105</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return The image that the string represents</span></td>
+                <td class="src "><span class="cm"> * Converts a string to an image</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
@@ -878,7 +879,7 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @note This function uses stb_image.h to load the image</span></td>
+                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
@@ -892,38 +893,66 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @throw std::runtime_error if the image cannot be loaded</span></td>
+                <td class="src "><span class="cm"> * @return The image that the string represents</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l110" href="#l110">110</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l111" href="#l111">111</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
-                <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="nf">strtoimage</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * @note This function uses stb_image.h to load the image</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l112" href="#l112">112</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Image</span><span class="w"> </span><span class="n">image</span><span class="p">;</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l113" href="#l113">113</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * @throw std::runtime_error if the image cannot be loaded</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> */</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
+                <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">Image</span><span class="w"> </span><span class="nf">strtoimage</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="w">    </span><span class="n">Image</span><span class="w"> </span><span class="n">image</span><span class="p">;</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">image</span><span class="p">.</span><span class="n">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stbi_load</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="p">.</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="p">.</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">image</span><span class="p">.</span><span class="n">channels</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -937,7 +966,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">image</span><span class="p">.</span><span class="n">image</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>5/5</summary>
@@ -954,63 +983,63 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Could not load image &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">stbi_failure_reason</span><span class="p">());</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">36</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">image</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l122" href="#l122">122</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l123" href="#l123">123</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l124" href="#l124">124</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l125" href="#l125">125</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l122" href="#l122">122</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l126" href="#l126">126</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> */</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l123" href="#l123">123</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l127" href="#l127">127</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">DataFile</span><span class="w"> </span><span class="nf">strtodf</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l124" href="#l124">124</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l128" href="#l128">128</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1023,7 +1052,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">stream</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l125" href="#l125">125</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l129" href="#l129">129</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1036,60 +1065,32 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">deserializeDataFile</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l126" href="#l126">126</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l130" href="#l130">130</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
                 <td class="src coveredLine"><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l127" href="#l127">127</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l131" href="#l131">131</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l128" href="#l128">128</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l132" href="#l132">132</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l129" href="#l129">129</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Converts a string to a vector of location records</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l130" href="#l130">130</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l131" href="#l131">131</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l132" href="#l132">132</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
-            </tr>
-            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l133" href="#l133">133</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return The vector of location records that the string represents</span></td>
+                <td class="src "><span class="cm"> * Converts a string to a vector of location records</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l134" href="#l134">134</a></td>
@@ -1103,38 +1104,66 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @pre str must refer to a file, either the Data File, or a space</span></td>
+                <td class="src "><span class="cm"> * @param str The string to convert</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l136" href="#l136">136</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * delinated file with the following format on each line:</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l137" href="#l137">137</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Timestamp(int) PositionX(decimal) PositionY(decimal) PositionZ(decimal)</span></td>
+                <td class="src "><span class="cm"> * @return The vector of location records that the string represents</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l138" href="#l138">138</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l139" href="#l139">139</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * @pre str must refer to a file, either the Data File, or a space</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l140" href="#l140">140</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * delinated file with the following format on each line:</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l141" href="#l141">141</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> * Timestamp(int) PositionX(decimal) PositionY(decimal) PositionZ(decimal)</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l142" href="#l142">142</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm"> */</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l143" href="#l143">143</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">29</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">LocationRecords</span><span class="w"> </span><span class="nf">strtolr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l140" href="#l140">140</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l144" href="#l144">144</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -1148,7 +1177,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l141" href="#l141">141</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l145" href="#l145">145</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>4/4</summary>
@@ -1164,7 +1193,7 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">str</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;.found&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l142" href="#l142">142</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l146" href="#l146">146</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>8/8</summary>
@@ -1184,7 +1213,7 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="n">LOG_INFO</span><span class="p">(</span><span class="s">&quot;Getting Position Data from Data File (*.found)&quot;</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l143" href="#l143">143</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l147" href="#l147">147</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1197,7 +1226,7 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="n">DataFile</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strtodf</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l144" href="#l144">144</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l148" href="#l148">148</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1210,28 +1239,28 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">LocationRecords</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">positions</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">positions</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">header</span><span class="p">.</span><span class="n">num_positions</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l145" href="#l145">145</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l149" href="#l149">149</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l146" href="#l146">146</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l150" href="#l150">150</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l147" href="#l147">147</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l151" href="#l151">151</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l148" href="#l148">148</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l152" href="#l152">152</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>8/8</summary>
@@ -1251,14 +1280,14 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="n">LOG_INFO</span><span class="p">(</span><span class="s">&quot;Getting Position Data from non-Data File (not *.found)&quot;</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l149" href="#l149">149</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l153" href="#l153">153</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">LocationRecords</span><span class="w"> </span><span class="n">records</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l150" href="#l150">150</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l154" href="#l154">154</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1271,7 +1300,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">file</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l151" href="#l151">151</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l155" href="#l155">155</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -1285,7 +1314,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l152" href="#l152">152</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l156" href="#l156">156</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -1299,28 +1328,28 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Could not open file &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l153" href="#l153">153</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l157" href="#l157">157</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l154" href="#l154">154</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l158" href="#l158">158</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l155" href="#l155">155</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l159" href="#l159">159</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">line</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l156" href="#l156">156</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l160" href="#l160">160</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>4/4</summary>
@@ -1336,7 +1365,7 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l157" href="#l157">157</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l161" href="#l161">161</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1349,14 +1378,14 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="n">iss</span><span class="p">(</span><span class="n">line</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l158" href="#l158">158</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l162" href="#l162">162</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">27</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">LocationRecord</span><span class="w"> </span><span class="n">record</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l159" href="#l159">159</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l163" href="#l163">163</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>7/7</summary>
@@ -1375,7 +1404,7 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">iss</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">record</span><span class="p">.</span><span class="n">timestamp</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">record</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">record</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">record</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l160" href="#l160">160</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l164" href="#l164">164</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1388,7 +1417,7 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="n">file</span><span class="p">.</span><span class="n">close</span><span class="p">();</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l161" href="#l161">161</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l165" href="#l165">165</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>4/4</summary>
@@ -1404,14 +1433,14 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;Invalid format for file &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">line</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l162" href="#l162">162</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l166" href="#l166">166</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">        </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l163" href="#l163">163</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l167" href="#l167">167</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1424,21 +1453,21 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="n">records</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">record</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l164" href="#l164">164</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l168" href="#l168">168</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">27</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l165" href="#l165">165</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l169" href="#l169">169</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l166" href="#l166">166</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l170" href="#l170">170</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -1451,49 +1480,49 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">close</span><span class="p">();</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l167" href="#l167">167</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l171" href="#l171">171</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">records</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l168" href="#l168">168</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l172" href="#l172">172</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">41</td>
                 <td class="src coveredLine"><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l169" href="#l169">169</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l173" href="#l173">173</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l170" href="#l170">170</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l174" href="#l174">174</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l171" href="#l171">171</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l175" href="#l175">175</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l172" href="#l172">172</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l176" href="#l176">176</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cp">#endif  </span><span class="c1">// CONVERTERS_H</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l173" href="#l173">173</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l177" href="#l177">177</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

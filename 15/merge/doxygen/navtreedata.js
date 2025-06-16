@@ -64,7 +64,7 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "classfound_1_1LoCEdgeDetectionAlgorithm.html#a0b2c0d0d4dd192d5fe8914542e68e3d7",
-"decimal_8hpp.html#a9eebd6e84e82d7ebb1eb46b3fe0a2679",
+"decimal_8hpp.html#a9c74c7f21e27343c8a46da2ea345054d",
 "parser_8cpp.html#a43452b50be80708568199535efd71fc6"
 ];
 

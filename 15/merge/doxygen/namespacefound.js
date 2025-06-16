@@ -126,6 +126,7 @@ var namespacefound =
     [ "strtoea", "namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b", null ],
     [ "strtoimage", "namespacefound.html#a5715a57bc3e4ab1219f13fc289735f96", null ],
     [ "strtolr", "namespacefound.html#a162f8964394b0e61d95983cb6935ad3e", null ],
+    [ "strtosize", "namespacefound.html#a60bbd710f035570791547d551bdb96b2", null ],
     [ "strtouc", "namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a", null ],
     [ "UpdateComponent", "namespacefound.html#a19e0751672c939b693c5383d3ee7dcde", null ],
     [ "write", "namespacefound.html#ace8602da81895c1dcf1c7764f8936559", null ],
