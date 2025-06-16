@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 26;
+    int argc = 30;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "test/common/assets/empty-df.found",
@@ -93,12 +93,15 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--camera-pixel-size", "4E-12",
         "--reference-orientation", "1.1 1.2 1.3",
         "--relative-orientation", "1.4 1.5 1.6",
+        "--planetary-radius", "1964.4",
         "--seda-threshold", "62",
         "--seda-border-len", "10",
         "--seda-offset", "9.2",
-        "--planetary-radius", "1964.4",
+        "--distance-algo", "algo",
+        "--isdda-min-iterations", "30",
         "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3));
     EulerAngles expectedRelOrientation(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6));
@@ -112,10 +115,12 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
     ASSERT_EA_EQ_DEFAULT(expectedRefOrientation, options.refOrientation);
     ASSERT_EA_EQ_DEFAULT(expectedRelOrientation, options.relOrientation);
+    ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
     ASSERT_DECIMAL_EQ_DEFAULT(9.2, options.SEDAOffset);
-    ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
+    ASSERT_EQ("algo", options.distanceAlgo);
+    ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
     ASSERT_EQ("example.found", options.outputFile);
 
     stbi_image_free(expectedImage.image);  // Free the image memory

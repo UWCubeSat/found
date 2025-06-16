@@ -99,6 +99,8 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         25,
         1,
         0.0,
+        "hello",
+        92,
         temp_df
     };
     Points points = {

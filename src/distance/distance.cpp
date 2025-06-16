@@ -96,7 +96,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     std::random_device device;
     std::mt19937 dist(device());
     Points points = p;
-    PositionVector result{};
+    PositionVector result{0, 0, 0};
     while (i < numIterations) {
         if (i % p.size() == 0) {
             std::shuffle(points.begin(), points.end(), dist);

@@ -183,8 +183,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
                 cam.SpatialToCamera(p3)};
 
     // Step IV: Run It and Test!
-    IterativeSphericalDistanceDeterminationAlgorithm algo =
-        IterativeSphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam), DEFAULT_ITERATIONS_2);
+    IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH, std::move(cam), DEFAULT_ITERATIONS_2);
 
     PositionVector actual = algo.Run(pts);
 
@@ -285,11 +284,6 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
         Points pts = {cam.SpatialToCamera(p1Rotated),
                     cam.SpatialToCamera(p2Rotated),
                     cam.SpatialToCamera(p3Rotated)};
-
-        // Points pts = {cam.SpatialToCamera(p1),
-        //     cam.SpatialToCamera(p2),
-        //     cam.SpatialToCamera(p3)};
-
 
         // Step IV: Run It and Test!
         IterativeSphericalDistanceDeterminationAlgorithm algo =

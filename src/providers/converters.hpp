@@ -39,6 +39,10 @@ inline unsigned char strtouc(const std::string &str) {
     return static_cast<unsigned char>(std::strtoul(str.c_str(), nullptr, 10));
 }
 
+inline size_t strtosize(const std::string &str) {
+    return static_cast<size_t>(atoi(str.c_str()));
+}
+
 /**
  * Converts a string to a decimal
  * 
