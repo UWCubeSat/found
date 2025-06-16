@@ -1,8 +1,3 @@
-/**
- * This file controls all stylistic-related choices for FOUND (except for decimal)
- * 
-*/
-
 #ifndef STYLE_H
 #define STYLE_H
 

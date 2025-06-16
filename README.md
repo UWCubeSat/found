@@ -1,4 +1,4 @@
-# FOUND: FOUND Open-Source Universal Navigation Determiner
+# FOUND: Open-Source Universal Navigation Determiner
 
 FOUND is a system that Earth satellites can use to calculate their orbits using pictures taken by the satellite of Earth. It is being developed at Husky Satellite Lab, a CubeSat team at the University of Washington. It will be deployed and tested on HuskySat-2, the team's next mission.
 
