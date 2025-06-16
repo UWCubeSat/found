@@ -25,7 +25,7 @@
 var NAVTREE =
 [
   [ "FOUND", "index.html", [
-    [ "FOUND: FOUND Open-Source Universal Navigation Determiner", "index.html", "index" ],
+    [ "FOUND: Open-Source Universal Navigation Determiner", "index.html", "index" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [

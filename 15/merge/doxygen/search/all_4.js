@@ -51,7 +51,7 @@ var searchData=
   ['det_48',['Det',['../classfound_1_1Mat3.html#a25652f0fa565e68c33446bb11f4f93b7',1,'found::Mat3']]],
   ['detection_49',['Edge Detection',['../index.html#autotoc_md9',1,'']]],
   ['determination_50',['determination',['../index.html#autotoc_md8',1,'Distance Determination'],['../index.html#autotoc_md10',1,'Distance Determination'],['../index.html#autotoc_md12',1,'Orbit Determination']]],
-  ['determiner_51',['FOUND: FOUND Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
+  ['determiner_51',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['distance_52',['distance',['../namespacefound.html#a52941ab54fcbb3625f21c7fa5433c59a',1,'found::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)'],['../namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed',1,'found::Distance(const Vec3 &amp;v1, const Vec3 &amp;v2)'],['../options_8hpp.html#a9d41d147039787c25d6631b276ab4330',1,'DISTANCE:&#160;options.hpp']]],
   ['distance_20determination_53',['distance determination',['../index.html#autotoc_md10',1,'Distance Determination'],['../index.html#autotoc_md8',1,'Distance Determination']]],
   ['distance_2ecpp_54',['distance.cpp',['../distance_8cpp.html',1,'']]],

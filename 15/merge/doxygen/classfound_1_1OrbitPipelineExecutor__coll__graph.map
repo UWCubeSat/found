@@ -1,13 +1,13 @@
 <map id="found::OrbitPipelineExecutor" name="found::OrbitPipelineExecutor">
-<area shape="rect" id="Node000001" title=" " alt="" coords="684,55,891,80"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title=" " alt="" coords="383,5,557,31"/>
+<area shape="rect" id="Node000001" title="OrbitPipelineExecutor is the pipeline executor for the orbit determination pipeline." alt="" coords="684,55,891,80"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="383,5,557,31"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="567,30,660,45,707,52,706,57,660,50,567,35"/>
 <area shape="rect" id="Node000003" href="$classOrbitOptions.html" title=" " alt="" coords="418,55,522,80"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="536,65,684,65,684,70,536,70"/>
 <area shape="rect" id="Node000004" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="368,105,572,145"/>
 <area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="585,101,716,77,717,83,586,106"/>
-<area shape="rect" id="Node000005" href="$classfound_1_1Stage.html" title=" " alt="" coords="163,105,319,145"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Stage.html" title="A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output..." alt="" coords="163,105,319,145"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="332,122,368,122,368,127,332,127"/>
-<area shape="rect" id="Node000006" href="$classfound_1_1Action.html" title=" " alt="" coords="5,112,113,137"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,112,113,137"/>
 <area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="127,122,162,122,162,127,127,127"/>
 </map>

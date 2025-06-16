@@ -98,18 +98,21 @@ $(document).ready(function(){initNavTree('classfound_1_1PipelineExecutor.html','
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines.">PipelineExecutor</a> is an interface for classes that execute complex pipelines.  
+ <a href="classfound_1_1PipelineExecutor.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="executors_8hpp_source.html">executors.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for found::PipelineExecutor:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfound_1_1PipelineExecutor__inherit__graph.png" border="0" usemap="#afound_1_1PipelineExecutor_inherit__map" alt="Inheritance graph"/></div>
 <map name="afound_1_1PipelineExecutor_inherit__map" id="afound_1_1PipelineExecutor_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,70,180,95"/>
-<area shape="rect" href="classfound_1_1CalibrationPipelineExecutor.html" title=" " alt="" coords="249,5,439,45"/>
+<area shape="rect" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="5,70,180,95"/>
+<area shape="rect" href="classfound_1_1CalibrationPipelineExecutor.html" title="CalibrationPipelineExecutor is the pipeline executor for the calibration pipeline." alt="" coords="249,5,439,45"/>
 <area shape="poly" title=" " alt="" coords="162,64,255,43,256,48,163,69"/>
-<area shape="rect" href="classfound_1_1DistancePipelineExecutor.html" title=" " alt="" coords="228,70,460,95"/>
+<area shape="rect" href="classfound_1_1DistancePipelineExecutor.html" title="DistancePipelineExecutor is the pipeline executor for the distance determination pipeline." alt="" coords="228,70,460,95"/>
 <area shape="poly" title=" " alt="" coords="194,80,228,80,228,85,194,85"/>
-<area shape="rect" href="classfound_1_1OrbitPipelineExecutor.html" title=" " alt="" coords="241,119,447,145"/>
+<area shape="rect" href="classfound_1_1OrbitPipelineExecutor.html" title="OrbitPipelineExecutor is the pipeline executor for the orbit determination pipeline." alt="" coords="241,119,447,145"/>
 <area shape="poly" title=" " alt="" coords="172,95,279,117,278,122,171,101"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
@@ -120,12 +123,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae5a23a4eba4b67446de6eab8caa2c1cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys this.  <br /></td></tr>
 <tr class="separator:ae5a23a4eba4b67446de6eab8caa2c1cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47f19752bf81a790a171b547a9af10be" id="r_a47f19752bf81a790a171b547a9af10be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1PipelineExecutor.html#a47f19752bf81a790a171b547a9af10be">ExecutePipeline</a> ()=0</td></tr>
+<tr class="memdesc:a47f19752bf81a790a171b547a9af10be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the relavent <a class="el" href="classfound_1_1Pipeline.html" title="Pipeline is composite Stage (i.e.">Pipeline</a>.  <br /></td></tr>
 <tr class="separator:a47f19752bf81a790a171b547a9af10be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3f6227556a80c3f48e03514d41fefe7" id="r_ac3f6227556a80c3f48e03514d41fefe7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1PipelineExecutor.html#ac3f6227556a80c3f48e03514d41fefe7">OutputResults</a> ()=0</td></tr>
+<tr class="memdesc:ac3f6227556a80c3f48e03514d41fefe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Outputs the results of the <a class="el" href="classfound_1_1Pipeline.html" title="Pipeline is composite Stage (i.e.">Pipeline</a> in some format.  <br /></td></tr>
 <tr class="separator:ac3f6227556a80c3f48e03514d41fefe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classfound_1_1PipelineExecutor.html">PipelineExecutor</a> is an interface for classes that execute complex pipelines. </p>
+<div class="textblock"><p><a class="el" href="classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines.">PipelineExecutor</a> is an interface for classes that execute complex pipelines. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae5a23a4eba4b67446de6eab8caa2c1cd" name="ae5a23a4eba4b67446de6eab8caa2c1cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae5a23a4eba4b67446de6eab8caa2c1cd">&#9670;&#160;</a></span>~PipelineExecutor()</h2>
@@ -177,7 +182,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Executes the relavent <a class="el" href="classfound_1_1Pipeline.html">Pipeline</a> </p>
+
+<p>Executes the relavent <a class="el" href="classfound_1_1Pipeline.html" title="Pipeline is composite Stage (i.e.">Pipeline</a>. </p>
 
 <p>Implemented in <a class="el" href="classfound_1_1CalibrationPipelineExecutor.html#a9a3db902cd25c7942868726813f80f5e">found::CalibrationPipelineExecutor</a>, <a class="el" href="classfound_1_1DistancePipelineExecutor.html#a6954f4181204ca14112e7d0b0503ba70">found::DistancePipelineExecutor</a>, and <a class="el" href="classfound_1_1OrbitPipelineExecutor.html#a1ecb89b64a3e0dacdefdc537e7d64eba">found::OrbitPipelineExecutor</a>.</p>
 
@@ -205,7 +211,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Outputs the results of the <a class="el" href="classfound_1_1Pipeline.html">Pipeline</a> in some format </p>
+
+<p>Outputs the results of the <a class="el" href="classfound_1_1Pipeline.html" title="Pipeline is composite Stage (i.e.">Pipeline</a> in some format. </p>
 
 <p>Implemented in <a class="el" href="classfound_1_1CalibrationPipelineExecutor.html#a619e401cf1d9cabc1c36c55ab8c04b2b">found::CalibrationPipelineExecutor</a>, <a class="el" href="classfound_1_1DistancePipelineExecutor.html#a4f9c505716f27df1e27e6f01b5e6912a">found::DistancePipelineExecutor</a>, and <a class="el" href="classfound_1_1OrbitPipelineExecutor.html#a4dce6a26baf961bc6d7ff76be84b5562">found::OrbitPipelineExecutor</a>.</p>
 

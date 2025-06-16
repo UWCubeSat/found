@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['navigation_20determiner_0',['FOUND: FOUND Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
+  ['navigation_20determiner_0',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['normalize_1',['normalize',['../structfound_1_1Vec2.html#aa320910a8dbba3e7fec6e8ba500c9ead',1,'found::Vec2::Normalize()'],['../classfound_1_1Vec3.html#ad0f53a4ff60ad7d64e9195c696fb587d',1,'found::Vec3::Normalize()']]],
   ['ntoh_2',['ntoh',['../namespacefound.html#ac1edda17e3c125f50c39833c2295fe09',1,'found']]],
   ['ntohd_3',['ntohd',['../namespacefound.html#acadf0a45c76d4fef081b18f6faedc041',1,'found']]],

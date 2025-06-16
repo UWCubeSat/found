@@ -10,7 +10,7 @@ var searchData=
   ['setfocallength_7',['SetFocalLength',['../classfound_1_1Camera.html#af5acf428687056de2a4a9b122298a8a0',1,'found::Camera']]],
   ['setvector_8',['SetVector',['../classfound_1_1Quaternion.html#af94cca484c9c4f7c8b814855e4fc91b8',1,'found::Quaternion']]],
   ['simpleedgedetectionalgorithm_9',['simpleedgedetectionalgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html',1,'found::SimpleEdgeDetectionAlgorithm'],['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a60861160e18079f4035cef885826e55a',1,'found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm()']]],
-  ['source_20universal_20navigation_20determiner_10',['FOUND: FOUND Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
+  ['source_20universal_20navigation_20determiner_10',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['spatialtocamera_11',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
   ['spatialtospherical_12',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
   ['sphericaldistancedeterminationalgorithm_13',['sphericaldistancedeterminationalgorithm',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a8d443a039bd968423d59d86e82dc2f10',1,'found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm()'],['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html',1,'found::SphericalDistanceDeterminationAlgorithm']]],

@@ -98,14 +98,17 @@ $(document).ready(function(){initNavTree('structfound_1_1OrbitParams.html',''); 
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="structfound_1_1OrbitParams.html" title="OrbitParams defines the orbital parameters of a given orbit.">OrbitParams</a> defines the orbital parameters of a given orbit.  
+ <a href="structfound_1_1OrbitParams.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="style_8hpp_source.html">style.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for found::OrbitParams:</div>
 <div class="dyncontent">
 <div class="center"><img src="structfound_1_1OrbitParams__coll__graph.png" border="0" usemap="#afound_1_1OrbitParams_coll__map" alt="Collaboration graph"/></div>
 <map name="afound_1_1OrbitParams_coll__map" id="afound_1_1OrbitParams_coll__map">
-<area shape="rect" title=" " alt="" coords="5,137,152,163"/>
-<area shape="rect" href="classfound_1_1Vec3.html" title=" " alt="" coords="29,5,128,31"/>
+<area shape="rect" title="OrbitParams defines the orbital parameters of a given orbit." alt="" coords="5,137,152,163"/>
+<area shape="rect" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="29,5,128,31"/>
 <area shape="poly" title=" " alt="" coords="81,44,81,137,76,137,76,44"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
@@ -113,20 +116,26 @@ Collaboration diagram for found::OrbitParams:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a67613adafcaf9a4507e4637a7e7067c1" id="r_a67613adafcaf9a4507e4637a7e7067c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#a67613adafcaf9a4507e4637a7e7067c1">initialCondition</a></td></tr>
+<tr class="memdesc:a67613adafcaf9a4507e4637a7e7067c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The initial position of the satellite with respect to Earth (at t = 0 and theta = 0)  <br /></td></tr>
 <tr class="separator:a67613adafcaf9a4507e4637a7e7067c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a640c86fd0d8b581c751c313fda2304c7" id="r_a640c86fd0d8b581c751c313fda2304c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#a640c86fd0d8b581c751c313fda2304c7">position</a> )(int theta)</td></tr>
+<tr class="memdesc:a640c86fd0d8b581c751c313fda2304c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The position of the satellite as a function of the number of revolutions it has done.  <br /></td></tr>
 <tr class="separator:a640c86fd0d8b581c751c313fda2304c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae61e9b2b4acc508ec05a5d5375437b47" id="r_ae61e9b2b4acc508ec05a5d5375437b47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47">majorAxis</a> )(int theta)</td></tr>
+<tr class="memdesc:ae61e9b2b4acc508ec05a5d5375437b47"><td class="mdescLeft">&#160;</td><td class="mdescRight">The major axis vector as a function with respect to the revolutions of the satellite.  <br /></td></tr>
 <tr class="separator:ae61e9b2b4acc508ec05a5d5375437b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe40c130a12371106d0a67044f90167d" id="r_afe40c130a12371106d0a67044f90167d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d">minorAxis</a> )(int theta)</td></tr>
+<tr class="memdesc:afe40c130a12371106d0a67044f90167d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The minor axis vector as a function with respect to the revolutions of the satellite.  <br /></td></tr>
 <tr class="separator:afe40c130a12371106d0a67044f90167d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82aa7a79b4ace0a4b3f348da96560fcb" id="r_a82aa7a79b4ace0a4b3f348da96560fcb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#a82aa7a79b4ace0a4b3f348da96560fcb">inPlaneRotation</a> )(int theta)</td></tr>
+<tr class="memdesc:a82aa7a79b4ace0a4b3f348da96560fcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The angular speed that the satellite's orbit plane rotates in plane at with respect to the number of revolutions in the satellite's orbit.  <br /></td></tr>
 <tr class="separator:a82aa7a79b4ace0a4b3f348da96560fcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27079ef76722f7ff0d21d945e0624f28" id="r_a27079ef76722f7ff0d21d945e0624f28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28">outPlaneRotation</a> )(int theta)</td></tr>
+<tr class="memdesc:a27079ef76722f7ff0d21d945e0624f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">The angular speed that the satellite's orbit plane rotates out of plane at with respect to the number of revolutions in the satellite's orbit.  <br /></td></tr>
 <tr class="separator:a27079ef76722f7ff0d21d945e0624f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="structfound_1_1OrbitParams.html">OrbitParams</a> defines the orbital parameters of a given orbit </p>
+<div class="textblock"><p><a class="el" href="structfound_1_1OrbitParams.html" title="OrbitParams defines the orbital parameters of a given orbit.">OrbitParams</a> defines the orbital parameters of a given orbit. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a67613adafcaf9a4507e4637a7e7067c1" name="a67613adafcaf9a4507e4637a7e7067c1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a67613adafcaf9a4507e4637a7e7067c1">&#9670;&#160;</a></span>initialCondition</h2>
@@ -139,6 +148,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>The initial position of the satellite with respect to Earth (at t = 0 and theta = 0) </p>
 
 </div>
@@ -154,7 +164,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The angular speed that the satellite's orbit plane rotates in plane at with respect to the number of revolutions in the satellite's orbit. This is the same as the speed at which the major axis rotates around the barycenter of orbit in the plane of orbit, which is approximately at Earth's center</p>
+
+<p>The angular speed that the satellite's orbit plane rotates in plane at with respect to the number of revolutions in the satellite's orbit. </p>
+<p>This is the same as the speed at which the major axis rotates around the barycenter of orbit in the plane of orbit, which is approximately at Earth's center</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">theta</td><td>The number of revolutions the satellite has done</td></tr>
@@ -176,7 +188,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The major axis vector as a function with respect to the revolutions of the satellite</p>
+
+<p>The major axis vector as a function with respect to the revolutions of the satellite. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">theta</td><td>The number of revolutions the satellite has done</td></tr>
@@ -198,7 +211,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The minor axis vector as a function with respect to the revolutions of the satellite</p>
+
+<p>The minor axis vector as a function with respect to the revolutions of the satellite. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">theta</td><td>The number of revolutions the satellite has done</td></tr>
@@ -220,7 +234,9 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The angular speed that the satellite's orbit plane rotates out of plane at with respect to the number of revolutions in the satellite's orbit. This is the same as the angular speed at which the plane of orbit changes</p>
+
+<p>The angular speed that the satellite's orbit plane rotates out of plane at with respect to the number of revolutions in the satellite's orbit. </p>
+<p>This is the same as the angular speed at which the plane of orbit changes</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">theta</td><td>The number of revolutions the satellite has done</td></tr>
@@ -242,7 +258,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The position of the satellite as a function of the number of revolutions it has done</p>
+
+<p>The position of the satellite as a function of the number of revolutions it has done. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">theta</td><td>The number of revolutions the satellite has done</td></tr>

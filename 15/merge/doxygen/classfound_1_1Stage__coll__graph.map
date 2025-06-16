@@ -1,5 +1,5 @@
 <map id="found::Stage&lt; Input, Output &gt;" name="found::Stage&lt; Input, Output &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,161,119"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1Action.html" title=" " alt="" coords="29,5,137,31"/>
+<area shape="rect" id="Node000001" title="A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output..." alt="" coords="5,79,161,119"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="29,5,137,31"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,44,86,79,81,79,81,44"/>
 </map>
