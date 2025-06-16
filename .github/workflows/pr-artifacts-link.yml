@@ -23,8 +23,8 @@ jobs:
           script: |
             const prNumber = process.env.PR_NUMBER;
             const prFooter = `# Artifacts for PR #${prNumber} (DO NOT CHANGE)`;
-            const artifactLinks = `- <a href="https://uwcubesat.github.io/found/${prNumber}/merge/coverage" target="_blank">Coverage Artifact</a>\n`
-                               + `- <a href="https://uwcubesat.github.io/found/${prNumber}/merge/doxygen" target="_blank">Doxygen Artifact</a>\n`;
+            const artifactLinks = `- [Coverage Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/coverage)\n`
+                               + `- [Doxygen Artifact](https://uwcubesat.github.io/found/${prNumber}/merge/doxygen)\n`;
 
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
