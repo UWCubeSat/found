@@ -45,6 +45,14 @@ GTEST_CACHE_DIR := $(CACHE_DIR)/$(GTEST)-$(GTEST_VERSION)
 GTEST_CACHE_BUILD_DIR := $(GTEST_CACHE_DIR)/build
 GTEST_DIR := $(BUILD_LIBRARY_TEST_DIR)/$(GTEST)-$(GTEST_VERSION)
 
+# Define the Doxygen style library
+DOXYGEN_AWESOME = doxygen-awesome-css
+DOXYGEN_AWESOME_VERSION := 2.3.4
+DOXYGEN_AWESOME_URL := https://github.com/jothepro/$(DOXYGEN_AWESOME)/archive/refs/tags/v$(DOXYGEN_AWESOME_VERSION).tar.gz
+DOXYGEN_AWESOME_ZIP := $(CACHE_DIR)/v$(DOXYGEN_AWESOME_VERSION).tar.gz
+DOXYGEN_AWESOME_ARTIFACT := $(CACHE_DIR)/$(DOXYGEN_AWESOME)-$(DOXYGEN_AWESOME_VERSION)
+
+
 # Define all source and test code
 SRC := $(shell find $(SRC_DIR) -name "*.cpp")
 SRC_H := $(shell find $(SRC_DIR) -name "*.hpp")
@@ -229,8 +237,11 @@ $(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST)
 private_message:
 	$(call PRINT_TARGET_HEADER, private)
 
-# The doxygen target
-$(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET)
+# The doxygen target	
+$(DOXYGEN_AWESOME_ARTIFACT):
+	wget $(DOXYGEN_AWESOME_URL) -P $(CACHE_DIR)
+	tar -xzf $(DOXYGEN_AWESOME_ZIP) -C $(CACHE_DIR)
+$(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET) $(DOXYGEN_AWESOME_ARTIFACT)
 	$(call PRINT_TARGET_HEADER, $(DOXYGEN_TARGET))
 	mkdir -p $(BUILD_DOCUMENTATION_DOXYGEN_DIR)
 	chmod +rwx doxygen.sh
