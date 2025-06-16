@@ -81,10 +81,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Doxygen
-      run: make doxygen_generate
+    - name: Generate Documentation
+      run: |
+        (make coverage -j16) || (make coverage -j16)
+        make doxygen_generate
     
-    - name: Install rsync
+    - name: Install rsync (for JamesIves/github-pages-deploy-action@v4)
       run: apt install -y rsync
     
     - name: Set Target Folder in documentation
