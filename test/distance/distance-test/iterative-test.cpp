@@ -99,6 +99,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
     Vec3 p4 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.5), projectionRadiusMag * DECIMAL_SIN(0.5)};
     Vec3 p5 = {centerMag, projectionRadiusMag * -DECIMAL_COS(1.2), projectionRadiusMag * DECIMAL_SIN(1.2)};
     Vec3 p6 = {centerMag, projectionRadiusMag * -DECIMAL_COS(9.4), projectionRadiusMag * DECIMAL_SIN(9.4)};
+    Vec3 p7 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-62.4), projectionRadiusMag * DECIMAL_SIN(-62.4)};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),
@@ -106,11 +107,12 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
                 cam.SpatialToCamera(p3),
                 cam.SpatialToCamera(p4),
                 cam.SpatialToCamera(p5),
-                cam.SpatialToCamera(p6)};
+                cam.SpatialToCamera(p6),
+                cam.SpatialToCamera(p7)};
 
     // Step IV: Run It and Test!
     IterativeSphericalDistanceDeterminationAlgorithm algo =
-        IterativeSphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam), DEFAULT_ITERATIONS_2);
+        IterativeSphericalDistanceDeterminationAlgorithm(RADIUS_OF_EARTH, std::move(cam), 10000);
 
     PositionVector actual = algo.Run(pts);
 

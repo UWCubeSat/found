@@ -1,5 +1,7 @@
 #include "distance/distance.hpp"
 
+#include <assert.h>
+
 #include <cmath>
 #include <utility>
 #include <random>
@@ -101,13 +103,17 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         if (i % p.size() == 0) {
             std::shuffle(points.begin(), points.end(), dist);
         }
-        if (!(j < p.size())) j = 0;
-        result += SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]});
+        if (!(j < p.size() / 3 * 3)) j = 0;
+        PositionVector single(SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]}));
+        if (!std::isnan(single.MagnitudeSq())) {  // GCOVR_EXCL_LINE (this works)
+            result += single;
+            i++;
+        }
 
         j += 3;
-        i++;
     }
 
+    assert(!std::isnan((result / numIterations).MagnitudeSq()));
     // Return the average
     return result / numIterations;
 }

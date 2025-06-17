@@ -25,7 +25,9 @@
 #include "datafile/datafile.hpp"
 #include "datafile/serialization.hpp"
 
+/// Version for an empty/null Data File
 #define emptyDFVer 0U
+/// Header for an empty/null Data File
 #define defaultDFHead {{'L','O','S','T'}, emptyDFVer}
 
 // NOLINTBEGIN
@@ -36,6 +38,11 @@ FOUND_CLI_OPTION("local-orientation"    , found::EulerAngles, lclOrientation    
 FOUND_CLI_OPTION("reference-orientation", found::EulerAngles, refOrientation    , found::EulerAngles(0, 0, 0), found::strtoea(optarg)  , kNoDefaultArgument, REQ_ASSIGN, "The reference orientation (deg)") \
 FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        , ""                         , optarg                  , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"      )
 
+
+/// Distance Algorithms
+#define SEDA "SEDA"  // The SimpleEdgeDetectionAlgorithm (SEDA)
+#define SDDA "SDDA"  // The SphericalDistance DeterminationAlgorithm (SDDA)
+#define ISDDA "ISDDA"  // The IterativeSphericalDistanceDeterminationAlgorithm (ISDDA)
 
 /// Distance Flags
 #define DISTANCE \
@@ -50,7 +57,7 @@ FOUND_CLI_OPTION("planetary-radius"        , decimal           , radius         
 FOUND_CLI_OPTION("seda-threshold"          , unsigned char     , SEDAThreshold   , 25                         , found::strtouc(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "Threshold for the SEDA Algorithm ([0,255])"                   ) \
 FOUND_CLI_OPTION("seda-border-len"         , int               , SEDABorderLen   , 1                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The border thickness for SEDA (pixels)"                       ) \
 FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The edge offset for SEDA (pixels)"                            ) \
-FOUND_CLI_OPTION("distance-algo"           , std::string       , distanceAlgo    , "spherical"                , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The distance algorithm to use"                                ) \
+FOUND_CLI_OPTION("distance-algo"           , std::string       , distanceAlgo    , SDDA                       , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The distance algorithm to use (SDDA or ISDDA)"                ) \
 FOUND_CLI_OPTION("isdda-min-iterations"    , size_t            , ISDDAMinIters   , 0                          , found::strtosize(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The number of iterations for ISDDA"                           ) \
 FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
 

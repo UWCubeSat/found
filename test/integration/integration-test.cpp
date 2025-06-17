@@ -15,6 +15,7 @@
 #include "src/calibrate/calibrate.hpp"
 
 #include "src/command-line/parsing/parser.hpp"
+#include "src/command-line/parsing/options.hpp"
 
 namespace found {
 
@@ -68,6 +69,13 @@ TEST_F(IntegrationTest, TestMainHelp) {
 }
 
 // TODO: Add more integration tests here to make this more complete
+
+TEST_F(IntegrationTest, TestMainCalibrationBadDistanceAlgorithm) {
+    int argc = 4;
+    const char *argv[] = {"found", "distance", "--distance-algo", "NEDDA"};
+
+    ASSERT_THROW(main(argc, const_cast<char **>(argv)), std::runtime_error);
+}
 
 TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     int argc = 2;
@@ -176,6 +184,33 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
               (example_earth1.position - actual.positions[0].position).Magnitude()
                 / example_earth1.position.Magnitude());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+}
+
+TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
+    int argc = 17;
+    const char *argv[] = {"found", "distance",
+                        "--image", example_earth1.path,
+                        "--reference-as-orientation",
+                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
+                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
+                        "--reference-orientation", "140,0,0",
+                        "--distance-algo", ISDDA,
+                        "--isdda-min-iterations", "0",
+                        "--output-file", temp_df};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
+    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
+              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
+                / example_earth1.position.Magnitude());
+    // Adjusted to 50 degrees (because the sense is bad combined with SEDA)
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL  * 12 * 40 / 5,
+              RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
 TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {

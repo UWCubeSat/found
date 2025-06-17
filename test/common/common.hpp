@@ -166,7 +166,7 @@ const ImageData example_earth1(
     85e-3,
     20e-6,
     {DegToRad(140), 0, 0},
-    {10378137, 0, 0}
+    {DECIMAL(10378137), 0, 0}
 );
 
 }  // namespace found

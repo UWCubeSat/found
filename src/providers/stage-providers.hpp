@@ -40,7 +40,7 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm([[maybe_unused]] DistanceOptions &&options) {
+std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -53,13 +53,24 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm([[maybe_un
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
-                                                        [[maybe_unused]] DistanceOptions &&options) {
-    return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                     Camera(options.focalLength,
-                                                                            options.pixelSize,
-                                                                            options.image.width,
-                                                                            options.image.height));
+std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &&options) {
+    if (options.distanceAlgo == SDDA) {
+        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius,
+                                                                         Camera(options.focalLength,
+                                                                                options.pixelSize,
+                                                                                options.image.width,
+                                                                                options.image.height));
+    } else if (options.distanceAlgo == ISDDA) {
+        return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
+                                                                                  Camera(options.focalLength,
+                                                                                         options.pixelSize,
+                                                                                         options.image.width,
+                                                                                         options.image.height),
+                                                                                  options.ISDDAMinIters);
+    } else {
+        LOG_ERROR("Unrecognized distance algorithm: " << options.distanceAlgo);
+        throw std::runtime_error("Unrecognized distance algorithm: " + options.distanceAlgo);
+    }
 }
 
 /**
