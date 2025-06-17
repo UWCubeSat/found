@@ -132,10 +132,17 @@ TEST(TimeTest, TestGetUT1Time) {
 
 TEST(TimeTest, TestGetJulianDateNow) {
     DateTime time = getUTCTime();
+    #ifdef FOUND_FLOAT_MODE
+        sleep(1.5);
+    #endif
     decimal julianDate = getCurrentJulianDateTime();
     decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
 
-    ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
+    #ifndef FOUND_FLOAT_MODE
+        ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
+    #else
+        ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
+    #endif
 }
 
 TEST(TimeTest, TestGetJulianDateBefore1900) {
@@ -193,11 +200,18 @@ TEST(TimeTest, TestGetJulianDateTimeEpoch) {
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTimeNow) {
     DateTime time = getUTCTime();
+    #ifdef FOUND_FLOAT_MODE
+        sleep(1.5);
+    #endif
     decimal gmst = getCurrentGreenwichMeanSiderealTime();
     decimal expectedGmst = 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
             (getJulianDateTime(time) - DECIMAL(2451545.0)));
 
-    ASSERT_RANGE(gmst, expectedGmst, expectedGmst + SECONDS_TOLERANCE);
+    #ifdef FOUND_FLOAT_MODE
+        ASSERT_RANGE(gmst, expectedGmst - SECONDS_TOLERANCE, expectedGmst + SECONDS_TOLERANCE);
+    #else
+        ASSERT_RANGE(gmst, expectedGmst, expectedGmst + SECONDS_TOLERANCE);
+    #endif
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {

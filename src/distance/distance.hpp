@@ -123,6 +123,12 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * positions to be considered "the same" distance 
      * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
      * to accept for data
+     * 
+     * @note Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss
+     * calculations
+     * 
+     * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
+     * in the final point
      */
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
@@ -131,7 +137,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
                                                      decimal discriminatorRatio)
       : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
         minimumIterations_(minimumIterations),
-        distanceRatio_(distanceRatio),
+        distanceRatioSq_(distanceRatio * distanceRatio),
         discriminatorRatio_(discriminatorRatio) {}
     ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
 
@@ -151,6 +157,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * if we define the centroid of the points as P, for any
      * three consecutive points A B and C, angle APB is less than
      * angle APC
+     * 
+     * @pre Has never been called before
      * 
      * @post If p.size() < 3, then the result is exactly the zero vector
      * 
@@ -180,10 +188,21 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
                          decimal targetRadiusSq,
                          std::unique_ptr<Vec3[]> &projectedPoints,
                          size_t size);
+    /**
+     * Shuffles the indexes into triplets,
+     * attempting to create triplets whose
+     * indicies are far from each other.
+     * 
+     * @param size The size of the original
+     * array
+     * @param indicies The array to write
+     * into
+     */
+    void Shuffle(size_t size, std::unique_ptr<size_t[]> &indicies);
     /// The minimum number of iterations to use
     size_t minimumIterations_;
     /// The maximum distance ratio to accept
-    decimal distanceRatio_;
+    decimal distanceRatioSq_;
     /// The maximum loss ratio to accept
     decimal discriminatorRatio_;
 };

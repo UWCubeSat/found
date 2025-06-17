@@ -96,22 +96,16 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
-    Points points = p;
     std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);  // GCOVR_EXCL_LINE
     for (const Vec2 &point : p) {
-        projectedPoints[i] = this->cam_.CameraToSpatial(point).Normalize();
+        projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
+    i = 0;
     std::unique_ptr<decimal[]> losses(new decimal[numIterations]{});  // GCOVR_EXCL_LINE
     std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);  // GCOVR_EXCL_LINE
     PositionVector result{0, 0, 0};
 
-    // Setup our random seed and distribution
-    // TODO: Make the seed better so it gives
-    // us better points (at the moment, most
-    // triplets of points are too close to
-    // each other)
-    std::random_device device;
-    std::mt19937 dist(device());
+    std::unique_ptr<size_t[]> indicies(new size_t[pointsSize]);  // GCOVR_EXCL_LINE
 
     // Get the first estimate, and use it as the reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -121,20 +115,19 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     positions[i++] = first;
 
     // Initial shuffle
-    std::shuffle(points.begin(), points.end(), dist);
+    this->Shuffle(pointsSize, indicies);
 
     // Iterate through all points, shuffling them into triplets to feed into
     // SphericalDistanceDeterminationAlgorithm::Run
     while (i < numIterations) {
         // Shuffle when we've passed our last triplet
-        if (!(j < p.size() / 3 * 3)) {
+        if (!(j + 2 < pointsSize / 3 * 3)) {
             j = 0;
-            // TODO: Seed this better so that it generates good random data, because
-            // at the moment, the result is mostly the initial, reference guess.
-            std::shuffle(points.begin(), points.end(), dist);
+            this->Shuffle(pointsSize, indicies);
         }
-        PositionVector position(SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]}));
-        if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE (this works)
+        PositionVector position(
+            SphericalDistanceDeterminationAlgorithm::Run({p[indicies[j]], p[indicies[j + 1]], p[indicies[j + 2]]}));
+        if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE
             // Only recalculate targetRSq, we want to keep our targetDistSq from earlier
             targetRSq = (this->cam_.CameraToSpatial(p[j]).Normalize() - position.Normalize()).MagnitudeSq();
             losses[i] = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / losses[0];
@@ -164,10 +157,11 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
                                                                        size_t size) {
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
     // error):
-    decimal loss = DECIMAL(1e-3) + DECIMAL_ABS(targetDistanceSq - position.MagnitudeSq());
+    decimal loss = DECIMAL(1e-3);
     // If the distance error is within 500 m, then we take the distance error out
-    if (position.MagnitudeSq() / targetDistanceSq < this->distanceRatio_) {
-        loss = DECIMAL(1e-3);
+    decimal distance_loss_ratio = DECIMAL_ABS((targetDistanceSq - position.MagnitudeSq()) / targetDistanceSq);
+    if (distance_loss_ratio >= this->distanceRatioSq_) {
+        loss += distance_loss_ratio * targetDistanceSq;
     }
     // Now, we obtain the radius error
     PositionVector positionNorm(position.Normalize());
@@ -176,6 +170,48 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     }
 
     return loss;
+}
+
+void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size, std::unique_ptr<size_t[]> &indicies) {
+    static std::random_device device;  // GCOVR_EXCL_LINE
+    static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
+    std::uniform_int_distribution<size_t> dist(0, size - 1);
+    // Operates under the asusmption you won't call Run more than once
+    std::unique_ptr<size_t[]> logits(new uint64_t[size]{});  // GCOVR_EXCL_LINE
+    size_t i = 0;
+    while (i < size / 3 * 3) {
+        // Uniformly generate the first number
+        indicies[i++] = dist(gen);
+        assert(dist.min() == 0);
+        assert(dist.max() == static_cast<size_t>(size - 1));
+
+        // Create logits for the second
+        for (uint64_t j = 0; j < size; j++) {
+            logits[j] = (j - indicies[i - 1]) * (j - indicies[i - 1]);
+        }
+        // Sample for the next number
+        std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + size);
+        indicies[i++] = dist1(gen);
+        assert(dist1.min() == 0);
+        assert(dist1.max() == size - 1);
+        while (indicies[i - 1] == indicies[i - 2]) indicies[i - 1] = dist1(gen);  // GCOVR_EXCL_LINE
+
+        // Update the logits for the third
+        for (uint64_t j = 0; j < size; j++) {
+            logits[j] += (j - indicies[i - 1]) * (j - indicies[i - 1]);
+        }
+        // Sample for the last number
+        std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + size);
+        indicies[i++] = dist2(gen);
+        assert(dist2.min() == 0);
+        assert(dist2.max() == size - 1);
+        while (indicies[i - 1] == indicies[i - 2] && indicies[i - 1] == indicies[i - 3]) indicies[i - 1] = dist2(gen);  // GCOVR_EXCL_LINE NOLINT
+    }
+    #ifndef NDEBUG
+        for (i = 0; i < size / 3 * 3; i++) {
+            assert(indicies[i] < size);
+        }
+    #endif
 }
 
 }  // namespace found
