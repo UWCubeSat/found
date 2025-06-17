@@ -201,9 +201,13 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @post for any i, 0 <= indicies[i] < n
      * 
      * @note This algorithm uses a quadratic distribution to
-     * prioritize points far away from a given index. To make
-     * the points farther, you can use a function that grows
+     * prioritize points far away from a given index. We like that
+     * because it helps deal with noise. To exaggerate the difference
+     * in probability between points, you can use a function that grows
      * much faster by changing the macro PDF which is defined within.
+     * Make sure the distribution function though is zero where you
+     * need it to be (i.e. At points already generated within a triplet
+     * so that you do not draw those points again)
      * 
      * @note The assumption of p from this->Run(p) being in polar
      * order is quite important in this algorithm. Should that not
