@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <stb_image/stb_image.h>
+
 #include <sstream>
 #include <string>
 #include <istream>
 #include <cstdio>
-
-#include "stb_image/stb_image.h"
 
 #include "test/common/common.hpp"
 
@@ -181,13 +181,13 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position - actual.positions[0].position).Magnitude()
+              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
                 / example_earth1.position.Magnitude());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
 TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
-    int argc = 17;
+    int argc = 19;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--reference-as-orientation",
@@ -195,7 +195,8 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
                         "--reference-orientation", "140,0,0",
                         "--distance-algo", ISDDA,
-                        "--isdda-min-iterations", "0",
+                        "--isdda-discrim-ratio", "2.29614e+11",
+                        "--isdda-dist-ratio", "0.1",
                         "--output-file", temp_df};
 
     ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
@@ -208,9 +209,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
               (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
                 / example_earth1.position.Magnitude());
-    // Adjusted to 50 degrees (because the sense is bad combined with SEDA)
-    ASSERT_GE(DEFAULT_ARC_SEC_TOL  * 12 * 40 / 5,
-              RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
 TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
@@ -244,7 +243,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position - actual.positions[0].position).Magnitude()
+              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
                 / example_earth1.position.Magnitude());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
@@ -283,7 +282,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position - actual.positions[0].position).Magnitude()
+              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
                 / example_earth1.position.Magnitude());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 

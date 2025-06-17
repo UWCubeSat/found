@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <string>
+#include <limits>
 
 // Use FOUND_FLOAT_MODE to distinguish
 // the real type of float, and to change
@@ -38,6 +39,7 @@
 #define DECIMAL_M_SQRT2         (DECIMAL(M_SQRT2))       /* sqrt(2) */
 #define DECIMAL_M_SQRT1_2       (DECIMAL(M_SQRT1_2))     /* 1/sqrt(2) */
 #define DECIMAL_M_R_E           (DECIMAL(6371008.7714))  /* Earth's Radius */
+#define DECIMAL_INF             (DECIMAL(INFINITY))      /* Infinity */
 
 // Math Functions wrapped with Decimal typecast
 #define DECIMAL_POW(base,power) (DECIMAL(std::pow(base), power))

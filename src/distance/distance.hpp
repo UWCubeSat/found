@@ -2,6 +2,7 @@
 #define DISTANCE_H
 
 #include <utility>
+#include <memory>
 
 #include "common/style.hpp"
 #include "common/pipeline.hpp"
@@ -13,7 +14,12 @@ namespace found {
 /**
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
-*/
+ * 
+ * @note This algorithm performs optimally when the given Points is in polar order, i.e.
+ * if we define the centroid of the points as P, for any
+ * three consecutive points A B and C, angle APB is less than
+ * angle APC
+ */
 class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
  public:
     // Constructs this
@@ -57,7 +63,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * */
     PositionVector Run(const Points &p) override;
 
- private:
+ protected:
     /**
      *Returns the center of earth as a 3d Vector
      *
@@ -102,6 +108,8 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
  * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
  * to use all the points given to it.
+ * 
+ * It uses softmax activation to figure out the plausibility of each guess
  */
 class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanceDeterminationAlgorithm {
  public:
@@ -111,10 +119,20 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      * @param minimumIterations The minimum number of iterations to perform
+     * @param distanceRatio The maximum distance ratio between the evaluated and reference
+     * positions to be considered "the same" distance 
+     * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
+     * to accept for data
      */
-    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam, size_t minimumIterations)
+    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
+                                                     Camera &&cam,
+                                                     size_t minimumIterations,
+                                                     decimal distanceRatio,
+                                                     decimal discriminatorRatio)
       : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
-        minimumIterations_(minimumIterations) {}
+        minimumIterations_(minimumIterations),
+        distanceRatio_(distanceRatio),
+        discriminatorRatio_(discriminatorRatio) {}
     ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
 
     /**
@@ -129,6 +147,11 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @pre p must refer to points taken by the camera that was passed to
      * this
      * 
+     * @pre p is radially sorted, i.e.
+     * if we define the centroid of the points as P, for any
+     * three consecutive points A B and C, angle APB is less than
+     * angle APC
+     * 
      * @post If p.size() < 3, then the result is exactly the zero vector
      * 
      * @note If minimumIterations (from constructor) is less than the size of
@@ -137,7 +160,32 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
     PositionVector Run(const Points &p) override;
 
  private:
+    /**
+     * Generates a loss on a position vector
+     * 
+     * @param position The vector to evaluate
+     * @param targetDistanceSq The target distance squared of the position
+     * @param targetRadiusSq The target "radius" squared
+     * @param projectedPoints The projected points to evaluate against
+     * @param size The size of the projected points
+     * 
+     * @return The loss of position
+     * 
+     * @pre targetRadiusSq is not the true radius, but rather the
+     * distance obtained between the radius vector and a circle
+     * point when projected onto the unit sphere
+     */
+    decimal GenerateLoss(PositionVector &position,
+                         decimal targetDistanceSq,
+                         decimal targetRadiusSq,
+                         std::unique_ptr<Vec3[]> &projectedPoints,
+                         size_t size);
+    /// The minimum number of iterations to use
     size_t minimumIterations_;
+    /// The maximum distance ratio to accept
+    decimal distanceRatio_;
+    /// The maximum loss ratio to accept
+    decimal discriminatorRatio_;
 };
 
 /**

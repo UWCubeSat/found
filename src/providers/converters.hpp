@@ -1,12 +1,12 @@
 #ifndef CONVERTERS_H
 #define CONVERTERS_H
 
+#include <stb_image/stb_image.h>
+
 #include <string>
 #include <memory>
 #include <fstream>
 #include <sstream>
-
-#include "stb_image/stb_image.h"
 
 #include "common/logging.hpp"
 

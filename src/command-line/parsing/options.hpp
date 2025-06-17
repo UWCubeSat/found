@@ -59,6 +59,8 @@ FOUND_CLI_OPTION("seda-border-len"         , int               , SEDABorderLen  
 FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The edge offset for SEDA (pixels)"                            ) \
 FOUND_CLI_OPTION("distance-algo"           , std::string       , distanceAlgo    , SDDA                       , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The distance algorithm to use (SDDA or ISDDA)"                ) \
 FOUND_CLI_OPTION("isdda-min-iterations"    , size_t            , ISDDAMinIters   , 0                          , found::strtosize(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The number of iterations for ISDDA"                           ) \
+FOUND_CLI_OPTION("isdda-dist-ratio"        , decimal           , ISDDADistRatio  , 1.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The distance ratio for calculated positions for ISDDA (m)"    ) \
+FOUND_CLI_OPTION("isdda-discrim-ratio"     , decimal           , ISDDADiscimRatio, DECIMAL_INF                , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The loss discrimination ratio for ISSDA"                      ) \
 FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
 
 

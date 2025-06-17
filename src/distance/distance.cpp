@@ -5,8 +5,9 @@
 #include <cmath>
 #include <utility>
 #include <random>
-#include <algorithm>
+#include <memory>
 
+#include "common/logging.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/style.hpp"
@@ -91,31 +92,90 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // Determine the number of iterations
     size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
 
-    // Iterate through a shuffled points and take the sum
-    // of all calls
+    // Setup to iterate through all the calls
     size_t i = 0;
     size_t j = 0;
+    size_t pointsSize = p.size();
+    Points points = p;
+    std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);  // GCOVR_EXCL_LINE
+    for (const Vec2 &point : p) {
+        projectedPoints[i] = this->cam_.CameraToSpatial(point).Normalize();
+    }
+    std::unique_ptr<decimal[]> losses(new decimal[numIterations]{});  // GCOVR_EXCL_LINE
+    std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);  // GCOVR_EXCL_LINE
+    PositionVector result{0, 0, 0};
+
+    // Setup our random seed and distribution
+    // TODO: Make the seed better so it gives
+    // us better points (at the moment, most
+    // triplets of points are too close to
+    // each other)
     std::random_device device;
     std::mt19937 dist(device());
-    Points points = p;
-    PositionVector result{0, 0, 0};
+
+    // Get the first estimate, and use it as the reference
+    PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
+    decimal targetRSq = (this->cam_.CameraToSpatial(p[0]).Normalize() - first.Normalize()).MagnitudeSq();
+    decimal targetDistSq = first.MagnitudeSq();
+    losses[i] = this->GenerateLoss(first, targetDistSq, targetRSq, projectedPoints, pointsSize);
+    positions[i++] = first;
+
+    // Initial shuffle
+    std::shuffle(points.begin(), points.end(), dist);
+
+    // Iterate through all points, shuffling them into triplets to feed into
+    // SphericalDistanceDeterminationAlgorithm::Run
     while (i < numIterations) {
-        if (i % p.size() == 0) {
+        // Shuffle when we've passed our last triplet
+        if (!(j < p.size() / 3 * 3)) {
+            j = 0;
+            // TODO: Seed this better so that it generates good random data, because
+            // at the moment, the result is mostly the initial, reference guess.
             std::shuffle(points.begin(), points.end(), dist);
         }
-        if (!(j < p.size() / 3 * 3)) j = 0;
-        PositionVector single(SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]}));
-        if (!std::isnan(single.MagnitudeSq())) {  // GCOVR_EXCL_LINE (this works)
-            result += single;
-            i++;
+        PositionVector position(SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]}));
+        if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE (this works)
+            // Only recalculate targetRSq, we want to keep our targetDistSq from earlier
+            targetRSq = (this->cam_.CameraToSpatial(p[j]).Normalize() - position.Normalize()).MagnitudeSq();
+            losses[i] = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / losses[0];
+            if (losses[i] <= this->discriminatorRatio_) positions[i++] = position;
         }
 
         j += 3;
     }
 
-    assert(!std::isnan((result / numIterations).MagnitudeSq()));
-    // Return the average
-    return result / numIterations;
+    // Normalize losses[0]
+    losses[0] = 1.0;
+
+    decimal sum = 0;
+    for (i = 0; i < numIterations; i++) {
+        decimal factor = DECIMAL_EXP(-losses[i]);
+        result += positions[i] * factor;
+        sum += factor;
+    }
+
+    return result / sum;
+}
+
+decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
+                                                                       decimal targetDistanceSq,
+                                                                       decimal targetRadiusSq,
+                                                                       std::unique_ptr<Vec3[]> &projectedPoints,
+                                                                       size_t size) {
+    // Generate the loss on point (offset it so it won't be nan, and initialize with distance
+    // error):
+    decimal loss = DECIMAL(1e-3) + DECIMAL_ABS(targetDistanceSq - position.MagnitudeSq());
+    // If the distance error is within 500 m, then we take the distance error out
+    if (position.MagnitudeSq() / targetDistanceSq < this->distanceRatio_) {
+        loss = DECIMAL(1e-3);
+    }
+    // Now, we obtain the radius error
+    PositionVector positionNorm(position.Normalize());
+    for (size_t k = 0; k < size; k++) {
+        loss += DECIMAL_ABS(targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq());
+    }
+
+    return loss;
 }
 
 }  // namespace found

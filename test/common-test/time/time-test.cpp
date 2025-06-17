@@ -135,9 +135,6 @@ TEST(TimeTest, TestGetJulianDateNow) {
     decimal julianDate = getCurrentJulianDateTime();
     decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
 
-    // The default tolerance is 1e-3. The tolerance incurred
-    // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
-    // which is much smaller than the default tolerance.
     ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
 }
 
@@ -156,9 +153,6 @@ TEST(TimeTest, TestGetJulianDateBefore1900) {
     decimal julianDate = getJulianDateTime(time);
     decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
 
-    // The default tolerance is 1e-3. The tolerance incurred
-    // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
-    // which is much smaller than the default tolerance.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
@@ -177,9 +171,6 @@ TEST(TimeTest, TestGetJulianDate) {
     decimal julianDate = getJulianDateTime(time);
     decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
 
-    // The default tolerance is 1e-3. The tolerance incurred
-    // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
-    // which is much smaller than the default tolerance.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
@@ -197,9 +188,6 @@ TEST(TimeTest, TestGetJulianDateTimeEpoch) {
     decimal julianDate = getJulianDateTime(time.epochs);
     decimal expectedJulianDate = getJulianDateTime(time);
 
-    // The default tolerance is 1e-3. The tolerance incurred
-    // by the SECONDS_TOLERANCE would be SECONDS_TOLERANCE / 86400.0,
-    // which is much smaller than the default tolerance.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
 
@@ -228,7 +216,6 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {
     decimal expectedGmst = 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
             (getJulianDateTime(time) - DECIMAL(2451545.0)));
 
-    // The default tolerance is 1e-3.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
 }
 
@@ -246,7 +233,6 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTimeEpoch) {
     decimal gmst = getGreenwichMeanSiderealTime(time.epochs);
     decimal expectedGmst = getGreenwichMeanSiderealTime(time);
 
-    // The default tolerance is 1e-3.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
 }
 
