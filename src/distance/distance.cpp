@@ -178,9 +178,10 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     return loss;
 }
 
-/// Probability Density Function, which is
-/// currently a quadratic PDF (kinda, no
-/// normalization within the macro)
+/// Probability Density Function, which is currently a quadratic
+/// PDF (kinda, no normalization within the macro). Make your
+/// life easier by ensuring that your PDF is 0 where you want it to be.
+/// In our case, it should be zero at points we've already generated.
 #define PDF(x) (x) * (x)
 
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
@@ -211,10 +212,12 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
 
         // Update the logits for the third number (biquadratic with
         // centers at indicies[i - 1] and indicies[i - 2]),
-        // compensating at indicies[i - 2] by setting it to 0
+        // compensating at indicies[i - 1] and indicies[i - 2] by setting
+        // them to 0
         for (uint64_t j = 0; j < n; j++) {
             logits[j] += PDF(j - indicies[i - 1]);
         }
+        logits[indicies[i - 1]] = 0;
         logits[indicies[i - 2]] = 0;
         // Sample for the last number
         std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
