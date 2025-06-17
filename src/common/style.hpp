@@ -1,8 +1,3 @@
-/**
- * This file controls all stylistic-related choices for FOUND (except for decimal)
- * 
-*/
-
 #ifndef STYLE_H
 #define STYLE_H
 
@@ -43,7 +38,14 @@ struct Image {
     int height;
     /// The image channels
     int channels;
-    /// The image contents
+    /**
+     * The image contents
+     * 
+     * @note For each pixel, the channels are collated, meaning that
+     * for any pixel at index, the value of that pixel in channel n
+     * (for 0 <= index < width * height and 0 <= n < channels) is
+     * image[channels * index + n]
+     */
     unsigned char *image;
 };
 
@@ -73,7 +75,7 @@ typedef std::vector<Edge> Edges;
  */
 struct Component {
     /// The points in this component
-    std::vector<uint64_t> points;
+    std::unordered_set<uint64_t> points;
     /// The lowest point (left upper edge)
     Vec2 upperLeft;
     /// The highest point (right lower edge)
@@ -98,7 +100,6 @@ struct LocationRecord {
     Vec3 position;
 };
 
-// TODO: Maybe change this to line up with the DataFile struct
 // so that we don't have to copy the data.
 /// A collection of Location Records
 typedef std::vector<LocationRecord> LocationRecords;

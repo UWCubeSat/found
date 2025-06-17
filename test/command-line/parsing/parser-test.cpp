@@ -36,18 +36,18 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
     const char *argv[] = {"found", "calibration",
         "--local-orientation", "1 2 3",
         "--reference-orientation", "3.0,-9.0,27.2",
-        "--output-file", "example.found"};
+        "--output-file", temp_df};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1), options.lclOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(2), options.lclOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(1), options.lclOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(2), options.lclOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3), options.lclOrientation.roll);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(3.0), options.refOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(-9.0), options.refOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(27.2), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3.0), options.refOrientation.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(-9.0), options.refOrientation.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(27.2), options.refOrientation.roll);
 
-    ASSERT_EQ("example.found", options.outputFile);
+    ASSERT_EQ(temp_df, options.outputFile);
 }
 
 TEST_F(ParserTest, TestCalibrationParserFail) {
@@ -65,15 +65,17 @@ TEST_F(ParserTest, TestDistanceParserBadFlag) {
 }
 
 TEST_F(ParserTest, TestDistanceParserBaseCase) {
-    int argc = 2;
-    const char *argv[] = {"found", "distance"};
-    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    int argc = 4;
+    const char *argv[] = {"found", "distance",
+                          "--calibration-data", "test/common/assets/empty-df.found"};
+    DistanceOptions options(ParseDistanceOptions(argc, const_cast<char **>(argv)));
 
     Image emptyImage{0, 0, 0, nullptr};
     EulerAngles emptyEA(0, 0, 0);
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(emptyImage, options.image);
-    ASSERT_EQ("", options.calibrationData);  // TODO: Change this once implemented
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.012), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(20E-6), options.pixelSize);
@@ -82,36 +84,44 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 24;
+    int argc = 30;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--calibration-data", "example.found",
+        "--calibration-data", "test/common/assets/empty-df.found",
         "--reference-as-orientation", "false",
         "--camera-focal-length", "1.5",
         "--camera-pixel-size", "4E-12",
         "--reference-orientation", "1.1 1.2 1.3",
         "--relative-orientation", "1.4 1.5 1.6",
+        "--planetary-radius", "1964.4",
         "--seda-threshold", "62",
         "--seda-border-len", "10",
         "--seda-offset", "9.2",
-        "--planetary-radius", "1964.4"};
+        "--distance-algo", "algo",
+        "--isdda-min-iterations", "30",
+        "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
-    EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
-    EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    EulerAngles expectedRefOrientation(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3));
+    EulerAngles expectedRelOrientation(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6));
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_EQ("example.found", options.calibrationData);
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1.5), options.focalLength);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
     ASSERT_EA_EQ_DEFAULT(expectedRefOrientation, options.refOrientation);
     ASSERT_EA_EQ_DEFAULT(expectedRelOrientation, options.relOrientation);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1964.4), options.radius);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
-    ASSERT_EQ(9.2, options.SEDAOffset);
-    ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(9.2), options.SEDAOffset);
+    ASSERT_EQ("algo", options.distanceAlgo);
+    ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
+    ASSERT_EQ("example.found", options.outputFile);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory
@@ -122,15 +132,16 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--reference-as-orientation",
-        "--calibration-data", "example.found"};
+        "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
     EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
     EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    ASSERT_EQ("example.found", options.calibrationData);
+    ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_TRUE(options.refAsOrientation);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
@@ -179,7 +190,7 @@ TEST_F(ParserTest, OrbitParserBaseCase) {
 TEST_F(ParserTest, OrbitParserGeneral) {
     int argc = 14;
     const char *argv[] = {"found", "orbit",
-        "--position-data", "test/common/assets/position-data/pos-data-valid.txt",
+        "--position-data", pos_data,
         "--output-form", "json",
         "--total-time", "7200.0",
         "--time-step", "0.02",

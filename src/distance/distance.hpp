@@ -1,6 +1,8 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
+#include <utility>
+
 #include "common/style.hpp"
 #include "common/pipeline.hpp"
 #include "common/spatial/attitude-utils.hpp"
@@ -36,7 +38,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      */
-    SphericalDistanceDeterminationAlgorithm(float radius, Camera &&cam) : cam_(cam), radius_(radius) {}
+    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(cam), radius_(radius) {}
     ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**
@@ -56,7 +58,6 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
     PositionVector Run(const Points &p) override;
 
  private:
-    // Fields specific to this algorithm, and helper methods
     /**
      *Returns the center of earth as a 3d Vector
      *
@@ -95,6 +96,48 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
     */
     decimal radius_;
+};
+
+/**
+ * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
+ * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
+ * to use all the points given to it.
+ */
+class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanceDeterminationAlgorithm {
+ public:
+    /**
+     * Creates a IterativeSphericalDistanceDeterminationAlgorithm
+     * 
+     * @param radius The radius of Earth
+     * @param cam The camera used to capture the picture of Earth
+     * @param minimumIterations The minimum number of iterations to perform
+     */
+    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam, size_t minimumIterations)
+      : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
+        minimumIterations_(minimumIterations) {}
+    ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
+
+    /**
+     * Obtains the position of the planet relative to the camera
+     * 
+     * @param p The points on the edge of Earth (in the image taken
+     * by the camera given to this)
+     * 
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
+     * 
+     * @pre p must refer to points taken by the camera that was passed to
+     * this
+     * 
+     * @post If p.size() < 3, then the result is exactly the zero vector
+     * 
+     * @note If minimumIterations (from constructor) is less than the size of
+     * p, then it will increase the number of iterations to cover all of p
+     * */
+    PositionVector Run(const Points &p) override;
+
+ private:
+    size_t minimumIterations_;
 };
 
 /**

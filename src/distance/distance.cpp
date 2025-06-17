@@ -1,11 +1,15 @@
+#include "distance/distance.hpp"
+
+#include <assert.h>
+
 #include <cmath>
 #include <utility>
+#include <random>
+#include <algorithm>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/style.hpp"
-
-#include "distance/distance.hpp"
 
 namespace found {
 
@@ -13,8 +17,8 @@ PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
 
     Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
-                      cam_.CameraToSpatial(p[1]).Normalize(),
-                      cam_.CameraToSpatial(p[2]).Normalize()};
+                      cam_.CameraToSpatial(p[p.size() / 2]).Normalize(),
+                      cam_.CameraToSpatial(p[p.size() - 1]).Normalize()};
 
     // Obtain the center point of the projected circle
     Vec3 center = getCenter(spats);
@@ -77,7 +81,41 @@ Vec3 center) {
 }
 
 PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
-    return radius_*sqrt(r * r + c * c)/r;
+    return static_cast<PreciseDecimal>(radius_)*sqrt(r * r + c * c)/r;
+}
+
+PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
+    // Return zero if the number of points is less than 0
+    if (p.size() < 3) return {0, 0, 0};
+
+    // Determine the number of iterations
+    size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
+
+    // Iterate through a shuffled points and take the sum
+    // of all calls
+    size_t i = 0;
+    size_t j = 0;
+    std::random_device device;
+    std::mt19937 dist(device());
+    Points points = p;
+    PositionVector result{0, 0, 0};
+    while (i < numIterations) {
+        if (i % p.size() == 0) {
+            std::shuffle(points.begin(), points.end(), dist);
+        }
+        if (!(j < p.size() / 3 * 3)) j = 0;
+        PositionVector single(SphericalDistanceDeterminationAlgorithm::Run({p[j], p[j + 1], p[j + 2]}));
+        if (!std::isnan(single.MagnitudeSq())) {  // GCOVR_EXCL_LINE (this works)
+            result += single;
+            i++;
+        }
+
+        j += 3;
+    }
+
+    assert(!std::isnan((result / numIterations).MagnitudeSq()));
+    // Return the average
+    return result / numIterations;
 }
 
 }  // namespace found

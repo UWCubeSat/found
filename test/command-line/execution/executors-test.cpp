@@ -5,20 +5,26 @@
 #include <utility>
 #include <string>
 #include <sstream>
+#include <cstdio>
+#include <fstream>
+#include <ctime>
 
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
+#include "test/common/common.hpp"
 
 #include "src/providers/converters.hpp"
+#include "src/datafile/datafile.hpp"
+#include "src/datafile/serialization.hpp"
 
-#include "calibrate/calibrate.hpp"
+#include "src/calibrate/calibrate.hpp"
 
-#include "distance/edge.hpp"
-#include "distance/distance.hpp"
-#include "distance/vectorize.hpp"
+#include "src/distance/edge.hpp"
+#include "src/distance/distance.hpp"
+#include "src/distance/vectorize.hpp"
 
-// TODO(nguy8tri): Include statement for Orbit Pipeline
-// TODO: Fully Implement this after everything is well defined
+// TODO: Fully Implement orbit stuff this after orbit stage is implemented
+// TODO: Include statement for Orbit Pipeline
 
 #include "src/command-line/execution/executors.hpp"
 
@@ -44,7 +50,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
     CalibrationOptions options = {
         {DECIMAL_M_PI / 3, 0, 0},
         {DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0},
-        "example.found"
+        temp_df
     };
 
     CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
@@ -56,20 +62,34 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
 
-    // Expected Output: 0.965926, -8.65956e-17, 0.258819, 8.65956e-17
-    // Took actual output and confirmed it conformed to this, then used it in
-    // the regex
+    // Both expected outputs are confirmed to conform to expectation
     std::stringstream expectedOutput;
-    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
+    #ifdef FOUND_FLOAT_MODE
+        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                    << "Calibration Quaternion: \\((0.965926, 0, 0.258819, 0)\\)\\s*";
+    #else
+        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                    << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
+    #endif
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    DataFile expected{
+        {},
+        LOSTCalibrationAlgorithm().Run({options.lclOrientation, options.refOrientation})
+    };
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+    ASSERT_DF_EQ(expected, actual, 1);
+
+    std::remove(temp_df);
 }
 
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     DistanceOptions options = {
         strtoimage("test/common/assets/example_image.jpg"),
-        "example.found",
+        strtodf("test/common/assets/empty-df.found"),
         false,
         0.012,
         20E-6,
@@ -78,7 +98,10 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         DECIMAL_M_E,
         25,
         1,
-        0.0
+        0.0,
+        "hello",
+        92,
+        temp_df
     };
     Points points = {
         {0, 0},
@@ -131,6 +154,19 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
                    << "Distance from Earth: 8.77496 m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    DataFile expected{
+        {{'F', 'O', 'U', 'N'}, 1U, 1},
+        {},
+        std::make_unique<LocationRecord[]>(1)
+    };
+    expected.positions[0] = {145295, {4, 5, 6}};
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+    ASSERT_DF_EQ(expected, actual, 1);
+
+    std::remove(temp_df);
 }
 
 TEST(ExecutorsTest, TestOrbitPipelineExecutor) {

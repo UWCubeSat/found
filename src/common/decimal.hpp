@@ -4,6 +4,9 @@
 #include <cmath>
 #include <string>
 
+// Use FOUND_FLOAT_MODE to distinguish
+// the real type of float, and to change
+// code accordingly.
 #ifdef FOUND_FLOAT_MODE
     typedef float decimal;
     #define STR_TO_DECIMAL(x) std::stof(x)
@@ -56,7 +59,7 @@
 #define DECIMAL_ASIN(x)         (DECIMAL(std::asin(x)))
 #define DECIMAL_ACOS(x)         (DECIMAL(std::acos(x)))
 #define DECIMAL_ATAN(x)         (DECIMAL(std::atan(x)))
-#define DECIMAL_ATAN2(x,y)      (DECIMAL(std::atan2(x),y))
+#define DECIMAL_ATAN2(x,y)      (DECIMAL(std::atan2(x,y)))
 
 // Float methods wrapped with Decimal typecast)
 #define DECIMAL_FMA(x,y,z)      (DECIMAL(std::fma(x),y,z))

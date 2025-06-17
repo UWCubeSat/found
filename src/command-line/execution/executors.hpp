@@ -86,7 +86,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * This is guarenteed as long as strtoimage is used to create the image,
      * and it throws an error if the image is not valid.
      */
-    explicit DistancePipelineExecutor(const DistanceOptions &&options,
+    explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                       std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
@@ -119,7 +119,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
-    explicit OrbitPipelineExecutor(const OrbitOptions &&options,
+    explicit OrbitPipelineExecutor(OrbitOptions &&options,
                                    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
