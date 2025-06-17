@@ -65,7 +65,7 @@ var NAVTREEINDEX =
 "annotated.html",
 "classfound_1_1LOSTVectorGenerationAlgorithm.html#ac7ee96e7a752852eec28726c5ef2c1af",
 "decimal_8hpp.html#a48c6d79be3f117fa2e9858e923a67d87",
-"output_8cpp.html"
+"orbit_8hpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
