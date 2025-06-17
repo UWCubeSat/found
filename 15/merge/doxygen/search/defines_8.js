@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['opt_5fassign_0',['OPT_ASSIGN',['../parser_8cpp.html#adc259f14335bc314d35c6306be46f861',1,'parser.cpp']]],
-  ['optional_5foptarg_1',['OPTIONAL_OPTARG',['../parser_8cpp.html#a9466ba64dd08cb4c5385d972c71bcb83',1,'parser.cpp']]],
-  ['orbit_2',['ORBIT',['../options_8hpp.html#a62c5b7e3a2c060e2380586b6f6a822c0',1,'options.hpp']]]
+  ['log_5ferror_0',['LOG_ERROR',['../logging_8hpp.html#a7ebf4c3b4fb05d6f9094089ded75cbdd',1,'logging.hpp']]],
+  ['log_5finfo_1',['LOG_INFO',['../logging_8hpp.html#ac8e803773221119947b55f6ae85a9c63',1,'logging.hpp']]],
+  ['log_5fwarn_2',['LOG_WARN',['../logging_8hpp.html#aeaf09e51c5a1f84078e5c6aa59dc48de',1,'logging.hpp']]]
 ];

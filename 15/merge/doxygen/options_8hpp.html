@@ -210,12 +210,21 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aaf4cebf8b549af845fbc9baf9214e1b5" id="r_aaf4cebf8b549af845fbc9baf9214e1b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#aaf4cebf8b549af845fbc9baf9214e1b5">emptyDFVer</a>&#160;&#160;&#160;0U</td></tr>
+<tr class="memdesc:aaf4cebf8b549af845fbc9baf9214e1b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Version for an empty/null Data File.  <br /></td></tr>
 <tr class="separator:aaf4cebf8b549af845fbc9baf9214e1b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18d5baa12def44de1fce340a63821082" id="r_a18d5baa12def44de1fce340a63821082"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#a18d5baa12def44de1fce340a63821082">defaultDFHead</a>&#160;&#160;&#160;{{'L','O','S','T'}, <a class="el" href="options_8hpp.html#aaf4cebf8b549af845fbc9baf9214e1b5">emptyDFVer</a>}</td></tr>
+<tr class="memdesc:a18d5baa12def44de1fce340a63821082"><td class="mdescLeft">&#160;</td><td class="mdescRight">Header for an empty/null Data File.  <br /></td></tr>
 <tr class="separator:a18d5baa12def44de1fce340a63821082"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ddd570ad03298cdcf6728dcc3b82985" id="r_a4ddd570ad03298cdcf6728dcc3b82985"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#a4ddd570ad03298cdcf6728dcc3b82985">CALIBRATION</a></td></tr>
 <tr class="memdesc:a4ddd570ad03298cdcf6728dcc3b82985"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calibration Flags.  <br /></td></tr>
 <tr class="separator:a4ddd570ad03298cdcf6728dcc3b82985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb6b954ea75e06b96356f9b808b31e12" id="r_acb6b954ea75e06b96356f9b808b31e12"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#acb6b954ea75e06b96356f9b808b31e12">SEDA</a>&#160;&#160;&#160;&quot;SEDA&quot;</td></tr>
+<tr class="memdesc:acb6b954ea75e06b96356f9b808b31e12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distance Algorithms.  <br /></td></tr>
+<tr class="separator:acb6b954ea75e06b96356f9b808b31e12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f6ec1dec07f163786b5c4b8e40e643" id="r_af7f6ec1dec07f163786b5c4b8e40e643"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#af7f6ec1dec07f163786b5c4b8e40e643">SDDA</a>&#160;&#160;&#160;&quot;SDDA&quot;</td></tr>
+<tr class="separator:af7f6ec1dec07f163786b5c4b8e40e643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a073d64fd6b69fe9db79a39bf0dfaf803" id="r_a073d64fd6b69fe9db79a39bf0dfaf803"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803">ISDDA</a>&#160;&#160;&#160;&quot;ISDDA&quot;</td></tr>
+<tr class="separator:a073d64fd6b69fe9db79a39bf0dfaf803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d41d147039787c25d6631b276ab4330" id="r_a9d41d147039787c25d6631b276ab4330"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="options_8hpp.html#a9d41d147039787c25d6631b276ab4330">DISTANCE</a></td></tr>
 <tr class="memdesc:a9d41d147039787c25d6631b276ab4330"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distance Flags.  <br /></td></tr>
 <tr class="separator:a9d41d147039787c25d6631b276ab4330"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -245,7 +254,7 @@ Macros</h2></td></tr>
 <div class="line">FOUND_CLI_OPTION(<span class="stringliteral">&quot;output-file&quot;</span>          , std::string       , outputFile        , <span class="stringliteral">&quot;&quot;</span>                         , optarg                  , kNoDefaultArgument, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The output file (*.found)&quot;</span>      )</div>
 <div class="ttc" id="aclassfound_1_1EulerAngles_html"><div class="ttname"><a href="classfound_1_1EulerAngles.html">found::EulerAngles</a></div><div class="ttdoc">An EulerAngle is a mutable Object representing Euler Angles of a 3D point.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:165</div></div>
 <div class="ttc" id="anamespacefound_html_ab9988f2bdf59bfd6635e1ca1cbae850b"><div class="ttname"><a href="namespacefound.html#ab9988f2bdf59bfd6635e1ca1cbae850b">found::strtoea</a></div><div class="ttdeci">EulerAngles strtoea(const std::string &amp;str)</div><div class="ttdoc">Converts a string to euler angles.</div><div class="ttdef"><b>Definition</b> converters.hpp:71</div></div>
-<div class="ttc" id="aoptions_8hpp_html_a43452b50be80708568199535efd71fc6"><div class="ttname"><a href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a></div><div class="ttdeci">#define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc)</div><div class="ttdef"><b>Definition</b> options.hpp:72</div></div>
+<div class="ttc" id="aoptions_8hpp_html_a43452b50be80708568199535efd71fc6"><div class="ttname"><a href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a></div><div class="ttdeci">#define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc)</div><div class="ttdef"><b>Definition</b> options.hpp:79</div></div>
 <div class="ttc" id="aparser_8cpp_html_ac0a8590d64029fe3d21530d5d5c2218d"><div class="ttname"><a href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a></div><div class="ttdeci">#define REQ_ASSIGN(options, prop, value, default)</div><div class="ttdoc">Assigns a flag with a required value.</div><div class="ttdef"><b>Definition</b> parser.cpp:46</div></div>
 </div><!-- fragment -->
 <p>Calibration Flags. </p>
@@ -263,6 +272,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Header for an empty/null Data File. </p>
 
 </div>
 </div>
@@ -288,7 +299,7 @@ Macros</h2></td></tr>
 <div class="line"><a class="code hl_define" href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a>(<span class="stringliteral">&quot;seda-threshold&quot;</span>          , <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>     , SEDAThreshold   , 25                         , <a class="code hl_function" href="namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a">found::strtouc</a>(optarg)     , <a class="code hl_variable" href="namespacefound.html#a83cb77a20df682f59375ad760da89b4b">kNoDefaultArgument</a>, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;Threshold for the SEDA Algorithm ([0,255])&quot;</span>                   ) \</div>
 <div class="line"><a class="code hl_define" href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a>(<span class="stringliteral">&quot;seda-border-len&quot;</span>         , <span class="keywordtype">int</span>               , SEDABorderLen   , 1                          , atoi(optarg)               , <a class="code hl_variable" href="namespacefound.html#a83cb77a20df682f59375ad760da89b4b">kNoDefaultArgument</a>, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The border thickness for SEDA (pixels)&quot;</span>                       ) \</div>
 <div class="line"><a class="code hl_define" href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a>(<span class="stringliteral">&quot;seda-offset&quot;</span>             , <a class="code hl_typedef" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>           , SEDAOffset      , 0.0                        , <a class="code hl_function" href="namespacefound.html#a60ee66e81bce477a178b2470285de1dd">found::strtodecimal</a>(optarg), <a class="code hl_variable" href="namespacefound.html#a83cb77a20df682f59375ad760da89b4b">kNoDefaultArgument</a>, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The edge offset for SEDA (pixels)&quot;</span>                            ) \</div>
-<div class="line"><a class="code hl_define" href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a>(<span class="stringliteral">&quot;distance-algo&quot;</span>           , std::string       , distanceAlgo    , <span class="stringliteral">&quot;spherical&quot;</span>                , optarg                     , kNoDefaultArgument, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The distance algorithm to use&quot;</span>                                ) \</div>
+<div class="line"><a class="code hl_define" href="options_8hpp.html#a43452b50be80708568199535efd71fc6">FOUND_CLI_OPTION</a>(<span class="stringliteral">&quot;distance-algo&quot;</span>           , std::string       , distanceAlgo    , <a class="code hl_define" href="options_8hpp.html#af7f6ec1dec07f163786b5c4b8e40e643">SDDA</a>                       , optarg                     , kNoDefaultArgument, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The distance algorithm to use (SDDA or ISDDA)&quot;</span>                ) \</div>
 <div class="line">FOUND_CLI_OPTION(<span class="stringliteral">&quot;isdda-min-iterations&quot;</span>    , <span class="keywordtype">size_t</span>            , ISDDAMinIters   , 0                          , <a class="code hl_function" href="namespacefound.html#a60bbd710f035570791547d551bdb96b2">found::strtosize</a>(optarg)   , kNoDefaultArgument, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The number of iterations for ISDDA&quot;</span>                           ) \</div>
 <div class="line">FOUND_CLI_OPTION(<span class="stringliteral">&quot;output-file&quot;</span>             , std::string       , outputFile      , <span class="stringliteral">&quot;&quot;</span>                         , optarg                     , kNoDefaultArgument, <a class="code hl_define" href="parser_8cpp.html#ac0a8590d64029fe3d21530d5d5c2218d">REQ_ASSIGN</a>, <span class="stringliteral">&quot;The output file (*.found)&quot;</span>                                    ) \</div>
 <div class="ttc" id="adecimal_8hpp_html_a0450d7258362349ee7654cefb54aaf57"><div class="ttname"><a href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a></div><div class="ttdeci">double decimal</div><div class="ttdef"><b>Definition</b> decimal.hpp:14</div></div>
@@ -300,7 +311,8 @@ Macros</h2></td></tr>
 <div class="ttc" id="anamespacefound_html_a6ae382a686bf6519fbc52e2d21bbfe9a"><div class="ttname"><a href="namespacefound.html#a6ae382a686bf6519fbc52e2d21bbfe9a">found::strtouc</a></div><div class="ttdeci">unsigned char strtouc(const std::string &amp;str)</div><div class="ttdoc">Converts a string to an unsigned char.</div><div class="ttdef"><b>Definition</b> converters.hpp:38</div></div>
 <div class="ttc" id="anamespacefound_html_a7024f78e6740e032817c2bc20a71962e"><div class="ttname"><a href="namespacefound.html#a7024f78e6740e032817c2bc20a71962e">found::strtobool</a></div><div class="ttdeci">bool strtobool(const std::string &amp;str)</div><div class="ttdoc">Converts the string to a bool.</div><div class="ttdef"><b>Definition</b> converters.hpp:100</div></div>
 <div class="ttc" id="anamespacefound_html_a83cb77a20df682f59375ad760da89b4b"><div class="ttname"><a href="namespacefound.html#a83cb77a20df682f59375ad760da89b4b">found::kNoDefaultArgument</a></div><div class="ttdeci">const char kNoDefaultArgument</div><div class="ttdoc">For macro processing.</div><div class="ttdef"><b>Definition</b> parser.cpp:69</div></div>
-<div class="ttc" id="aoptions_8hpp_html_a18d5baa12def44de1fce340a63821082"><div class="ttname"><a href="options_8hpp.html#a18d5baa12def44de1fce340a63821082">defaultDFHead</a></div><div class="ttdeci">#define defaultDFHead</div><div class="ttdef"><b>Definition</b> options.hpp:29</div></div>
+<div class="ttc" id="aoptions_8hpp_html_a18d5baa12def44de1fce340a63821082"><div class="ttname"><a href="options_8hpp.html#a18d5baa12def44de1fce340a63821082">defaultDFHead</a></div><div class="ttdeci">#define defaultDFHead</div><div class="ttdoc">Header for an empty/null Data File.</div><div class="ttdef"><b>Definition</b> options.hpp:31</div></div>
+<div class="ttc" id="aoptions_8hpp_html_af7f6ec1dec07f163786b5c4b8e40e643"><div class="ttname"><a href="options_8hpp.html#af7f6ec1dec07f163786b5c4b8e40e643">SDDA</a></div><div class="ttdeci">#define SDDA</div><div class="ttdef"><b>Definition</b> options.hpp:44</div></div>
 <div class="ttc" id="aparser_8cpp_html_adc259f14335bc314d35c6306be46f861"><div class="ttname"><a href="parser_8cpp.html#adc259f14335bc314d35c6306be46f861">OPT_ASSIGN</a></div><div class="ttdeci">#define OPT_ASSIGN(options, prop, value, default)</div><div class="ttdoc">Assigns a flag with an optional value.</div><div class="ttdef"><b>Definition</b> parser.cpp:59</div></div>
 <div class="ttc" id="astructfound_1_1DataFile_html"><div class="ttname"><a href="structfound_1_1DataFile.html">found::DataFile</a></div><div class="ttdoc">Represents a complete serialized data file.</div><div class="ttdef"><b>Definition</b> datafile.hpp:61</div></div>
 <div class="ttc" id="astructfound_1_1Image_html"><div class="ttname"><a href="structfound_1_1Image.html">found::Image</a></div><div class="ttdoc">Represents an image.</div><div class="ttdef"><b>Definition</b> style.hpp:34</div></div>
@@ -320,6 +332,8 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Version for an empty/null Data File. </p>
 
 </div>
 </div>
@@ -515,6 +529,20 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a id="a073d64fd6b69fe9db79a39bf0dfaf803" name="a073d64fd6b69fe9db79a39bf0dfaf803"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a073d64fd6b69fe9db79a39bf0dfaf803">&#9670;&#160;</a></span>ISDDA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ISDDA&#160;&#160;&#160;&quot;ISDDA&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a62c5b7e3a2c060e2380586b6f6a822c0" name="a62c5b7e3a2c060e2380586b6f6a822c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a62c5b7e3a2c060e2380586b6f6a822c0">&#9670;&#160;</a></span>ORBIT</h2>
 
@@ -535,6 +563,36 @@ Macros</h2></td></tr>
 <div class="ttc" id="anamespacefound_html_a162f8964394b0e61d95983cb6935ad3e"><div class="ttname"><a href="namespacefound.html#a162f8964394b0e61d95983cb6935ad3e">found::strtolr</a></div><div class="ttdeci">LocationRecords strtolr(const std::string &amp;str)</div><div class="ttdoc">Converts a string to a vector of location records.</div><div class="ttdef"><b>Definition</b> converters.hpp:143</div></div>
 <div class="ttc" id="anamespacefound_html_a45893998fd13e01478e171684678009b"><div class="ttname"><a href="namespacefound.html#a45893998fd13e01478e171684678009b">found::LocationRecords</a></div><div class="ttdeci">std::vector&lt; LocationRecord &gt; LocationRecords</div><div class="ttdoc">A collection of Location Records.</div><div class="ttdef"><b>Definition</b> style.hpp:105</div></div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="af7f6ec1dec07f163786b5c4b8e40e643" name="af7f6ec1dec07f163786b5c4b8e40e643"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7f6ec1dec07f163786b5c4b8e40e643">&#9670;&#160;</a></span>SDDA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SDDA&#160;&#160;&#160;&quot;SDDA&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb6b954ea75e06b96356f9b808b31e12" name="acb6b954ea75e06b96356f9b808b31e12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb6b954ea75e06b96356f9b808b31e12">&#9670;&#160;</a></span>SEDA</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SEDA&#160;&#160;&#160;&quot;SEDA&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Distance Algorithms. </p>
+
 </div>
 </div>
 </div><!-- contents -->

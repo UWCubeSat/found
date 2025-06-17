@@ -10,5 +10,8 @@ var options_8hpp =
     [ "FOUND_CLI_OPTION", "options_8hpp.html#a43452b50be80708568199535efd71fc6", null ],
     [ "FOUND_CLI_OPTION", "options_8hpp.html#a43452b50be80708568199535efd71fc6", null ],
     [ "FOUND_CLI_OPTION", "options_8hpp.html#a43452b50be80708568199535efd71fc6", null ],
-    [ "ORBIT", "options_8hpp.html#a62c5b7e3a2c060e2380586b6f6a822c0", null ]
+    [ "ISDDA", "options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803", null ],
+    [ "ORBIT", "options_8hpp.html#a62c5b7e3a2c060e2380586b6f6a822c0", null ],
+    [ "SDDA", "options_8hpp.html#af7f6ec1dec07f163786b5c4b8e40e643", null ],
+    [ "SEDA", "options_8hpp.html#acb6b954ea75e06b96356f9b808b31e12", null ]
 ];

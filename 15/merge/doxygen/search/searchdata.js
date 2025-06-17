@@ -9,7 +9,7 @@ var indexSectionsWithContent =
   6: "cdeklop",
   7: "a",
   8: "dnq",
-  9: "_acdefhlors",
+  9: "_acdefhilors",
   10: "dfnosu"
 };
 

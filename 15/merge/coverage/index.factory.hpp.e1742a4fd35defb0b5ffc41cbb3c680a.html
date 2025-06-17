@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: providers/factory.hpp</div>
-            <div>Date: 2025-06-17 00:31:55</div>
+            <div>Date: 2025-06-17 01:42:09</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -60,7 +60,7 @@
       <th>Block coverage</th>
     </tr>
     <tr><td><a href="#l19">found::CreateCalibrationPipelineExecutor(CalibrationOptions&amp;&amp;) (line 19)</a></td><td>called 16 times</td><td>77.0%</td></tr>
-    <tr><td><a href="#l31">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 31)</a></td><td>called 20 times</td><td>65.0%</td></tr>
+    <tr><td><a href="#l31">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 31)</a></td><td>called 28 times</td><td>81.0%</td></tr>
   </table>
 </details>
 </div>
@@ -299,7 +299,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l31" href="#l31">31</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">20</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">28</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateDistancePipelineExecutor</span><span class="p">(</span><span class="n">DistanceOptions</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -315,11 +315,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 20 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 24 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">48</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">DistanceOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">)),</span></td>
             </tr>
             <tr>
@@ -328,11 +328,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 20 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 24 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">40</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">52</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">DistanceOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">)),</span></td>
             </tr>
             <tr>
@@ -341,12 +341,12 @@
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 3 taken 20 times.</div>
-                            <div class="color-taken-branch">&check; Branch 9 taken 20 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 28 times.</div>
+                            <div class="color-taken-branch">&check; Branch 9 taken 24 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">80</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">108</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">DistanceOptions</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">)));</span></td>
             </tr>
             <tr>
