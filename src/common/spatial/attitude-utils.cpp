@@ -4,6 +4,8 @@
 #include <math.h>
 #include <assert.h>
 
+#include <stdexcept>
+
 namespace found {
 
 ///////////////////////////////////
@@ -152,11 +154,11 @@ EulerAngles Quaternion::ToSpherical() const {
     // the real and imaginary parts.
     decimal ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
-        ra += 2*M_PI;
+        ra += 2*DECIMAL_M_PI;
     decimal de = -asin(2*(-real*j-i*k));  // allow de to be positive or negaive, as is convention
     decimal roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
-        roll += 2*M_PI;
+        roll += 2*DECIMAL_M_PI;
 
     return EulerAngles(ra, de, roll);
 }
@@ -178,9 +180,9 @@ EulerAngles Quaternion::ToSpherical() const {
  * the absolute frame)
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
-    assert(roll >= 0.0 && roll <= 2*M_PI);
-    assert(ra >= 0 && ra <= 2*M_PI);
-    assert(dec >= -M_PI && dec <= M_PI);
+    assert(roll >= DECIMAL(0.0) && roll <= 2*DECIMAL_M_PI);
+    assert(ra >= DECIMAL(0.0) && ra <= 2*DECIMAL_M_PI);
+    assert(dec >= -DECIMAL_M_PI && dec <= DECIMAL_M_PI);
 
     // when we are modifying the coordinate axes, the quaternion multiplication works so that the
     // rotations are applied from left to right. This is the opposite as for modifying vectors.
@@ -227,7 +229,7 @@ Vec3 SphericalToSpatial(const decimal ra, const decimal de) {
 void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
     ra = atan2(vec.y, vec.x);
     if (ra < 0)
-        ra += M_PI*2;
+        ra += DECIMAL_M_PI*2;
     de = asin(vec.z);
 }
 
@@ -244,7 +246,7 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
  * @warning rad must be in radians
 */
 decimal RadToArcSec(decimal rad) {
-    return RadToDeg(rad) * 3600.0;
+    return RadToDeg(rad) * DECIMAL(3600.0);
 }
 
 
@@ -257,7 +259,7 @@ decimal RadToArcSec(decimal rad) {
  * to the arcsecant value arcSec
 */
 decimal ArcSecToRad(decimal arcSec) {
-    return DegToRad(arcSec / 3600.0);
+    return DegToRad(arcSec / DECIMAL(3600.0));
 }
 
 ///////////////////////////////////
@@ -497,7 +499,7 @@ decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
 decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
     decimal dot = vec1*vec2;
     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
-    return dot >= 1 ? 0 : dot <= -1 ? M_PI-0.0000001 : acos(dot);
+    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
 }
 
 /**
@@ -711,7 +713,7 @@ Quaternion DCMToQuaternion(const Mat3 &dcm) {
     // the DCM itself does
     Vec3 oldXAxis = Vec3({1, 0, 0});
     Vec3 newXAxis = dcm.Column(0);  // this is where oldXAxis is mapped to
-    assert(abs(newXAxis.Magnitude()-1) < 0.001);
+    assert(DECIMAL_ABS(newXAxis.Magnitude()-1) < DECIMAL(0.001));
     Vec3 xAlignAxis = oldXAxis.CrossProduct(newXAxis).Normalize();
     decimal xAlignAngle = AngleUnit(oldXAxis, newXAxis);
     Quaternion xAlign(xAlignAxis, xAlignAngle);
@@ -747,7 +749,7 @@ Quaternion Attitude::GetQuaternion() const {
         case DCMType:
             return DCMToQuaternion(dcm);
         default:
-            assert(false);
+            throw std::runtime_error("No representation available");
     }
 }
 
@@ -764,7 +766,7 @@ Mat3 Attitude::GetDCM() const {
         case QuaternionType:
             return QuaternionToDCM(quaternion);
         default:
-            assert(false);
+            throw std::runtime_error("No representation available");
     }
 }
 
@@ -783,7 +785,7 @@ Vec3 Attitude::Rotate(const Vec3 &vec) const {
         case QuaternionType:
             return quaternion.Rotate(vec);
         default:
-            assert(false);
+            throw std::runtime_error("No representation available");
     }
 }
 
@@ -800,7 +802,7 @@ EulerAngles Attitude::ToSpherical() const {
         case QuaternionType:
             return quaternion.ToSpherical();
         default:
-            assert(false);
+            throw std::runtime_error("No representation available");
     }
 }
 

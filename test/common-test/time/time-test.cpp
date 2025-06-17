@@ -206,10 +206,11 @@ TEST(TimeTest, TestGetJulianDateTimeEpoch) {
 TEST(TimeTest, TestGetGreenwichMeanSiderealTimeNow) {
     DateTime time = getUTCTime();
     decimal gmst = getCurrentGreenwichMeanSiderealTime();
-    decimal expectedGmst = 15 * (18.697374558 + 24.06570982441908 * (getJulianDateTime(time) - 2451545.0));
+    decimal expectedGmst = 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
+            (getJulianDateTime(time) - DECIMAL(2451545.0)));
 
     // The default tolerance is 1e-3.
-    ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);
+    ASSERT_RANGE(gmst, expectedGmst, expectedGmst + SECONDS_TOLERANCE);
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {
@@ -225,7 +226,8 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTime) {
     };
 
     decimal gmst = getGreenwichMeanSiderealTime(time);
-    decimal expectedGmst = 15 * (18.697374558 + 24.06570982441908 * (getJulianDateTime(time) - 2451545.0));
+    decimal expectedGmst = 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
+            (getJulianDateTime(time) - DECIMAL(2451545.0)));
 
     // The default tolerance is 1e-3.
     ASSERT_DECIMAL_EQ_DEFAULT(expectedGmst, gmst);

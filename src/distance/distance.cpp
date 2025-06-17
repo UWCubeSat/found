@@ -79,7 +79,7 @@ Vec3 center) {
 }
 
 PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
-    return radius_*sqrt(r * r + c * c)/r;
+    return static_cast<PreciseDecimal>(radius_)*sqrt(r * r + c * c)/r;
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {

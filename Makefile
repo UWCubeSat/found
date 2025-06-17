@@ -71,6 +71,7 @@ PRIVATE_TEST := $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_PRIVATE_TEST_DIR)/%.i,$(TE
 SRC_LIBS := -Isrc # Script to automatically include all folders: $(shell find $(SRC_DIR) -type d -print | xargs -I {} echo -I{})
 TEST_LIBS := $(SRC_LIBS) -I. # We need to include SRC_LIBS here for the test suite to register all src/**/%.hpp files correctly, but in the test folder, we should be placing the full file path
 
+# DISABLE_LOGGING can be defined to disable logging on ./found
 ifndef DISABLE_LOGGING
 	ifdef LOGGING_LEVEL
 		LOGGING_MACROS := -DENABLE_LOGGING -DLOGGING_LEVEL=$(LOGGING_LEVEL)
@@ -79,8 +80,9 @@ ifndef DISABLE_LOGGING
   	endif
 endif
 
+# FLOAT_MODE can be defined to enable FOUND_FLOAT_MODE
 ifdef FLOAT_MODE
-	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wno-narrowing
+	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion -Werror=double-promotion
 endif
 
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO -DINFO_STREAM=std::cout -DWARN_STREAM=std::cerr -DERROR_STREAM=std::cerr
@@ -112,7 +114,7 @@ DOXYGEN_TARGET := doxygen_generate
 CLEAN_TARGET := clean
 CLEAN_ALL_TARGET := clean_all
 
-# Options configurations
+# DEBUG can be defined to enable debugging on all binaries
 ifdef DEBUG
 	CXXFLAGS := $(DEBUG_FLAGS) $(CXXFLAGS) 
 	CXXFLAGS_TEST := $(DEBUG_FLAGS) $(CXXFLAGS_TEST)
@@ -139,11 +141,6 @@ define PRINT_TARGET_HEADER
 	printf "%s\n" "$$HASH_LINE"; \
 	printf "\n"
 endef
-
-# The release target
-release: OPTIMIZATION := -O3
-release: $(COMPILE_TARGET)
-release: all
 
 # The default target (all)
 all: $(COMPILE_SETUP_TARGET) \
@@ -261,5 +258,10 @@ $(CLEAN_TARGET):
 $(CLEAN_ALL_TARGET):
 	$(call PRINT_TARGET_HEADER, $(CLEAN_ALL_TARGET))
 	rm -rf $(BUILD_DIR) $(CACHE_DIR)
+
+# The release target
+release: OPTIMIZATION = -O3
+release: CXXFLAGS += -DNDEBUG
+release: compile
 
 -include $(SRC_OBJS:.o=.d) $(TEST_OBJS:.o=.d)

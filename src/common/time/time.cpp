@@ -58,10 +58,10 @@ decimal getJulianDateTime(DateTime &time) {
     decimal D = time.day + 1721013.5;
     decimal julianDate = A - B + C + D;
 
-    return julianDate + time.hour / 24.0 +
-           time.minute / 1440.0 + time.second / 86400.0 -
-           0.5 * (100 * time.year + time.month > 190002.5 ? 1 : -1) +
-           0.5;
+    return julianDate + time.hour / DECIMAL(24.0) +
+           time.minute / DECIMAL(1440.0) + time.second / DECIMAL(86400.0) -
+           DECIMAL(0.5) * (100 * time.year + time.month > 190002.5 ? 1 : -1) +
+           DECIMAL(0.5);
 }
 
 decimal getCurrentJulianDateTime() {
@@ -85,13 +85,13 @@ decimal getGreenwichMeanSiderealTime(DateTime &time) {
 
     // The below formula is from http://tiny.cc/4wal001
     decimal JDT = getJulianDateTime(time);
-    decimal D_tt = JDT - 2451545.0;  // Julian date - J2000.0
-    decimal t = D_tt / 36525.0;  // Julian centuries since J2000.0
+    decimal D_tt = JDT - DECIMAL(2451545.0);  // Julian date - J2000.0
+    decimal t = D_tt / DECIMAL(36525.0);  // Julian centuries since J2000.0
 
-    return 280.46061837 +
-           360.98564736629 * D_tt +
-           (0.000387933 * t * t) -
-           (t * t * t / 38710000.0);
+    return DECIMAL(280.46061837) +
+           DECIMAL(360.98564736629) * D_tt +
+           (DECIMAL(0.000387933) * t * t) -
+           (t * t * t / DECIMAL(38710000.0));
 }
 
 decimal getCurrentGreenwichMeanSiderealTime() {
@@ -105,7 +105,7 @@ decimal getCurrentGreenwichMeanSiderealTime() {
 }
 
 decimal getGreenwichMeanSiderealTime(std::time_t epochs) {
-    return 15 * (18.697374558 + 24.06570982441908 * (getJulianDateTime(epochs) - 2451545.0));
+    return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) * (getJulianDateTime(epochs) - DECIMAL(2451545.0)));
 }
 
 }  // namespace found

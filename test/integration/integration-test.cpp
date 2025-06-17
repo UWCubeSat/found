@@ -19,9 +19,9 @@
 namespace found {
 
 /// The default arc second tolerance
-#define DEFAULT_ARC_SEC_TOL 1500  // Equivalent to 5/12 of a degree
+#define DEFAULT_ARC_SEC_TOL DECIMAL(1500)  // Equivalent to 5/12 of a degree
 /// The default magnitude error tolerance
-#define DEFAULT_MAG_ERR_TOL 0.01  // Equivalent to 1%
+#define DEFAULT_MAG_ERR_TOL DECIMAL(0.01)  // Equivalent to 1%
 
 class IntegrationTest : public testing::Test {
  protected:

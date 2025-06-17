@@ -26,9 +26,9 @@ using found::IterativeSphericalDistanceDeterminationAlgorithm;
 #define RADIUS_OF_EARTH (static_cast<decimal>(6378137.0))
 // Default DoubleEquals Tolerance (So big for float because of floating point problems)
 #ifdef FOUND_FLOAT_MODE
-    #define DEFAULT_TOLERANCE 600.0
+    #define DEFAULT_TOLERANCE DECIMAL(600.0)
 #else
-    #define DEFAULT_TOLERANCE 1e-3
+    #include "test/common/common.hpp"
 #endif
 // Default Iterations
 #define DEFAULT_ITERATIONS_1 1
@@ -58,7 +58,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) 
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 1, imageWidth, imageHeight);
-    PositionVector expected = {0, 0, 0};
+    PositionVector expected = {0.0, 0.0, 0.0};
 
     // Pick any vectors
     Vec3 p1 = {10, -26, 0};
@@ -90,7 +90,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
     // b) Find the distance away from each projection point
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
     decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
-    decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
+    decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
     // c) Use 3 easy projections
     Vec3 p1 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
@@ -136,9 +136,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
 
     // c) Use 3 easy projections
-    Vec3 p1 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(p * sin(alpha)), 0};
-    Vec3 p2 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(-p * sin(alpha)), 0};
-    Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * sin(alpha))};
+    Vec3 p1 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(p * DECIMAL_SIN(alpha)), 0};
+    Vec3 p2 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(-p * DECIMAL_SIN(alpha)), 0};
+    Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * DECIMAL_SIN(alpha))};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToCamera(p1),
@@ -170,7 +170,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
     // b) Find the distance away from each projection point
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
     decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
-    decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
+    decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
     // c) Use 3 easy projections
     Vec3 p1 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
@@ -269,7 +269,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
         // b) Find the distance away from each projection point
         decimal p = sqrt(y_E * y_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
         decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
-        decimal projectionRadiusMag = static_cast<decimal>(p * sin(alpha));
+        decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
         // c) Use 3 easy projections
         Vec3 p1 = {centerMag, -projectionRadiusMag * DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};

@@ -70,9 +70,9 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
     PositionVector x_E = {100.0, 200.0, 300.0};
     PositionVector actual = vectorGen.Run(-x_E);
 
-    PositionVector expected = {100.0 * DECIMAL_COS(DECIMAL_M_PI / 4) + 200.0 * DECIMAL_SIN(DECIMAL_M_PI / 4),
-                               -100.0 * DECIMAL_SIN(DECIMAL_M_PI / 4) + 200.0 * DECIMAL_COS(DECIMAL_M_PI / 4),
-                               300.0};
+    PositionVector expected = {x_E.x * DECIMAL_COS(DECIMAL_M_PI / 4) + x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 4),
+                               -x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 4) + x_E.y * DECIMAL_COS(DECIMAL_M_PI / 4),
+                               x_E.z};
 
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
@@ -87,9 +87,9 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
     PositionVector x_E = {100.0, 200.0, 300.0};
     PositionVector actual = vectorGen.Run(x_E);
 
-    PositionVector expected = {-100.0 * DECIMAL_COS(DECIMAL_M_PI / 3) - 200.0 * DECIMAL_SIN(DECIMAL_M_PI / 3),
-                               100.0 * DECIMAL_SIN(DECIMAL_M_PI / 3) - 200.0 * DECIMAL_COS(DECIMAL_M_PI / 3),
-                               -300.0};
+    PositionVector expected = {-x_E.x * DECIMAL_COS(DECIMAL_M_PI / 3) - x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 3),
+                               x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 3) - x_E.y * DECIMAL_COS(DECIMAL_M_PI / 3),
+                               -x_E.z};
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 

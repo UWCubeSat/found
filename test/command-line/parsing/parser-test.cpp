@@ -115,10 +115,10 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(4E-12), options.pixelSize);
     ASSERT_EA_EQ_DEFAULT(expectedRefOrientation, options.refOrientation);
     ASSERT_EA_EQ_DEFAULT(expectedRelOrientation, options.relOrientation);
-    ASSERT_DECIMAL_EQ_DEFAULT(1964.4, options.radius);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1964.4), options.radius);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
-    ASSERT_DECIMAL_EQ_DEFAULT(9.2, options.SEDAOffset);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(9.2), options.SEDAOffset);
     ASSERT_EQ("algo", options.distanceAlgo);
     ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
     ASSERT_EQ("example.found", options.outputFile);

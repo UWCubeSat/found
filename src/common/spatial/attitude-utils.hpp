@@ -316,7 +316,7 @@ decimal AngleUnit(const Vec3 &, const Vec3 &);
  * @return The degrees of the angle
 */
 constexpr decimal RadToDeg(decimal rad) {
-    return rad*180.0/M_PI;
+    return rad*DECIMAL(180.0)/DECIMAL_M_PI;
 }
 
 /**
@@ -327,7 +327,7 @@ constexpr decimal RadToDeg(decimal rad) {
  * @return The radians of the angle
 */
 constexpr decimal DegToRad(decimal deg) {
-    return deg/180.0*M_PI;
+    return deg/DECIMAL(180.0)*DECIMAL_M_PI;
 }
 
 decimal RadToArcSec(decimal);
