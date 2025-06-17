@@ -14,6 +14,8 @@
 
 namespace found {
 
+///// SphericalDistanceDeterminationAlgorithm /////
+
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
 
@@ -84,6 +86,8 @@ Vec3 center) {
 PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
     return static_cast<PreciseDecimal>(radius_)*sqrt(r * r + c * c)/r;
 }
+
+///// IterativeSphericalDistanceDeterminationAlgorithm /////
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     // Return zero if the number of points is less than 0
@@ -174,6 +178,11 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     return loss;
 }
 
+/// Probability Density Function, which is
+/// currently a quadratic PDF (kinda, no
+/// normalization within the macro)
+#define PDF(x) (x) * (x)
+
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
                                                                size_t n,
                                                                std::unique_ptr<size_t[]> &indicies) {
@@ -190,28 +199,28 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist.min() == 0);
         assert(dist.max() == static_cast<size_t>(n - 1));
 
-        // Create logits for the second
+        // Create logits for the second (quadratic centered at indicies[i - 1])
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] = (j - indicies[i - 1]) * (j - indicies[i - 1]);
+            logits[j] = PDF(j - indicies[i - 1]);
         }
         // Sample for the next number
         std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
         indicies[i++] = dist1(gen);
         assert(dist1.min() == 0);
         assert(dist1.max() == n - 1);
-        while (indicies[i - 1] == indicies[i - 2]) indicies[i - 1] = dist1(gen);  // GCOVR_EXCL_LINE
 
-        // Update the logits for the third
+        // Update the logits for the third number (biquadratic with
+        // centers at indicies[i - 1] and indicies[i - 2]),
+        // compensating at indicies[i - 2] by setting it to 0
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] += (j - indicies[i - 1]) * (j - indicies[i - 1]);
+            logits[j] += PDF(j - indicies[i - 1]);
         }
+        logits[indicies[i - 2]] = 0;
         // Sample for the last number
         std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
         indicies[i++] = dist2(gen);
         assert(dist2.min() == 0);
         assert(dist2.max() == n - 1);
-        while (indicies[i - 1] == indicies[i - 2]
-               && indicies[i - 1] == indicies[i - 3]) indicies[i - 1] = dist2(gen);  // GCOVR_EXCL_LINE
     }
     #ifndef NDEBUG
         for (i = 0; i < size; i++) {

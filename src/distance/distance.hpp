@@ -152,13 +152,10 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @pre p must refer to points taken by the camera that was passed to
      * this
-     * 
      * @pre p is radially sorted, i.e.
      * if we define the centroid of the points as P, for any
      * three consecutive points A B and C, angle APB is less than
      * angle APC
-     * 
-     * @pre Has never been called before
      * 
      * @post If p.size() < 3, then the result is exactly the zero vector
      * 
@@ -181,7 +178,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @pre targetRadiusSq is not the true radius, but rather the
      * distance obtained between the radius vector and a circle
-     * point when projected onto the unit sphere
+     * point when projected onto the unit sphere (normalized).
+     * It still functions the same way.
      */
     decimal GenerateLoss(PositionVector &position,
                          decimal targetDistanceSq,
@@ -189,20 +187,31 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
                          std::unique_ptr<Vec3[]> &projectedPoints,
                          size_t size);
     /**
-     * Shuffles the indexes into triplets,
-     * attempting to create triplets whose
-     * indicies are far from each other.
+     * Shuffles the indexes into triplets, attempting to create
+     * triplets whose indicies are far from each other.
      * 
-     * @param size The size of indicies, or how
-     * many indicies to generate
-     * @param n The end of the range to generate
-     * indicies for
-     * @param indicies The array to write
-     * into
+     * @param size The size of indicies, or how many indicies
+     * to generate
+     * @param n The end of the range to generate indicies for
+     * @param indicies The array to write into
+     * 
+     * @pre Any precondition from this->Run
+     * @pre size > 0 && size % 3 == 0
      * 
      * @post for any i, 0 <= indicies[i] < n
      * 
-     * @pre size > 0 && size % 3 == 0
+     * @note This algorithm uses a quadratic distribution to
+     * prioritize points far away from a given index. To make
+     * the points farther, you can use a function that grows
+     * much faster by changing the macro PDF which is defined within.
+     * 
+     * @note The assumption of p from this->Run(p) being in polar
+     * order is quite important in this algorithm. Should that not
+     * be true, instead of using index differences in our quadratic
+     * distribution, we'd need to instead use the distance between
+     * the pixels corresponding to those indicies. This is not a
+     * terrible change in terms of code, but is more compuationally
+     * complex
      */
     void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
     /// The minimum number of iterations to use
