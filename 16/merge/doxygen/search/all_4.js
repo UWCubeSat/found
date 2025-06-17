@@ -63,7 +63,7 @@ var searchData=
   ['distanceoptions_60',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
   ['distancepipeline_61',['DistancePipeline',['../namespacefound.html#ac96a51e9bd06b83169c0aa3658c0005f',1,'found']]],
   ['distancepipelineexecutor_62',['distancepipelineexecutor',['../classfound_1_1DistancePipelineExecutor.html#a211dc4f507b8fe1e7d1c3fb9c5ca79f7',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()'],['../classfound_1_1DistancePipelineExecutor.html',1,'found::DistancePipelineExecutor']]],
-  ['distanceratio_5f_63',['distanceRatio_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#ad544456a9dbf3237f077107218b46ab0',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['distanceratiosq_5f_63',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
   ['doaction_64',['doaction',['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed',1,'found::Stage::DoAction()']]],
   ['dt_5f_65',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];
