@@ -8,8 +8,9 @@ var searchData=
   ['majoraxis_5',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
   ['mat3_6',['Mat3',['../classfound_1_1Mat3.html',1,'found']]],
   ['midpoint_7',['midpoint',['../namespacefound.html#a1d5a4a735107bd122f573b26ce0f6f2b',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2, const Vec3 &amp;vec3)'],['../namespacefound.html#aca55ee32d90cc1728b61fb9033857a87',1,'found::midpoint(const Vec3 &amp;vec1, const Vec3 &amp;vec2)'],['../namespacefound.html#a96b3f0a10aa405667ef50b187ac67cc3',1,'found::midpoint(const Vec2 &amp;vec1, const Vec2 &amp;vec2)']]],
-  ['minoraxis_8',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
-  ['minute_9',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
-  ['month_10',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
-  ['mu_5f_11',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
+  ['minimumiterations_5f_8',['minimumIterations_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a0a87c9bd48356173bfe8b21f5cee58fc',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['minoraxis_9',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
+  ['minute_10',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
+  ['month_11',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
+  ['mu_5f_12',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

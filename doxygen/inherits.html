@@ -5,14 +5,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: Class Hierarchy</title>
+<title>FOUND: Class Hierarchy</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -21,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">FOUND
    </div>
   </td>
  </tr>
@@ -47,6 +52,22 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('hierarchy.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -97,7 +118,7 @@ $(function() {
 </td></tr>
 <tr><td><img src="inherit_graph_4.png" border="0" usemap="#afound_1_1Action" alt=""/>
 <map name="afound_1_1Action" id="afound_1_1Action">
-<area shape="rect" href="classfound_1_1Action.html" title=" " alt="" coords="5,305,113,331"/>
+<area shape="rect" href="classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,305,113,331"/>
 <area shape="rect" href="classfound_1_1Stage.html" title=" " alt="" coords="165,41,389,96"/>
 <area shape="poly" title=" " alt="" coords="67,291,101,215,127,171,159,131,184,110,210,94,213,98,187,115,163,135,131,174,105,217,72,293"/>
 <area shape="rect" href="classfound_1_1Stage.html" title=" " alt="" coords="195,145,358,185"/>
@@ -110,33 +131,35 @@ $(function() {
 <area shape="poly" title=" " alt="" coords="113,332,162,347,203,359,202,364,161,353,112,337"/>
 <area shape="rect" href="classfound_1_1Stage.html" title=" " alt="" coords="195,426,359,466"/>
 <area shape="poly" title=" " alt="" coords="81,340,117,377,163,412,195,426,193,431,160,416,113,381,78,344"/>
-<area shape="rect" href="classfound_1_1Stage.html" title=" " alt="" coords="199,498,355,538"/>
+<area shape="rect" href="classfound_1_1Stage.html" title="A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output..." alt="" coords="199,498,355,538"/>
 <area shape="poly" title=" " alt="" coords="73,342,107,409,132,445,163,476,200,497,197,501,160,480,128,448,102,412,68,345"/>
-<area shape="rect" href="classfound_1_1CalibrationAlgorithm.html" title=" " alt="" coords="461,17,663,43"/>
+<area shape="rect" href="classfound_1_1CalibrationAlgorithm.html" title="The CalibrationAlgorithm is an interface for algorithms that calibrate our orientation to the referen..." alt="" coords="461,17,663,43"/>
 <area shape="poly" title=" " alt="" coords="402,49,468,40,468,45,403,54"/>
-<area shape="rect" href="classfound_1_1LOSTCalibrationAlgorithm.html" title=" " alt="" coords="746,5,981,31"/>
+<area shape="rect" href="classfound_1_1LOSTCalibrationAlgorithm.html" title="The LostCalibrationAlgorithm class houses the calibration algorithm that uses the orientation informa..." alt="" coords="746,5,981,31"/>
 <area shape="poly" title=" " alt="" coords="677,23,746,20,746,25,678,28"/>
-<area shape="rect" href="classfound_1_1DistanceDeterminationAlgorithm.html" title=" " alt="" coords="453,119,671,159"/>
+<area shape="rect" href="classfound_1_1DistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm." alt="" coords="453,119,671,159"/>
 <area shape="poly" title=" " alt="" coords="372,154,452,146,452,152,372,159"/>
-<area shape="rect" href="classfound_1_1EllipticDistanceDeterminationAlgorithm.html" title=" " alt="" coords="732,55,995,95"/>
+<area shape="rect" href="classfound_1_1EllipticDistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm." alt="" coords="732,55,995,95"/>
 <area shape="poly" title=" " alt="" coords="670,114,768,93,769,98,671,119"/>
-<area shape="rect" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title=" " alt="" coords="771,119,955,159"/>
+<area shape="rect" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm." alt="" coords="771,119,955,159"/>
 <area shape="poly" title=" " alt="" coords="685,137,771,137,771,142,685,142"/>
-<area shape="rect" href="classfound_1_1EdgeDetectionAlgorithm.html" title=" " alt="" coords="449,241,675,267"/>
+<area shape="rect" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina..." alt="" coords="1043,119,1280,159"/>
+<area shape="poly" title=" " alt="" coords="969,137,1043,137,1043,142,969,142"/>
+<area shape="rect" href="classfound_1_1EdgeDetectionAlgorithm.html" title="The EdgeDetection Algorithm class houses the Edge Detection Algorithm." alt="" coords="449,241,675,267"/>
 <area shape="poly" title=" " alt="" coords="372,251,449,251,449,257,372,257"/>
-<area shape="rect" href="classfound_1_1LoCEdgeDetectionAlgorithm.html" title=" " alt="" coords="738,184,989,209"/>
+<area shape="rect" href="classfound_1_1LoCEdgeDetectionAlgorithm.html" title="The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm." alt="" coords="738,184,989,209"/>
 <area shape="poly" title=" " alt="" coords="642,236,795,207,796,212,643,241"/>
-<area shape="rect" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html" title=" " alt="" coords="760,234,967,274"/>
+<area shape="rect" href="classfound_1_1SimpleEdgeDetectionAlgorithm.html" title="The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm." alt="" coords="760,234,967,274"/>
 <area shape="poly" title=" " alt="" coords="689,251,760,251,760,257,689,257"/>
-<area shape="rect" href="classfound_1_1OrbitPropagationAlgorithm.html" title=" " alt="" coords="441,305,683,331"/>
+<area shape="rect" href="classfound_1_1OrbitPropagationAlgorithm.html" title="The OrbitPropagationAlgorithm is an algorithm that propagates an orbit over a specified time period." alt="" coords="441,305,683,331"/>
 <area shape="poly" title=" " alt="" coords="406,315,441,315,441,321,406,321"/>
-<area shape="rect" href="classfound_1_1ApproximateOrbitPropagationAlgorithm.html" title=" " alt="" coords="733,298,994,338"/>
+<area shape="rect" href="classfound_1_1ApproximateOrbitPropagationAlgorithm.html" title="OrbitPropagationAlgorithm is a stage that propagates an orbit over a specified time period." alt="" coords="733,298,994,338"/>
 <area shape="poly" title=" " alt="" coords="696,315,732,315,732,321,696,321"/>
-<area shape="rect" href="classfound_1_1VectorGenerationAlgorithm.html" title=" " alt="" coords="440,369,684,395"/>
+<area shape="rect" href="classfound_1_1VectorGenerationAlgorithm.html" title="The VectorGenerationAlgorithm class houses the Vector Assembly Algorithm." alt="" coords="440,369,684,395"/>
 <area shape="poly" title=" " alt="" coords="398,379,440,379,440,385,398,385"/>
-<area shape="rect" href="classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html" title=" " alt="" coords="753,362,973,402"/>
+<area shape="rect" href="classfound_1_1FeatureDetectionVectorGenerationAlgorithm.html" title="FeatureDetectionVectorGenerationAlgorithm figures out the distance vector of the satellite relative t..." alt="" coords="753,362,973,402"/>
 <area shape="poly" title=" " alt="" coords="698,379,753,379,753,385,698,385"/>
-<area shape="rect" href="classfound_1_1LOSTVectorGenerationAlgorithm.html" title=" " alt="" coords="757,426,970,466"/>
+<area shape="rect" href="classfound_1_1LOSTVectorGenerationAlgorithm.html" title="The LOSTVectorGenerationAlgorithm class houses the a Vector Assembly Algorithm that calculates the po..." alt="" coords="757,426,970,466"/>
 <area shape="poly" title=" " alt="" coords="643,395,685,403,775,423,774,429,683,409,642,400"/>
 <area shape="rect" href="classfound_1_1Pipeline.html" title=" " alt="" coords="455,419,669,473"/>
 <area shape="poly" title=" " alt="" coords="367,493,455,470,456,475,368,498"/>
@@ -144,23 +167,23 @@ $(function() {
 <area shape="poly" title=" " alt="" coords="368,515,472,515,472,521,368,521"/>
 <area shape="rect" href="classfound_1_1Pipeline.html" title=" " alt="" coords="460,562,664,602"/>
 <area shape="poly" title=" " alt="" coords="368,536,473,559,472,565,367,541"/>
-<area shape="rect" href="classfound_1_1Pipeline.html" title=" " alt="" coords="477,626,647,666"/>
+<area shape="rect" href="classfound_1_1Pipeline.html" title="Pipeline is composite Stage (i.e." alt="" coords="477,626,647,666"/>
 <area shape="poly" title=" " alt="" coords="319,544,376,579,441,612,477,624,476,629,439,616,373,583,317,548"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_5.png" border="0" usemap="#afound_1_1Attitude" alt=""/>
 <map name="afound_1_1Attitude" id="afound_1_1Attitude">
-<area shape="rect" href="classfound_1_1Attitude.html" title=" " alt="" coords="5,5,124,31"/>
+<area shape="rect" href="classfound_1_1Attitude.html" title="An Attitude is an immutable object that represents the orientation of a 3D point." alt="" coords="5,5,124,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_6.png" border="0" usemap="#afound_1_1Camera" alt=""/>
 <map name="afound_1_1Camera" id="afound_1_1Camera">
-<area shape="rect" href="classfound_1_1Camera.html" title=" " alt="" coords="5,5,124,31"/>
+<area shape="rect" href="classfound_1_1Camera.html" title="A Camera is a mutable object that represents a Camera." alt="" coords="5,5,124,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_7.png" border="0" usemap="#afound_1_1Component" alt=""/>
 <map name="afound_1_1Component" id="afound_1_1Component">
-<area shape="rect" href="structfound_1_1Component.html" title=" " alt="" coords="5,5,148,31"/>
+<area shape="rect" href="structfound_1_1Component.html" title="Represents a connected component in an image." alt="" coords="5,5,148,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_8.png" border="0" usemap="#afound_1_1DataFile" alt=""/>
@@ -175,27 +198,27 @@ $(function() {
 </td></tr>
 <tr><td><img src="inherit_graph_10.png" border="0" usemap="#afound_1_1DateTime" alt=""/>
 <map name="afound_1_1DateTime" id="afound_1_1DateTime">
-<area shape="rect" href="structfound_1_1DateTime.html" title=" " alt="" coords="5,5,136,31"/>
+<area shape="rect" href="structfound_1_1DateTime.html" title="DateTime represents a date and time." alt="" coords="5,5,136,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_11.png" border="0" usemap="#afound_1_1EarthSphericalVec3" alt=""/>
 <map name="afound_1_1EarthSphericalVec3" id="afound_1_1EarthSphericalVec3">
-<area shape="rect" href="structfound_1_1EarthSphericalVec3.html" title=" " alt="" coords="5,5,197,31"/>
+<area shape="rect" href="structfound_1_1EarthSphericalVec3.html" title="Represents an Earth&#45;centric Spherical Vector with time information." alt="" coords="5,5,197,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_12.png" border="0" usemap="#afound_1_1Edge" alt=""/>
 <map name="afound_1_1Edge" id="afound_1_1Edge">
-<area shape="rect" href="structfound_1_1Edge.html" title=" " alt="" coords="5,5,104,31"/>
+<area shape="rect" href="structfound_1_1Edge.html" title="Represents a 2D edge in an image." alt="" coords="5,5,104,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_13.png" border="0" usemap="#afound_1_1EulerAngles" alt=""/>
 <map name="afound_1_1EulerAngles" id="afound_1_1EulerAngles">
-<area shape="rect" href="classfound_1_1EulerAngles.html" title=" " alt="" coords="5,5,149,31"/>
+<area shape="rect" href="classfound_1_1EulerAngles.html" title="An EulerAngle is a mutable Object representing Euler Angles of a 3D point." alt="" coords="5,5,149,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_14.png" border="0" usemap="#afound_1_1Image" alt=""/>
 <map name="afound_1_1Image" id="afound_1_1Image">
-<area shape="rect" href="structfound_1_1Image.html" title=" " alt="" coords="5,5,113,31"/>
+<area shape="rect" href="structfound_1_1Image.html" title="Represents an image." alt="" coords="5,5,113,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_15.png" border="0" usemap="#afound_1_1LocationRecord" alt=""/>
@@ -205,38 +228,38 @@ $(function() {
 </td></tr>
 <tr><td><img src="inherit_graph_16.png" border="0" usemap="#afound_1_1Mat3" alt=""/>
 <map name="afound_1_1Mat3" id="afound_1_1Mat3">
-<area shape="rect" href="classfound_1_1Mat3.html" title=" " alt="" coords="5,5,105,31"/>
+<area shape="rect" href="classfound_1_1Mat3.html" title="A Mat3 is a mutable object that represents a 3x3 Matrix." alt="" coords="5,5,105,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_17.png" border="0" usemap="#afound_1_1OrbitParams" alt=""/>
 <map name="afound_1_1OrbitParams" id="afound_1_1OrbitParams">
-<area shape="rect" href="structfound_1_1OrbitParams.html" title=" " alt="" coords="5,5,152,31"/>
+<area shape="rect" href="structfound_1_1OrbitParams.html" title="OrbitParams defines the orbital parameters of a given orbit." alt="" coords="5,5,152,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_18.png" border="0" usemap="#afound_1_1PipelineExecutor" alt=""/>
 <map name="afound_1_1PipelineExecutor" id="afound_1_1PipelineExecutor">
-<area shape="rect" href="classfound_1_1PipelineExecutor.html" title=" " alt="" coords="5,70,180,95"/>
-<area shape="rect" href="classfound_1_1CalibrationPipelineExecutor.html" title=" " alt="" coords="249,5,439,45"/>
+<area shape="rect" href="classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="5,70,180,95"/>
+<area shape="rect" href="classfound_1_1CalibrationPipelineExecutor.html" title="CalibrationPipelineExecutor is the pipeline executor for the calibration pipeline." alt="" coords="249,5,439,45"/>
 <area shape="poly" title=" " alt="" coords="162,64,255,43,256,48,163,69"/>
-<area shape="rect" href="classfound_1_1DistancePipelineExecutor.html" title=" " alt="" coords="228,70,460,95"/>
+<area shape="rect" href="classfound_1_1DistancePipelineExecutor.html" title="DistancePipelineExecutor is the pipeline executor for the distance determination pipeline." alt="" coords="228,70,460,95"/>
 <area shape="poly" title=" " alt="" coords="194,80,228,80,228,85,194,85"/>
-<area shape="rect" href="classfound_1_1OrbitPipelineExecutor.html" title=" " alt="" coords="241,119,447,145"/>
+<area shape="rect" href="classfound_1_1OrbitPipelineExecutor.html" title="OrbitPipelineExecutor is the pipeline executor for the orbit determination pipeline." alt="" coords="241,119,447,145"/>
 <area shape="poly" title=" " alt="" coords="172,95,279,117,278,122,171,101"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_19.png" border="0" usemap="#afound_1_1Quaternion" alt=""/>
 <map name="afound_1_1Quaternion" id="afound_1_1Quaternion">
-<area shape="rect" href="classfound_1_1Quaternion.html" title=" " alt="" coords="5,5,144,31"/>
+<area shape="rect" href="classfound_1_1Quaternion.html" title="A Quaternion is a mutable object that represents a Quaternion." alt="" coords="5,5,144,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_20.png" border="0" usemap="#afound_1_1Vec2" alt=""/>
 <map name="afound_1_1Vec2" id="afound_1_1Vec2">
-<area shape="rect" href="structfound_1_1Vec2.html" title=" " alt="" coords="5,5,104,31"/>
+<area shape="rect" href="structfound_1_1Vec2.html" title="A Vec2 is an immutable object that represents a 2D Vector." alt="" coords="5,5,104,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_21.png" border="0" usemap="#afound_1_1Vec3" alt=""/>
 <map name="afound_1_1Vec3" id="afound_1_1Vec3">
-<area shape="rect" href="classfound_1_1Vec3.html" title=" " alt="" coords="5,5,104,31"/>
+<area shape="rect" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="5,5,104,31"/>
 </map>
 </td></tr>
 <tr><td><img src="inherit_graph_22.png" border="0" usemap="#aOrbitOptions" alt=""/>
@@ -246,9 +269,12 @@ $(function() {
 </td></tr>
 </table>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
 </body>
 </html>

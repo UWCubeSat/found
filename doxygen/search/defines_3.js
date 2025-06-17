@@ -33,5 +33,6 @@ var searchData=
   ['decimal_5fsin_30',['DECIMAL_SIN',['../decimal_8hpp.html#a904c27af59c769840fd8e7fe742affd2',1,'decimal.hpp']]],
   ['decimal_5fsqrt_31',['DECIMAL_SQRT',['../decimal_8hpp.html#aadce8b7d5c59d658cb596671b3330d02',1,'decimal.hpp']]],
   ['decimal_5ftan_32',['DECIMAL_TAN',['../decimal_8hpp.html#a0722894990fe7d0ab7824f52dbbc9b1a',1,'decimal.hpp']]],
-  ['distance_33',['DISTANCE',['../options_8hpp.html#a9d41d147039787c25d6631b276ab4330',1,'options.hpp']]]
+  ['defaultdfhead_33',['defaultDFHead',['../options_8hpp.html#a18d5baa12def44de1fce340a63821082',1,'options.hpp']]],
+  ['distance_34',['DISTANCE',['../options_8hpp.html#a9d41d147039787c25d6631b276ab4330',1,'options.hpp']]]
 ];

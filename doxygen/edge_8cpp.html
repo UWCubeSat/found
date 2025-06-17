@@ -5,14 +5,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/distance/edge.cpp File Reference</title>
+<title>FOUND: src/distance/edge.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -21,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">FOUND
    </div>
   </td>
  </tr>
@@ -46,6 +51,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('edge_8cpp.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -67,11 +89,6 @@ $(function() {
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_2e8e261b47ef9efc3aa04a70607eccf4.html">distance</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
@@ -149,18 +166,26 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a532a003b6775ad0c1e340256e492be0a" id="r_a532a003b6775ad0c1e340256e492be0a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a532a003b6775ad0c1e340256e492be0a">found::LabelPresent</a> (int label, int *adjacentLabels, int size)</td></tr>
+<tr class="memdesc:a532a003b6775ad0c1e340256e492be0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a label is present in the list of adjacent labels.  <br /></td></tr>
 <tr class="separator:a532a003b6775ad0c1e340256e492be0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19e0751672c939b693c5383d3ee7dcde" id="r_a19e0751672c939b693c5383d3ee7dcde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a19e0751672c939b693c5383d3ee7dcde">found::UpdateComponent</a> (<a class="el" href="structfound_1_1Component.html">Component</a> &amp;component, uint64_t index, <a class="el" href="structfound_1_1Vec2.html">Vec2</a> &amp;pixel)</td></tr>
+<tr class="memdesc:a19e0751672c939b693c5383d3ee7dcde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the component with the given pixel.  <br /></td></tr>
 <tr class="separator:a19e0751672c939b693c5383d3ee7dcde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a657b11b0e8cc9f2b173ae544adf5c43e" id="r_a657b11b0e8cc9f2b173ae544adf5c43e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a657b11b0e8cc9f2b173ae544adf5c43e">found::NWayEquivalenceAdd</a> (const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, uint64_t index, int &amp;L, int adjacentLabels[4], int size, std::unordered_map&lt; int, <a class="el" href="structfound_1_1Component.html">Component</a> &gt; &amp;components, std::unordered_map&lt; int, int &gt; &amp;equivalencies)</td></tr>
+<tr class="memdesc:a657b11b0e8cc9f2b173ae544adf5c43e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a pixel to some component, creating a new component if necessary.  <br /></td></tr>
 <tr class="separator:a657b11b0e8cc9f2b173ae544adf5c43e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a034272a473435b1dc801e78399e739a5" id="r_a034272a473435b1dc801e78399e739a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a0bb521ef53dc4f64afe7bee531c2b7c5">Components</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html#a034272a473435b1dc801e78399e739a5">found::ConnectedComponentsAlgorithm</a> (const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;image, std::function&lt; bool(uint64_t, const <a class="el" href="structfound_1_1Image.html">Image</a> &amp;)&gt; Criteria)</td></tr>
+<tr class="memdesc:a034272a473435b1dc801e78399e739a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the groups of components within the image.  <br /></td></tr>
 <tr class="separator:a034272a473435b1dc801e78399e739a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_2e8e261b47ef9efc3aa04a70607eccf4.html">distance</a></li><li class="navelem"><a class="el" href="edge_8cpp.html">edge.cpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
 </body>
 </html>

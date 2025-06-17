@@ -1,7 +1,9 @@
 <map id="src/distance/vectorize.cpp" name="src/distance/vectorize.cpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="345,5,536,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="439,5,629,31"/>
 <area shape="rect" id="Node000002" href="$vectorize_8hpp.html" title=" " alt="" coords="356,79,525,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="443,31,443,65,438,65,438,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="521,33,468,72,465,68,517,29"/>
+<area shape="rect" id="Node000015" href="$logging_8hpp.html" title=" " alt="" coords="549,79,708,104"/>
+<area shape="poly" id="edge21_Node000001_Node000015" title=" " alt="" coords="551,29,604,68,601,72,548,33"/>
 <area shape="rect" id="Node000003" href="$attitude-utils_8hpp.html" title=" " alt="" coords="5,225,188,265"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="416,106,153,222,151,217,414,102"/>
 <area shape="rect" id="Node000008" href="$style_8hpp.html" title=" " alt="" coords="369,152,512,177"/>

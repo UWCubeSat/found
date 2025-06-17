@@ -5,14 +5,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>My Project: src/common/pipeline.hpp Source File</title>
+<title>FOUND: src/common/pipeline.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -21,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">My Project
+   <div id="projectname">FOUND
    </div>
   </td>
  </tr>
@@ -51,6 +56,23 @@ $(function() {
 $(document).ready(function() { init_codefold(0); });
 /* @license-end */
 </script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('pipeline_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -72,11 +94,6 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_fdedb0aba14d44ce9d99bc100e026e6a.html">common</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">pipeline.hpp</div></div>
 </div><!--header-->
@@ -193,33 +210,37 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>}  <span class="comment">// namespace found</span></div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassfound_1_1Action_html"><div class="ttname"><a href="classfound_1_1Action.html">found::Action</a></div><div class="ttdef"><b>Definition</b> pipeline.hpp:15</div></div>
-<div class="ttc" id="aclassfound_1_1Action_html_af4bc343c66ec82f8093de989a010cc07"><div class="ttname"><a href="classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07">found::Action::DoAction</a></div><div class="ttdeci">virtual void DoAction()=0</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html"><div class="ttname"><a href="classfound_1_1Pipeline.html">found::Pipeline</a></div><div class="ttdef"><b>Definition</b> pipeline.hpp:99</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html_a1202b385e9bb9acf3ad09f8ff3632e83"><div class="ttname"><a href="classfound_1_1Pipeline.html#a1202b385e9bb9acf3ad09f8ff3632e83">found::Pipeline::Run</a></div><div class="ttdeci">Output Run(const Input &amp;input) override</div><div class="ttdef"><b>Definition</b> pipeline.hpp:183</div></div>
+<div class="ttc" id="aclassfound_1_1Action_html"><div class="ttname"><a href="classfound_1_1Action.html">found::Action</a></div><div class="ttdoc">Action is an interface that wraps a function that does something.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:15</div></div>
+<div class="ttc" id="aclassfound_1_1Action_html_af4bc343c66ec82f8093de989a010cc07"><div class="ttname"><a href="classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07">found::Action::DoAction</a></div><div class="ttdeci">virtual void DoAction()=0</div><div class="ttdoc">Performs some action.</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html"><div class="ttname"><a href="classfound_1_1Pipeline.html">found::Pipeline</a></div><div class="ttdoc">Pipeline is composite Stage (i.e.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:99</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html_a1202b385e9bb9acf3ad09f8ff3632e83"><div class="ttname"><a href="classfound_1_1Pipeline.html#a1202b385e9bb9acf3ad09f8ff3632e83">found::Pipeline::Run</a></div><div class="ttdeci">Output Run(const Input &amp;input) override</div><div class="ttdoc">Executes this Pipeline.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:183</div></div>
 <div class="ttc" id="aclassfound_1_1Pipeline_html_a24f036bb0f0853a7002b3bc172916520"><div class="ttname"><a href="classfound_1_1Pipeline.html#a24f036bb0f0853a7002b3bc172916520">found::Pipeline::firstResource</a></div><div class="ttdeci">Input * firstResource</div><div class="ttdoc">The pointer to the variable that will store the first input.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:200</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html_a2be74f428704c0bc058000726ce85bca"><div class="ttname"><a href="classfound_1_1Pipeline.html#a2be74f428704c0bc058000726ce85bca">found::Pipeline::Complete</a></div><div class="ttdeci">Pipeline &amp; Complete(Stage&lt; I, Output &gt; &amp;stage)</div><div class="ttdef"><b>Definition</b> pipeline.hpp:160</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html_a2be74f428704c0bc058000726ce85bca"><div class="ttname"><a href="classfound_1_1Pipeline.html#a2be74f428704c0bc058000726ce85bca">found::Pipeline::Complete</a></div><div class="ttdeci">Pipeline &amp; Complete(Stage&lt; I, Output &gt; &amp;stage)</div><div class="ttdoc">Adds a stage to the pipeline and marks it as the last stage, preventing further manipulation of the P...</div><div class="ttdef"><b>Definition</b> pipeline.hpp:160</div></div>
 <div class="ttc" id="aclassfound_1_1Pipeline_html_a4f312c1293b26d3695bd8c6b11855c56"><div class="ttname"><a href="classfound_1_1Pipeline.html#a4f312c1293b26d3695bd8c6b11855c56">found::Pipeline::ready</a></div><div class="ttdeci">bool ready</div><div class="ttdoc">An indicator for if this Pipeline is ready.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:206</div></div>
 <div class="ttc" id="aclassfound_1_1Pipeline_html_a80560c08eea079b8e59d00bd59425688"><div class="ttname"><a href="classfound_1_1Pipeline.html#a80560c08eea079b8e59d00bd59425688">found::Pipeline::lastProduct</a></div><div class="ttdeci">void ** lastProduct</div><div class="ttdoc">A temporary variable that always points to the last Stage's product field.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:204</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html_a9b9e918fdf7443c0bb855bf8e029d24e"><div class="ttname"><a href="classfound_1_1Pipeline.html#a9b9e918fdf7443c0bb855bf8e029d24e">found::Pipeline::AddStage</a></div><div class="ttdeci">Pipeline &amp; AddStage(Stage&lt; I, O &gt; &amp;stage)</div><div class="ttdef"><b>Definition</b> pipeline.hpp:128</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html_ab942668f5faa00d772c400740219e4ca"><div class="ttname"><a href="classfound_1_1Pipeline.html#ab942668f5faa00d772c400740219e4ca">found::Pipeline::Pipeline</a></div><div class="ttdeci">Pipeline(std::vector&lt; std::reference_wrapper&lt; Action &gt; &gt; &amp;stages)</div><div class="ttdef"><b>Definition</b> pipeline.hpp:106</div></div>
-<div class="ttc" id="aclassfound_1_1Pipeline_html_aba9edae071648014958b0802e3ac19df"><div class="ttname"><a href="classfound_1_1Pipeline.html#aba9edae071648014958b0802e3ac19df">found::Pipeline::Pipeline</a></div><div class="ttdeci">Pipeline()</div><div class="ttdef"><b>Definition</b> pipeline.hpp:112</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html_a9b9e918fdf7443c0bb855bf8e029d24e"><div class="ttname"><a href="classfound_1_1Pipeline.html#a9b9e918fdf7443c0bb855bf8e029d24e">found::Pipeline::AddStage</a></div><div class="ttdeci">Pipeline &amp; AddStage(Stage&lt; I, O &gt; &amp;stage)</div><div class="ttdoc">Adds a stage to this pipeline.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:128</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html_ab942668f5faa00d772c400740219e4ca"><div class="ttname"><a href="classfound_1_1Pipeline.html#ab942668f5faa00d772c400740219e4ca">found::Pipeline::Pipeline</a></div><div class="ttdeci">Pipeline(std::vector&lt; std::reference_wrapper&lt; Action &gt; &gt; &amp;stages)</div><div class="ttdoc">Constructs a Pipeline.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:106</div></div>
+<div class="ttc" id="aclassfound_1_1Pipeline_html_aba9edae071648014958b0802e3ac19df"><div class="ttname"><a href="classfound_1_1Pipeline.html#aba9edae071648014958b0802e3ac19df">found::Pipeline::Pipeline</a></div><div class="ttdeci">Pipeline()</div><div class="ttdoc">Constructs an empty Pipeline.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:112</div></div>
 <div class="ttc" id="aclassfound_1_1Pipeline_html_ae3a49e35a1086f2f174f7eefa322bc1e"><div class="ttname"><a href="classfound_1_1Pipeline.html#ae3a49e35a1086f2f174f7eefa322bc1e">found::Pipeline::stages</a></div><div class="ttdeci">std::vector&lt; std::reference_wrapper&lt; Action &gt; &gt; stages</div><div class="ttdoc">The stages of this.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:198</div></div>
 <div class="ttc" id="aclassfound_1_1Pipeline_html_afe0161fcbc96f26dd6561681bbfd9512"><div class="ttname"><a href="classfound_1_1Pipeline.html#afe0161fcbc96f26dd6561681bbfd9512">found::Pipeline::finalProduct</a></div><div class="ttdeci">Output finalProduct</div><div class="ttdoc">The final product (output)</div><div class="ttdef"><b>Definition</b> pipeline.hpp:202</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html"><div class="ttname"><a href="classfound_1_1Stage.html">found::Stage</a></div><div class="ttdef"><b>Definition</b> pipeline.hpp:32</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a1605d8680d9f5ce6cb567757cfe17a12"><div class="ttname"><a href="classfound_1_1Stage.html#a1605d8680d9f5ce6cb567757cfe17a12">found::Stage::GetResource</a></div><div class="ttdeci">Input &amp; GetResource()</div><div class="ttdef"><b>Definition</b> pipeline.hpp:65</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html"><div class="ttname"><a href="classfound_1_1Stage.html">found::Stage</a></div><div class="ttdoc">A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output...</div><div class="ttdef"><b>Definition</b> pipeline.hpp:32</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a1605d8680d9f5ce6cb567757cfe17a12"><div class="ttname"><a href="classfound_1_1Stage.html#a1605d8680d9f5ce6cb567757cfe17a12">found::Stage::GetResource</a></div><div class="ttdeci">Input &amp; GetResource()</div><div class="ttdoc">Returns the stored input of this.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:65</div></div>
 <div class="ttc" id="aclassfound_1_1Stage_html_a1e6b9a9dc3e1c93dc0eeca103c353616"><div class="ttname"><a href="classfound_1_1Stage.html#a1e6b9a9dc3e1c93dc0eeca103c353616">found::Stage::product</a></div><div class="ttdeci">Output * product</div><div class="ttdoc">The pointer to the stored output for this.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:79</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a39d11b5cda4f9d30317e8d41b1b1d567"><div class="ttname"><a href="classfound_1_1Stage.html#a39d11b5cda4f9d30317e8d41b1b1d567">found::Stage::GetProduct</a></div><div class="ttdeci">Output *&amp; GetProduct()</div><div class="ttdef"><b>Definition</b> pipeline.hpp:73</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a51ec35bf24197c4b5b2d962b69a8a1ed"><div class="ttname"><a href="classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed">found::Stage::DoAction</a></div><div class="ttdeci">void DoAction() override</div><div class="ttdef"><b>Definition</b> pipeline.hpp:56</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a6e5ad1944004dbdf4af363690dea7165"><div class="ttname"><a href="classfound_1_1Stage.html#a6e5ad1944004dbdf4af363690dea7165">found::Stage::~Stage</a></div><div class="ttdeci">virtual ~Stage()=default</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a76f980d2fdce66333c6d7e7057e92f73"><div class="ttname"><a href="classfound_1_1Stage.html#a76f980d2fdce66333c6d7e7057e92f73">found::Stage::Run</a></div><div class="ttdeci">virtual Output Run(const Input &amp;input)=0</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html_a8331271be607460b5b45c0f9809cd063"><div class="ttname"><a href="classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063">found::Stage::Stage</a></div><div class="ttdeci">Stage()=default</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a39d11b5cda4f9d30317e8d41b1b1d567"><div class="ttname"><a href="classfound_1_1Stage.html#a39d11b5cda4f9d30317e8d41b1b1d567">found::Stage::GetProduct</a></div><div class="ttdeci">Output *&amp; GetProduct()</div><div class="ttdoc">Returns the stored output of this.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:73</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a51ec35bf24197c4b5b2d962b69a8a1ed"><div class="ttname"><a href="classfound_1_1Stage.html#a51ec35bf24197c4b5b2d962b69a8a1ed">found::Stage::DoAction</a></div><div class="ttdeci">void DoAction() override</div><div class="ttdoc">Executes Run (with a stored input and storing the output)</div><div class="ttdef"><b>Definition</b> pipeline.hpp:56</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a6e5ad1944004dbdf4af363690dea7165"><div class="ttname"><a href="classfound_1_1Stage.html#a6e5ad1944004dbdf4af363690dea7165">found::Stage::~Stage</a></div><div class="ttdeci">virtual ~Stage()=default</div><div class="ttdoc">Destroys this.</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a76f980d2fdce66333c6d7e7057e92f73"><div class="ttname"><a href="classfound_1_1Stage.html#a76f980d2fdce66333c6d7e7057e92f73">found::Stage::Run</a></div><div class="ttdeci">virtual Output Run(const Input &amp;input)=0</div><div class="ttdoc">Runs this stage.</div></div>
+<div class="ttc" id="aclassfound_1_1Stage_html_a8331271be607460b5b45c0f9809cd063"><div class="ttname"><a href="classfound_1_1Stage.html#a8331271be607460b5b45c0f9809cd063">found::Stage::Stage</a></div><div class="ttdeci">Stage()=default</div><div class="ttdoc">Constructs a new Stage.</div></div>
 <div class="ttc" id="aclassfound_1_1Stage_html_a91a27c6a882620582eea17316edb1b10"><div class="ttname"><a href="classfound_1_1Stage.html#a91a27c6a882620582eea17316edb1b10">found::Stage::resource</a></div><div class="ttdeci">Input resource</div><div class="ttdoc">The stored input for this.</div><div class="ttdef"><b>Definition</b> pipeline.hpp:77</div></div>
 <div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_fdedb0aba14d44ce9d99bc100e026e6a.html">common</a></li><li class="navelem"><a class="el" href="pipeline_8hpp.html">pipeline.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
 </body>
 </html>
