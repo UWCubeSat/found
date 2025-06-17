@@ -6,7 +6,7 @@ var searchData=
   ['setangle_3',['SetAngle',['../classfound_1_1Quaternion.html#aa96441c7f87b94c546f55e9a8a3a545e',1,'found::Quaternion']]],
   ['setfocallength_4',['SetFocalLength',['../classfound_1_1Camera.html#af5acf428687056de2a4a9b122298a8a0',1,'found::Camera']]],
   ['setvector_5',['SetVector',['../classfound_1_1Quaternion.html#af94cca484c9c4f7c8b814855e4fc91b8',1,'found::Quaternion']]],
-  ['shuffle_6',['Shuffle',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a2dc3869a024ee0bfa5e8fab0b5b2c8c5',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['shuffle_6',['Shuffle',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aa7162b5c435bc926644f129e92a8ccea',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
   ['simpleedgedetectionalgorithm_7',['SimpleEdgeDetectionAlgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a60861160e18079f4035cef885826e55a',1,'found::SimpleEdgeDetectionAlgorithm']]],
   ['spatialtocamera_8',['SpatialToCamera',['../classfound_1_1Camera.html#ae1137acf442f7d43959f87d90325711c',1,'found::Camera']]],
   ['spatialtospherical_9',['SpatialToSpherical',['../namespacefound.html#a31021c8e78d091e4d6974b49cdd199f0',1,'found']]],
