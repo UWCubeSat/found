@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: distance/distance.hpp</div>
-            <div>Date: 2025-06-17 23:57:45</div>
+            <div>Date: 2025-06-17 23:58:23</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,12 +59,12 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l26">found::DistanceDeterminationAlgorithm::DistanceDeterminationAlgorithm() (line 26)</a></td><td>called 60 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l28">found::DistanceDeterminationAlgorithm::~DistanceDeterminationAlgorithm() (line 28)</a></td><td>called 60 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l133">found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm(double, found::Camera&amp;&amp;, unsigned long, double, double) (line 133)</a></td><td>called 21 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l142">found::IterativeSphericalDistanceDeterminationAlgorithm::~IterativeSphericalDistanceDeterminationAlgorithm() (line 142)</a></td><td>called 25 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l47">found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm(double, found::Camera&amp;&amp;) (line 47)</a></td><td>called 56 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l48">found::SphericalDistanceDeterminationAlgorithm::~SphericalDistanceDeterminationAlgorithm() (line 48)</a></td><td>called 76 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l26">found::DistanceDeterminationAlgorithm::DistanceDeterminationAlgorithm() (line 26)</a></td><td>called 120 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l28">found::DistanceDeterminationAlgorithm::~DistanceDeterminationAlgorithm() (line 28)</a></td><td>called 120 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l133">found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm(double, found::Camera&amp;&amp;, unsigned long, double, double) (line 133)</a></td><td>called 42 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l142">found::IterativeSphericalDistanceDeterminationAlgorithm::~IterativeSphericalDistanceDeterminationAlgorithm() (line 142)</a></td><td>called 50 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l47">found::SphericalDistanceDeterminationAlgorithm::SphericalDistanceDeterminationAlgorithm(double, found::Camera&amp;&amp;) (line 47)</a></td><td>called 112 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l48">found::SphericalDistanceDeterminationAlgorithm::~SphericalDistanceDeterminationAlgorithm() (line 48)</a></td><td>called 152 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -261,7 +261,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l26" href="#l26">26</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">60</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">120</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">DistanceDeterminationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -275,7 +275,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l28" href="#l28">28</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">120</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">240</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">DistanceDeterminationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
             </tr>
             <tr>
@@ -408,14 +408,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">56</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">112</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">SphericalDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">decimal</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">Camera</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="n">cam</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">cam_</span><span class="p">(</span><span class="n">cam</span><span class="p">),</span><span class="w"> </span><span class="n">radius_</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">152</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">304</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="o">~</span><span class="n">SphericalDistanceDeterminationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
             </tr>
             <tr>
@@ -1010,7 +1010,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l133" href="#l133">133</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">42</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">IterativeSphericalDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">decimal</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span></td>
             </tr>
             <tr>
@@ -1045,35 +1045,35 @@
                 <td class="text-right src linenos"><a class="normal" id="l138" href="#l138">138</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">42</td>
                 <td class="src coveredLine"><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">SphericalDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Camera</span><span class="o">&gt;</span><span class="p">(</span><span class="n">cam</span><span class="p">)),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l139" href="#l139">139</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">42</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">minimumIterations_</span><span class="p">(</span><span class="n">minimumIterations</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l140" href="#l140">140</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">42</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">distanceRatioSq_</span><span class="p">(</span><span class="n">distanceRatio</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">distanceRatio</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l141" href="#l141">141</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">21</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">42</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">discriminatorRatio_</span><span class="p">(</span><span class="n">discriminatorRatio</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l142" href="#l142">142</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">50</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">100</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="o">~</span><span class="n">IterativeSphericalDistanceDeterminationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
