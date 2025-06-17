@@ -1,9 +1,0 @@
-<map id="found::EdgeDetectionAlgorithm" name="found::EdgeDetectionAlgorithm">
-<area shape="rect" id="Node000001" title="The EdgeDetection Algorithm class houses the Edge Detection Algorithm." alt="" coords="11,183,238,208"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1Stage.html" title=" " alt="" coords="43,93,207,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,147,127,182,122,182,122,147"/>
-<area shape="rect" id="Node000003" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,5,113,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="78,40,114,92,109,95,73,44"/>
-<area shape="rect" id="Node000004" href="$structfound_1_1Image.html" title="Represents an image." alt="" coords="137,5,245,31"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="178,43,140,95,136,92,173,40"/>
-</map>

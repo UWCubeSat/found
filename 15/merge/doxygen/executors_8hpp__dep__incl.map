@@ -1,9 +1,0 @@
-<map id="src/command&#45;line/execution/executors.hpp" name="src/command&#45;line/execution/executors.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="115,5,321,45"/>
-<area shape="rect" id="Node000002" href="$executors_8cpp.html" title=" " alt="" coords="5,93,212,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,56,135,95,131,91,181,52"/>
-<area shape="rect" id="Node000003" href="$factory_8hpp.html" title=" " alt="" coords="236,101,419,126"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="255,52,314,98,311,102,251,56"/>
-<area shape="rect" id="Node000004" href="$parser_8cpp.html" title=" " alt="" coords="232,181,423,221"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="330,140,330,181,325,181,325,140"/>
-</map>
