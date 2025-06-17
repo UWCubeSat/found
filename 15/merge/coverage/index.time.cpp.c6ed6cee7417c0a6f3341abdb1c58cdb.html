@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: common/time/time.cpp</div>
-            <div>Date: 2025-06-16 23:47:44</div>
+            <div>Date: 2025-06-17 00:31:55</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -509,14 +509,14 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">36</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">julianDate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">hour</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">24.0</span><span class="w"> </span><span class="o">+</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">julianDate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">hour</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">24.0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">72</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="n">time</span><span class="p">.</span><span class="n">minute</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1440.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">86400.0</span><span class="w"> </span><span class="o">-</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="n">time</span><span class="p">.</span><span class="n">minute</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1440.0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">86400.0</span><span class="p">)</span><span class="w"> </span><span class="o">-</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l63" href="#l63">63</a></td>
@@ -530,14 +530,14 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">36</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">year</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">month</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">190002.5</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">year</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">month</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">190002.5</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">36</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="mf">0.5</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
@@ -705,14 +705,14 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JDT</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2451545.0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Julian date - J2000.0</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JDT</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2451545.0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Julian date - J2000.0</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">36525.0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Julian centuries since J2000.0</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">36525.0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Julian centuries since J2000.0</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l90" href="#l90">90</a></td>
@@ -726,28 +726,28 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">280.46061837</span><span class="w"> </span><span class="o">+</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">280.46061837</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="mf">360.98564736629</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">+</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">360.98564736629</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="mf">0.000387933</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">-</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.000387933</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">-</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
-                <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">38710000.0</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">38710000.0</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l95" href="#l95">95</a></td>
@@ -845,7 +845,7 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">18.697374558</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">24.06570982441908</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">getJulianDateTime</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2451545.0</span><span class="p">));</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">18.697374558</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">24.06570982441908</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">getJulianDateTime</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2451545.0</span><span class="p">)));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l109" href="#l109">109</a></td>
