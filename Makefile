@@ -89,7 +89,7 @@ LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
 # Compiler flags
 LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
-LIBS_TEST := -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
+LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
@@ -210,10 +210,10 @@ $(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
 	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_TEST) $(TEST_LIBS) $(COVERAGE_FLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@
 $(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@
 test_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_TARGET))
 
@@ -232,10 +232,10 @@ $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
 $(PRIVATE_TARGET): $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
 $(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -E $< -o $@ $(SRC_LIBS)
+	$(CXX) $(CXXFLAGS) -E $< -o $@
 $(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@ $(SRC_LIBS) $(TEST_LIBS)
+	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@
 private_message:
 	$(call PRINT_TARGET_HEADER, private)
 

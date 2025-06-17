@@ -193,12 +193,18 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * attempting to create triplets whose
      * indicies are far from each other.
      * 
-     * @param size The size of the original
-     * array
+     * @param size The size of indicies, or how
+     * many indicies to generate
+     * @param n The end of the range to generate
+     * indicies for
      * @param indicies The array to write
      * into
+     * 
+     * @post for any i, 0 <= indicies[i] < n
+     * 
+     * @pre size > 0 && size % 3 == 0
      */
-    void Shuffle(size_t size, std::unique_ptr<size_t[]> &indicies);
+    void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
     /// The minimum number of iterations to use
     size_t minimumIterations_;
     /// The maximum distance ratio to accept

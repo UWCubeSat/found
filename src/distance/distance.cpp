@@ -105,7 +105,8 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);  // GCOVR_EXCL_LINE
     PositionVector result{0, 0, 0};
 
-    std::unique_ptr<size_t[]> indicies(new size_t[pointsSize]);  // GCOVR_EXCL_LINE
+    size_t indicies_size = numIterations * 3;
+    std::unique_ptr<size_t[]> indicies(new size_t[indicies_size]);  // GCOVR_EXCL_LINE
 
     // Get the first estimate, and use it as the reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -115,21 +116,21 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     positions[i++] = first;
 
     // Initial shuffle
-    this->Shuffle(pointsSize, indicies);
+    this->Shuffle(indicies_size, pointsSize, indicies);
 
     // Iterate through all points, shuffling them into triplets to feed into
     // SphericalDistanceDeterminationAlgorithm::Run
     while (i < numIterations) {
         // Shuffle when we've passed our last triplet
-        if (!(j + 2 < pointsSize / 3 * 3)) {
+        if (j >= indicies_size) {
             j = 0;
-            this->Shuffle(pointsSize, indicies);
+            this->Shuffle(indicies_size, pointsSize, indicies);
         }
         PositionVector position(
             SphericalDistanceDeterminationAlgorithm::Run({p[indicies[j]], p[indicies[j + 1]], p[indicies[j + 2]]}));
         if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE
             // Only recalculate targetRSq, we want to keep our targetDistSq from earlier
-            targetRSq = (this->cam_.CameraToSpatial(p[j]).Normalize() - position.Normalize()).MagnitudeSq();
+            targetRSq = (this->cam_.CameraToSpatial(p[indicies[j]]).Normalize() - position.Normalize()).MagnitudeSq();
             losses[i] = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / losses[0];
             if (losses[i] <= this->discriminatorRatio_) positions[i++] = position;
         }
@@ -140,6 +141,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // Normalize losses[0]
     losses[0] = 1.0;
 
+    // Now, perform softmax, which is sum(value * e^(-loss)) / sum(e^(-loss_i))
     decimal sum = 0;
     for (i = 0; i < numIterations; i++) {
         decimal factor = DECIMAL_EXP(-losses[i]);
@@ -172,44 +174,48 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     return loss;
 }
 
-void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size, std::unique_ptr<size_t[]> &indicies) {
+void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
+                                                               size_t n,
+                                                               std::unique_ptr<size_t[]> &indicies) {
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
-    std::uniform_int_distribution<size_t> dist(0, size - 1);
+    assert(size % 3 == 0);
+    std::uniform_int_distribution<size_t> dist(0, n - 1);
     // Operates under the asusmption you won't call Run more than once
-    std::unique_ptr<size_t[]> logits(new uint64_t[size]{});  // GCOVR_EXCL_LINE
+    std::unique_ptr<size_t[]> logits(new uint64_t[n]{});  // GCOVR_EXCL_LINE
     size_t i = 0;
-    while (i < size / 3 * 3) {
+    while (i < size) {
         // Uniformly generate the first number
         indicies[i++] = dist(gen);
         assert(dist.min() == 0);
-        assert(dist.max() == static_cast<size_t>(size - 1));
+        assert(dist.max() == static_cast<size_t>(n - 1));
 
         // Create logits for the second
-        for (uint64_t j = 0; j < size; j++) {
+        for (uint64_t j = 0; j < n; j++) {
             logits[j] = (j - indicies[i - 1]) * (j - indicies[i - 1]);
         }
         // Sample for the next number
-        std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + size);
+        std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
         indicies[i++] = dist1(gen);
         assert(dist1.min() == 0);
-        assert(dist1.max() == size - 1);
+        assert(dist1.max() == n - 1);
         while (indicies[i - 1] == indicies[i - 2]) indicies[i - 1] = dist1(gen);  // GCOVR_EXCL_LINE
 
         // Update the logits for the third
-        for (uint64_t j = 0; j < size; j++) {
+        for (uint64_t j = 0; j < n; j++) {
             logits[j] += (j - indicies[i - 1]) * (j - indicies[i - 1]);
         }
         // Sample for the last number
-        std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + size);
+        std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
         indicies[i++] = dist2(gen);
         assert(dist2.min() == 0);
-        assert(dist2.max() == size - 1);
-        while (indicies[i - 1] == indicies[i - 2] && indicies[i - 1] == indicies[i - 3]) indicies[i - 1] = dist2(gen);  // GCOVR_EXCL_LINE NOLINT
+        assert(dist2.max() == n - 1);
+        while (indicies[i - 1] == indicies[i - 2]
+               && indicies[i - 1] == indicies[i - 3]) indicies[i - 1] = dist2(gen);  // GCOVR_EXCL_LINE
     }
     #ifndef NDEBUG
-        for (i = 0; i < size / 3 * 3; i++) {
-            assert(indicies[i] < size);
+        for (i = 0; i < size; i++) {
+            assert(indicies[i] < n);
         }
     #endif
 }
