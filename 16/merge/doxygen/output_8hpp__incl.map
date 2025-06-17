@@ -1,0 +1,16 @@
+<map id="src/distance/output.hpp" name="src/distance/output.hpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="73,5,248,31"/>
+<area shape="rect" id="Node000002" href="$attitude-utils_8hpp.html" title=" " alt="" coords="5,79,188,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,33,123,70,119,66,149,29"/>
+<area shape="rect" id="Node000004" href="$decimal_8hpp.html" title=" " alt="" coords="145,167,307,192"/>
+<area shape="poly" id="edge7_Node000001_Node000004" title=" " alt="" coords="172,30,202,78,216,117,224,153,219,154,210,118,197,80,168,32"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="43,167,121,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="96,119,89,154,84,153,90,118"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="129,117,197,157,194,162,127,121"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="109,240,172,265"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="214,194,167,233,163,229,211,190"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="197,240,255,265"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="229,192,229,226,223,226,223,192"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="279,240,338,265"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="241,190,286,229,283,233,238,194"/>
+</map>
