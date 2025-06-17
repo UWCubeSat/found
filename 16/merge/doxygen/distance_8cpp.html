@@ -176,7 +176,7 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a46447dfc435c4a00363b641a0ac9bb7f" id="r_a46447dfc435c4a00363b641a0ac9bb7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="distance_8cpp.html#a46447dfc435c4a00363b641a0ac9bb7f">PDF</a>(x)&#160;&#160;&#160;(x) * (x)</td></tr>
-<tr class="memdesc:a46447dfc435c4a00363b641a0ac9bb7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro)  <br /></td></tr>
+<tr class="memdesc:a46447dfc435c4a00363b641a0ac9bb7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro).  <br /></td></tr>
 <tr class="separator:a46447dfc435c4a00363b641a0ac9bb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -196,7 +196,8 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro) </p>
+<p>Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro). </p>
+<p>Make your life easier by ensuring that your PDF is 0 where you want it to be. In our case, it should be zero at points we've already generated. </p>
 
 </div>
 </div>
