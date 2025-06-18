@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: distance/output.cpp</div>
-            <div>Date: 2025-06-17 23:58:23</div>
+            <div>Date: 2025-06-18 00:01:18</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,7 +59,7 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l11">found::GetEarthCoordinates(found::Vec3&amp;, double) (line 11)</a></td><td>called 10 times</td><td>78.0%</td></tr>
+    <tr><td><a href="#l11">found::GetEarthCoordinates(found::Vec3&amp;, double) (line 11)</a></td><td>called 5 times</td><td>78.0%</td></tr>
   </table>
 </details>
 </div>
@@ -151,7 +151,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l11" href="#l11">11</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="n">EarthSphericalVec3</span><span class="w"> </span><span class="nf">GetEarthCoordinates</span><span class="p">(</span><span class="n">Vec3</span><span class="w"> </span><span class="o">&amp;</span><span class="n">celestialVector</span><span class="p">,</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="n">gmst</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -179,7 +179,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l15" href="#l15">15</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">GMST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">fmod</span><span class="p">(</span><span class="n">DECIMAL_M_PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gmst</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">180.0</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">DECIMAL_M_PI</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -195,11 +195,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 10 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 5 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">Quaternion</span><span class="w"> </span><span class="n">toEarthRotatingFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SphericalToQuaternion</span><span class="p">(</span><span class="n">GMST</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -208,11 +208,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 10 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 5 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toEarthRotatingFrame</span><span class="p">.</span><span class="n">Rotate</span><span class="p">(</span><span class="n">celestialVector</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -233,7 +233,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">RA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">atan2</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">);</span><span class="w">  </span><span class="c1">// Huh, the range is [-PI, PI], not [0, 2PI]. That&#39;s convenient</span></td>
             </tr>
             <tr>
@@ -242,11 +242,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 10 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 5 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">DE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">asin</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">Normalize</span><span class="p">().</span><span class="n">z</span><span class="p">);</span><span class="w">  </span><span class="c1">// Range is [-PI/2, PI/2]</span></td>
             </tr>
             <tr>
@@ -274,21 +274,21 @@
                 <td class="text-right src linenos"><a class="normal" id="l26" href="#l26">26</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">RadToDeg</span><span class="p">(</span><span class="n">RA</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l27" href="#l27">27</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
                 <td class="src coveredLine"><span class="w">            </span><span class="n">RadToDeg</span><span class="p">(</span><span class="n">DE</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l28" href="#l28">28</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">20</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
                 <td class="src coveredLine"><span class="w">            </span><span class="n">position</span><span class="p">.</span><span class="n">Magnitude</span><span class="p">(),</span></td>
             </tr>
             <tr>
@@ -297,11 +297,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 10 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 5 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">20</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
                 <td class="src coveredLine"><span class="w">            </span><span class="n">gmst</span><span class="p">};</span></td>
             </tr>
             <tr>
