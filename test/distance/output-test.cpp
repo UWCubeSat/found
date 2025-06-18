@@ -17,7 +17,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesNoRotationSimpleVector) {
     ASSERT_DECIMAL_EQ_DEFAULT(expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra,
                               DegToRad(actual.longitude));
     ASSERT_DECIMAL_EQ_DEFAULT(expected.de, DegToRad(actual.lattitude));
-    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.altitude);
+    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(gmst, actual.GMST);
 }
 
@@ -30,7 +30,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinates90RotationSimpleVector) {
     ASSERT_DECIMAL_EQ_DEFAULT(expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra,
                               DegToRad(actual.longitude));
     ASSERT_DECIMAL_EQ_DEFAULT(expected.de, DegToRad(actual.lattitude));
-    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.altitude);
+    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(gmst, actual.GMST);
 }
 
@@ -43,7 +43,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesGeneralRotationSimpleVector) {
     ASSERT_DECIMAL_EQ_DEFAULT((expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra),
                               DegToRad(actual.longitude));
     ASSERT_DECIMAL_EQ_DEFAULT(expected.de, DegToRad(actual.lattitude));
-    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.altitude);
+    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(gmst, actual.GMST);
 }
 
@@ -58,7 +58,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesGeneral1) {
     ASSERT_DECIMAL_EQ_DEFAULT((expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra),
                               DegToRad(actual.longitude));
     ASSERT_DECIMAL_EQ_DEFAULT(expected.de, DegToRad(actual.lattitude));
-    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.altitude);
+    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(gmst, actual.GMST);
 }
 
@@ -75,7 +75,7 @@ TEST(DistanceOutputTest, TestGetEarthCoordinatesGeneral2) {
     ASSERT_DECIMAL_EQ_DEFAULT((expected.ra > DECIMAL_M_PI ? 2 * DECIMAL_M_PI - expected.ra : expected.ra),
                               DegToRad(actual.longitude));
     ASSERT_DECIMAL_EQ_DEFAULT(expected.de, DegToRad(actual.lattitude));
-    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.altitude);
+    ASSERT_DECIMAL_EQ_DEFAULT(celestialVector.Magnitude(), actual.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(gmst, actual.GMST);
 }
 
