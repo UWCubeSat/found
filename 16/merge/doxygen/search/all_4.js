@@ -54,7 +54,7 @@ var searchData=
   ['determination_51',['determination',['../index.html#autotoc_md8',1,'Distance Determination'],['../index.html#autotoc_md10',1,'Distance Determination'],['../index.html#autotoc_md12',1,'Orbit Determination']]],
   ['determiner_52',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['discriminatorratio_5f_53',['discriminatorRatio_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['distance_54',['distance',['../namespacefound.html#a52941ab54fcbb3625f21c7fa5433c59a',1,'found::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)'],['../namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed',1,'found::Distance(const Vec3 &amp;v1, const Vec3 &amp;v2)'],['../options_8hpp.html#a9d41d147039787c25d6631b276ab4330',1,'DISTANCE:&#160;options.hpp']]],
+  ['distance_54',['distance',['../options_8hpp.html#a9d41d147039787c25d6631b276ab4330',1,'DISTANCE:&#160;options.hpp'],['../namespacefound.html#a52941ab54fcbb3625f21c7fa5433c59a',1,'found::Distance(const Vec2 &amp;v1, const Vec2 &amp;v2)'],['../namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed',1,'found::Distance(const Vec3 &amp;v1, const Vec3 &amp;v2)']]],
   ['distance_20determination_55',['distance determination',['../index.html#autotoc_md10',1,'Distance Determination'],['../index.html#autotoc_md8',1,'Distance Determination']]],
   ['distance_2ecpp_56',['distance.cpp',['../distance_8cpp.html',1,'']]],
   ['distance_2ehpp_57',['distance.hpp',['../distance_8hpp.html',1,'']]],
