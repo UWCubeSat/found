@@ -131,7 +131,7 @@ TEST(TimeTest, TestGetUT1Time) {
 }
 
 TEST(TimeTest, TestGetJulianDateNow) {
-    DateTime time = getUTCTime();
+    DateTime time = getUT1Time();
     #ifdef FOUND_FLOAT_MODE
         sleep(1.5);
     #endif
@@ -199,7 +199,7 @@ TEST(TimeTest, TestGetJulianDateTimeEpoch) {
 }
 
 TEST(TimeTest, TestGetGreenwichMeanSiderealTimeNow) {
-    DateTime time = getUTCTime();
+    DateTime time = getUT1Time();
     #ifdef FOUND_FLOAT_MODE
         sleep(1.5);
     #endif

@@ -69,7 +69,7 @@ decimal getCurrentJulianDateTime() {
         // If FAST is defined, we use the approximation
         return getJulianDateTime(std::time(nullptr));
     #else
-        DateTime time = getUTCTime();
+        DateTime time = getUT1Time();
         return getJulianDateTime(time);
     #endif
 }
@@ -99,7 +99,7 @@ decimal getCurrentGreenwichMeanSiderealTime() {
         // If FAST is defined, we use the approximation
         return getGreenwichMeanSiderealTime(std::time(nullptr));
     #else
-        DateTime time = getUTCTime();
+        DateTime time = getUT1Time();
         return getGreenwichMeanSiderealTime(time);
     #endif
 }
