@@ -70,7 +70,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @return A PositionVector that represents the 3D Vector of the satellite relative to
      * Earth's center
     */
-    PositionVector Run(const PositionVector &x_E /*Params to override the base class one*/) override;
+    PositionVector Run(const PositionVector &x_E) override;
 
  private:
     // Fields specific to this algorithm go here, and helper methods
@@ -99,7 +99,7 @@ class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorit
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    PositionVector Run(const PositionVector &x_E /*Params to override the base class one*/) override;
+    PositionVector Run(const PositionVector &x_E) override;
  private:
     // Fields specific to this algorithm go here, and helper methods
 };
