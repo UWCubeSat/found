@@ -63,7 +63,7 @@ namespace found {
 // extern std::ofstream err_file;
 //
 // // Then, in logging.cpp (does not exist right now)
-// // Open files in append mode
+// // Define extern log files, opening in clear + write mode
 // std::ofstream log_file("path/to/logs/found.log", std::ios::app);
 // std::ofstream err_file("path/to/logs/error.log", std::ios::app);
 //
