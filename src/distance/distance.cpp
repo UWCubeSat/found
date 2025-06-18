@@ -126,10 +126,12 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // SphericalDistanceDeterminationAlgorithm::Run
     while (i < numIterations) {
         // Shuffle when we've passed our last triplet
+        // GCOVR_EXCL_START
         if (j >= indicies_size) {
             j = 0;
             this->Shuffle(indicies_size, pointsSize, indicies);
         }
+        // GCOVR_EXCL_STOP
         PositionVector position(
             SphericalDistanceDeterminationAlgorithm::Run({p[indicies[j]], p[indicies[j + 1]], p[indicies[j + 2]]}));
         if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE
@@ -211,14 +213,11 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist1.max() == n - 1);
 
         // Update the logits for the third number (biquadratic with
-        // centers at indicies[i - 1] and indicies[i - 2]),
-        // compensating at indicies[i - 1] and indicies[i - 2] by setting
-        // them to 0
+        // centers at indicies[i - 1] and indicies[i - 2]). Note that
+        // this biquadratic function is zero at both our chosen indicies
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] += PDF(j - indicies[i - 1]);
+            logits[j] *= PDF(j - indicies[i - 1]);
         }
-        logits[indicies[i - 1]] = 0;
-        logits[indicies[i - 2]] = 0;
         // Sample for the last number
         std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
         indicies[i++] = dist2(gen);

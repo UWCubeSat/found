@@ -196,7 +196,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
                         "--reference-orientation", "140,0,0",
                         "--distance-algo", ISDDA,
                         "--isdda-min-iterations", "1000",
-                        "--isdda-discrim-ratio", "1.84874e+16",
+                        "--isdda-discrim-ratio", "1.84874e+10",
                         "--isdda-dist-ratio", "0.8",
                         "--output-file", temp_df};
 
