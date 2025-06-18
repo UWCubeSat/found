@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "test/common/common.hpp"
 
@@ -13,22 +13,51 @@
 
 namespace found {
 
-constexpr auto criteria = [](uint64_t index, Image &image) {
+std::function<bool(uint64_t, const Image &)> criteria = [](uint64_t index, const Image &image) {
     return image.image[index] > 0;
 };
 
-constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
-    return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
-};
-
-MATCHER_P(EdgeEqual, expected, "") {
-    return std::is_permutation(expected.points.begin(),
-                               expected.points.end(),
-                               arg.points.begin(),
-                               arg.points.end(),
-                               vectorEqual) &&
+MATCHER_P(ComponentEqual, expected, "") {
+    return expected.points == arg.points &&
            vectorEqual(arg.upperLeft, expected.upperLeft) &&
            vectorEqual(arg.lowerRight, expected.lowerRight);
+}
+
+TEST(ConnectedComponentsTest, TestInvalidImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        1,
+        -1,
+        0,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image, criteria));
+}
+
+TEST(ConnectedComponentsTest, TestEmptyImage) {
+    // We can't actually have an empty array, but
+    // we need to pretend like it is one
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        0,
+        0,
+        0,
+        imageData,
+    };
+
+    Components expected = {
+        {
+        }
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
 }
 
 TEST(ConnectedComponentsTest, TestOnePixelBase) {
@@ -43,23 +72,21 @@ TEST(ConnectedComponentsTest, TestOnePixelBase) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0}
-            },
+            {0},
             {0, 0},
             {0, 0}
         }
     };
 
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -77,23 +104,21 @@ TEST(ConnectedComponentsTest, TestOnePixelCorner) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {1, 0}
-            },
+            {1},
             {1, 0},
             {1, 0}
         }
     };
 
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -111,23 +136,20 @@ TEST(ConnectedComponentsTest, TestTwoPixels) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {1, 0}
-            },
+            {0, 1},
             {0, 0},
             {1, 0}
         }
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -145,23 +167,20 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalNormal) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {1, 1}
-            },
+            {0, 3},
             {0, 0},
             {1, 1}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -179,23 +198,20 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalReverse) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {1, 0},
-                {0, 1}
-            },
+            {1, 2},
             {0, 0},
             {1, 1}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -214,26 +230,20 @@ TEST(ConnectedComponentsTest, TestDoubleDiagonal) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {2, 0},
-                {1, 1},
-                {0, 2},
-                {2, 2}
-            },
+            {0, 2, 4, 6, 8},
             {0, 0},
             {2, 2}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -252,26 +262,20 @@ TEST(ConnectedComponentsTest, TestLineDiagonalVertical) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {2, 0},
-                {1, 1},
-                {0, 2},
-                {0, 1}
-            },
+            {0, 2, 3, 4, 6},
             {0, 0},
             {2, 2}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -290,26 +294,20 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal1) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {1, 0},
-                {2, 0},
-                {1, 1},
-                {2, 2},
-            },
+            {0, 1, 2, 4, 8},
             {0, 0},
             {2, 2}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -328,26 +326,20 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal2) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {1, 1},
-                {0, 2},
-                {1, 2},
-                {2, 2},
-            },
+            {0, 4, 6, 7, 8},
             {0, 0},
             {2, 2}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -368,35 +360,24 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines1) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {4, 1},
-                {0, 2},
-                {1, 2},
-                {2, 2},
-                {3, 2},
-                {2, 3},
-                {3, 3},
-                {4, 3},
-                {3, 4},
-                {4, 4},
-            },
+            {9, 10, 11, 12, 13, 17, 18, 19, 23, 24},
             {0, 1},
             {4, 4}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
     ASSERT_EQ(expected[0].points.size(), actual[0].points.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -417,36 +398,24 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines2) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {4, 0},
-                {0, 1},
-                {2, 1},
-                {4, 1},
-                {0, 2},
-                {2, 2},
-                {3, 2},
-                {0, 3},
-                {1, 3},
-                {2, 3},
-                {3, 3}
-            },
+            {4, 5, 7, 9, 10, 12, 13, 15, 16, 17, 18},
             {0, 0},
             {4, 3}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
     ASSERT_EQ(expected[0].points.size(), actual[0].points.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -467,31 +436,24 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines3) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {4, 1},
-                {0, 2},
-                {1, 2},
-                {2, 2},
-                {3, 2},
-                {0, 3}
-            },
+            {9, 10, 11, 12, 13, 15},
             {0, 1},
             {4, 3}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
     ASSERT_EQ(expected[0].points.size(), actual[0].points.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -512,42 +474,24 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines1) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {2, 0},
-                {4, 0},
-                {0, 1},
-                {2, 1},
-                {4, 1},
-                {0, 2},
-                {2, 2},
-                {4, 2},
-                {0, 3},
-                {2, 3},
-                {4, 3},
-                {0, 4},
-                {1, 4},
-                {2, 4},
-                {3, 4},
-                {4, 4}
-            },
+            {0, 2, 4, 5, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
             {0, 0},
             {4, 4}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
     ASSERT_EQ(expected[0].points.size(), actual[0].points.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -568,39 +512,24 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines2) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {4, 0},
-                {2, 1},
-                {4, 1},
-                {0, 2},
-                {2, 2},
-                {4, 2},
-                {0, 3},
-                {2, 3},
-                {4, 3},
-                {0, 4},
-                {1, 4},
-                {2, 4},
-                {3, 4},
-                {4, 4}
-            },
+            {4, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
             {0, 0},
             {4, 4}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
     ASSERT_EQ(expected[0].points.size(), actual[0].points.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -619,24 +548,20 @@ TEST(ConnectedComponentsTest, Test2AdjacentPixelsGeneral) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {2, 0},
-                {0, 1},
-                {1, 1}
-            },
+            {2, 3, 4},
             {0, 0},
             {2, 1}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -656,32 +581,20 @@ TEST(ConnectedComponentsTest, TestConvergingBlob) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {0, 0},
-                {4, 0},
-                {0, 1},
-                {2, 1},
-                {4, 1},
-                {1, 2},
-                {2, 2},
-                {3, 2},
-                {1, 3},
-                {2, 3},
-                {3, 3},
-            },
+            {0, 4, 5, 7, 9, 11, 12, 13, 16, 17, 18},
             {0, 0},
             {4, 3}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -700,30 +613,25 @@ TEST(ConnectedComponentsTest, Test2BlobsSimple) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {2, 0},
-            },
+            {2},
             {2, 0},
             {2, 0}
         },
         {
-            {
-                {0, 2},
-                {1, 2},
-            },
+            {6, 7},
             {0, 2},
             {1, 2}
         }
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -744,41 +652,27 @@ TEST(ConnectedComponentsTest, Test2BlobsGeneral) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {4, 0},
-                {3, 1},
-                {4, 1},
-                {4, 2},
-            },
+            {4, 8, 9, 14},
             {3, 0},
             {4, 2}
         },
         {
-            {
-                {0, 2},
-                {0, 3},
-                {2, 3},
-                {0, 4},
-                {1, 4},
-                {2, 4},
-                {3, 4},
-                {4, 4}
-            },
+            {10, 15, 17, 20, 21, 22, 23, 24},
             {0, 2},
             {4, 4}
         }
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -800,52 +694,32 @@ TEST(ConnectedComponentsTest, Test3BlobsGeneral) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {2, 0},
-                {0, 1},
-                {1, 1},
-                {2, 2},
-                {3, 2}
-            },
+            {2, 6, 7, 14, 15},
             {0, 0},
             {3, 2}
         },
         {
-            {
-                {4, 0},
-                {5, 0},
-                {5, 1}
-            },
+            {4, 5, 11},
             {4, 0},
             {5, 1}
         },
         {
-            {
-                {5, 3},
-                {1, 4},
-                {3, 4},
-                {5, 4},
-                {1, 5},
-                {2, 5},
-                {3, 5},
-                {4, 5},
-                {5, 5}
-            },
+            {23, 25, 27, 29, 31, 32, 33, 34, 35},
             {1, 3},
             {5, 5}
         },
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
@@ -866,52 +740,37 @@ TEST(ConnectedComponentsTest, Test4BlobsGeneral) {
         imageData,
     };
 
-    Edges expected = {
+    Components expected = {
         {
-            {
-                {2, 0},
-                {0, 1},
-                {1, 1},
-                {0, 2},
-            },
+            {2, 5, 6, 10},
             {0, 0},
             {2, 2}
         },
         {
-            {
-                {4, 0},
-                {4, 1},
-            },
+            {4, 9},
             {4, 0},
             {4, 1}
         },
         {
-            {
-                {0, 4}
-            },
+            {20},
             {0, 4},
             {0, 4}
         },
         {
-            {
-                {2, 3},
-                {4, 3},
-                {3, 4},
-                {4, 4}
-            },
+            {17, 19, 23, 24},
             {2, 3},
             {4, 4}
         }
     };
 
-    Edges actual = ConnectedComponentsAlgorithm(image, criteria);
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
 
     ASSERT_EQ(expected.size(), actual.size());
 
-    std::vector<testing::Matcher<Edge>> matchers;
+    std::vector<testing::Matcher<Component>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Edge& val) {
-                    return EdgeEqual(val);
+                [](const Component& val) {
+                    return ComponentEqual(val);
                 });
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));

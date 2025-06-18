@@ -23,7 +23,7 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
 
-    decimal focalFactor = focalLength/vector.x;
+    decimal focalFactor = focalLength/vector.x/pixelSize;
 
     decimal yPixel = vector.y*focalFactor;
     decimal zPixel = vector.z*focalFactor;
@@ -53,8 +53,8 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
 
     return {
         1,
-        xPixel / focalLength,
-        yPixel / focalLength,
+        xPixel * pixelSize / focalLength,
+        yPixel * pixelSize / focalLength,
     };
 }
 

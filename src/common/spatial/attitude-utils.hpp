@@ -53,15 +53,6 @@ class Vec3 {
     /// The z coordinate
     decimal z;
 
-    // TODO: Implement this constructor
-    /**
-     * Construction of orientation vector, which should be a unit vector
-     * 
-     * @param de The declination of the vector to create
-     * @param ra The right ascension of the vector to create
-    */
-    Vec3(decimal de, decimal ra);
-
     /**
      * Construction of vector with x, y, and z components
      * 
@@ -69,7 +60,7 @@ class Vec3 {
      * @param y The scalar value in the y direction of the vector to make
      * @param z The scalar value in the z direction of the vector to make
     */
-    Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {}
+    constexpr Vec3(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {}
 
     /**
      * Default construction of the Vector
@@ -111,8 +102,10 @@ class Vec3 {
     decimal operator*(const Vec3 &) const;
     Vec3 operator*(const decimal &) const;
     Vec3 operator*(const Mat3 &) const;
+    Vec3 operator/(const decimal &) const;
     Vec3 operator-(const Vec3 &) const;
-    Vec3 operator+(const Vec3 &other) const;
+    Vec3 operator-() const;
+    Vec3 &operator+=(const Vec3 &);
     Vec3 CrossProduct(const Vec3 &) const;
     Mat3 OuterProduct(const Vec3 &) const;
 };
@@ -178,7 +171,7 @@ class EulerAngles {
      * @param de The Declination of the Euler Angle
      * @param roll The roll of the Euler Angle
      */
-    EulerAngles(decimal ra = DECIMAL(0.0),
+    constexpr EulerAngles(decimal ra = DECIMAL(0.0),
                 decimal de = DECIMAL(0.0),
                 decimal roll = DECIMAL(0.0))  // NOLINT(runtime/explicit)
         : ra(ra), de(de), roll(roll) {}
@@ -259,16 +252,29 @@ class Attitude {
     Vec3 Rotate(const Vec3 &) const;
 
  private:
+    /// Represents what internal representation for attitude
+    /// is being used
     enum AttitudeType {
+        /// No Internal representation
         NullType,
+        /// Quaternion Internal Representation
         QuaternionType,
+        /// DCM Internal Representation
         DCMType,
     };
 
+    /// Internal Quaternion Representation
     Quaternion quaternion;
-    Mat3 dcm;  // direction cosine matrix
+    /// Internal DCM Representation
+    Mat3 dcm;
+    /// Internal Representation Type
     AttitudeType type;
 };
+
+// Vector operations
+Vec2 midpoint(const Vec2 &, const Vec2 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &);
+Vec3 midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
 
 // DCM-Quaternion-Spherical Conversions
 
@@ -288,7 +294,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
-    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); };
+    { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }
 
 // Spherical-Vector Conversions
 
@@ -302,8 +308,28 @@ decimal AngleUnit(const Vec3 &, const Vec3 &);
 
 // Angle Conversions
 
-decimal RadToDeg(decimal);
-decimal DegToRad(decimal);
+/**
+ * Converts an angle in radians to degrees
+ * 
+ * @param rad The rad of the angle
+ * 
+ * @return The degrees of the angle
+*/
+constexpr decimal RadToDeg(decimal rad) {
+    return rad*DECIMAL(180.0)/DECIMAL_M_PI;
+}
+
+/**
+ * Converts an angle in degrees to radians
+ * 
+ * @param deg The degrees of the angle
+ * 
+ * @return The radians of the angle
+*/
+constexpr decimal DegToRad(decimal deg) {
+    return deg/DECIMAL(180.0)*DECIMAL_M_PI;
+}
+
 decimal RadToArcSec(decimal);
 decimal ArcSecToRad(decimal);
 

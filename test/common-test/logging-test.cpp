@@ -10,7 +10,7 @@ namespace found {
 TEST(LoggingTest, TestLogInfo) {
     testing::internal::CaptureStdout();
 
-    LOG(INFO, "Meep");
+    LOG_INFO("Meep");
 
     std::string output = testing::internal::GetCapturedStdout();
 
@@ -23,7 +23,7 @@ TEST(LoggingTest, TestLogInfo) {
 TEST(LoggingTest, TestLogWarning) {
     testing::internal::CaptureStderr();
 
-    LOG(WARN, "Meep Warning");
+    LOG_WARN("Meep Warning");
 
     std::string output = testing::internal::GetCapturedStderr();
 
@@ -36,7 +36,7 @@ TEST(LoggingTest, TestLogWarning) {
 TEST(LoggingTest, TestLogError) {
     testing::internal::CaptureStderr();
 
-    LOG(ERROR, "Meep Error");
+    LOG_ERROR("Meep Error");
 
     std::string output = testing::internal::GetCapturedStderr();
 

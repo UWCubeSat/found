@@ -13,8 +13,10 @@
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
+#include "orbit/orbit.hpp"
+
 // TODO(nguy8tri): Include statement for Orbit Pipeline
-// TODO: Fully Implement this after everything is well defined
+// TODO: Fully Implement this when orbit stage is implemented
 
 #include "common/decimal.hpp"
 
@@ -27,7 +29,7 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(CalibrationOptions &options) {
+std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -38,8 +40,10 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(CalibrationOpt
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &options) {
-    return std::make_unique<SimpleEdgeDetectionAlgorithm>();
+std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
+    return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
+                                                          options.SEDABorderLen,
+                                                          options.SEDAOffset);
 }
 
 /**
@@ -49,8 +53,24 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOp
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &options) {
-    return std::make_unique<SphericalDistanceDeterminationAlgorithm>(DECIMAL_M_R_E);
+std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &&options) {
+    if (options.distanceAlgo == SDDA) {
+        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius,
+                                                                         Camera(options.focalLength,
+                                                                                options.pixelSize,
+                                                                                options.image.width,
+                                                                                options.image.height));
+    } else if (options.distanceAlgo == ISDDA) {
+        return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
+                                                                                  Camera(options.focalLength,
+                                                                                         options.pixelSize,
+                                                                                         options.image.width,
+                                                                                         options.image.height),
+                                                                                  options.ISDDAMinIters);
+    } else {
+        LOG_ERROR("Unrecognized distance algorithm: " << options.distanceAlgo);
+        throw std::runtime_error("Unrecognized distance algorithm: " + options.distanceAlgo);
+    }
 }
 
 /**
@@ -60,17 +80,36 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &options) {
-    Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
+std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
-    // TODO(nguy8tri) | TODO(ozbot11): If the relative Orientation is 0, then attempt to parse it out of the file
-    if (options.refAsOrientation) {
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+    if (options.calibrationData.header.version != emptyDFVer) {
+        LOG_INFO("Using DataFile for calibration information");
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
+                                                               referenceOrientation);
+    } else {
+        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
+        if (options.refAsOrientation) {
+            LOG_INFO("Using provided reference orientation for calibration information");
+            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+        }
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
-    return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
 }
 
-// TODO(nguy8tri): Include functions for providing the orbit pipeline stages
+// TODO: Uncomment when orbit stage is implemented
+/**
+ * Provides an OrbitPropagationAlgorithm
+ * 
+ * @param options The options to derive the orbit propagation algorithm from
+ * 
+ * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
+ */
+// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
+//     return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
+//                                                                   options.dt,
+//                                                                   options.radius,
+//                                                                   options.mu);
+// }
 
 }  // namespace found
 

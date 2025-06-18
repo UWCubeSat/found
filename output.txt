@@ -1,0 +1,108 @@
+
+==============================================
+          Target:  compile_setup
+==============================================
+
+mkdir -p build
+mkdir -p build/bin
+mkdir -p build/libraries/src
+mkdir -p build/documentation
+mkdir -p .cache/stb_image
+cp -r .cache/stb_image build/libraries/src
+
+========================================
+          Target:  compile
+========================================
+
+mkdir -p build/objects/src/distance
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/distance/edge.cpp -o build/objects/src/distance/edge.o -Isrc 
+mkdir -p build/objects/src/command-line/execution
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/command-line/execution/executors.cpp -o build/objects/src/command-line/execution/executors.o -Isrc 
+mkdir -p build/objects/src/command-line/parsing
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/command-line/parsing/parser.cpp -o build/objects/src/command-line/parsing/parser.o -Isrc 
+mkdir -p build/objects/src/common/spatial
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/common/spatial/attitude-utils.cpp -o build/objects/src/common/spatial/attitude-utils.o -Isrc 
+mkdir -p build/objects/src/common/spatial
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/common/spatial/camera.cpp -o build/objects/src/common/spatial/camera.o -Isrc 
+mkdir -p build/objects/src/calibrate
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/calibrate/calibrate.cpp -o build/objects/src/calibrate/calibrate.o -Isrc 
+mkdir -p build/objects/src
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -c src/main.cpp -o build/objects/src/main.o -Isrc 
+c++  -Ilibraries -Idocumentation -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD -Isrc  -Ibuild/libraries/src  -o build/bin/found build/libraries/src/stb_image/stb_image.cpp  build/objects/src/distance/edge.o  build/objects/src/command-line/execution/executors.o  build/objects/src/command-line/parsing/parser.o  build/objects/src/common/spatial/attitude-utils.o  build/objects/src/common/spatial/camera.o  build/objects/src/calibrate/calibrate.o  build/objects/src/main.o 
+
+==================================================
+          Target:  google_stylecheck
+==================================================
+
+cpplint src/distance/edge.cpp src/command-line/execution/executors.cpp src/command-line/parsing/parser.cpp src/common/spatial/attitude-utils.cpp src/common/spatial/camera.cpp src/calibrate/calibrate.cpp src/main.cpp src/orbit/orbit.hpp src/orbit/kinematic.hpp src/providers/factory.hpp src/providers/stage-providers.hpp src/providers/converters.hpp src/distance/vectorize.hpp src/distance/edge.hpp src/distance/distance.hpp src/command-line/execution/executors.hpp src/command-line/parsing/parser.hpp src/command-line/parsing/options.hpp src/common/pipeline.hpp src/common/spatial/attitude-utils.hpp src/common/spatial/camera.hpp src/common/decimal.hpp src/common/logging.hpp src/common/style.hpp src/calibrate/calibrate.hpp
+Done processing src/calibrate/calibrate.cpp
+Done processing src/calibrate/calibrate.hpp
+Done processing src/command-line/execution/executors.cpp
+Done processing src/command-line/execution/executors.hpp
+Done processing src/command-line/parsing/options.hpp
+Done processing src/command-line/parsing/parser.cpp
+Done processing src/command-line/parsing/parser.hpp
+Done processing src/common/decimal.hpp
+Done processing src/common/logging.hpp
+Done processing src/common/pipeline.hpp
+Done processing src/common/spatial/attitude-utils.cpp
+Done processing src/common/spatial/attitude-utils.hpp
+Done processing src/common/spatial/camera.cpp
+Done processing src/common/spatial/camera.hpp
+Done processing src/common/style.hpp
+Done processing src/distance/distance.hpp
+Done processing src/distance/edge.cpp
+Done processing src/distance/edge.hpp
+Done processing src/distance/vectorize.hpp
+Done processing src/main.cpp
+Done processing src/orbit/kinematic.hpp
+Done processing src/orbit/orbit.hpp
+Done processing src/providers/converters.hpp
+Done processing src/providers/factory.hpp
+Done processing src/providers/stage-providers.hpp
+
+===========================================
+          Target:  test_setup
+===========================================
+
+mkdir -p build/libraries/test
+mkdir -p build/documentation/coverage
+mkdir -p .cache
+wget https://github.com/google/googletest/archive/release-1.12.1.tar.gz -P .cache
+--2025-05-31 11:38:20--  https://github.com/google/googletest/archive/release-1.12.1.tar.gz
+Resolving github.com (github.com)... 140.82.116.4
+Connecting to github.com (github.com)|140.82.116.4|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://codeload.github.com/google/googletest/tar.gz/refs/tags/release-1.12.1 [following]
+--2025-05-31 11:38:20--  https://codeload.github.com/google/googletest/tar.gz/refs/tags/release-1.12.1
+Resolving codeload.github.com (codeload.github.com)... 140.82.116.10
+Connecting to codeload.github.com (codeload.github.com)|140.82.116.10|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 854944 (835K) [application/x-gzip]
+Saving to: ‘.cache/release-1.12.1.tar.gz’
+
+     0K .......... .......... .......... .......... ..........  5% 5.04M 0s
+    50K .......... .......... .......... .......... .......... 11% 10.3M 0s
+   100K .......... .......... .......... .......... .......... 17% 26.4M 0s
+   150K .......... .......... .......... .......... .......... 23% 21.6M 0s
+   200K .......... .......... .......... .......... .......... 29% 15.1M 0s
+   250K .......... .......... .......... .......... .......... 35% 21.1M 0s
+   300K .......... .......... .......... .......... .......... 41% 37.3M 0s
+   350K .......... .......... .......... .......... .......... 47% 19.6M 0s
+   400K .......... .......... .......... .......... .......... 53% 17.7M 0s
+   450K .......... .......... .......... .......... .......... 59% 36.4M 0s
+   500K .......... .......... .......... .......... .......... 65% 23.1M 0s
+   550K .......... .......... .......... .......... .......... 71% 37.7M 0s
+   600K .......... .......... .......... .......... .......... 77% 38.0M 0s
+   650K .......... .......... .......... .......... .......... 83% 36.4M 0s
+   700K .......... .......... .......... .......... .......... 89% 23.2M 0s
+   750K .......... .......... .......... .......... .......... 95% 37.8M 0s
+   800K .......... .......... .......... ....                 100% 39.1M=0.04s
+
+2025-05-31 11:38:20 (19.3 MB/s) - ‘.cache/release-1.12.1.tar.gz’ saved [854944/854944]
+
+tar -xzf .cache/release-1.12.1.tar.gz -C .cache
+mkdir -p .cache/googletest-release-1.12.1/build
+cd .cache/googletest-release-1.12.1/build && cmake .. && make
+/bin/sh: cmake: command not found
+make: *** [.cache/googletest-release-1.12.1] Error 127

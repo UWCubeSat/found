@@ -13,6 +13,8 @@
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
+#include "orbit/orbit.hpp"
+
 namespace found {
 
 /**
@@ -21,6 +23,8 @@ namespace found {
  */
 class PipelineExecutor {
  public:
+    /// Destroys this
+    virtual ~PipelineExecutor() = default;
     /**
      * Executes the relavent Pipeline
      */
@@ -44,15 +48,18 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param options The options to create the pipeline
      * @param calibrationAlgorithm The calibration algorithm to use
      */
-    explicit CalibrationPipelineExecutor(CalibrationOptions &options,
+    explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    CalibrationOptions &options_;
+    /// The Calibration options being used
+    const CalibrationOptions options_;
+    /// The Calibration pipeline
     CalibrationPipeline pipeline_;
+    /// The Calibration Algorithm used
     std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
 
@@ -79,7 +86,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * This is guarenteed as long as strtoimage is used to create the image,
      * and it throws an error if the image is not valid.
      */
-    explicit DistancePipelineExecutor(const DistanceOptions &options,
+    explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                       std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
@@ -88,10 +95,15 @@ class DistancePipelineExecutor : public PipelineExecutor {
     void OutputResults() override;
 
  private:
-    const DistanceOptions &options_;
+    /// The DistanceOptions being used
+    const DistanceOptions options_;
+    /// The Distance pipeline being used
     DistancePipeline pipeline_;
+    /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The Distance Determination Algorithm being used
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    /// The Vectorization/Rotation Algorithm being used
     std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
 
@@ -105,16 +117,21 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * Constructs a OrbitPipelineExecutor
      * 
      * @param options The options to create the pipeline
+     * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
-    explicit OrbitPipelineExecutor(const OrbitOptions &options)
-        : options_(options) { /* TODO(nguy8tri): Uncomment when done defining -> CreatePipeline(); */ }
+    explicit OrbitPipelineExecutor(OrbitOptions &&options,
+                                   std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
 
  private:
-    const OrbitOptions &options_;
+    /// The Orbit options being used
+    const OrbitOptions options_;
+    /// The Orbit pipeline
     OrbitPipeline pipeline_;
+    /// The Orbit Propagation Algorithm being used
+    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
 }  // namespace found

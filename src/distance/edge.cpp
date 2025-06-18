@@ -4,11 +4,143 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <functional>
+#include <unordered_set>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
 
 namespace found {
+
+////// Simple Edge Detection Algorithm //////
+
+// TODO: Investigate if the use of the DECIMAL(x) cast is taking up too much time
+
+Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 0: Define Common Variables
+    uint64_t imageSize = image.width * image.height;
+
+    // Step 1: Obtain the component that represents space
+    Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
+        // Average the pixel, then threshold it
+        int sum = 0;
+        for (int i = 0; i < image.channels; i++) sum += image.image[image.channels * index + i];
+        return sum / image.channels < this->threshold_;
+    });
+    Component *space = nullptr;
+    for (auto &component : spaces) {
+        // Basically, if the component touches the border, and its the biggest one,
+        // we assume it is space
+        if ((component.upperLeft.x < this->borderLength_ ||
+            component.upperLeft.y < this->borderLength_ ||
+            component.lowerRight.x >= image.width - this->borderLength_ ||
+            component.lowerRight.y >= image.height - this->borderLength_)) {
+            if (!space || component.points.size() > space->points.size())
+            space = &component;
+        }
+    }
+    if (space == nullptr || space->points.size() == imageSize) return Points();
+    std::unordered_set<uint64_t> &points = space->points;
+
+    // Step 2: Identify the edge as the edge of space
+
+    // Step 2a: Figure out the centroids of space and the planet
+    Vec2 planetCentroid{0, 0};
+    Vec2 spaceCentroid{0, 0};
+    int64_t planetSize = 0;
+    int64_t spaceSize = 0;
+    for (uint64_t i = 0; i < imageSize; i++) {
+        if (points.find(i) == points.end()) {
+            planetCentroid.x += i % image.width;
+            planetCentroid.y += i / image.width;
+            planetSize++;
+        } else {
+            spaceCentroid.x += i % image.width;
+            spaceCentroid.y += i / image.width;
+            spaceSize++;
+        }
+    }
+    planetCentroid.x /= planetSize;
+    planetCentroid.y /= planetSize;
+    spaceCentroid.x /= spaceSize;
+    spaceCentroid.y /= spaceSize;
+
+    Vec2 itrDirection = spaceCentroid - planetCentroid;
+
+    // Step 2b: Figure out how to iterate through the image,
+    // iterating from the planet into space
+    Points result;
+    if (std::abs(itrDirection.y) > std::abs(itrDirection.x)) {
+        // Determine which direction we want to iterate,
+        // (we want to iterate into the space)
+        uint64_t update;
+        uint64_t start;
+        decimal offset;
+        uint64_t edge_condition;
+        if (itrDirection.y < 0) {
+            // Iterate up, and start at the bottom left corner
+            update = -image.width;
+            start = static_cast<uint64_t>(space->lowerRight.y * image.width + space->upperLeft.x);
+            offset = -this->offset_;
+            edge_condition = image.height - 1;
+        } else {
+            // Iterate down, and start at the top left corner
+            update = image.width;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            offset = this->offset_;
+            edge_condition = 0;
+        }
+        // Step 2c: Get all edge points along the edge, identifying the edge
+        // as the first point that is found inside space
+        for (int col = space->upperLeft.x; col <= space->lowerRight.x; col++) {
+            // because index is uint64_t, going below zero will overflow, and it will indeed be past the dimensions
+            uint64_t index = start;
+            while (points.find(index) == points.end()) index += update;
+            if (index / image.width != edge_condition) {
+                index -= update;
+                result.push_back({DECIMAL(index % image.width),
+                                    DECIMAL(index / image.width) - offset});
+            }
+            start++;
+        }
+    } else {
+        // Determine which direction we want to iterate
+        uint64_t update;
+        uint64_t start;
+        decimal offset;
+        uint64_t edge_condition;
+        if (itrDirection.x < 0) {
+            // Iterate left, and start at the top right corner
+            update = -1;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->lowerRight.x);
+            offset = -this->offset_;
+            edge_condition = image.width - 1;
+        } else {
+            // Iterate right, and start at the top left corner
+            update = 1;
+            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            offset = this->offset_;
+            edge_condition = 0;
+        }
+        // Step 2c: Get all edge points along the edge, identifying the edge
+        // as the first point that is found inside space
+        for (int row = space->upperLeft.y; row <= space->lowerRight.y; row++) {
+            uint64_t index = start;
+            while (points.find(index) == points.end()) index += update;
+            if (index % image.width != edge_condition) {
+                index -= update;
+                result.push_back({DECIMAL(index % image.width) - offset,
+                                    DECIMAL(index / image.width)});
+            }
+            start += image.width;
+        }
+    }
+
+    // Step 4: Return the points
+    return result;
+}
+
+////// Connected Components Algorithm //////
 
 /**
  * Checks if a label is present in the list of adjacent labels
@@ -30,58 +162,60 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
 }
 
 /**
- * Updates the edge with the given pixel
+ * Updates the component with the given pixel
  * 
- * @param edge The edge to update
+ * @param component The component to update
+ * @param index The index to add
  * @param pixel The pixel to add
  * 
- * @pre UpdateEdge must be called in order of increasing index
+ * @pre Must be called in order of increasing index
  */
-inline void UpdateEdge(Edge &edge, Vec2 &pixel) {
-    edge.points.push_back(pixel);
-    if (edge.upperLeft.x > pixel.x) edge.upperLeft.x = pixel.x;
-    else if (edge.lowerRight.x < pixel.x) edge.lowerRight.x = pixel.x;
-    // We skip this statement, since its impossible: if (edge.upperLeft.y > pixel.y) edge.upperLeft.y = pixel.y;
-    if (edge.lowerRight.y < pixel.y) edge.lowerRight.y = pixel.y;
+inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
+    component.points.insert(index);
+    if (component.upperLeft.x > pixel.x) component.upperLeft.x = pixel.x;
+    else if (component.lowerRight.x < pixel.x) component.lowerRight.x = pixel.x;
+    // We skip this statement, since its impossible:
+    // if (component.upperLeft.y > pixel.y) component.upperLeft.y = pixel.y;
+    if (component.lowerRight.y < pixel.y) component.lowerRight.y = pixel.y;
 }
 
 /**
- * Adds a pixel to some edge, creating a new edge if necessary
+ * Adds a pixel to some component, creating a new component if necessary
  * 
  * @param image The image to which the pixel belongs
  * @param index The index of the pixel
  * @param L The current label
- * @param adjacentLabels The labels of the adjacent edges
+ * @param adjacentLabels The labels of the adjacent components
  * @param size The number of adjacent labels
- * @param edges The edges that are part of the image
+ * @param components The components that are part of the image
  * @param equivalencies The labels that are equivalent to each other
  * 
- * @return The label of the edge point that was added
+ * @return The label of the component point that was added
  * 
- * Updates edges with the new pixel as appropriate
+ * Updates components with the new pixel as appropriate
  */
-inline int NWayEquivalenceAdd(Image &image,
-                               uint64_t index,
-                               int &L,
-                               int adjacentLabels[4],
-                               int size,
-                               std::unordered_map<int, Edge> &edges,
-                               std::unordered_map<int, int> &equivalencies) {
+inline int NWayEquivalenceAdd(const Image &image,
+                              uint64_t index,
+                              int &L,
+                              int adjacentLabels[4],
+                              int size,
+                              std::unordered_map<int, Component> &components,
+                              std::unordered_map<int, int> &equivalencies) {
     Vec2 pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
     if (size == 0) {
         // No adjacent labels
-        edges.insert({++L, {{pixel}, pixel, pixel}});
+        components.insert({++L, {{index}, pixel, pixel}});
         return L;
     } else if (size == 1) {
         // One adjacent label
-        UpdateEdge(edges[adjacentLabels[0]], pixel);
+        UpdateComponent(components[adjacentLabels[0]], index, pixel);
         return adjacentLabels[0];
     } else if (size == 2) {  // Added for optimization
         if (adjacentLabels[0] < adjacentLabels[1]) {
             // Two adjacent labels, first is smaller
-            UpdateEdge(edges[adjacentLabels[0]], pixel);
+            UpdateComponent(components[adjacentLabels[0]], index, pixel);
             if (equivalencies.find(adjacentLabels[1]) == equivalencies.end()) {
-                equivalencies.insert({adjacentLabels[1], adjacentLabels[0]});
+                equivalencies.try_emplace(adjacentLabels[1], adjacentLabels[0]);
             } else {
                 equivalencies[adjacentLabels[1]] = std::min(equivalencies[adjacentLabels[1]], adjacentLabels[0]);
             }
@@ -89,9 +223,9 @@ inline int NWayEquivalenceAdd(Image &image,
         }
 
         // Two adjacent labels, second is smaller
-        UpdateEdge(edges[adjacentLabels[1]], pixel);
+        UpdateComponent(components[adjacentLabels[1]], index, pixel);
         if (equivalencies.find(adjacentLabels[0]) == equivalencies.end()) {
-            equivalencies.insert({adjacentLabels[0], adjacentLabels[1]});
+            equivalencies.try_emplace(adjacentLabels[0], adjacentLabels[1]);
         } else {
             equivalencies[adjacentLabels[0]] = std::min(equivalencies[adjacentLabels[0]], adjacentLabels[1]);
         }
@@ -103,11 +237,11 @@ inline int NWayEquivalenceAdd(Image &image,
             minLabel = adjacentLabels[i];
         }
     }
-    UpdateEdge(edges[minLabel], pixel);
+    UpdateComponent(components[minLabel], index, pixel);
     for (int i = 0; i < size; i++) {
         if (adjacentLabels[i] != minLabel) {
             if (equivalencies.find(adjacentLabels[i]) == equivalencies.end()) {
-                equivalencies.insert({adjacentLabels[i], minLabel});
+                equivalencies.try_emplace(adjacentLabels[i], minLabel);
             } else {
                 equivalencies[adjacentLabels[i]] = std::min(equivalencies[adjacentLabels[i]], minLabel);
             }
@@ -116,27 +250,28 @@ inline int NWayEquivalenceAdd(Image &image,
     return minLabel;
 }
 
-Edges ConnectedComponentsAlgorithm(Image &image, bool (*Criteria)(uint64_t, Image &)) {
+Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
     // Step 0: Setup the Problem
-    std::unordered_map<int, Edge> edges;
+    std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
-    std::unordered_map<uint64_t, int> edgePoints;
+    std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
 
-    int L = -1;
+    int L = 0;
     int adjacentLabels[4];
     int size = 0;
 
     // Step 1: Iterate through the image, forming primary groups of
-    // edges, taking note of equivalent edges
+    // components, taking note of equivalent components
 
     // Step 1a: Tackle the First Pixel
     if (Criteria(0, image)) {
-        edges.insert({++L, {{{0, 0}}, {0, 0}, {0, 0}}});
-        edgePoints.insert({0, L});
+        components.insert({++L, {{0}, {0, 0}, {0, 0}}});
+        componentPoints[0] = L;
     }
 
-    for (uint64_t i = 1; i < static_cast<uint64_t>(image.width * image.height); i++) {
-        // Step 1b: Check if the pixel is an edge point
+    uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
+    for (uint64_t i = 1; i < imageSize; i++) {
+        // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
             continue;
         }
@@ -144,64 +279,64 @@ Edges ConnectedComponentsAlgorithm(Image &image, bool (*Criteria)(uint64_t, Imag
         // Step 1c: Figure out all adjacent labels
         if (i / image.width == 0) {
             // Top Row (1 other pixel)
-            if (auto left = edgePoints.find(i - 1); left != edgePoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
         } else if (i % image.width == 0) {
             // Left Column (2 other pixels)
-            if (auto top = edgePoints.find(i - image.width); top != edgePoints.end()) {
-                adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                adjacentLabels[size++] = top;
             }
-            if (auto topRight = edgePoints.find(i - image.width + 1); topRight != edgePoints.end()) {
-                if (!LabelPresent(topRight->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topRight->second;
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+                if (!LabelPresent(topRight, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topRight;
                 }
             }
         } else if ((i + 1) % image.width == 0) {
             // Right Column (3 other pixels)
-            if (auto left = edgePoints.find(i - 1); left != edgePoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
-            if (auto topLeft = edgePoints.find(i - image.width - 1); topLeft != edgePoints.end()) {
-                if (!LabelPresent(topLeft->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topLeft->second;
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+                if (!LabelPresent(topLeft, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = edgePoints.find(i - image.width); top != edgePoints.end()) {
-                if (!LabelPresent(top->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                if (!LabelPresent(top, adjacentLabels, size)) {
+                    adjacentLabels[size++] = top;
                 }
             }
         } else {
             // All others pixels (4 other pixels)
-            if (auto left = edgePoints.find(i - 1); left != edgePoints.end()) {
-                adjacentLabels[size++] = left->second;
+            if (auto left = componentPoints[i - 1]; left != 0) {
+                adjacentLabels[size++] = left;
             }
-            if (auto topLeft = edgePoints.find(i - image.width - 1); topLeft != edgePoints.end()) {
-                if (!LabelPresent(topLeft->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topLeft->second;
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+                if (!LabelPresent(topLeft, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = edgePoints.find(i - image.width); top != edgePoints.end()) {
-                if (!LabelPresent(top->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = top->second;
+            if (auto top = componentPoints[i - image.width]; top != 0) {
+                if (!LabelPresent(top, adjacentLabels, size)) {
+                    adjacentLabels[size++] = top;
                 }
             }
-            if (auto topRight = edgePoints.find(i - image.width + 1); topRight != edgePoints.end()) {
-                if (!LabelPresent(topRight->second, adjacentLabels, size)) {
-                    adjacentLabels[size++] = topRight->second;
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+                if (!LabelPresent(topRight, adjacentLabels, size)) {
+                    adjacentLabels[size++] = topRight;
                 }
             }
         }
 
-        // Step 1d: Add the pixel to the appropriate edge and prepare for the next iteration
-        edgePoints.insert({i, NWayEquivalenceAdd(image, i, L, adjacentLabels, size, edges, equivalencies)});
+        // Step 1d: Add the pixel to the appropriate component and prepare for the next iteration
+        componentPoints[i] = NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies);
         size = 0;
     }
 
-    // Step 2: Now we need to merge the equivalent edges. We merge the higher
+    // Step 2: Now we need to merge the equivalent components. We merge the higher
     // label into the lower label, and update the lowest and highest points,
-    // and then get rid of the higher label's edge data. We iterate from highest to lowest
+    // and then get rid of the higher label's component data. We iterate from highest to lowest
     for (int i = L; i >= 0; i--) {
         auto it = equivalencies.find(i);
         if (it == equivalencies.end()) continue;
@@ -209,24 +344,24 @@ Edges ConnectedComponentsAlgorithm(Image &image, bool (*Criteria)(uint64_t, Imag
         // Guarenteed to be the lowest label
         int lowestLabel = it->second;
 
-        // Merge the edges
-        auto edgeIt = edges.find(i);
-        // edgeIt is guarenteed to exist, so we do not perform a check here
-        auto &edgeToMerge = edgeIt->second;
-        auto &lowestEdge = edges[lowestLabel];
-        lowestEdge.points.insert(lowestEdge.points.end(), edgeToMerge.points.begin(), edgeToMerge.points.end());
-        if (edgeToMerge.upperLeft.x < lowestEdge.upperLeft.x) lowestEdge.upperLeft.x = edgeToMerge.upperLeft.x;
-        if (edgeToMerge.lowerRight.x > lowestEdge.lowerRight.x) lowestEdge.lowerRight.x = edgeToMerge.lowerRight.x;
-        // We skip this statement, because its impossible (a higher edge is level or lower than a lower edge):
-        // if (edgeToMerge.upperLeft.y < lowestEdge.upperLeft.y) lowestEdge.upperLeft.y = edgeToMerge.upperLeft.y;
-        if (edgeToMerge.lowerRight.y > lowestEdge.lowerRight.y) lowestEdge.lowerRight.y = edgeToMerge.lowerRight.y;
+        // Merge the components
+        auto compIt = components.find(i);
+        // compIt is guarenteed to exist, so we do not perform a check here
+        auto &compToMerge = compIt->second;
+        auto &lowestComp = components[lowestLabel];
+        lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
+        if (compToMerge.upperLeft.x < lowestComp.upperLeft.x) lowestComp.upperLeft.x = compToMerge.upperLeft.x;
+        if (compToMerge.lowerRight.x > lowestComp.lowerRight.x) lowestComp.lowerRight.x = compToMerge.lowerRight.x;
+        // We skip this statement, because its impossible (a higher component is level or lower than a lower component):
+        // if (compToMerge.upperLeft.y < lowestComp.upperLeft.y) lowestComp.upperLeft.y = compToMerge.upperLeft.y;
+        if (compToMerge.lowerRight.y > lowestComp.lowerRight.y) lowestComp.lowerRight.y = compToMerge.lowerRight.y;
 
-        edges.erase(edgeIt);
+        components.erase(compIt);
     }
 
-    // Step 3: Return the edges
-    Edges result;
-    for (const auto &[label, edge] : edges) result.push_back(edge);
+    // Step 3: Return the components
+    Components result;
+    for (const auto &[label, component] : components) result.push_back(component);
 
     return result;
 }

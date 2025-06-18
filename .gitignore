@@ -13,5 +13,11 @@ googletest*
 **__pycache__
 **.pytest_cache
 
-# Don't include personally generated images
-**.png
+# Don't include personally generated images in the root folder
+/*.png
+
+# Don't inlcude any .gcov files in the root folder
+/*.gcov
+
+# Exclude all .found files
+/*.found

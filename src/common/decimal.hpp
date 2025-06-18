@@ -4,6 +4,9 @@
 #include <cmath>
 #include <string>
 
+// Use FOUND_FLOAT_MODE to distinguish
+// the real type of float, and to change
+// code accordingly.
 #ifdef FOUND_FLOAT_MODE
     typedef float decimal;
     #define STR_TO_DECIMAL(x) std::stof(x)
@@ -21,45 +24,45 @@
 #define DECIMAL(x) (static_cast<decimal>(x))
 
 // Math Constants wrapped with Decimal typecast
-#define DECIMAL_M_E             (static_cast<decimal>(M_E))           /* e */
-#define DECIMAL_M_LOG2E         (static_cast<decimal>(M_LOG2E))       /* log_2 e */
-#define DECIMAL_M_LOG10E        (static_cast<decimal>(M_LOG10E))      /* log_10 e */
-#define DECIMAL_M_LN2           (static_cast<decimal>(M_LN2))         /* log_e 2 */
-#define DECIMAL_M_LN10          (static_cast<decimal>(M_LN10))        /* log_e 10 */
-#define DECIMAL_M_PI            (static_cast<decimal>(M_PI))          /* pi */
-#define DECIMAL_M_PI_2          (static_cast<decimal>(M_PI_2))        /* pi/2 */
-#define DECIMAL_M_PI_4          (static_cast<decimal>(M_PI_4))        /* pi/4 */
-#define DECIMAL_M_1_PI          (static_cast<decimal>(M_1_PI))        /* 1/pi */
-#define DECIMAL_M_2_PI          (static_cast<decimal>(M_2_PI))        /* 2/pi */
-#define DECIMAL_M_2_SQRTPI      (static_cast<decimal>(M_2_SQRTPI))    /* 2/sqrt(pi) */
-#define DECIMAL_M_SQRT2         (static_cast<decimal>(M_SQRT2))       /* sqrt(2) */
-#define DECIMAL_M_SQRT1_2       (static_cast<decimal>(M_SQRT1_2))     /* 1/sqrt(2) */
-#define DECIMAL_M_R_E           (static_cast<decimal>(6371008.7714))  /* Earth's Radius */
+#define DECIMAL_M_E             (DECIMAL(M_E))           /* e */
+#define DECIMAL_M_LOG2E         (DECIMAL(M_LOG2E))       /* log_2 e */
+#define DECIMAL_M_LOG10E        (DECIMAL(M_LOG10E))      /* log_10 e */
+#define DECIMAL_M_LN2           (DECIMAL(M_LN2))         /* log_e 2 */
+#define DECIMAL_M_LN10          (DECIMAL(M_LN10))        /* log_e 10 */
+#define DECIMAL_M_PI            (DECIMAL(M_PI))          /* pi */
+#define DECIMAL_M_PI_2          (DECIMAL(M_PI_2))        /* pi/2 */
+#define DECIMAL_M_PI_4          (DECIMAL(M_PI_4))        /* pi/4 */
+#define DECIMAL_M_1_PI          (DECIMAL(M_1_PI))        /* 1/pi */
+#define DECIMAL_M_2_PI          (DECIMAL(M_2_PI))        /* 2/pi */
+#define DECIMAL_M_2_SQRTPI      (DECIMAL(M_2_SQRTPI))    /* 2/sqrt(pi) */
+#define DECIMAL_M_SQRT2         (DECIMAL(M_SQRT2))       /* sqrt(2) */
+#define DECIMAL_M_SQRT1_2       (DECIMAL(M_SQRT1_2))     /* 1/sqrt(2) */
+#define DECIMAL_M_R_E           (DECIMAL(6371008.7714))  /* Earth's Radius */
 
 // Math Functions wrapped with Decimal typecast
-#define DECIMAL_POW(base,power) (static_cast<decimal>(std::pow(base), power))
-#define DECIMAL_SQRT(x)         (static_cast<decimal>(std::sqrt(x)))
-#define DECIMAL_LOG(x)          (static_cast<decimal>(std::log(x)))
-#define DECIMAL_EXP(x)          (static_cast<decimal>(std::exp(x)))
-#define DECIMAL_ERF(x)          (static_cast<decimal>(std::erf(x)))
+#define DECIMAL_POW(base,power) (DECIMAL(std::pow(base), power))
+#define DECIMAL_SQRT(x)         (DECIMAL(std::sqrt(x)))
+#define DECIMAL_LOG(x)          (DECIMAL(std::log(x)))
+#define DECIMAL_EXP(x)          (DECIMAL(std::exp(x)))
+#define DECIMAL_ERF(x)          (DECIMAL(std::erf(x)))
 
 // Rouding methods wrapped with Decimal typecast)
-#define DECIMAL_ROUND(x)        (static_cast<decimal>(std::round(x)))
-#define DECIMAL_CEIL(x)         (static_cast<decimal>(std::ceil(x)))
-#define DECIMAL_FLOOR(x)        (static_cast<decimal>(std::floor(x)))
-#define DECIMAL_ABS(x)          (static_cast<decimal>(std::abs(x)))
+#define DECIMAL_ROUND(x)        (DECIMAL(std::round(x)))
+#define DECIMAL_CEIL(x)         (DECIMAL(std::ceil(x)))
+#define DECIMAL_FLOOR(x)        (DECIMAL(std::floor(x)))
+#define DECIMAL_ABS(x)          (DECIMAL(std::abs(x)))
 
 // Trig Methods wrapped with Decimal typecast)
-#define DECIMAL_SIN(x)          (static_cast<decimal>(std::sin(x)))
-#define DECIMAL_COS(x)          (static_cast<decimal>(std::cos(x)))
-#define DECIMAL_TAN(x)          (static_cast<decimal>(std::tan(x)))
-#define DECIMAL_ASIN(x)         (static_cast<decimal>(std::asin(x)))
-#define DECIMAL_ACOS(x)         (static_cast<decimal>(std::acos(x)))
-#define DECIMAL_ATAN(x)         (static_cast<decimal>(std::atan(x)))
-#define DECIMAL_ATAN2(x,y)      (static_cast<decimal>(std::atan2(x),y))
+#define DECIMAL_SIN(x)          (DECIMAL(std::sin(x)))
+#define DECIMAL_COS(x)          (DECIMAL(std::cos(x)))
+#define DECIMAL_TAN(x)          (DECIMAL(std::tan(x)))
+#define DECIMAL_ASIN(x)         (DECIMAL(std::asin(x)))
+#define DECIMAL_ACOS(x)         (DECIMAL(std::acos(x)))
+#define DECIMAL_ATAN(x)         (DECIMAL(std::atan(x)))
+#define DECIMAL_ATAN2(x,y)      (DECIMAL(std::atan2(x,y)))
 
 // Float methods wrapped with Decimal typecast)
-#define DECIMAL_FMA(x,y,z)      (static_cast<decimal>(std::fma(x),y,z))
-#define DECIMAL_HYPOT(x,y)      (static_cast<decimal>(std::hypot(x),y))
+#define DECIMAL_FMA(x,y,z)      (DECIMAL(std::fma(x),y,z))
+#define DECIMAL_HYPOT(x,y)      (DECIMAL(std::hypot(x),y))
 
 #endif  // DECIMAL_H
