@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['threshold_5f_0',['threshold_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#aab2727fc4d33c248c5561011917932b2',1,'found::SimpleEdgeDetectionAlgorithm']]],
-  ['timestamp_1',['timestamp',['../structfound_1_1LocationRecord.html#a8dd6bf556b393c61c7dd611d1de53820',1,'found::LocationRecord']]],
-  ['totaltime_5f_2',['totalTime_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a1df67ff0e3c0df23d7a5663dc5539b33',1,'found::ApproximateOrbitPropagationAlgorithm']]],
-  ['type_3',['type',['../classfound_1_1Attitude.html#a811d1f38bbc5ea5f143f9b83a326af3a',1,'found::Attitude']]]
+  ['u_0',['u',['../unionfound_1_1__f__u__.html#a8f58a1af248e5e5106e2bb304468dd1c',1,'found::_f_u_::u'],['../unionfound_1_1__d__u__.html#a2710cabda8018a20d1cd3b9c3b611ec9',1,'found::_d_u_::u']]],
+  ['upperleft_1',['upperleft',['../structfound_1_1Edge.html#a0660753a6166809163354b7f54c59259',1,'found::Edge::upperLeft'],['../structfound_1_1Component.html#a413f7638e42236b43c54534d39d69e67',1,'found::Component::upperLeft']]]
 ];

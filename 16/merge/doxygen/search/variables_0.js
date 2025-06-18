@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['altitude_0',['altitude',['../structfound_1_1EarthSphericalVec3.html#a3b41558c47293ccee4040df6e037975d',1,'found::EarthSphericalVec3']]]
+  ['borderlength_5f_0',['borderLength_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a5199a0d2bf57d0a4c24bb27d6d80e596',1,'found::SimpleEdgeDetectionAlgorithm']]]
 ];
