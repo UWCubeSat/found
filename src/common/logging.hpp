@@ -1,19 +1,19 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#ifdef ENABLE_LOGGING
-
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <fstream>
-
 ///// LOGGING LEVELS /////
 
 // Levels as Numbers (in order of increasing severity)
 #define INFO 0
 #define WARN 1
 #define ERROR 2
+
+#ifdef ENABLE_LOGGING
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
 
 // Levels as Strings (in order of increasing severity)
 #define INFO_STR "INFO"
