@@ -123,7 +123,7 @@ After images from a satellite are received, their images are parsed to locate Ea
 ### Distance Determination
 The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND is capable of:
 - [X] Simple Spherical Planet Distance Determination
-- [X] Iterative Spherical Planet Distance Determination with Softmax Activation and Selective Randomization
+- [X] Iterative Spherical Planet Distance Determination with SoftMax Activation and Selective Randomization
 - [ ] Distance Determination with an Ellipsoid Planet Assumption
 
 ### Vector Generation
