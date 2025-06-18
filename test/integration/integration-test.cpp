@@ -14,7 +14,7 @@
 
 #include "src/calibrate/calibrate.hpp"
 
-#include "src/command-line/parsing/parser.hpp"
+#include "src/command-line/found-main.hpp"
 #include "src/command-line/parsing/options.hpp"
 
 namespace found {
