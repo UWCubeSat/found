@@ -5,8 +5,9 @@ var searchData=
   ['parseorbitoptions_2',['ParseOrbitOptions',['../namespacefound.html#a6cde8661904383c5d9df7c3c904d1042',1,'found']]],
   ['pipeline_3',['pipeline',['../classfound_1_1Pipeline.html#ab942668f5faa00d772c400740219e4ca',1,'found::Pipeline::Pipeline(std::vector&lt; std::reference_wrapper&lt; Action &gt; &gt; &amp;stages)'],['../classfound_1_1Pipeline.html#aba9edae071648014958b0802e3ac19df',1,'found::Pipeline::Pipeline()']]],
   ['pixelsize_4',['PixelSize',['../classfound_1_1Camera.html#a440dba521fd099e814b4c29c203bdf93',1,'found::Camera']]],
-  ['providecalibrationalgorithm_5',['ProvideCalibrationAlgorithm',['../namespacefound.html#aa765be64839ae3c22e8df425935c6b2a',1,'found']]],
-  ['providedistancedeterminationalgorithm_6',['ProvideDistanceDeterminationAlgorithm',['../namespacefound.html#aabcf4fcd2889daa18b8aef44dc334a75',1,'found']]],
-  ['provideedgedetectionalgorithm_7',['ProvideEdgeDetectionAlgorithm',['../namespacefound.html#a47afb4703927f20278c728ae9697471b',1,'found']]],
-  ['providevectorgenerationalgorithm_8',['ProvideVectorGenerationAlgorithm',['../namespacefound.html#ac459e8dc23006b2b79987909ef0e8042',1,'found']]]
+  ['pow_5',['Pow',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a6c2b5b765b46ebda847ea706b015d623',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['providecalibrationalgorithm_6',['ProvideCalibrationAlgorithm',['../namespacefound.html#aa765be64839ae3c22e8df425935c6b2a',1,'found']]],
+  ['providedistancedeterminationalgorithm_7',['ProvideDistanceDeterminationAlgorithm',['../namespacefound.html#aabcf4fcd2889daa18b8aef44dc334a75',1,'found']]],
+  ['provideedgedetectionalgorithm_8',['ProvideEdgeDetectionAlgorithm',['../namespacefound.html#a47afb4703927f20278c728ae9697471b',1,'found']]],
+  ['providevectorgenerationalgorithm_9',['ProvideVectorGenerationAlgorithm',['../namespacefound.html#ac459e8dc23006b2b79987909ef0e8042',1,'found']]]
 ];

@@ -10,7 +10,7 @@ var searchData=
   ['dcmtoquaternion_7',['DCMToQuaternion',['../namespacefound.html#ab48ff1388e2ad9c1d0f5cdc5b0318d5d',1,'found']]],
   ['dcmtype_8',['DCMType',['../classfound_1_1Attitude.html#a72ecb692024cc00fc1b91668443b1dc2ac4a90bff74903171e4d024c63fe45b28',1,'found::Attitude']]],
   ['de_9',['de',['../classfound_1_1EulerAngles.html#ad2a3eb2f0ef98d6becc9aafc2bda0236',1,'found::EulerAngles']]],
-  ['decimal_10',['decimal',['../decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57',1,'decimal:&#160;decimal.hpp'],['../decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c',1,'DECIMAL:&#160;decimal.hpp']]],
+  ['decimal_10',['decimal',['../decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c',1,'DECIMAL:&#160;decimal.hpp'],['../decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57',1,'decimal:&#160;decimal.hpp']]],
   ['decimal_2ehpp_11',['decimal.hpp',['../decimal_8hpp.html',1,'']]],
   ['decimal_5fabs_12',['DECIMAL_ABS',['../decimal_8hpp.html#a9c74c7f21e27343c8a46da2ea345054d',1,'decimal.hpp']]],
   ['decimal_5facos_13',['DECIMAL_ACOS',['../decimal_8hpp.html#aee57d54bc1c144bea46cd7e049f50aac',1,'decimal.hpp']]],

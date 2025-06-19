@@ -11,5 +11,5 @@ var searchData=
   ['isdda_8',['ISDDA',['../options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803',1,'options.hpp']]],
   ['isunit_9',['IsUnit',['../classfound_1_1Quaternion.html#a1a51d83a4545c557238ac1a088d6bc29',1,'found::Quaternion']]],
   ['isvalidmagicnumber_10',['isValidMagicNumber',['../namespacefound.html#a9bc726a5c467738263005b5f0d1490fc',1,'found']]],
-  ['iterativesphericaldistancedeterminationalgorithm_11',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aeb1be937d91ac7eeff2e55c2ccff9bd3',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
+  ['iterativesphericaldistancedeterminationalgorithm_11',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
 ];

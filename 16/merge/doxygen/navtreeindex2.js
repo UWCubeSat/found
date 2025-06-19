@@ -1,5 +1,11 @@
 var NAVTREEINDEX2 =
 {
+"decimal_8hpp.html#a2562bda367ecef5f1c60df62450e23ad":[3,0,0,2,2,30],
+"decimal_8hpp.html#a261bd8f8874ffe8d498f9c3cb9af7f5c":[3,0,0,2,2,0],
+"decimal_8hpp.html#a36c4a4a57b570617190116b1d05c7229":[3,0,0,2,2,11],
+"decimal_8hpp.html#a386a0c2d14d7ddeae07a7cc94f323dfb":[3,0,0,2,2,28],
+"decimal_8hpp.html#a3e2c08cf2cbb9071d37e64ec0444edad":[3,0,0,2,2,29],
+"decimal_8hpp.html#a4239f65c1338d3621c3f5ce50d8ae928":[3,0,0,2,2,23],
 "decimal_8hpp.html#a48c6d79be3f117fa2e9858e923a67d87":[3,0,0,2,2,12],
 "decimal_8hpp.html#a4d0eba52b5130b0dd204f60692e75fbd":[3,0,0,2,2,13],
 "decimal_8hpp.html#a5365adec6c470e04e3c3677276bdc280":[3,0,0,2,2,25],
@@ -38,8 +44,6 @@ var NAVTREEINDEX2 =
 "dir_f11582f6fee03950cf7c4ad394de98d8.html":[3,0,0,3],
 "dir_fdedb0aba14d44ce9d99bc100e026e6a.html":[3,0,0,2],
 "distance_8cpp.html":[3,0,0,4,0],
-"distance_8cpp.html#a46447dfc435c4a00363b641a0ac9bb7f":[3,0,0,4,0,1],
-"distance_8cpp.html#aa2adf14114d2b01857e5fcd1b38f88b8":[3,0,0,4,0,0],
 "distance_8hpp.html":[3,0,0,4,1],
 "distance_8hpp_source.html":[3,0,0,4,1],
 "edge_8cpp.html":[3,0,0,4,2],
@@ -76,8 +80,8 @@ var NAVTREEINDEX2 =
 "files.html":[3,0],
 "found-main_8cpp.html":[3,0,0,1,2],
 "found-main_8cpp.html#a25eef2e6e20aa0e29f7d5c1140b6bad0":[3,0,0,1,2,2],
-"found-main_8cpp.html#a43452b50be80708568199535efd71fc6":[3,0,0,1,2,0],
 "found-main_8cpp.html#a43452b50be80708568199535efd71fc6":[3,0,0,1,2,1],
+"found-main_8cpp.html#a43452b50be80708568199535efd71fc6":[3,0,0,1,2,0],
 "found-main_8hpp.html":[3,0,0,1,3],
 "found-main_8hpp.html#a25eef2e6e20aa0e29f7d5c1140b6bad0":[3,0,0,1,3,0],
 "found-main_8hpp_source.html":[3,0,0,1,3],
@@ -119,8 +123,8 @@ var NAVTREEINDEX2 =
 "globals_type.html":[3,1,3],
 "globals_vars.html":[3,1,2],
 "hierarchy.html":[2,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#autotoc_md1":[0,0],
 "index.html#autotoc_md10":[0,2,1,1],
 "index.html#autotoc_md11":[0,2,1,2],
@@ -245,9 +249,5 @@ var NAVTREEINDEX2 =
 "namespacemembers.html":[1,1,0],
 "namespacemembers_func.html":[1,1,1],
 "namespacemembers_type.html":[1,1,3],
-"namespacemembers_vars.html":[1,1,2],
-"namespaces.html":[1,0],
-"options_8hpp.html":[3,0,0,1,1,0],
-"options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803":[3,0,0,1,1,0,10],
-"options_8hpp.html#a18d5baa12def44de1fce340a63821082":[3,0,0,1,1,0,4]
+"namespacemembers_vars.html":[1,1,2]
 };

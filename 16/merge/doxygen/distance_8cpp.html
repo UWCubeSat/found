@@ -91,8 +91,7 @@ $(document).ready(function(){initNavTree('distance_8cpp.html',''); initResizable
 
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#namespaces">Namespaces</a>  </div>
   <div class="headertitle"><div class="title">distance.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -172,59 +171,7 @@ Include dependency graph for distance.cpp:</div>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacefound" id="r_namespacefound"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefound.html">found</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:aa2adf14114d2b01857e5fcd1b38f88b8" id="r_aa2adf14114d2b01857e5fcd1b38f88b8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="distance_8cpp.html#aa2adf14114d2b01857e5fcd1b38f88b8">L_RADIUS_MOD</a>(x)&#160;&#160;&#160;(x) * (x) * (x) * (x)</td></tr>
-<tr class="memdesc:aa2adf14114d2b01857e5fcd1b38f88b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Radius Loss Modification.  <br /></td></tr>
-<tr class="separator:aa2adf14114d2b01857e5fcd1b38f88b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46447dfc435c4a00363b641a0ac9bb7f" id="r_a46447dfc435c4a00363b641a0ac9bb7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="distance_8cpp.html#a46447dfc435c4a00363b641a0ac9bb7f">PDF</a>(x)&#160;&#160;&#160;(x) * (x)</td></tr>
-<tr class="memdesc:a46447dfc435c4a00363b641a0ac9bb7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro).  <br /></td></tr>
-<tr class="separator:a46447dfc435c4a00363b641a0ac9bb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="aa2adf14114d2b01857e5fcd1b38f88b8" name="aa2adf14114d2b01857e5fcd1b38f88b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2adf14114d2b01857e5fcd1b38f88b8">&#9670;&#160;</a></span>L_RADIUS_MOD</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define L_RADIUS_MOD</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(x) * (x) * (x) * (x)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Radius Loss Modification. </p>
-<p>Increasing order will make loss more strict, and lead to greater accuracy, but <a class="el" href="distance_8cpp.html#aa2adf14114d2b01857e5fcd1b38f88b8" title="Radius Loss Modification.">L_RADIUS_MOD(0)</a> == 0 </p>
-
-</div>
-</div>
-<a id="a46447dfc435c4a00363b641a0ac9bb7f" name="a46447dfc435c4a00363b641a0ac9bb7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46447dfc435c4a00363b641a0ac9bb7f">&#9670;&#160;</a></span>PDF</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define PDF</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(x) * (x)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Probability Density Function, which is currently a quadratic PDF (kinda, no normalization within the macro). </p>
-<p>Make your life easier by ensuring that your PDF is 0 where you want it to be. In our case, it should be zero at points we've already generated. Increasing the order of this PDF will result in more optimal triplets </p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
