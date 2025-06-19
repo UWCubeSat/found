@@ -231,7 +231,28 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a> is a variation of the <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm.">SphericalDistanceDeterminationAlgorithm</a> algorithm in that it runs it repeatedly to use all the points given to it. </p>
-<p>It uses softmax activation to figure out the plausibility of each guess </p>
+<p>It uses</p><ul>
+<li>selective randomization of Points, using a Quadratic or Quartic base distribution to prioritize points farther from selected points within triplets</li>
+<li>loss criterion to evaluate each guess</li>
+<li>softmax activation to figure out the plausibility of each guess</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>Testing data on <code>test/common/assets/example_earth1.png</code>:</dd></dl>
+<p>SDDA -&gt; (1.0456e+07, -67903.8, -972.935) m</p><ul>
+<li>Distance Error: 0.752384891562%</li>
+<li>Angle Error: 1339.6805912772 arcseconds</li>
+<li>Execution Time: &lt; 1 sec</li>
+</ul>
+<p>ISDDA(100000, 0.8, INF, Quadratic Randomization) -&gt; (1.0384e+07, -12571.3, -1057.05) m</p><ul>
+<li>Distance Error: 0.0565676042517%</li>
+<li>Angle Error: 250.59497104116 arcseconds</li>
+<li>Execution Time: 11 sec</li>
+</ul>
+<p>ISDDA(100000, 0.8, INF, Quartic Randomization) -&gt;(1.03767e+07, -11193, -954.316) m</p><ul>
+<li>Distance Error: 0.0137878249354%</li>
+<li>223.298216932 arcseconds</li>
+<li>Execution Time: 11 sec</li>
+</ul>
+<p>In optimized mode (-O3), all algorithms are less than 1 second. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aeb1be937d91ac7eeff2e55c2ccff9bd3" name="aeb1be937d91ac7eeff2e55c2ccff9bd3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb1be937d91ac7eeff2e55c2ccff9bd3">&#9670;&#160;</a></span>IterativeSphericalDistanceDeterminationAlgorithm()</h2>
