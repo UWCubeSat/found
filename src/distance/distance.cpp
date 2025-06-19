@@ -215,7 +215,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist.min() == 0);
         assert(dist.max() == static_cast<size_t>(n - 1));
 
-        // Create logits for the second (quadratic centered at indicies[i - 1])
+        // Create logits for the second (even polynomial centered at indicies[i - 1])
         for (uint64_t j = 0; j < n; j++) {
             logits[j] = this->Pow(j - indicies[i - 1], this->pdfOrder_);
         }
@@ -225,9 +225,9 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist1.min() == 0);
         assert(dist1.max() == n - 1);
 
-        // Update the logits for the third number (biquadratic with
+        // Update the logits for the third number (bi-even polynomial with
         // centers at indicies[i - 1] and indicies[i - 2]). Note that
-        // this biquadratic function is zero at both our chosen indicies
+        // the function is zero at both our chosen indicies
         for (uint64_t j = 0; j < n; j++) {
             logits[j] *= this->Pow(j - indicies[i - 1], this->pdfOrder_);
         }

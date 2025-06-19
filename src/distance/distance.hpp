@@ -110,8 +110,8 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * to use all the points given to it.
  * 
  * It uses
- * - selective randomization of Points, using a Quadratic or Quartic
- *   base distribution to prioritize points farther from selected
+ * - selective randomization of Points, using a even polynomial
+ *   distributions to prioritize points farther from selected
  *   points within triplets
  * - loss criterion to evaluate each guess
  * - softmax activation to figure out the plausibility of each guess
@@ -156,10 +156,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
      * in the final point
      * 
-     * @note Additional hyperparameters are the L_RADIUS_MOD function and PDF macros,
-     * defined within distance.cpp
-     * 
-     * @post If a or b are odd, they will be incremented by 1
+     * @post If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if
+     * they are odd, they will be incremented
      */
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
@@ -230,7 +228,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @post for any i, 0 <= indicies[i] < n
      * 
-     * @note This algorithm uses a quadratic distribution to
+     * @note This algorithm uses a even polynomial distribution to
      * prioritize points far away from a given index. We like that
      * because it helps deal with noise. To exaggerate the difference
      * in probability between points, you can use a function that grows
@@ -241,7 +239,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @note The assumption of p from this->Run(p) being in polar
      * order is quite important in this algorithm. Should that not
-     * be true, instead of using index differences in our quadratic
+     * be true, instead of using index differences in our polynomial
      * distribution, we'd need to instead use the distance between
      * the pixels corresponding to those indicies. This is not a
      * terrible change in terms of code, but is more compuationally
