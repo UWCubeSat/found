@@ -123,12 +123,12 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * - Angle Error: 1339.6805912772 arcseconds
  * - Execution Time: < 1 sec
  * 
- * ISDDA(100000, 0.8, INF, Quadratic Randomization) -> (1.0384e+07, -12571.3, -1057.05) m
+ * ISDDA(100000, 0.8, INF, Quadratic Radius Loss AND Randomization) -> (1.0384e+07, -12571.3, -1057.05) m
  * - Distance Error: 0.0565676042517%
  * - Angle Error: 250.59497104116 arcseconds
  * - Execution Time: 11 sec
  * 
- * ISDDA(100000, 0.8, INF, Quartic Randomization) ->(1.03767e+07, -11193, -954.316) m
+ * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) ->(1.03767e+07, -11193, -954.316) m
  * - Distance Error: 0.0137878249354%
  * - 223.298216932 arcseconds
  * - Execution Time: 11 sec
