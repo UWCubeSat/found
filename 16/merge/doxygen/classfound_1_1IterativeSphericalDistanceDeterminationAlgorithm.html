@@ -241,7 +241,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a> is a variation of the <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm.">SphericalDistanceDeterminationAlgorithm</a> algorithm in that it runs it repeatedly to use all the points given to it. </p>
 <p>It uses</p><ul>
-<li>selective randomization of Points, using a Quadratic or Quartic base distribution to prioritize points farther from selected points within triplets</li>
+<li>selective randomization of Points, using a even polynomial distributions to prioritize points farther from selected points within triplets</li>
 <li>loss criterion to evaluate each guess</li>
 <li>softmax activation to figure out the plausibility of each guess</li>
 </ul>
@@ -334,10 +334,8 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss calculations</dd>
 <dd>
-Setting discriminatorRatio to DECIMAL_INF will include all generated points in the final point</dd>
-<dd>
-Additional hyperparameters are the L_RADIUS_MOD function and PDF macros, defined within <a class="el" href="distance_8cpp.html">distance.cpp</a></dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>If a or b are odd, they will be incremented by 1 </dd></dl>
+Setting discriminatorRatio to DECIMAL_INF will include all generated points in the final point</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if they are odd, they will be incremented </dd></dl>
 
 </div>
 </div>
@@ -576,9 +574,9 @@ p is radially sorted, i.e. if we define the centroid of the points as P, for any
 <dd>
 size &gt; 0 &amp;&amp; size % 3 == 0</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>for any i, 0 &lt;= indicies[i] &lt; n</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>This algorithm uses a quadratic distribution to prioritize points far away from a given index. We like that because it helps deal with noise. To exaggerate the difference in probability between points, you can use a function that grows much faster by changing the macro PDF which is defined within. Make sure the distribution function though is zero where you need it to be (i.e. At points already generated within a triplet so that you do not draw those points again)</dd>
+<dl class="section note"><dt>Note</dt><dd>This algorithm uses a even polynomial distribution to prioritize points far away from a given index. We like that because it helps deal with noise. To exaggerate the difference in probability between points, you can use a function that grows much faster by changing the macro PDF which is defined within. Make sure the distribution function though is zero where you need it to be (i.e. At points already generated within a triplet so that you do not draw those points again)</dd>
 <dd>
-The assumption of p from this-&gt;Run(p) being in polar order is quite important in this algorithm. Should that not be true, instead of using index differences in our quadratic distribution, we'd need to instead use the distance between the pixels corresponding to those indicies. This is not a terrible change in terms of code, but is more compuationally complex </dd></dl>
+The assumption of p from this-&gt;Run(p) being in polar order is quite important in this algorithm. Should that not be true, instead of using index differences in our polynomial distribution, we'd need to instead use the distance between the pixels corresponding to those indicies. This is not a terrible change in terms of code, but is more compuationally complex </dd></dl>
 
 </div>
 </div>
