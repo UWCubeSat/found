@@ -153,6 +153,9 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
      * in the final point
+     * 
+     * @note Additional hyperparameters are the L_RADIUS_MOD function and PDF macros,
+     * defined within distance.cpp
      */
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
