@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 34;
+    int argc = 38;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "test/common/assets/empty-df.found",
@@ -101,6 +101,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--isdda-min-iterations", "30",
         "--isdda-dist-ratio", "40.4",
         "--isdda-discrim-ratio", "50.5",
+        "--isdda-pdf-order", "9",
+        "--isdda-radius-loss-order", "3",
         "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
 
@@ -125,6 +127,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(40.4), options.ISDDADistRatio);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(50.5), options.ISDDADiscimRatio);
+    ASSERT_EQ(9, options.ISDDAPdfOrd);
+    ASSERT_EQ(3, options.ISDDARadLossOrd);
     ASSERT_EQ("example.found", options.outputFile);
 
     stbi_image_free(expectedImage.image);  // Free the image memory

@@ -147,6 +147,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * positions to be considered "the same" distance 
      * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
      * to accept for data
+     * @param pdfOrder The Shuffle Randomization Distribution Order
+     * @param radiusLossOrder The Loss Radius Error Order
      * 
      * @note Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss
      * calculations
@@ -156,16 +158,16 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @note Additional hyperparameters are the L_RADIUS_MOD function and PDF macros,
      * defined within distance.cpp
+     * 
+     * @post If a or b are odd, they will be incremented by 1
      */
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
                                                      size_t minimumIterations,
                                                      decimal distanceRatio,
-                                                     decimal discriminatorRatio)
-      : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
-        minimumIterations_(minimumIterations),
-        distanceRatioSq_(distanceRatio * distanceRatio),
-        discriminatorRatio_(discriminatorRatio) {}
+                                                     decimal discriminatorRatio,
+                                                     int pdfOrder,
+                                                     int radiusLossOrder);
     ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
 
     /**
@@ -213,6 +215,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
                          decimal targetRadiusSq,
                          std::unique_ptr<Vec3[]> &projectedPoints,
                          size_t size);
+
     /**
      * Shuffles the indexes into triplets, attempting to create
      * triplets whose indicies are far from each other.
@@ -245,12 +248,36 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * complex
      */
     void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
+
+    /**
+     * Performs exponentiation for uint64_t
+     * 
+     * @param base The base
+     * @param power The power
+     * 
+     * Return base ^ power
+     */
+    inline uint64_t Pow(uint64_t base, uint64_t power) {
+        uint64_t result = 1;
+        while (power > 0) {
+           if (power % 2 == 1)
+                 result *= base;
+           base *= base;
+           power /= 2;
+        }
+        return result;
+    }
+
     /// The minimum number of iterations to use
     size_t minimumIterations_;
     /// The maximum distance ratio to accept
     decimal distanceRatioSq_;
     /// The maximum loss ratio to accept
     decimal discriminatorRatio_;
+    /// The Shuffle randomization order
+    uint64_t pdfOrder_;
+    /// The Loss Radius error order
+    uint64_t radiusLossOrder_;
 };
 
 /**

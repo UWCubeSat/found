@@ -42,7 +42,7 @@
 #define DECIMAL_INF             (DECIMAL(INFINITY))      /* Infinity */
 
 // Math Functions wrapped with Decimal typecast
-#define DECIMAL_POW(base,power) (DECIMAL(std::pow(base), power))
+#define DECIMAL_POW(base,power) (DECIMAL(std::pow(base, power)))
 #define DECIMAL_SQRT(x)         (DECIMAL(std::sqrt(x)))
 #define DECIMAL_LOG(x)          (DECIMAL(std::log(x)))
 #define DECIMAL_EXP(x)          (DECIMAL(std::exp(x)))

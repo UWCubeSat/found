@@ -89,6 +89,21 @@ PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecim
 
 ///// IterativeSphericalDistanceDeterminationAlgorithm /////
 
+IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
+                                                                                        Camera &&cam,
+                                                                                        size_t minimumIterations,
+                                                                                        decimal distanceRatio,
+                                                                                        decimal discriminatorRatio,
+                                                                                        int pdfOrder,
+                                                                                        int radiusLossOrder)
+      : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
+        minimumIterations_(minimumIterations),
+        distanceRatioSq_(distanceRatio * distanceRatio),
+        discriminatorRatio_(discriminatorRatio) {
+    this->pdfOrder_ = static_cast<uint64_t>(pdfOrder + pdfOrder % 2);
+    this->radiusLossOrder_ = static_cast<uint64_t>(radiusLossOrder + radiusLossOrder % 2);
+}
+
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     // Return zero if the number of points is less than 0
     if (p.size() < 3) return {0, 0, 0};
@@ -159,11 +174,6 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     return result / sum;
 }
 
-/// Radius Loss Modification. Increasing order
-/// will make loss more strict, and lead to
-/// greater accuracy, but L_RADIUS_MOD(0) == 0
-#define L_RADIUS_MOD(x) (x) * (x) * (x) * (x)
-
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
                                                                        decimal targetRadiusSq,
@@ -181,18 +191,11 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     PositionVector positionNorm(position.Normalize());
     for (size_t k = 0; k < size; k++) {
         decimal radius_loss_k = targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq();
-        loss += L_RADIUS_MOD(radius_loss_k);
+        loss += DECIMAL_POW(radius_loss_k, this->radiusLossOrder_);
     }
 
     return loss;
 }
-
-/// Probability Density Function, which is currently a quadratic
-/// PDF (kinda, no normalization within the macro). Make your
-/// life easier by ensuring that your PDF is 0 where you want it to be.
-/// In our case, it should be zero at points we've already generated.
-/// Increasing the order of this PDF will result in more optimal triplets
-#define PDF(x) (x) * (x)
 
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
                                                                size_t n,
@@ -202,7 +205,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
     assert(size % 3 == 0);
     std::uniform_int_distribution<size_t> dist(0, n - 1);
     // Operates under the asusmption you won't call Run more than once
-    std::unique_ptr<size_t[]> logits(new uint64_t[n]{});  // GCOVR_EXCL_LINE
+    std::unique_ptr<uint64_t[]> logits(new uint64_t[n]{});  // GCOVR_EXCL_LINE
     size_t i = 0;
     while (i < size) {
         // Uniformly generate the first number
@@ -212,7 +215,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
 
         // Create logits for the second (quadratic centered at indicies[i - 1])
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] = PDF(j - indicies[i - 1]);
+            logits[j] = this->Pow(j - indicies[i - 1], this->pdfOrder_);
         }
         // Sample for the next number
         std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
@@ -224,7 +227,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         // centers at indicies[i - 1] and indicies[i - 2]). Note that
         // this biquadratic function is zero at both our chosen indicies
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] *= PDF(j - indicies[i - 1]);
+            logits[j] *= this->Pow(j - indicies[i - 1], this->pdfOrder_);
         }
         // Sample for the last number
         std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);

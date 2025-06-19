@@ -68,7 +68,9 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
                                                                                          options.image.height),
                                                                                   options.ISDDAMinIters,
                                                                                   options.ISDDADistRatio,
-                                                                                  options.ISDDADiscimRatio);
+                                                                                  options.ISDDADiscimRatio,
+                                                                                  options.ISDDAPdfOrd,
+                                                                                  options.ISDDARadLossOrd);
     } else {
         LOG_ERROR("Unrecognized distance algorithm: " << options.distanceAlgo);
         throw std::runtime_error("Unrecognized distance algorithm: " + options.distanceAlgo);

@@ -34,6 +34,10 @@ using found::IterativeSphericalDistanceDeterminationAlgorithm;
 #define DEFAULT_DIST_TOL 10
 // Default Discriminator Ratio
 #define DEFAULT_DISC_RAT 1.1
+// Default PDF Order
+#define DEFAULT_PDF_ORD 2
+// Defualt Radius Loss Order
+#define DEFAULT_R_L_ORD 4
 
 // Default Iterations
 #define DEFAULT_ITERATIONS_1 1
@@ -76,7 +80,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) 
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
     PositionVector actual = algo.Run(pts);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -123,7 +129,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
                                                           std::move(cam),
                                                           10000,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
 
@@ -169,7 +177,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
 
@@ -209,7 +219,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
 
@@ -241,7 +253,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) 
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
 
@@ -273,7 +287,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     // actual = actual * static_cast<decimal>(0.00002);
@@ -322,7 +338,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
                                                               std::move(cam),
                                                               DEFAULT_ITERATIONS_1,
                                                               DEFAULT_DIST_TOL,
-                                                              DEFAULT_DISC_RAT);
+                                                              DEFAULT_DISC_RAT,
+                                                              DEFAULT_PDF_ORD,
+                                                              DEFAULT_R_L_ORD);
 
         PositionVector actual = algo.Run(pts);
 
@@ -354,7 +372,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                          std::move(cam),
                                                          DEFAULT_ITERATIONS_2,
                                                          DEFAULT_DIST_TOL,
-                                                         DEFAULT_DISC_RAT);
+                                                         DEFAULT_DISC_RAT,
+                                                         DEFAULT_PDF_ORD,
+                                                         DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -386,7 +406,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -418,7 +440,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -450,7 +474,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -482,7 +508,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -515,7 +543,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
         PositionVector actual = algo.Run(pts);
         VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -548,7 +578,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -580,7 +612,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -612,7 +646,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_2,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
@@ -644,7 +680,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           std::move(cam),
                                                           DEFAULT_ITERATIONS_1,
                                                           DEFAULT_DIST_TOL,
-                                                          DEFAULT_DISC_RAT);
+                                                          DEFAULT_DISC_RAT,
+                                                          DEFAULT_PDF_ORD,
+                                                          DEFAULT_R_L_ORD);
 
     PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
