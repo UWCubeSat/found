@@ -128,9 +128,9 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * - Angle Error: 250.59497104116 arcseconds
  * - Execution Time: 11 sec
  * 
- * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) ->(1.03767e+07, -11193, -954.316) m
- * - Distance Error: 0.0137878249354%
- * - 223.298216932 arcseconds
+ * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) -> (1.03781e+07, -11536.7, -927.331) m
+ * - Distance Error: 0.000294332681557%
+ * - Angle Error: 230.031583013 arcseconds
  * - Execution Time: 11 sec
  * 
  * In optimized mode (-O3), all algorithms are less than 1 second.
@@ -143,7 +143,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      * @param minimumIterations The minimum number of iterations to perform
-     * @param distanceRatio The maximum distance ratio between the evaluated and reference
+     * @param distanceRatio The maximum distance error between the evaluated and reference
      * positions to be considered "the same" distance 
      * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
      * to accept for data
