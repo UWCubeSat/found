@@ -176,17 +176,18 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     // Now, we obtain the radius error
     PositionVector positionNorm(position.Normalize());
     for (size_t k = 0; k < size; k++) {
-        loss += L_RADIUS_MOD(targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq());
+        decimal radius_loss_k = targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq();
+        loss += L_RADIUS_MOD(radius_loss_k);
     }
 
     return loss;
 }
 
-/// Probability Density Function, which is currently a quadratic
+/// Probability Density Function, which is currently a quartic
 /// PDF (kinda, no normalization within the macro). Make your
 /// life easier by ensuring that your PDF is 0 where you want it to be.
 /// In our case, it should be zero at points we've already generated.
-#define PDF(x) (x) * (x)
+#define PDF(x) (x) * (x) * (x) * (x)
 
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
                                                                size_t n,
@@ -204,7 +205,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist.min() == 0);
         assert(dist.max() == static_cast<size_t>(n - 1));
 
-        // Create logits for the second (quadratic centered at indicies[i - 1])
+        // Create logits for the second (quartic centered at indicies[i - 1])
         for (uint64_t j = 0; j < n; j++) {
             logits[j] = PDF(j - indicies[i - 1]);
         }
@@ -214,7 +215,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         assert(dist1.min() == 0);
         assert(dist1.max() == n - 1);
 
-        // Update the logits for the third number (biquadratic with
+        // Update the logits for the third number (biquartic with
         // centers at indicies[i - 1] and indicies[i - 2]). Note that
         // this biquadratic function is zero at both our chosen indicies
         for (uint64_t j = 0; j < n; j++) {
