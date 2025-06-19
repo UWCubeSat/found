@@ -104,6 +104,11 @@ IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDete
     if (radiusLossOrder < 2) radiusLossOrder = 2;
     this->pdfOrder_ = static_cast<uint64_t>(pdfOrder + pdfOrder % 2);
     this->radiusLossOrder_ = static_cast<uint64_t>(radiusLossOrder + radiusLossOrder % 2);
+
+    assert(this->pdfOrder_ >= 2);
+    assert(this->pdfOrder_ % 2 == 0);
+    assert(this->radiusLossOrder_ >= 2);
+    assert(this->radiusLossOrder_ % 2 == 0);
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
