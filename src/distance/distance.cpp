@@ -7,6 +7,7 @@
 #include <random>
 #include <memory>
 
+#include "common/logging.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/style.hpp"
@@ -123,10 +124,11 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
     // Iterate through all points, shuffling them into triplets to feed into
     // SphericalDistanceDeterminationAlgorithm::Run
-    while (i < numIterations) {
+    while (i != numIterations) {
         // Shuffle when we've passed our last triplet
         // GCOVR_EXCL_START
         if (j >= indicies_size) {
+            indicies_size = 3 * (numIterations - i);
             j = 0;
             this->Shuffle(indicies_size, pointsSize, indicies);
         }
@@ -187,7 +189,7 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
 /// PDF (kinda, no normalization within the macro). Make your
 /// life easier by ensuring that your PDF is 0 where you want it to be.
 /// In our case, it should be zero at points we've already generated.
-#define PDF(x) (x) * (x) * (x) * (x)
+#define PDF(x) (x) * (x)
 
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
                                                                size_t n,
