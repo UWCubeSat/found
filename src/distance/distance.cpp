@@ -7,7 +7,6 @@
 #include <random>
 #include <memory>
 
-#include "common/logging.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/style.hpp"
@@ -158,6 +157,9 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     return result / sum;
 }
 
+/// Radius Loss Modification
+#define L_RADIUS_MOD(x) (x) * (x)
+
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
                                                                        decimal targetRadiusSq,
@@ -166,7 +168,7 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
     // error):
     decimal loss = DECIMAL(1e-3);
-    // If the distance error is within 500 m, then we take the distance error out
+    // If the distance error is outside the ratio, then we add distance loss
     decimal distance_loss_ratio = DECIMAL_ABS((targetDistanceSq - position.MagnitudeSq()) / targetDistanceSq);
     if (distance_loss_ratio >= this->distanceRatioSq_) {
         loss += distance_loss_ratio * targetDistanceSq;
@@ -174,7 +176,7 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     // Now, we obtain the radius error
     PositionVector positionNorm(position.Normalize());
     for (size_t k = 0; k < size; k++) {
-        loss += DECIMAL_ABS(targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq());
+        loss += L_RADIUS_MOD(targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq());
     }
 
     return loss;
