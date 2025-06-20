@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['lastproduct_0',['lastProduct',['../classfound_1_1Pipeline.html#a80560c08eea079b8e59d00bd59425688',1,'found::Pipeline']]],
-  ['lattitude_1',['lattitude',['../structfound_1_1EarthSphericalVec3.html#a3ce9b700cdeb87df0c1bf15172b4cb54',1,'found::EarthSphericalVec3']]],
-  ['longitude_2',['longitude',['../structfound_1_1EarthSphericalVec3.html#a7a1a4c9e56d669be780510b9db864bb6',1,'found::EarthSphericalVec3']]],
-  ['lowerright_3',['lowerright',['../structfound_1_1Edge.html#a45486626a9bfa52d80927034ce3b6a3f',1,'found::Edge::lowerRight'],['../structfound_1_1Component.html#a079fce519452a1d6af1dea71611a6a4b',1,'found::Component::lowerRight']]]
+  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
+  ['majoraxis_1',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
+  ['minimumiterations_5f_2',['minimumIterations_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a0a87c9bd48356173bfe8b21f5cee58fc',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['minoraxis_3',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
+  ['minute_4',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
+  ['month_5',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
+  ['mu_5f_6',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

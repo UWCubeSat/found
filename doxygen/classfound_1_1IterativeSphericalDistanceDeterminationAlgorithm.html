@@ -92,6 +92,7 @@ $(document).ready(function(){initNavTree('classfound_1_1IterativeSphericalDistan
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">found::IterativeSphericalDistanceDeterminationAlgorithm Class Reference</div></div>
@@ -141,9 +142,9 @@ Collaboration diagram for found::IterativeSphericalDistanceDeterminationAlgorith
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa37d8ce6a59fe29435ae962eb59d102a" id="r_aa37d8ce6a59fe29435ae962eb59d102a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aa37d8ce6a59fe29435ae962eb59d102a">IterativeSphericalDistanceDeterminationAlgorithm</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> radius, <a class="el" href="classfound_1_1Camera.html">Camera</a> &amp;&amp;cam, size_t minimumIterations)</td></tr>
-<tr class="memdesc:aa37d8ce6a59fe29435ae962eb59d102a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a>.  <br /></td></tr>
-<tr class="separator:aa37d8ce6a59fe29435ae962eb59d102a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e3adfab31b529b0a3e78d0b89577092" id="r_a9e3adfab31b529b0a3e78d0b89577092"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092">IterativeSphericalDistanceDeterminationAlgorithm</a> (<a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> radius, <a class="el" href="classfound_1_1Camera.html">Camera</a> &amp;&amp;cam, size_t minimumIterations, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> distanceRatio, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> discriminatorRatio, int pdfOrder, int radiusLossOrder)</td></tr>
+<tr class="memdesc:a9e3adfab31b529b0a3e78d0b89577092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a>.  <br /></td></tr>
+<tr class="separator:a9e3adfab31b529b0a3e78d0b89577092"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8276fb19bf8aee42d8cb8b1fde915fa8" id="r_a8276fb19bf8aee42d8cb8b1fde915fa8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a8276fb19bf8aee42d8cb8b1fde915fa8">~IterativeSphericalDistanceDeterminationAlgorithm</a> ()=default</td></tr>
 <tr class="separator:a8276fb19bf8aee42d8cb8b1fde915fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a149b99bb435a5f995f34100fe53ac414" id="r_a149b99bb435a5f995f34100fe53ac414"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a4ada279355d5202ae5bd893e569a4f40">PositionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a149b99bb435a5f995f34100fe53ac414">Run</a> (const <a class="el" href="namespacefound.html#a3a330ad13da94ed1167841028f562311">Points</a> &amp;p) override</td></tr>
@@ -180,13 +181,55 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a39d11b5cda4f9d30317e8d41b1b1d567 inherit pub_methods_classfound_1_1Stage"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the stored output of this.  <br /></td></tr>
 <tr class="separator:a39d11b5cda4f9d30317e8d41b1b1d567 inherit pub_methods_classfound_1_1Stage"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a07e087c0e390d5480c5f21ad5b3e07c5" id="r_a07e087c0e390d5480c5f21ad5b3e07c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a07e087c0e390d5480c5f21ad5b3e07c5">GenerateLoss</a> (<a class="el" href="namespacefound.html#a4ada279355d5202ae5bd893e569a4f40">PositionVector</a> &amp;position, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> targetDistanceSq, <a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> targetRadiusSq, std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;projectedPoints, size_t size)</td></tr>
+<tr class="memdesc:a07e087c0e390d5480c5f21ad5b3e07c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a loss on a position vector.  <br /></td></tr>
+<tr class="separator:a07e087c0e390d5480c5f21ad5b3e07c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7162b5c435bc926644f129e92a8ccea" id="r_aa7162b5c435bc926644f129e92a8ccea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aa7162b5c435bc926644f129e92a8ccea">Shuffle</a> (size_t size, size_t n, std::unique_ptr&lt; size_t[]&gt; &amp;indicies)</td></tr>
+<tr class="memdesc:aa7162b5c435bc926644f129e92a8ccea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffles the indexes into triplets, attempting to create triplets whose indicies are far from each other.  <br /></td></tr>
+<tr class="separator:aa7162b5c435bc926644f129e92a8ccea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c2b5b765b46ebda847ea706b015d623" id="r_a6c2b5b765b46ebda847ea706b015d623"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a6c2b5b765b46ebda847ea706b015d623">Pow</a> (uint64_t base, uint64_t power)</td></tr>
+<tr class="memdesc:a6c2b5b765b46ebda847ea706b015d623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs exponentiation for uint64_t.  <br /></td></tr>
+<tr class="separator:a6c2b5b765b46ebda847ea706b015d623"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a0a87c9bd48356173bfe8b21f5cee58fc" id="r_a0a87c9bd48356173bfe8b21f5cee58fc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a0a87c9bd48356173bfe8b21f5cee58fc">minimumIterations_</a></td></tr>
+<tr class="memdesc:a0a87c9bd48356173bfe8b21f5cee58fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The minimum number of iterations to use.  <br /></td></tr>
 <tr class="separator:a0a87c9bd48356173bfe8b21f5cee58fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ee7b47bf73a0b418e13a046bc926338" id="r_a3ee7b47bf73a0b418e13a046bc926338"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338">distanceRatioSq_</a></td></tr>
+<tr class="memdesc:a3ee7b47bf73a0b418e13a046bc926338"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum distance ratio to accept.  <br /></td></tr>
+<tr class="separator:a3ee7b47bf73a0b418e13a046bc926338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a472fd8b2b769128fb652f69b576e095e" id="r_a472fd8b2b769128fb652f69b576e095e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e">discriminatorRatio_</a></td></tr>
+<tr class="memdesc:a472fd8b2b769128fb652f69b576e095e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum loss ratio to accept.  <br /></td></tr>
+<tr class="separator:a472fd8b2b769128fb652f69b576e095e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a312fecfcc73f6d48603a2c4edc28c483" id="r_a312fecfcc73f6d48603a2c4edc28c483"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a312fecfcc73f6d48603a2c4edc28c483">pdfOrder_</a></td></tr>
+<tr class="memdesc:a312fecfcc73f6d48603a2c4edc28c483"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Shuffle randomization order.  <br /></td></tr>
+<tr class="separator:a312fecfcc73f6d48603a2c4edc28c483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a502f8c6d14dceddd84129e20c98b553b" id="r_a502f8c6d14dceddd84129e20c98b553b"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a502f8c6d14dceddd84129e20c98b553b">radiusLossOrder_</a></td></tr>
+<tr class="memdesc:a502f8c6d14dceddd84129e20c98b553b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Loss Radius error order.  <br /></td></tr>
+<tr class="separator:a502f8c6d14dceddd84129e20c98b553b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html">found::SphericalDistanceDeterminationAlgorithm</a></td></tr>
+<tr class="memitem:a40fbe05fc8f83c43d25c95f8014bef39 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a40fbe05fc8f83c43d25c95f8014bef39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a40fbe05fc8f83c43d25c95f8014bef39">getCenter</a> (<a class="el" href="classfound_1_1Vec3.html">Vec3</a> *spats)</td></tr>
+<tr class="memdesc:a40fbe05fc8f83c43d25c95f8014bef39 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the center of earth as a 3d Vector.  <br /></td></tr>
+<tr class="separator:a40fbe05fc8f83c43d25c95f8014bef39 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb70475984925f09982f1f5ba000764e inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_abb70475984925f09982f1f5ba000764e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a75b2c33f57f7bc4159c01dd7de705366">PreciseDecimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#abb70475984925f09982f1f5ba000764e">getRadius</a> (<a class="el" href="classfound_1_1Vec3.html">Vec3</a> *spats, <a class="el" href="classfound_1_1Vec3.html">Vec3</a> center)</td></tr>
+<tr class="memdesc:abb70475984925f09982f1f5ba000764e inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the radius of the calculated "earth" (normalized)  <br /></td></tr>
+<tr class="separator:abb70475984925f09982f1f5ba000764e inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e9fb0cba410dfc3559e1de6732557f3 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a0e9fb0cba410dfc3559e1de6732557f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a75b2c33f57f7bc4159c01dd7de705366">PreciseDecimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a0e9fb0cba410dfc3559e1de6732557f3">getDistance</a> (<a class="el" href="namespacefound.html#a75b2c33f57f7bc4159c01dd7de705366">PreciseDecimal</a> r, <a class="el" href="namespacefound.html#a75b2c33f57f7bc4159c01dd7de705366">PreciseDecimal</a> c)</td></tr>
+<tr class="memdesc:a0e9fb0cba410dfc3559e1de6732557f3 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the scaled distance from earth.  <br /></td></tr>
+<tr class="separator:a0e9fb0cba410dfc3559e1de6732557f3 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html">found::SphericalDistanceDeterminationAlgorithm</a></td></tr>
+<tr class="memitem:a25f1873b671b9759d097734cb4cc6b12 inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a25f1873b671b9759d097734cb4cc6b12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Camera.html">Camera</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a25f1873b671b9759d097734cb4cc6b12">cam_</a></td></tr>
+<tr class="memdesc:a25f1873b671b9759d097734cb4cc6b12 inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">cam_ field instance describes the camera settings used for the photo taken  <br /></td></tr>
+<tr class="separator:a25f1873b671b9759d097734cb4cc6b12 inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23af8ac2176f883c942409cf14d0a39f inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a23af8ac2176f883c942409cf14d0a39f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a23af8ac2176f883c942409cf14d0a39f">radius_</a></td></tr>
+<tr class="memdesc:a23af8ac2176f883c942409cf14d0a39f inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">radius_ field instance describes the defined radius of earth.  <br /></td></tr>
+<tr class="separator:a23af8ac2176f883c942409cf14d0a39f inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classfound_1_1Stage"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classfound_1_1Stage')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classfound_1_1Stage.html">found::Stage&lt; Points, PositionVector &gt;</a></td></tr>
 <tr class="memitem:a91a27c6a882620582eea17316edb1b10 inherit pro_attribs_classfound_1_1Stage" id="r_a91a27c6a882620582eea17316edb1b10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefound.html#a3a330ad13da94ed1167841028f562311">Points</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1Stage.html#a91a27c6a882620582eea17316edb1b10">resource</a></td></tr>
 <tr class="memdesc:a91a27c6a882620582eea17316edb1b10 inherit pro_attribs_classfound_1_1Stage"><td class="mdescLeft">&#160;</td><td class="mdescRight">The stored input for this.  <br /></td></tr>
@@ -197,15 +240,34 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a> is a variation of the <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm.">SphericalDistanceDeterminationAlgorithm</a> algorithm in that it runs it repeatedly to use all the points given to it. </p>
+<p>It uses</p><ul>
+<li>selective randomization of Points, using a even polynomial distributions to prioritize points farther from selected points within triplets</li>
+<li>loss criterion to evaluate each guess</li>
+<li>softmax activation to figure out the plausibility of each guess</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>Testing data on <code>test/common/assets/example_earth1.png</code>:</dd></dl>
+<p>SDDA -&gt; (1.0456e+07, -67903.8, -972.935) m</p><ul>
+<li>Distance Error: 0.752384891562%</li>
+<li>Angle Error: 1339.6805912772 arcseconds</li>
+<li>Execution Time: &lt; 1 sec</li>
+</ul>
+<p>ISDDA(100000, 0.8, INF, Quadratic Radius Loss AND Randomization) -&gt; (1.0384e+07, -12571.3, -1057.05) m</p><ul>
+<li>Distance Error: 0.0565676042517%</li>
+<li>Angle Error: 250.59497104116 arcseconds</li>
+<li>Execution Time: 11 sec</li>
+</ul>
+<p>ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) -&gt; (1.03781e+07, -11536.7, -927.331) m</p><ul>
+<li>Distance Error: 0.000294332681557%</li>
+<li>Angle Error: 230.031583013 arcseconds</li>
+<li>Execution Time: 11 sec</li>
+</ul>
+<p>In optimized mode (-O3), all algorithms are less than 1 second. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa37d8ce6a59fe29435ae962eb59d102a" name="aa37d8ce6a59fe29435ae962eb59d102a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa37d8ce6a59fe29435ae962eb59d102a">&#9670;&#160;</a></span>IterativeSphericalDistanceDeterminationAlgorithm()</h2>
+<a id="a9e3adfab31b529b0a3e78d0b89577092" name="a9e3adfab31b529b0a3e78d0b89577092"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e3adfab31b529b0a3e78d0b89577092">&#9670;&#160;</a></span>IterativeSphericalDistanceDeterminationAlgorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm </td>
@@ -223,7 +285,31 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>minimumIterations</em>&#160;</td>
+          <td class="paramname"><em>minimumIterations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
+          <td class="paramname"><em>distanceRatio</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
+          <td class="paramname"><em>discriminatorRatio</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pdfOrder</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>radiusLossOrder</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -231,11 +317,6 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Creates a <a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html" title="The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the SphericalDistanceDetermina...">IterativeSphericalDistanceDeterminationAlgorithm</a>. </p>
@@ -244,9 +325,17 @@ Additional Inherited Members</h2></td></tr>
     <tr><td class="paramname">radius</td><td>The radius of Earth </td></tr>
     <tr><td class="paramname">cam</td><td>The camera used to capture the picture of Earth </td></tr>
     <tr><td class="paramname">minimumIterations</td><td>The minimum number of iterations to perform </td></tr>
+    <tr><td class="paramname">distanceRatio</td><td>The maximum distance error between the evaluated and reference positions to be considered "the same" distance </td></tr>
+    <tr><td class="paramname">discriminatorRatio</td><td>The maximum ratio between the evaluated and reference loss to accept for data </td></tr>
+    <tr><td class="paramname">pdfOrder</td><td>The Shuffle Randomization Distribution Order </td></tr>
+    <tr><td class="paramname">radiusLossOrder</td><td>The Loss Radius Error Order</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss calculations</dd>
+<dd>
+Setting discriminatorRatio to DECIMAL_INF will include all generated points in the final point</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if they are odd, they will be incremented </dd></dl>
 
 </div>
 </div>
@@ -276,6 +365,120 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a07e087c0e390d5480c5f21ad5b3e07c5" name="a07e087c0e390d5480c5f21ad5b3e07c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07e087c0e390d5480c5f21ad5b3e07c5">&#9670;&#160;</a></span>GenerateLoss()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> found::IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefound.html#a4ada279355d5202ae5bd893e569a4f40">PositionVector</a> &amp;&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
+          <td class="paramname"><em>targetDistanceSq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a>&#160;</td>
+          <td class="paramname"><em>targetRadiusSq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;&#160;</td>
+          <td class="paramname"><em>projectedPoints</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a loss on a position vector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>The vector to evaluate </td></tr>
+    <tr><td class="paramname">targetDistanceSq</td><td>The target distance squared of the position </td></tr>
+    <tr><td class="paramname">targetRadiusSq</td><td>The target "radius" squared </td></tr>
+    <tr><td class="paramname">projectedPoints</td><td>The projected points to evaluate against </td></tr>
+    <tr><td class="paramname">size</td><td>The size of the projected points</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The loss of position</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd>targetRadiusSq is not the true radius, but rather the distance obtained between the radius vector and a circle point when projected onto the unit sphere (normalized). It still functions the same way. </dd></dl>
+
+</div>
+</div>
+<a id="a6c2b5b765b46ebda847ea706b015d623" name="a6c2b5b765b46ebda847ea706b015d623"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c2b5b765b46ebda847ea706b015d623">&#9670;&#160;</a></span>Pow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t found::IterativeSphericalDistanceDeterminationAlgorithm::Pow </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>power</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Performs exponentiation for uint64_t. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">base</td><td>The base </td></tr>
+    <tr><td class="paramname">power</td><td>The power</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Return base ^ power </p>
+
+</div>
+</div>
 <a id="a149b99bb435a5f995f34100fe53ac414" name="a149b99bb435a5f995f34100fe53ac414"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a149b99bb435a5f995f34100fe53ac414">&#9670;&#160;</a></span>Run()</h2>
 
@@ -308,7 +511,9 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>PositionVector The position vector of the Earth relative to the camera</dd></dl>
-<dl class="section pre"><dt>Precondition</dt><dd>p must refer to points taken by the camera that was passed to this</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd>p must refer to points taken by the camera that was passed to this </dd>
+<dd>
+p is radially sorted, i.e. if we define the centroid of the points as P, for any three consecutive points A B and C, angle APB is less than angle APC</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>If p.size() &lt; 3, then the result is exactly the zero vector</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>If minimumIterations (from constructor) is less than the size of p, then it will increase the number of iterations to cover all of p </dd></dl>
 
@@ -316,7 +521,114 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="aa7162b5c435bc926644f129e92a8ccea" name="aa7162b5c435bc926644f129e92a8ccea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7162b5c435bc926644f129e92a8ccea">&#9670;&#160;</a></span>Shuffle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void found::IterativeSphericalDistanceDeterminationAlgorithm::Shuffle </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unique_ptr&lt; size_t[]&gt; &amp;&#160;</td>
+          <td class="paramname"><em>indicies</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Shuffles the indexes into triplets, attempting to create triplets whose indicies are far from each other. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>The size of indicies, or how many indicies to generate </td></tr>
+    <tr><td class="paramname">n</td><td>The end of the range to generate indicies for </td></tr>
+    <tr><td class="paramname">indicies</td><td>The array to write into</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd>Any precondition from this-&gt;Run </dd>
+<dd>
+size &gt; 0 &amp;&amp; size % 3 == 0</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>for any i, 0 &lt;= indicies[i] &lt; n</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This algorithm uses a even polynomial distribution to prioritize points far away from a given index. We like that because it helps deal with noise. To exaggerate the difference in probability between points, you can use a function that grows much faster by changing the macro PDF which is defined within. Make sure the distribution function though is zero where you need it to be (i.e. At points already generated within a triplet so that you do not draw those points again)</dd>
+<dd>
+The assumption of p from this-&gt;Run(p) being in polar order is quite important in this algorithm. Should that not be true, instead of using index differences in our polynomial distribution, we'd need to instead use the distance between the pixels corresponding to those indicies. This is not a terrible change in terms of code, but is more compuationally complex </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a472fd8b2b769128fb652f69b576e095e" name="a472fd8b2b769128fb652f69b576e095e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a472fd8b2b769128fb652f69b576e095e">&#9670;&#160;</a></span>discriminatorRatio_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> found::IterativeSphericalDistanceDeterminationAlgorithm::discriminatorRatio_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The maximum loss ratio to accept. </p>
+
+</div>
+</div>
+<a id="a3ee7b47bf73a0b418e13a046bc926338" name="a3ee7b47bf73a0b418e13a046bc926338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ee7b47bf73a0b418e13a046bc926338">&#9670;&#160;</a></span>distanceRatioSq_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="decimal_8hpp.html#a0450d7258362349ee7654cefb54aaf57">decimal</a> found::IterativeSphericalDistanceDeterminationAlgorithm::distanceRatioSq_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The maximum distance ratio to accept. </p>
+
+</div>
+</div>
 <a id="a0a87c9bd48356173bfe8b21f5cee58fc" name="a0a87c9bd48356173bfe8b21f5cee58fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0a87c9bd48356173bfe8b21f5cee58fc">&#9670;&#160;</a></span>minimumIterations_</h2>
 
@@ -336,6 +648,56 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>The minimum number of iterations to use. </p>
+
+</div>
+</div>
+<a id="a312fecfcc73f6d48603a2c4edc28c483" name="a312fecfcc73f6d48603a2c4edc28c483"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a312fecfcc73f6d48603a2c4edc28c483">&#9670;&#160;</a></span>pdfOrder_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t found::IterativeSphericalDistanceDeterminationAlgorithm::pdfOrder_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The Shuffle randomization order. </p>
+
+</div>
+</div>
+<a id="a502f8c6d14dceddd84129e20c98b553b" name="a502f8c6d14dceddd84129e20c98b553b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a502f8c6d14dceddd84129e20c98b553b">&#9670;&#160;</a></span>radiusLossOrder_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t found::IterativeSphericalDistanceDeterminationAlgorithm::radiusLossOrder_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The Loss Radius error order. </p>
 
 </div>
 </div>

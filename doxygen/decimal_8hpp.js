@@ -13,6 +13,7 @@ var decimal_8hpp =
     [ "DECIMAL_FLOOR", "decimal_8hpp.html#af8bb135de5573bfe8c0d7d43cacacee9", null ],
     [ "DECIMAL_FMA", "decimal_8hpp.html#a36c4a4a57b570617190116b1d05c7229", null ],
     [ "DECIMAL_HYPOT", "decimal_8hpp.html#a48c6d79be3f117fa2e9858e923a67d87", null ],
+    [ "DECIMAL_INF", "decimal_8hpp.html#a4d0eba52b5130b0dd204f60692e75fbd", null ],
     [ "DECIMAL_LOG", "decimal_8hpp.html#a0f5f80288df1dfd2b557bfdb3790dbc6", null ],
     [ "DECIMAL_M_1_PI", "decimal_8hpp.html#a89d8e637d15ccbfddbcfbbe06fd0dd70", null ],
     [ "DECIMAL_M_2_PI", "decimal_8hpp.html#a15735ad0b5b14da97c2178edd6228edd", null ],

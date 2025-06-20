@@ -6,8 +6,10 @@
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="146,31,146,65,141,65,141,31"/>
 <area shape="rect" id="Node000004" href="$decimal_8hpp.html" title=" " alt="" coords="203,79,366,104"/>
 <area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="167,28,251,70,248,75,165,33"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="211,152,273,177"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="280,106,258,142,254,139,275,103"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="298,152,357,177"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="294,103,316,139,311,142,289,106"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="168,152,231,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="273,106,225,145,222,141,269,102"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="255,152,314,177"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="287,104,287,138,282,138,282,104"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="338,152,397,177"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="300,102,345,141,342,145,296,106"/>
 </map>
