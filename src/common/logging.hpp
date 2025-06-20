@@ -1,18 +1,19 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#ifdef ENABLE_LOGGING
-
-#include <iostream>
-#include <iomanip>
-#include <string>
-
 ///// LOGGING LEVELS /////
 
 // Levels as Numbers (in order of increasing severity)
 #define INFO 0
 #define WARN 1
 #define ERROR 2
+
+#ifdef ENABLE_LOGGING
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
 
 // Levels as Strings (in order of increasing severity)
 #define INFO_STR "INFO"
@@ -53,9 +54,23 @@ namespace found {
 
 ///// INTERNAL Definitions /////
 
-// The output streams to where the logs go. You must
-// place your definitions of each within each ifndef
-// statement
+// The output streams to where the logs go. To override
+// the default streams as shown below, you must define
+// them yourselve above. For instance:
+//
+// // Define the streams as external variable in this file
+// extern std::ofstream log_file;
+// extern std::ofstream err_file;
+//
+// // Then, in logging.cpp (does not exist right now)
+// // Define extern log files, opening in append mode
+// std::ofstream log_file("path/to/logs/found.log", std::ios::app);
+// std::ofstream err_file("path/to/logs/error.log", std::ios::app);
+//
+// #define INFO_STREAM log_file
+// #define WARN_STREAM log_file
+// #define ERROR_STREAM err_file
+//
 #ifndef INFO_STREAM
 #define INFO_STREAM std::cout
 #endif

@@ -7,7 +7,8 @@
 
 namespace found {
 
-#define AVG_DELTA_UT1 0.087497  // Average Delta UT1 in seconds, based on USNO data
+// Average Delta UT1 in seconds, based on USNO data
+#define AVG_DELTA_UT1 0.087497
 
 /**
  * DateTime represents
@@ -47,6 +48,17 @@ DateTime getUTCTime();
 DateTime getUT1Time();
 
 /**
+ * Obtains the Julian date from
+ * the given epochs in seconds
+ * 
+ * @param epochs The epochs in seconds
+ * 
+ * @return The Julian date corresponding
+ * to the given epochs
+ */
+decimal getJulianDateTime(std::time_t epochs);
+
+/**
  * Obtains the current Julian date
  * in decimal format
  * 
@@ -66,15 +78,16 @@ decimal getJulianDateTime(DateTime &time);
 decimal getCurrentJulianDateTime();
 
 /**
- * Obtains the Julian date from
- * the given epochs in seconds
+ * Obtains the Greenwich Mean Sidereal Time
+ * in decimal format from the given epochs
  * 
  * @param epochs The epochs in seconds
  * 
- * @return The Julian date corresponding
- * to the given epochs
+ * @return The Greenwich Mean Sidereal Time
+ * corresponding to the given epochs in
+ * degrees
  */
-decimal getJulianDateTime(std::time_t epochs);
+decimal getGreenwichMeanSiderealTime(std::time_t epochs);
 
 /**
  * Obtains the Greenwich Mean Sidereal Time
@@ -97,18 +110,6 @@ decimal getGreenwichMeanSiderealTime(DateTime &time);
  * in degrees
  */
 decimal getCurrentGreenwichMeanSiderealTime();
-
-/**
- * Obtains the Greenwich Mean Sidereal Time
- * in decimal format from the given epochs
- * 
- * @param epochs The epochs in seconds
- * 
- * @return The Greenwich Mean Sidereal Time
- * corresponding to the given epochs in
- * degrees
- */
-decimal getGreenwichMeanSiderealTime(std::time_t epochs);
 
 }  // namespace found
 

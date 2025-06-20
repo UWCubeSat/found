@@ -1,4 +1,4 @@
-#include "command-line/parsing/parser.hpp"
+#include "command-line/found-main.hpp"
 
 /**
  * This is where the program starts.

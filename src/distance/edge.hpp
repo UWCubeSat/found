@@ -80,7 +80,7 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    Points Run(const Image &image/*parameters all algorithms will need (Override this plz)*/) override;
+    Points Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
 };

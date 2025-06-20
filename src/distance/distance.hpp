@@ -2,6 +2,7 @@
 #define DISTANCE_H
 
 #include <utility>
+#include <memory>
 
 #include "common/style.hpp"
 #include "common/pipeline.hpp"
@@ -13,7 +14,12 @@ namespace found {
 /**
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
-*/
+ * 
+ * @note This algorithm performs optimally when the given Points is in polar order, i.e.
+ * if we define the centroid of the points as P, for any
+ * three consecutive points A B and C, angle APB is less than
+ * angle APC
+ */
 class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
  public:
     // Constructs this
@@ -57,7 +63,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * */
     PositionVector Run(const Points &p) override;
 
- private:
+ protected:
     /**
      *Returns the center of earth as a 3d Vector
      *
@@ -102,6 +108,32 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
  * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
  * to use all the points given to it.
+ * 
+ * It uses
+ * - selective randomization of Points, using a even polynomial
+ *   distributions to prioritize points farther from selected
+ *   points within triplets
+ * - loss criterion to evaluate each guess
+ * - softmax activation to figure out the plausibility of each guess
+ * 
+ * @note Testing data on `test/common/assets/example_earth1.png`:
+ * 
+ * SDDA -> (1.0456e+07, -67903.8, -972.935) m
+ * - Distance Error: 0.752384891562%
+ * - Angle Error: 1339.6805912772 arcseconds
+ * - Execution Time: < 1 sec
+ * 
+ * ISDDA(100000, 0.8, INF, Quadratic Radius Loss AND Randomization) -> (1.0384e+07, -12571.3, -1057.05) m
+ * - Distance Error: 0.0565676042517%
+ * - Angle Error: 250.59497104116 arcseconds
+ * - Execution Time: 11 sec
+ * 
+ * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) -> (1.03781e+07, -11536.7, -927.331) m
+ * - Distance Error: 0.000294332681557%
+ * - Angle Error: 230.031583013 arcseconds
+ * - Execution Time: 11 sec
+ * 
+ * In optimized mode (-O3), all algorithms are less than 1 second.
  */
 class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanceDeterminationAlgorithm {
  public:
@@ -111,10 +143,29 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      * @param minimumIterations The minimum number of iterations to perform
+     * @param distanceRatio The maximum distance error between the evaluated and reference
+     * positions to be considered "the same" distance 
+     * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
+     * to accept for data
+     * @param pdfOrder The Shuffle Randomization Distribution Order
+     * @param radiusLossOrder The Loss Radius Error Order
+     * 
+     * @note Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss
+     * calculations
+     * 
+     * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
+     * in the final point
+     * 
+     * @post If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if
+     * they are odd, they will be incremented
      */
-    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam, size_t minimumIterations)
-      : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
-        minimumIterations_(minimumIterations) {}
+    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
+                                                     Camera &&cam,
+                                                     size_t minimumIterations,
+                                                     decimal distanceRatio,
+                                                     decimal discriminatorRatio,
+                                                     int pdfOrder,
+                                                     int radiusLossOrder);
     ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
 
     /**
@@ -128,6 +179,10 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @pre p must refer to points taken by the camera that was passed to
      * this
+     * @pre p is radially sorted, i.e.
+     * if we define the centroid of the points as P, for any
+     * three consecutive points A B and C, angle APB is less than
+     * angle APC
      * 
      * @post If p.size() < 3, then the result is exactly the zero vector
      * 
@@ -137,7 +192,90 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
     PositionVector Run(const Points &p) override;
 
  private:
+    /**
+     * Generates a loss on a position vector
+     * 
+     * @param position The vector to evaluate
+     * @param targetDistanceSq The target distance squared of the position
+     * @param targetRadiusSq The target "radius" squared
+     * @param projectedPoints The projected points to evaluate against
+     * @param size The size of the projected points
+     * 
+     * @return The loss of position
+     * 
+     * @pre targetRadiusSq is not the true radius, but rather the
+     * distance obtained between the radius vector and a circle
+     * point when projected onto the unit sphere (normalized).
+     * It still functions the same way.
+     */
+    decimal GenerateLoss(PositionVector &position,
+                         decimal targetDistanceSq,
+                         decimal targetRadiusSq,
+                         std::unique_ptr<Vec3[]> &projectedPoints,
+                         size_t size);
+
+    /**
+     * Shuffles the indexes into triplets, attempting to create
+     * triplets whose indicies are far from each other.
+     * 
+     * @param size The size of indicies, or how many indicies
+     * to generate
+     * @param n The end of the range to generate indicies for
+     * @param indicies The array to write into
+     * 
+     * @pre Any precondition from this->Run
+     * @pre size > 0 && size % 3 == 0
+     * 
+     * @post for any i, 0 <= indicies[i] < n
+     * 
+     * @note This algorithm uses a even polynomial distribution to
+     * prioritize points far away from a given index. We like that
+     * because it helps deal with noise. To exaggerate the difference
+     * in probability between points, you can use a function that grows
+     * much faster by changing the macro PDF which is defined within.
+     * Make sure the distribution function though is zero where you
+     * need it to be (i.e. At points already generated within a triplet
+     * so that you do not draw those points again)
+     * 
+     * @note The assumption of p from this->Run(p) being in polar
+     * order is quite important in this algorithm. Should that not
+     * be true, instead of using index differences in our polynomial
+     * distribution, we'd need to instead use the distance between
+     * the pixels corresponding to those indicies. This is not a
+     * terrible change in terms of code, but is more compuationally
+     * complex
+     */
+    void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
+
+    /**
+     * Performs exponentiation for uint64_t
+     * 
+     * @param base The base
+     * @param power The power
+     * 
+     * Return base ^ power
+     */
+    inline uint64_t Pow(uint64_t base, uint64_t power) {
+        uint64_t result = 1;
+        while (power > 0) {
+           if (power % 2 == 1)
+                 result *= base;
+           base *= base;
+           power /= 2;
+        }
+        return result;
+    }
+
+    /// The minimum number of iterations to use
     size_t minimumIterations_;
+    /// The maximum distance ratio to accept
+    decimal distanceRatioSq_;
+    /// The maximum loss ratio to accept
+    decimal discriminatorRatio_;
+    /// The Shuffle randomization order
+    uint64_t pdfOrder_;
+    /// The Loss Radius error order
+    uint64_t radiusLossOrder_;
 };
 
 /**

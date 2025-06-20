@@ -16,8 +16,8 @@ namespace found {
         decimal longitude;
         /// Lattitude (DE, degrees)
         decimal lattitude;
-        /// Altitude (r, meters)
-        decimal altitude;
+        /// Radius NOT Altitude (r, meters)
+        decimal radius;
         /// Greenwich Mean Sidereal Time (degrees)
         decimal GMST;
     };
