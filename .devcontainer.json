@@ -1,0 +1,12 @@
+{
+  "name": "found-dev-container",
+//   "build": {
+//     "dockerfile": "Dockerfile"
+//   },
+  "image": "nguy8tri/huskysat:latest",
+  "workspaceFolder": "/workspace",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ],
+  "postCreateCommand": ""
+} 
