@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: distance/distance.cpp</div>
-            <div>Date: 2025-07-09 17:36:21</div>
+            <div>Date: 2025-07-09 17:38:59</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -62,7 +62,7 @@
     <tr><td><a href="#l184">found::IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(found::Vec3&amp;, double, double, std::unique_ptr&lt;found::Vec3 [], std::default_delete&lt;found::Vec3 []&gt; &gt;&amp;, unsigned long) (line 184)</a></td><td>called 14592 times</td><td>86.0%</td></tr>
     <tr><td><a href="#l92">found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm(double, found::Camera&amp;&amp;, unsigned long, double, double, int, int) (line 92)</a></td><td>called 22 times</td><td>73.0%</td></tr>
     <tr><td><a href="#l114">found::IterativeSphericalDistanceDeterminationAlgorithm::Run(std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; const&amp;) (line 114)</a></td><td>called 22 times</td><td>73.0%</td></tr>
-    <tr><td><a href="#l207">found::IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(unsigned long, unsigned long, std::unique_ptr&lt;unsigned long [], std::default_delete&lt;unsigned long []&gt; &gt;&amp;) (line 207)</a></td><td>called 37 times</td><td>75.0%</td></tr>
+    <tr><td><a href="#l207">found::IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(unsigned long, unsigned long, std::unique_ptr&lt;unsigned long [], std::default_delete&lt;unsigned long []&gt; &gt;&amp;) (line 207)</a></td><td>called 33 times</td><td>75.0%</td></tr>
     <tr><td><a href="#l19">found::SphericalDistanceDeterminationAlgorithm::Run(std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; const&amp;) (line 19)</a></td><td>called 14627 times</td><td>76.0%</td></tr>
     <tr><td><a href="#l39">found::SphericalDistanceDeterminationAlgorithm::getCenter(found::Vec3*) (line 39)</a></td><td>called 14619 times</td><td>75.0%</td></tr>
     <tr><td><a href="#l86">found::SphericalDistanceDeterminationAlgorithm::getDistance(__float128, __float128) (line 86)</a></td><td>called 14619 times</td><td>100.0%</td></tr>
@@ -1804,7 +1804,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l207" href="#l207">207</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">37</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
                 <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">IterativeSphericalDistanceDeterminationAlgorithm</span><span class="o">::</span><span class="n">Shuffle</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span></td>
             </tr>
             <tr>
@@ -1848,11 +1848,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 37 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 33 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">37</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">uniform_int_distribution</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -1873,7 +1873,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l216" href="#l216">216</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">37</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -1883,11 +1883,11 @@
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-taken-branch">&check; Branch 0 taken 14588 times.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 37 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 taken 33 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">14625</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">14621</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -2137,11 +2137,11 @@
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
                             <div class="color-taken-branch">&check; Branch 0 taken 43764 times.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 37 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 taken 33 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">43801</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">43797</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -2169,7 +2169,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l250" href="#l250">250</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">74</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">66</td>
                 <td class="src coveredLine"><span class="p">}</span></td>
             </tr>
             <tr>
