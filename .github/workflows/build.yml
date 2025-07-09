@@ -7,22 +7,30 @@ on:
     types:
       - opened
       - synchronize
-      - reopened 
+      - reopened
 
 jobs:
   build:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build all (Twice)
-      run: (make compile -j16 || make compile -j16)
+    - name: Build all
+      run: make compile -j16
   
   test:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
@@ -30,23 +38,32 @@ jobs:
     - name: Memory Check
       run: |
         make test OMIT_ASAN=true -j16
-        (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
+        valgrind ./build/bin/found-test
   
   float:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Build all (Twice)
-      run: (make compile FLOAT_MODE=true -j16 || make compile FLOAT_MODE=true -j16)
+      run: make compile FLOAT_MODE=true -j16
     - name: Coverage (Twice)
-      run: (make coverage FLOAT_MODE=true -j16 || make coverage FLOAT_MODE=true -j16)     
+      run: make coverage FLOAT_MODE=true -j16    
 
   lint:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
+
     steps:
     - uses: actions/checkout@v4
 
@@ -62,11 +79,16 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
+
     steps:
     - uses: actions/checkout@v4
 
-    - name: Coverage (Twice)
-      run: (make coverage -j16 || make coverage -j16)
+    - name: Coverage
+      run: make coverage -j16
     
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4
@@ -78,12 +100,17 @@ jobs:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
     needs: [build, lint, coverage]
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
+
     steps:
     - uses: actions/checkout@v4
     
     - name: Generate Documentation
       run: |
-        (make coverage -j16) || (make coverage -j16)
+        make coverage -j16
         make doxygen_generate
     
     - name: Install rsync (for JamesIves/github-pages-deploy-action@v4)
@@ -109,28 +136,40 @@ jobs:
   cmake-build:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build all (Twice)
-      run: (./build.sh cmake "" "--parallel 16" || ./build.sh cmake "" "--parallel 16")
+    - name: Build all
+      run: ./build.sh cmake "" "--parallel 16"
   
   cmake-float:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build all (Twice)
+    - name: Float Build
       run: |
-        (./build.sh cmake -DFLOAT_MODE=ON "-- compile --parallel 16" || ./build.sh cmake -DFLOAT_MODE=ON "-- compile --parallel 16")
-        (./build.sh cmake -DFLOAT_MODE=ON "-- coverage --parallel 16" || ./build.sh cmake -DFLOAT_MODE=ON "-- coverage --parallel 16")
+        ./build.sh cmake -DFLOAT_MODE=ON "--target compile --parallel 16"
+        ./build.sh cmake -DFLOAT_MODE=ON "--target coverage --parallel 16"
   
   cmake-test:
     runs-on: ubuntu-latest
     container: nguy8tri/huskysat:latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      max-retries: 3
 
     steps:
     - uses: actions/checkout@v4
@@ -138,4 +177,4 @@ jobs:
     - name: Memory Check
       run: |
         ./build.sh cmake -DOMIT_ASAN=ON "--target test --parallel 16"
-        (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
+        valgrind ./build/bin/found-test
