@@ -189,6 +189,9 @@ add_compile_options(-Wdouble-promotion -Werror)
 
 ##### compile #####
 
+add_library(found_lib STATIC ${FILTERED_SRC})
+add_library(found::found_lib ALIAS found_lib)
+
 file(MAKE_DIRECTORY ${BIN_DIR})
 add_executable(found ${SRC})
 target_link_libraries(found PUBLIC ${SRC_LIBS})
@@ -285,6 +288,12 @@ else()
     # We only install during release
     add_dependencies(default compile)
     install(TARGETS found DESTINATION bin)
+    install(TARGETS found_lib
+        EXPORT foundTargets
+        DESTINATION lib)
+    install(EXPORT foundTargets
+        NAMESPACE found::
+        DESTINATION lib/cmake/found)
     install(
         DIRECTORY ${SRC_DIR}/
         DESTINATION include
