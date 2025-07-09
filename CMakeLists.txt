@@ -34,8 +34,7 @@ function(check_program_version out_var program_name required_version)
 endfunction()
 
 set(ENABLE_WORKFLOW OFF)
-if(NOT ((CMAKE_BUILD_TYPE STREQUAL "Release") AND
-   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR))
+if((NOT CMAKE_BUILD_TYPE STREQUAL "Release") AND PROJECT_IS_TOP_LEVEL)
     set(ENABLE_WORKFLOW ON)
 endif()
 
