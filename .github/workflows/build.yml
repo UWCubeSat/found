@@ -20,7 +20,7 @@ jobs:
     - name: Build all
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: make compile -j16
   
   test:
@@ -33,7 +33,7 @@ jobs:
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: |
           make test OMIT_ASAN=true -j16
           valgrind ./build/bin/found-test
@@ -48,12 +48,12 @@ jobs:
     - name: Build all
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: make compile FLOAT_MODE=true -j16
     - name: Coverage
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: make coverage FLOAT_MODE=true -j16    
 
   lint:
@@ -82,7 +82,7 @@ jobs:
     - name: Coverage
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: make coverage -j16
     
     - name: Upload Coverage Report
@@ -135,7 +135,7 @@ jobs:
     - name: Build all
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: ./build.sh cmake "" "--parallel 16"
   
   cmake-float:
@@ -148,7 +148,7 @@ jobs:
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: |
           ./build.sh cmake -DFLOAT_MODE=ON "--target compile --parallel 16"
           ./build.sh cmake -DFLOAT_MODE=ON "--target coverage --parallel 16"
@@ -163,7 +163,7 @@ jobs:
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
       with:
-        retries: 3
+        max_attempts: 3
         command: |
           ./build.sh cmake -DOMIT_ASAN=ON "--target test --parallel 16"
           valgrind ./build/bin/found-test
