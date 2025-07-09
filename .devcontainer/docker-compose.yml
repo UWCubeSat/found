@@ -1,7 +1,8 @@
 version: "3.9"
 services:
   dev:
-    platform: linux/amd64     # ✅ Now in the correct spot
+    # emmulate intel amd64 on Apple Silicon for __float128 compatibility
+    platform: linux/amd64     
     build:
       context: ..
       dockerfile: Dockerfile
