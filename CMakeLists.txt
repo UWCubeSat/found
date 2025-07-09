@@ -1,7 +1,7 @@
 include(FetchContent)
 include(ExternalProject)
 
-########## Utility Functions ##########
+########## Utilities ##########
 
 # Checks if the program exists and has correct version #
 function(check_program_version out_var program_name required_version)
@@ -32,6 +32,12 @@ function(check_program_version out_var program_name required_version)
         ${PROGRAM_PATH_${out_var}}
         PARENT_SCOPE)
 endfunction()
+
+set(ENABLE_WORKFLOW OFF)
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND
+   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(ENABLE_WORKFLOW ON)
+endif()
 
 ########## CMake Project Requirements ##########
 
@@ -204,7 +210,7 @@ add_custom_target(compile
                   DEPENDS found
                   COMMENT "Compiles source code")
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+if(ENABLE_WORKFLOW)
 
     ##### test #####
 
@@ -279,7 +285,7 @@ add_custom_target(clean_all
 add_custom_target(default ALL
                   COMMENT "The default target")
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+if(ENABLE_WORKFLOW)
     add_dependencies(default documentation)
     add_dependencies(documentation lint)
     add_dependencies(lint coverage)
