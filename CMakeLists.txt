@@ -141,6 +141,8 @@ set(SRC_LIBS ${STB_IMAGE})
 
 ########## Test Libraries ##########
 
+if(ENABLE_WORKFLOW)
+
 ##### Googletest #####
 
 set(GTEST googletest)
@@ -189,6 +191,8 @@ add_custom_command(
     VERBATIM
     COMMENT "Downloads doxygen-awesome")
 
+endif()
+
 ########## Targets ##########
 
 add_compile_options(-Wdouble-promotion -Werror)
@@ -212,66 +216,66 @@ add_custom_target(compile
 
 if(ENABLE_WORKFLOW)
 
-    ##### test #####
+##### test #####
 
-    add_executable(found-test EXCLUDE_FROM_ALL ${TEST})
-    target_include_directories(found-test
-                               PRIVATE "${GTEST_INSTALL_DIR}/include")
-    target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
-                                                  LOGGING_LEVEL=INFO)
-    target_compile_options(found-test PRIVATE --coverage -pthread)
-    target_link_libraries(found-test PRIVATE --coverage)
-    if(NOT OMIT_ASAN)
-        target_compile_options(found-test PRIVATE -fsanitize=address
-                                                  -fomit-frame-pointer)
-        target_link_libraries(found-test PRIVATE -fsanitize=address
-                                                 -fomit-frame-pointer)
-    endif()
-    target_link_libraries(found-test PRIVATE ${TEST_LIBS})
-    set_target_properties(found-test PROPERTIES
-                          RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-    add_dependencies(found-test ${GTEST} ${TEST_LIBS})
+add_executable(found-test EXCLUDE_FROM_ALL ${TEST})
+target_include_directories(found-test
+                            PRIVATE "${GTEST_INSTALL_DIR}/include")
+target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
+                                                LOGGING_LEVEL=INFO)
+target_compile_options(found-test PRIVATE --coverage -pthread)
+target_link_libraries(found-test PRIVATE --coverage)
+if(NOT OMIT_ASAN)
+    target_compile_options(found-test PRIVATE -fsanitize=address
+                                                -fomit-frame-pointer)
+    target_link_libraries(found-test PRIVATE -fsanitize=address
+                                                -fomit-frame-pointer)
+endif()
+target_link_libraries(found-test PRIVATE ${TEST_LIBS})
+set_target_properties(found-test PROPERTIES
+                        RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+add_dependencies(found-test ${GTEST} ${TEST_LIBS})
 
-    ##### coverage #####
+##### coverage #####
 
-    file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
+file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
 
-    check_program_version(GCOVR gcovr 8.3)
-    set(GCOVR_CONFIG ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.cfg)
+check_program_version(GCOVR gcovr 8.3)
+set(GCOVR_CONFIG ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.cfg)
 
-    add_custom_target(
-        coverage
-        COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
-        COMMAND ${GCOVR} -r ${CMAKE_CURRENT_SOURCE_DIR}
-        # WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Running tests and generating coverage report"
-        VERBATIM
-        DEPENDS found-test)
+add_custom_target(
+    coverage
+    COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
+    COMMAND ${GCOVR} -r ${CMAKE_CURRENT_SOURCE_DIR}
+    # WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Running tests and generating coverage report"
+    VERBATIM
+    DEPENDS found-test)
 
-    ##### linting #####
+##### linting #####
 
-    check_program_version(CPPLINT cpplint 2.0.0)
+check_program_version(CPPLINT cpplint 2.0.0)
 
-    add_custom_target(
-        lint
-        COMMAND ${CPPLINT} --recursive ${SRC_DIR} ${TEST_DIR}
-        DEPENDS ${SRC} ${TEST}
-        COMMENT "Checks Google C++ Style on Code")
+add_custom_target(
+    lint
+    COMMAND ${CPPLINT} --recursive ${SRC_DIR} ${TEST_DIR}
+    DEPENDS ${SRC} ${TEST}
+    COMMENT "Checks Google C++ Style on Code")
 
-    ##### documentation #####
+##### documentation #####
 
-    find_package(Doxygen 1.9.8 REQUIRED)
-    if(NOT DOXYGEN_FOUND)
-        message(FATAL_ERROR "Doxygen is required but was not found.")
-    endif()
+find_package(Doxygen 1.9.8 REQUIRED)
+if(NOT DOXYGEN_FOUND)
+    message(FATAL_ERROR "Doxygen is required but was not found.")
+endif()
 
-    add_custom_target(
-        documentation
-        COMMAND ./doxygen.sh
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        VERBATIM
-        DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
-        COMMENT "Generates Doxygen Documentation over code")
+add_custom_target(
+    documentation
+    COMMAND ./doxygen.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    VERBATIM
+    DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
+    COMMENT "Generates Doxygen Documentation over code")
 
 endif()
 
