@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: make compile -j16
@@ -31,7 +31,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Memory Check
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: |
@@ -46,12 +46,12 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: make compile FLOAT_MODE=true -j16
     - name: Coverage
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: make coverage FLOAT_MODE=true -j16    
@@ -80,7 +80,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Coverage
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: make coverage -j16
@@ -133,7 +133,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build all
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: ./build.sh cmake "" "--parallel 16"
@@ -146,7 +146,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Float Build
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: |
@@ -161,7 +161,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Memory Check
-      uses: nickfields/retry@v1
+      uses: nickfields/retry@v3
       with:
         retries: 3
         command: |
