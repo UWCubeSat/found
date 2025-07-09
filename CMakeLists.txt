@@ -34,8 +34,8 @@ function(check_program_version out_var program_name required_version)
 endfunction()
 
 set(ENABLE_WORKFLOW OFF)
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND
-   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_LIST_DIR)
+if(NOT ((CMAKE_BUILD_TYPE STREQUAL "Release") AND
+   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR))
     set(ENABLE_WORKFLOW ON)
 endif()
 
@@ -64,7 +64,6 @@ set(SRC_MAIN "${SRC_DIR}/main.cpp")
 # Test directory
 set(TEST_DIR ${PROJECT_SOURCE_DIR}/test)
 file(GLOB_RECURSE TEST CONFIGURE_DEPENDS ${TEST_DIR}/*.cpp)
-list(APPEND TEST ${FILTERED_SRC})
 file(GLOB_RECURSE TEST_H ${TEST_DIR}/*.hpp)
 list(APPEND TEST_H ${SRC_DIR})
 
@@ -171,7 +170,7 @@ foreach(lib ${GTEST_LIBS})
     add_dependencies(${lib} ${GTEST})
 endforeach()
 
-set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
+set(TEST_LIBS ${GTEST_LIBS})
 
 ##### Documentation Libraries #####
 
@@ -200,6 +199,7 @@ add_compile_options(-Wdouble-promotion -Werror)
 ##### compile #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
+target_link_libraries(found_lib PUBLIC ${STB_IMAGE})
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
@@ -207,8 +207,8 @@ target_include_directories(found_lib
 add_library(found::found_lib ALIAS found_lib)
 
 file(MAKE_DIRECTORY ${BIN_DIR})
-add_executable(found ${SRC})
-target_link_libraries(found PUBLIC ${SRC_LIBS})
+add_executable(found ${SRC_MAIN})
+target_link_libraries(found PUBLIC ${SRC_LIBS} found_lib)
 if(NOT DISABLE_LOGGING)
     target_compile_definitions(found PRIVATE ENABLE_LOGGING
                                              LOGGING_LEVEL=${LOGGING_LEVEL})
@@ -235,7 +235,7 @@ if(NOT OMIT_ASAN)
     target_link_libraries(found-test PRIVATE -fsanitize=address
                                                 -fomit-frame-pointer)
 endif()
-target_link_libraries(found-test PRIVATE ${TEST_LIBS})
+target_link_libraries(found-test PRIVATE ${TEST_LIBS} found_lib)
 set_target_properties(found-test PROPERTIES
                         RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_dependencies(found-test ${GTEST} ${TEST_LIBS})
@@ -303,6 +303,9 @@ else()
     add_dependencies(default compile)
     install(TARGETS found DESTINATION bin)
     install(TARGETS found_lib
+        EXPORT foundTargets
+        DESTINATION lib)
+    install(TARGETS ${STB_IMAGE}
         EXPORT foundTargets
         DESTINATION lib)
     install(EXPORT foundTargets
