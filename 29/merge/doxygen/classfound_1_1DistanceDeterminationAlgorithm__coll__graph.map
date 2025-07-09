@@ -1,0 +1,9 @@
+<map id="found::DistanceDeterminationAlgorithm" name="found::DistanceDeterminationAlgorithm">
+<area shape="rect" id="Node000001" title="The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm." alt="" coords="14,183,233,223"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Stage.html" title=" " alt="" coords="42,93,205,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,147,126,183,121,183,121,147"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,5,113,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,41,113,92,108,95,73,44"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="138,5,237,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="174,44,139,95,134,92,169,41"/>
+</map>
