@@ -129,6 +129,7 @@ var NAVTREEINDEX2 =
 "index.html#autotoc_md10":[0,2,1,1],
 "index.html#autotoc_md11":[0,2,1,2],
 "index.html#autotoc_md12":[0,2,2],
+"index.html#autotoc_md13":[0,3],
 "index.html#autotoc_md2":[0,0,0],
 "index.html#autotoc_md3":[0,0,1],
 "index.html#autotoc_md4":[0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "namespacefound.html#afa9a53a1f9944a08b50f6816f5d83bed":[1,0,0,63],
 "namespacemembers.html":[1,1,0],
 "namespacemembers_func.html":[1,1,1],
-"namespacemembers_type.html":[1,1,3],
-"namespacemembers_vars.html":[1,1,2]
+"namespacemembers_type.html":[1,1,3]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"namespacemembers_vars.html":[1,1,2],
 "namespaces.html":[1,0],
 "options_8hpp.html":[3,0,0,1,1,0],
 "options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803":[3,0,0,1,1,0,10],
