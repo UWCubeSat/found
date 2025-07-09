@@ -1,6 +1,16 @@
 include(FetchContent)
 include(ExternalProject)
 
+########## CMake Project Requirements ##########
+
+cmake_minimum_required(VERSION 3.21)
+project(found LANGUAGES CXX)
+
+set(ENABLE_WORKFLOW OFF)
+if((NOT CMAKE_BUILD_TYPE STREQUAL "Release") AND PROJECT_IS_TOP_LEVEL)
+    set(ENABLE_WORKFLOW ON)
+endif()
+
 ########## Utilities ##########
 
 # Checks if the program exists and has correct version #
@@ -32,16 +42,6 @@ function(check_program_version out_var program_name required_version)
         ${PROGRAM_PATH_${out_var}}
         PARENT_SCOPE)
 endfunction()
-
-set(ENABLE_WORKFLOW OFF)
-if((NOT CMAKE_BUILD_TYPE STREQUAL "Release") AND PROJECT_IS_TOP_LEVEL)
-    set(ENABLE_WORKFLOW ON)
-endif()
-
-########## CMake Project Requirements ##########
-
-cmake_minimum_required(VERSION 3.16)
-project(found LANGUAGES CXX)
 
 ########## File/Folder Definitions ##########
 
