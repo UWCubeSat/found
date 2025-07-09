@@ -82,7 +82,7 @@ endif
 
 # FLOAT_MODE can be defined to enable FOUND_FLOAT_MODE
 ifdef FLOAT_MODE
-	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion -Werror=double-promotion
+	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion
 endif
 
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
@@ -92,7 +92,7 @@ LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
+CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
 CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code

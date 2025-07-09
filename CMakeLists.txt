@@ -75,7 +75,6 @@ set(LOGGING_LEVEL INFO CACHE STRING "Logging level")
 # Floating-point config
 option(FLOAT_MODE "Enable FOUND_FLOAT_MODE" OFF)
 if(FLOAT_MODE)
-    add_compile_options(-Wdouble-promotion -Werror=double-promotion)
     add_compile_definitions(FOUND_FLOAT_MODE)
 endif()
 
@@ -172,6 +171,8 @@ add_custom_command(
 
 ########## Targets ##########
 
+add_compile_options(-Wdouble-promotion -Werror)
+
 ##### compile #####
 
 file(MAKE_DIRECTORY ${BIN_DIR})
@@ -241,8 +242,8 @@ add_custom_target(documentation
 
 ##### clean_all #####
 
-add_custom_target(clean_cache
-    COMMAND rm -rf ${CMAKE_SOURCE_DIR}/.cache
+add_custom_target(clean_all
+    COMMAND rm -rf ${CACHE_DIR} ${BUILD_DIR}
 )
 
 ##### default target (does not run in order) #####

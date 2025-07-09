@@ -105,3 +105,37 @@ jobs:
         branch: documentation
         folder: build/documentation/
         target-folder: ${{ env.TARGET_FOLDER }}
+  
+  cmake-build:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all (Twice)
+      run: (./build.sh cmake "" "--parallel 16" || ./build.sh cmake "" "--parallel 16")
+  
+  cmake-float:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all (Twice)
+      run: |
+        (./build.sh cmake -DFLOAT_MODE=ON "-- compile --parallel 16" || ./build.sh cmake -DFLOAT_MODE=ON "-- compile --parallel 16")
+        (./build.sh cmake -DFLOAT_MODE=ON "-- coverage --parallel 16" || ./build.sh cmake -DFLOAT_MODE=ON "-- coverage --parallel 16")
+  
+  cmake-test:
+    runs-on: ubuntu-latest
+    container: nguy8tri/huskysat:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Memory Check
+      run: |
+        ./build.sh cmake -DOMIT_ASAN=ON "--target test --parallel 16"
+        (valgrind ./build/bin/found-test) || (valgrind ./build/bin/found-test)
