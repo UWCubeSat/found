@@ -301,21 +301,25 @@ if(ENABLE_WORKFLOW)
     add_dependencies(lint coverage)
     add_dependencies(coverage compile)
 else()
-    # We only install during release
     add_dependencies(default compile)
-    install(TARGETS found DESTINATION bin)
-    install(TARGETS found_lib
+endif()
+
+install(TARGETS found DESTINATION bin)
+install(TARGETS found_lib
         EXPORT foundTargets
-        DESTINATION lib)
-    install(TARGETS ${STB_IMAGE}
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
+install(TARGETS ${STB_IMAGE}
         EXPORT foundTargets
-        DESTINATION lib)
-    install(EXPORT foundTargets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        INCLUDES DESTINATION include)
+install(EXPORT foundTargets
         NAMESPACE found::
         DESTINATION lib/cmake/found)
-    install(
-        DIRECTORY ${SRC_DIR}/
+install(DIRECTORY ${SRC_DIR}/
         DESTINATION include
         FILES_MATCHING
         PATTERN "*.hpp")
-endif()
