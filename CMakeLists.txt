@@ -35,7 +35,7 @@ endfunction()
 
 set(ENABLE_WORKFLOW OFF)
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND
-   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+   CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_LIST_DIR)
     set(ENABLE_WORKFLOW ON)
 endif()
 
@@ -48,13 +48,13 @@ project(found LANGUAGES CXX)
 
 # Build directories
 set(BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
-set(CACHE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/.cache)
+set(CACHE_DIR ${CMAKE_CURRENT_LIST_DIR}/.cache)
 set(BIN_DIR ${BUILD_DIR}/bin)
 # set(OBJ_DIR ${BUILD_DIR}/objects) No longer needed
 set(DOC_DIR ${BUILD_DIR}/documentation)
 
 # Source directory
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(SRC_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 file(GLOB_RECURSE SRC ${SRC_DIR}/*.cpp)
 file(GLOB_RECURSE SRC_H ${SRC_DIR}/*.hpp)
 set(FILTERED_SRC ${SRC})
@@ -62,7 +62,7 @@ list(FILTER FILTERED_SRC EXCLUDE REGEX ".*src/main\\.cpp$")
 set(SRC_MAIN "${SRC_DIR}/main.cpp")
 
 # Test directory
-set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+set(TEST_DIR ${CMAKE_CURRENT_LIST_DIR}/test)
 file(GLOB_RECURSE TEST CONFIGURE_DEPENDS ${TEST_DIR}/*.cpp)
 list(APPEND TEST ${FILTERED_SRC})
 file(GLOB_RECURSE TEST_H ${TEST_DIR}/*.hpp)
@@ -79,7 +79,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Include dirs
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${SRC_DIR})
 include_directories(${CACHE_DIR})
 
@@ -242,13 +242,13 @@ add_dependencies(found-test ${GTEST} ${TEST_LIBS})
 file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
 
 check_program_version(GCOVR gcovr 8.3)
-set(GCOVR_CONFIG ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.cfg)
+set(GCOVR_CONFIG ${CMAKE_CURRENT_LIST_DIR}/gcovr.cfg)
 
 add_custom_target(
     coverage
-    COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
-    COMMAND ${GCOVR} -r ${CMAKE_CURRENT_SOURCE_DIR}
-    # WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND cd ${CMAKE_CURRENT_LIST_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
+    COMMAND ${GCOVR} -r ${CMAKE_CURRENT_LIST_DIR}
+    # WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     COMMENT "Running tests and generating coverage report"
     VERBATIM
     DEPENDS found-test)
@@ -273,7 +273,7 @@ endif()
 add_custom_target(
     documentation
     COMMAND ./doxygen.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     VERBATIM
     DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
     COMMENT "Generates Doxygen Documentation over code")
