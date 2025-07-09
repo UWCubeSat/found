@@ -109,11 +109,12 @@ Building FOUND</h2>
 <ul>
 <li>Clone the repository (<code>git clone <a href="https://github.com/UWCubeSat/found.git">https://github.com/UWCubeSat/found.git</a></code>)</li>
 <li>Go into the directory (<code>cd found</code>)</li>
-<li>Compile the executable (<code>make</code>)</li>
+<li>Compile the executable via GNU Make or CMake (below for more information)</li>
 <li>Execute the executable (<code>./build/bin/found</code>)</li>
 <li>Execute the test suite (<code>./build/bin/found-test</code>)</li>
 </ul>
-<p>As this repository uses GNU Make to generate its artifacts, you'll need to rerun <code>make</code> everytime you change the code.</p>
+<p>This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The <code>build.sh</code> script abstracts the difference for you. It is run as:</p>
+<p><code>./build.sh make [GNU Make options]</code> <code>./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"</code></p>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Usage</h1>
 <p>The main executable, which is found in <code>./build/bin/found</code>, operates as a standard command-line based program. The usage is: </p><div align="center"></div><div align="center"><code>./build/bin/found &lt;option&gt; [flags]</code></div><div align="center"></div><p> There are currently two options:</p>
