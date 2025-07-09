@@ -169,7 +169,7 @@ foreach(lib ${GTEST_LIBS})
     add_dependencies(${lib} ${GTEST})
 endforeach()
 
-set(TEST_LIBS ${GTEST_LIBS})
+set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
 
 ##### Documentation Libraries #####
 
@@ -211,6 +211,9 @@ target_link_libraries(found PUBLIC ${SRC_LIBS} found_lib)
 if(NOT DISABLE_LOGGING)
     target_compile_definitions(found PRIVATE ENABLE_LOGGING
                                              LOGGING_LEVEL=${LOGGING_LEVEL})
+    target_compile_definitions(found_lib PRIVATE
+                               ENABLE_LOGGING
+                               LOGGING_LEVEL=${LOGGING_LEVEL})
 endif()
 set_target_properties(found PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_custom_target(compile
@@ -221,7 +224,7 @@ if(ENABLE_WORKFLOW)
 
 ##### test #####
 
-add_executable(found-test EXCLUDE_FROM_ALL ${TEST})
+add_executable(found-test ${TEST} ${FILTERED_SRC})
 target_include_directories(found-test
                             PRIVATE "${GTEST_INSTALL_DIR}/include")
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
@@ -234,7 +237,7 @@ if(NOT OMIT_ASAN)
     target_link_libraries(found-test PRIVATE -fsanitize=address
                                                 -fomit-frame-pointer)
 endif()
-target_link_libraries(found-test PRIVATE ${TEST_LIBS} found_lib)
+target_link_libraries(found-test PRIVATE ${TEST_LIBS})
 set_target_properties(found-test PROPERTIES
                         RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_dependencies(found-test ${GTEST} ${TEST_LIBS})
