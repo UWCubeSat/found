@@ -140,3 +140,24 @@ The distance information will then be used to form a vector of the satellite rel
 This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
 - [ ] Runge-Kutta Based Orbital Prediction
 - [ ] Lambert's Problem-Based Orbital Prediction
+
+# CMake Integration
+
+This project's code can be integrated with yours via cmake. To use:
+```CMake
+include(FetchContent)
+
+cmake_minimum_required(VERSION 3.16)
+project(test)
+
+FetchContent_Declare(
+  found
+  GIT_REPOSITORY https://github.com/UWCubeSat/found.git
+)
+
+FetchContent_MakeAvailable(found)
+
+add_executable(your_executable ...)
+target_link_libraries(test PRIVATE found::found_lib) # Link our library
+```
+The library `found::found_lib` already has all the include statements needed inside of it, so no need to locate them.
