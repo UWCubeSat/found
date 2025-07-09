@@ -200,6 +200,7 @@ add_compile_options(-Wdouble-promotion -Werror)
 ##### compile #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
+target_include_directories(found_lib PUBLIC ${SRC_DIR})
 add_library(found::found_lib ALIAS found_lib)
 
 file(MAKE_DIRECTORY ${BIN_DIR})
