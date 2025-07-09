@@ -45,13 +45,17 @@ set(DOC_DIR ${BUILD_DIR}/documentation)
 # Source directory
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 file(GLOB_RECURSE SRC ${SRC_DIR}/*.cpp)
+file(GLOB_RECURSE SRC_H ${SRC_DIR}/*.hpp)
+set(FILTERED_SRC ${SRC})
+list(FILTER FILTERED_SRC EXCLUDE REGEX ".*src/main\\.cpp$")
+set(SRC_MAIN "${SRC_DIR}/main.cpp")
 
 # Test directory
 set(TEST_DIR ${CMAKE_SOURCE_DIR}/test)
-set(FILTERED_SRC ${SRC})
-list(FILTER FILTERED_SRC EXCLUDE REGEX ".*src/main\\.cpp$")
 file(GLOB_RECURSE TEST CONFIGURE_DEPENDS ${TEST_DIR}/*.cpp)
 list(APPEND TEST ${FILTERED_SRC})
+file(GLOB_RECURSE TEST_H ${TEST_DIR}/*.hpp)
+list(APPEND TEST_H ${SRC_DIR})
 
 # Documentation directory
 set(DOC_COVERAGE_DIR ${DOC_DIR}/coverage)
@@ -144,6 +148,7 @@ ExternalProject_Add(
     LOG_CONFIGURE OFF
     UPDATE_COMMAND ""
     TEST_COMMAND ""
+    BUILD_ALWAYS OFF
 )
 
 foreach(lib ${GTEST_LIBS})
@@ -186,6 +191,8 @@ add_custom_target(compile DEPENDS found)
 
 ##### test #####
 
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+
 add_executable(found-test EXCLUDE_FROM_ALL ${TEST})
 target_include_directories(found-test PRIVATE "${GTEST_INSTALL_DIR}/include")
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING LOGGING_LEVEL=INFO)
@@ -197,7 +204,7 @@ if(NOT OMIT_ASAN)
 endif()
 target_link_libraries(found-test PRIVATE ${TEST_LIBS})
 set_target_properties(found-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-add_dependencies(found-test ${TEST_LIBS})
+add_dependencies(found-test ${GTEST} ${TEST_LIBS})
 add_custom_target(test DEPENDS found-test)
 
 ##### coverage #####
@@ -240,6 +247,8 @@ add_custom_target(documentation
     DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
 )
 
+endif()
+
 ##### clean_all #####
 
 add_custom_target(clean_all
@@ -248,11 +257,18 @@ add_custom_target(clean_all
 
 ##### default target (does not run in order) #####
 
-add_custom_target(default ALL DEPENDS compile)
+add_custom_target(default ALL DEPENDS found)
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_dependencies(default test coverage lint documentation)
-    add_dependencies(test compile)
-    # add_dependencies(coverage test)
+    add_dependencies(found-test found)
+    add_dependencies(coverage found-test)
     add_dependencies(lint coverage)
     add_dependencies(documentation lint)
+else()
+    # We only install during release
+    install(TARGETS found DESTINATION bin)
+    install(
+    DIRECTORY ${SRC_DIR}/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.hpp"
+    )
 endif()
