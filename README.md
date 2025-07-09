@@ -22,8 +22,10 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 
 This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
 
-`./build.sh make [GNU Make options]`
-`./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"`
+1. Run GNU Make: `./build.sh make [GNU Make options]`
+2. Run CMake: `./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"`
+3. Clean the build folder: `./build.sh clean`
+4. Clean the build and cache folders: `./build.sh clean_all`
 
 # Usage
 The main executable, which is found in `./build/bin/found`, operates as a standard command-line based program. The usage is:

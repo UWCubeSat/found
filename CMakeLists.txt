@@ -205,23 +205,21 @@ endif()
 target_link_libraries(found-test PRIVATE ${TEST_LIBS})
 set_target_properties(found-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_dependencies(found-test ${GTEST} ${TEST_LIBS})
-add_custom_target(test DEPENDS found-test)
 
 ##### coverage #####
 
-# Register test with CTest
 file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
 
 check_program_version(GCOVR gcovr 8.3)
 set(GCOVR_CONFIG ${CMAKE_SOURCE_DIR}/gcovr.cfg)
 
 add_custom_target(coverage
-    COMMAND cd ${CMAKE_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1 # run tests
+    COMMAND cd ${CMAKE_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
     COMMAND ${GCOVR} -r ${CMAKE_SOURCE_DIR}
     # WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Running tests and generating coverage report"
     VERBATIM
-    DEPENDS test
+    DEPENDS found-test
 )
 
 ##### linting #####
@@ -257,14 +255,14 @@ add_custom_target(clean_all
 
 ##### default target (does not run in order) #####
 
-add_custom_target(default ALL DEPENDS found)
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_dependencies(found-test found)
-    add_dependencies(coverage found-test)
-    add_dependencies(lint coverage)
+    add_custom_target(default ALL DEPENDS documentation)
     add_dependencies(documentation lint)
+    add_dependencies(lint coverage)
+    add_dependencies(coverage compile)
 else()
     # We only install during release
+    add_custom_target(default ALL DEPENDS compile)
     install(TARGETS found DESTINATION bin)
     install(
     DIRECTORY ${SRC_DIR}/

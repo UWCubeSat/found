@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build all
+    - name: Float Build
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
@@ -173,5 +173,5 @@ jobs:
         max_attempts: 3
         timeout_minutes: 3
         command: |
-          ./build.sh cmake -DOMIT_ASAN=ON "--target test --parallel 16"
+          ./build.sh cmake -DOMIT_ASAN=ON "--target found-test --parallel 16"
           valgrind ./build/bin/found-test

@@ -10,6 +10,8 @@ if [ "$1" = "cmake" ]; then
 elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: ./build.sh make [GNU Make Options]"
     echo "Usage: ./build.sh cmake \"[CMake Config Options]\" \"[CMake Build Options]\""
+    echo "Usage: ./build.sh clean"
+    echo "Usage: ./build.sh clean_all"
 elif [ "$1" = "clean" ]; then
     rm -rf build
 elif [ "$1" = "clean_all" ]; then

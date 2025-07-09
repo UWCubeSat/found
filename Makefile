@@ -220,7 +220,7 @@ test_message:
 # The coverage target
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
-	./$(TEST_BIN)
+	./$(TEST_BIN) --gtest_brief=1
 	gcovr || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
