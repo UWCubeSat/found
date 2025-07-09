@@ -1,0 +1,8 @@
+{
+  "name": "found-dev-container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "overrideCommand": true,
+  "postCreateCommand": "make clean && make && bash"
+} 
