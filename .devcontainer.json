@@ -1,8 +1,8 @@
 {
   "name": "found-dev-container",
-//   "build": {
-//     "dockerfile": "Dockerfile"
-//   },
+  // "build": {
+  //   "dockerfile": "Dockerfile"
+  // },
   "image": "nguy8tri/huskysat:latest",
   "workspaceFolder": "/workspace",
   "mounts": [
