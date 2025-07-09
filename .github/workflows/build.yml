@@ -21,6 +21,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: make compile -j16
   
   test:
@@ -34,6 +35,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: |
           make test OMIT_ASAN=true -j16
           valgrind ./build/bin/found-test
@@ -49,11 +51,13 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: make compile FLOAT_MODE=true -j16
     - name: Coverage
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: make coverage FLOAT_MODE=true -j16    
 
   lint:
@@ -83,6 +87,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: make coverage -j16
     
     - name: Upload Coverage Report
@@ -136,6 +141,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: ./build.sh cmake "" "--parallel 16"
   
   cmake-float:
@@ -149,6 +155,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: |
           ./build.sh cmake -DFLOAT_MODE=ON "--target compile --parallel 16"
           ./build.sh cmake -DFLOAT_MODE=ON "--target coverage --parallel 16"
@@ -164,6 +171,7 @@ jobs:
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
+        timeout_minutes: 3
         command: |
           ./build.sh cmake -DOMIT_ASAN=ON "--target test --parallel 16"
           valgrind ./build/bin/found-test
