@@ -16,11 +16,14 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 ## Building FOUND
 - Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
-- Compile the executable (`make`)
+- Compile the executable via GNU Make or CMake (below for more information)
 - Execute the executable (`./build/bin/found`)
 - Execute the test suite (`./build/bin/found-test`)
 
-As this repository uses GNU Make to generate its artifacts, you'll need to rerun `make` everytime you change the code.
+This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
+
+`./build.sh make [GNU Make options]`
+`./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"`
 
 # Usage
 The main executable, which is found in `./build/bin/found`, operates as a standard command-line based program. The usage is:
