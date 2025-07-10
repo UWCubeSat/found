@@ -1,11 +1,11 @@
-#ifndef DISTANCE_H
-#define DISTANCE_H
+#ifndef SRC_DISTANCE_DISTANCE_HPP_
+#define SRC_DISTANCE_DISTANCE_HPP_
 
 #include <utility>
 #include <memory>
 
 #include "common/style.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 
@@ -20,7 +20,7 @@ namespace found {
  * three consecutive points A B and C, angle APB is less than
  * angle APC
  */
-class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
+class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVector> {
  public:
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
@@ -304,4 +304,4 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
 }  // namespace found
 
-#endif  // DISTANCE_H
+#endif  // SRC_DISTANCE_DISTANCE_HPP_

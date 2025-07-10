@@ -1,5 +1,5 @@
-#ifndef CONVERTERS_H
-#define CONVERTERS_H
+#ifndef SRC_PROVIDERS_CONVERTERS_HPP_
+#define SRC_PROVIDERS_CONVERTERS_HPP_
 
 #include <stb_image/stb_image.h>
 
@@ -173,4 +173,4 @@ inline LocationRecords strtolr(const std::string &str) {
 
 }  // namespace found
 
-#endif  // CONVERTERS_H
+#endif  // SRC_PROVIDERS_CONVERTERS_HPP_

@@ -1,5 +1,5 @@
-#ifndef DECIMAL_H
-#define DECIMAL_H
+#ifndef SRC_COMMON_DECIMAL_HPP_
+#define SRC_COMMON_DECIMAL_HPP_
 
 #include <cmath>
 #include <string>
@@ -67,4 +67,4 @@
 #define DECIMAL_FMA(x,y,z)      (DECIMAL(std::fma(x),y,z))
 #define DECIMAL_HYPOT(x,y)      (DECIMAL(std::hypot(x),y))
 
-#endif  // DECIMAL_H
+#endif  // SRC_COMMON_DECIMAL_HPP_

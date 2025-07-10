@@ -1,5 +1,5 @@
-#ifndef EXECUTOR_PROVIDERS_H
-#define EXECUTOR_PROVIDERS_H
+#ifndef SRC_PROVIDERS_FACTORY_HPP_
+#define SRC_PROVIDERS_FACTORY_HPP_
 
 #include <memory>
 #include <utility>
@@ -50,4 +50,4 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
 
 }  // namespace found
 
-#endif  // EXECUTOR_PROVIDERS_H
+#endif  // SRC_PROVIDERS_FACTORY_HPP_

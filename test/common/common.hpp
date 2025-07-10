@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef TEST_COMMON_COMMON_HPP_
+#define TEST_COMMON_COMMON_HPP_
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -171,4 +171,4 @@ const ImageData example_earth1(
 
 }  // namespace found
 
-#endif  // COMMON_H
+#endif  // TEST_COMMON_COMMON_HPP_

@@ -1,5 +1,5 @@
-#ifndef ATTITUDE_UTILS_H
-#define ATTITUDE_UTILS_H
+#ifndef SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
+#define SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 
 #include <memory>
 
@@ -335,4 +335,4 @@ decimal ArcSecToRad(decimal);
 
 }  // namespace found
 
-#endif
+#endif  // SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_

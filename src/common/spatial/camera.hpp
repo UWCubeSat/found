@@ -1,5 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#ifndef SRC_COMMON_SPATIAL_CAMERA_HPP_
+#define SRC_COMMON_SPATIAL_CAMERA_HPP_
 
 #include "common/spatial/attitude-utils.hpp"
 
@@ -124,4 +124,4 @@ decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixel
 
 }  // namespace found
 
-#endif  // CAMERA_H
+#endif  // SRC_COMMON_SPATIAL_CAMERA_HPP_

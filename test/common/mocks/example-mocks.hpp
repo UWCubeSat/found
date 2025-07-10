@@ -1,3 +1,6 @@
+#ifndef TEST_COMMON_MOCKS_EXAMPLE_MOCKS_HPP_
+#define TEST_COMMON_MOCKS_EXAMPLE_MOCKS_HPP_
+
 /**
  * This file defines a mock that we want to use
  * for our example test. We've intentionally been
@@ -35,3 +38,5 @@ class MockEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 }  // namespace found
+
+#endif  // TEST_COMMON_MOCKS_EXAMPLE_MOCKS_HPP_

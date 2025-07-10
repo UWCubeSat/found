@@ -1,3 +1,6 @@
+#ifndef TEST_COMMON_MOCKS_ORBIT_MOCKS_HPP_
+#define TEST_COMMON_MOCKS_ORBIT_MOCKS_HPP_
+
 #include <gmock/gmock.h>
 
 #include "src/orbit/orbit.hpp"
@@ -17,3 +20,5 @@ class MockOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
 };
 
 }  // namespace found
+
+#endif  // TEST_COMMON_MOCKS_ORBIT_MOCKS_HPP_

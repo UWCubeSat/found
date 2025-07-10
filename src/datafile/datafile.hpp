@@ -1,5 +1,5 @@
-#ifndef DATAFILE_H
-#define DATAFILE_H
+#ifndef SRC_DATAFILE_DATAFILE_HPP_
+#define SRC_DATAFILE_DATAFILE_HPP_
 
 #include <memory>
 #include <cstdint>
@@ -101,4 +101,4 @@ struct DataFile {
 
 }  // namespace found
 
-#endif  // DATAFILE_H
+#endif  // SRC_DATAFILE_DATAFILE_HPP_

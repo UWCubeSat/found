@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef SRC_COMMAND_LINE_PARSING_PARSER_HPP_
+#define SRC_COMMAND_LINE_PARSING_PARSER_HPP_
 
 #include "command-line/parsing/options.hpp"
 
@@ -47,4 +47,4 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv);
 }  // namespace found
 
 
-#endif  // PARSER_H
+#endif  // SRC_COMMAND_LINE_PARSING_PARSER_HPP_
