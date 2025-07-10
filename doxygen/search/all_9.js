@@ -7,9 +7,10 @@ var searchData=
   ['inplanerotation_4',['inPlaneRotation',['../structfound_1_1OrbitParams.html#a82aa7a79b4ace0a4b3f348da96560fcb',1,'found::OrbitParams']]],
   ['insensor_5',['InSensor',['../classfound_1_1Camera.html#a0de32940821a98fdf6ce10c4898d426c',1,'found::Camera']]],
   ['installation_6',['Installation',['../index.html#autotoc_md1',1,'']]],
-  ['inverse_7',['Inverse',['../classfound_1_1Mat3.html#aee2ad12694bb3267ae9db48070fc56e3',1,'found::Mat3']]],
-  ['isdda_8',['ISDDA',['../options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803',1,'options.hpp']]],
-  ['isunit_9',['IsUnit',['../classfound_1_1Quaternion.html#a1a51d83a4545c557238ac1a088d6bc29',1,'found::Quaternion']]],
-  ['isvalidmagicnumber_10',['isValidMagicNumber',['../namespacefound.html#a9bc726a5c467738263005b5f0d1490fc',1,'found']]],
-  ['iterativesphericaldistancedeterminationalgorithm_11',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
+  ['integration_7',['CMake Integration',['../index.html#autotoc_md13',1,'']]],
+  ['inverse_8',['Inverse',['../classfound_1_1Mat3.html#aee2ad12694bb3267ae9db48070fc56e3',1,'found::Mat3']]],
+  ['isdda_9',['ISDDA',['../options_8hpp.html#a073d64fd6b69fe9db79a39bf0dfaf803',1,'options.hpp']]],
+  ['isunit_10',['IsUnit',['../classfound_1_1Quaternion.html#a1a51d83a4545c557238ac1a088d6bc29',1,'found::Quaternion']]],
+  ['isvalidmagicnumber_11',['isValidMagicNumber',['../namespacefound.html#a9bc726a5c467738263005b5f0d1490fc',1,'found']]],
+  ['iterativesphericaldistancedeterminationalgorithm_12',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
 ];

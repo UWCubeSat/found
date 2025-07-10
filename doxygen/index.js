@@ -15,5 +15,6 @@ var index =
         [ "Vector Generation", "index.html#autotoc_md11", null ]
       ] ],
       [ "Orbit Determination", "index.html#autotoc_md12", null ]
-    ] ]
+    ] ],
+    [ "CMake Integration", "index.html#autotoc_md13", null ]
 ];

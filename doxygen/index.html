@@ -109,11 +109,17 @@ Building FOUND</h2>
 <ul>
 <li>Clone the repository (<code>git clone <a href="https://github.com/UWCubeSat/found.git">https://github.com/UWCubeSat/found.git</a></code>)</li>
 <li>Go into the directory (<code>cd found</code>)</li>
-<li>Compile the executable (<code>make</code>)</li>
+<li>Compile the executable via GNU Make or CMake (below for more information)</li>
 <li>Execute the executable (<code>./build/bin/found</code>)</li>
 <li>Execute the test suite (<code>./build/bin/found-test</code>)</li>
 </ul>
-<p>As this repository uses GNU Make to generate its artifacts, you'll need to rerun <code>make</code> everytime you change the code.</p>
+<p>This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The <code>build.sh</code> script abstracts the difference for you. It is run as:</p>
+<ol type="1">
+<li>Run GNU Make: <code>./build.sh make [GNU Make options]</code></li>
+<li>Run CMake: <code>./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"</code></li>
+<li>Clean the build folder: <code>./build.sh clean</code></li>
+<li>Clean the build and cache folders: <code>./build.sh clean_all</code></li>
+</ol>
 <h1><a class="anchor" id="autotoc_md4"></a>
 Usage</h1>
 <p>The main executable, which is found in <code>./build/bin/found</code>, operates as a standard command-line based program. The usage is: </p><div align="center"></div><div align="center"><code>./build/bin/found &lt;option&gt; [flags]</code></div><div align="center"></div><p> There are currently two options:</p>
@@ -204,8 +210,25 @@ Vector Generation</h3>
 Orbit Determination</h2>
 <p>This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:</p><ul>
 <li>[ ] Runge-Kutta Based Orbital Prediction</li>
-<li>[ ] Lambert's Problem-Based Orbital Prediction </li>
+<li>[ ] Lambert's Problem-Based Orbital Prediction</li>
 </ul>
+<h1><a class="anchor" id="autotoc_md13"></a>
+CMake Integration</h1>
+<p>This project's code can be integrated with yours via cmake. To use: </p><div class="fragment"><div class="line">include(FetchContent)</div>
+<div class="line"> </div>
+<div class="line">cmake_minimum_required(VERSION 3.16)</div>
+<div class="line">project(test)</div>
+<div class="line"> </div>
+<div class="line">FetchContent_Declare(</div>
+<div class="line">  found</div>
+<div class="line">  GIT_REPOSITORY https://github.com/UWCubeSat/found.git</div>
+<div class="line">)</div>
+<div class="line"> </div>
+<div class="line">FetchContent_MakeAvailable(found)</div>
+<div class="line"> </div>
+<div class="line">add_executable(your_executable ...)</div>
+<div class="line">target_link_libraries(test PRIVATE found::found_lib) # Link our library</div>
+</div><!-- fragment --><p> The library <code>found::found_lib</code> already has all the include statements needed inside of it, so no need to locate them. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
