@@ -122,17 +122,17 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
-    std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);  // GCOVR_EXCL_LINE
+    std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
     for (const Vec2 &point : p) {
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    std::unique_ptr<decimal[]> losses(new decimal[numIterations]{});  // GCOVR_EXCL_LINE
-    std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);  // GCOVR_EXCL_LINE
+    std::unique_ptr<decimal[]> losses(new decimal[numIterations]{});
+    std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);
     PositionVector result{0, 0, 0};
 
     size_t indicies_size = numIterations * 3;
-    std::unique_ptr<size_t[]> indicies(new size_t[indicies_size]);  // GCOVR_EXCL_LINE
+    std::unique_ptr<size_t[]> indicies(new size_t[indicies_size]);
 
     // Get the first estimate, and use it as the reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -212,7 +212,7 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
     assert(size % 3 == 0);
     std::uniform_int_distribution<size_t> dist(0, n - 1);
     // Operates under the asusmption you won't call Run more than once
-    std::unique_ptr<uint64_t[]> logits(new uint64_t[n]{});  // GCOVR_EXCL_LINE
+    std::unique_ptr<uint64_t[]> logits(new uint64_t[n]);
     size_t i = 0;
     while (i < size) {
         // Uniformly generate the first number
