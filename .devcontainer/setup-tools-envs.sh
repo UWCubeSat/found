@@ -2,7 +2,6 @@
 set -e
 
 TOOLS_DIR="/workspace/tools"
-MAMBA_ROOT_PREFIX="/workspace/.mamba"
 export MAMBA_ROOT_PREFIX
 
 # Find all environment.yml files under tools/
@@ -12,6 +11,14 @@ find "$TOOLS_DIR" -mindepth 2 -maxdepth 2 -name environment.yml | while read -r 
   if [ -z "$envname" ]; then
     envname=$(basename "$(dirname "$envfile")")
   fi
-  echo "Creating micromamba env: $envname"
-  micromamba env create -f "$envfile" -y -n "$envname" || true
+
+  echo "Processing micromamba env: $envname"
+
+  if micromamba env list | grep -qw "$envname"; then
+    echo "Updating existing micromamba env: $envname"
+    micromamba env update -n "$envname" -f "$envfile" -y
+  else
+    echo "Creating new micromamba env: $envname"
+    micromamba env create -n "$envname" -f "$envfile" -y
+  fi
 done
