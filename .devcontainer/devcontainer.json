@@ -4,5 +4,5 @@
   "service": "dev",
   "workspaceFolder": "/workspace",
   "overrideCommand": true,
-  "postCreateCommand": "make clean && make && bash"
+  "postCreateCommand": "./build.sh clean && ./build.sh cmake && bash"
 } 

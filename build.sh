@@ -14,11 +14,14 @@ elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: ./build.sh clean"
     echo "Usage: ./build.sh clean_all"
 elif [ "$1" = "clean" ]; then
+    echo "rm -rf build"
     rm -rf build
 elif [ "$1" = "clean_all" ]; then
+    echo "m -rf build .cache"
     rm -rf build .cache
 elif [ "$1" = "make" ]; then
     shift
+    echo make --build . "$@"
     make "$@"
 else
     echo "Usage: ./build.sh make [GNU Make Options]"
