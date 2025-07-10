@@ -4,5 +4,5 @@
   "service": "dev",
   "workspaceFolder": "/workspace",
   "overrideCommand": true,
-  "postCreateCommand": "./build.sh clean && ./build.sh cmake && bash"
-} 
+  "postCreateCommand": "/workspace/build.sh cmake && git config --global user.name \"${GIT_AUTHOR_NAME:-Your Name}\" && git config --global user.email \"${GIT_AUTHOR_EMAIL:-you@example.com}\" && bash && clear"
+}

@@ -17,7 +17,7 @@ elif [ "$1" = "clean" ]; then
     echo "rm -rf build"
     rm -rf build
 elif [ "$1" = "clean_all" ]; then
-    echo "m -rf build .cache"
+    echo "rm -rf build .cache"
     rm -rf build .cache
 elif [ "$1" = "make" ]; then
     shift
