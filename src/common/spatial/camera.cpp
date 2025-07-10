@@ -94,7 +94,7 @@ decimal Camera::Fov() const {
  * 
 */
 decimal FovToFocalLength(decimal xFov, decimal xResolution) {
-    return xResolution / 2.0f / tan(xFov/2);
+    return xResolution / DECIMAL(2.0) / tan(xFov/2);
 }
 
 /**

@@ -16,11 +16,16 @@ For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtai
 ## Building FOUND
 - Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
-- Compile the executable (`make`)
+- Compile the executable via GNU Make or CMake (below for more information)
 - Execute the executable (`./build/bin/found`)
 - Execute the test suite (`./build/bin/found-test`)
 
-As this repository uses GNU Make to generate its artifacts, you'll need to rerun `make` everytime you change the code.
+This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
+
+1. Run GNU Make: `./build.sh make [GNU Make options]`
+2. Run CMake: `./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"`
+3. Clean the build folder: `./build.sh clean`
+4. Clean the build and cache folders: `./build.sh clean_all`
 
 # Usage
 The main executable, which is found in `./build/bin/found`, operates as a standard command-line based program. The usage is:
@@ -135,3 +140,24 @@ The distance information will then be used to form a vector of the satellite rel
 This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
 - [ ] Runge-Kutta Based Orbital Prediction
 - [ ] Lambert's Problem-Based Orbital Prediction
+
+# CMake Integration
+
+This project's code can be integrated with yours via cmake. To use:
+```CMake
+include(FetchContent)
+
+cmake_minimum_required(VERSION 3.16)
+project(test)
+
+FetchContent_Declare(
+  found
+  GIT_REPOSITORY https://github.com/UWCubeSat/found.git
+)
+
+FetchContent_MakeAvailable(found)
+
+add_executable(your_executable ...)
+target_link_libraries(test PRIVATE found::found_lib) # Link our library
+```
+The library `found::found_lib` already has all the include statements needed inside of it, so no need to locate them.
