@@ -1,17 +1,13 @@
 FROM ubuntu:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV MAMBA_ROOT_PREFIX=/workspace/.mamba
-ENV PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+ENV DEBIAN_FRONTEND=noninteractive \
+    MAMBA_ROOT_PREFIX=/opt/micromamba \
+    PATH=/opt/micromamba/bin:$PATH \
+    MAMBA_DOCKERFILE_ACTIVATE=1
 
-# Install micromamba (system-wide for all users)
-RUN mkdir -p $MAMBA_ROOT_PREFIX/bin && \
-    wget -qO $MAMBA_ROOT_PREFIX/bin/micromamba https://micro.mamba.pm/api/micromamba/linux-64/latest && \
-    chmod +x $MAMBA_ROOT_PREFIX/bin/micromamba
-
-# Consolidate APT actions into one layer
+# Install system dependencies and micromamba
 RUN apt-get update && apt-get -y upgrade && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
         git \
         g++ \
         cmake \
@@ -21,13 +17,21 @@ RUN apt-get update && apt-get -y upgrade && \
         python3 \
         python3-pip \
         doxygen \
-        graphviz && \
+        graphviz \
+        curl \
+        ca-certificates \
+        bzip2 && \
+    curl -L https://micromamba.snakepit.net/api/micromamba/linux-64/latest | \
+        tar -xvj -C /usr/local/bin --strip-components=1 bin/micromamba && \
+    apt-get purge -y curl bzip2 && \
+    apt-get autoremove -y && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-
-# Install Python tools (in one layer)
+# Install Python tools
 RUN pip install --break-system-packages \
     git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint \
     git+https://github.com/gcovr/gcovr.git@8.3#egg=gcovr
+
 
 
