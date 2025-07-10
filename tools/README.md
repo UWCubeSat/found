@@ -15,6 +15,15 @@ Each tool uses a different set of dependencies, so its in your best interest to 
 4. Activate the environment for that tool (`conda activate <environment-name>`)
 5. Invoke the tool (`python -m tools.<tool-name> [arguments for tool]`)
 
+Each tool uses a different set of dependencies, so it's best to use micromamba. In the dev container, environments are created automatically for each tool (but not activated). To use a tool:
+
+1. `cd` into the respective folder
+2. (Environments are already created by the container)
+3. Activate the environment for that tool:<br>
+   `micromamba activate <environment-name>`
+4. Invoke the tool:<br>
+   `python -m tools.<tool-name> [arguments for tool]`
+
 # Current Capabilities
 
 For more information, visit each tool's folder for its `README.md`
