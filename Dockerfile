@@ -20,24 +20,16 @@ RUN echo 'eval "$(micromamba shell hook --shell bash)"' >> /etc/bash.bashrc
 # Clean up micromamba install tools and continue with other packages
 RUN apt-get purge -y curl bzip2 && \
     apt-get autoremove -y && \
-    apt-get clean && \
-    apt-get install -y \
-        git \
-        g++ \
-        cmake \
-        wget \
-        tar \
-        valgrind \
-        python3 \
-        python3-pip \
-        doxygen \
-        graphviz && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean
+    
+# Copy the install script into the container
+COPY install.sh /tmp/install.sh
 
-# Install Python tools
-RUN pip install --break-system-packages \
-    git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint \
-    git+https://github.com/gcovr/gcovr.git@8.3#egg=gcovr
+# Run the script and remove it in a single layer
+RUN chmod +x /tmp/install.sh && /tmp/install.sh || (cat /tmp/install.log && exit 1)
+
+
+
 
 
 

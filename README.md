@@ -10,31 +10,30 @@ There are currently two options:
 ## Docker
 To install Docker on your system, visit the [official Docker installation guide](https://docs.docker.com/get-docker/). If you are using a linux computer it is reccomended that you install Docker with `apt-get` instead.
 
-#### Prerequisites
+### Prerequisites
 - Visual Studio Code
 - `Dev Containers` VScode extension (`code --install-extension ms-vscode-remote.remote-containers`)
-#### Building FOUND
+### Building FOUND
 - Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Open up FOUND in VScode (`code path/to/found`)
 - Open FOUND in container (Press `F1` and select Dev Containers: Open Folder in Container)
-- You can now [use](#usage) FOUND!
-
+- You can now [use](usage) FOUND!
 
 ## Install Script
 If you are using Windows, you must download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default) to run the following
 code.
 
-#### Prerequisites
+### Prerequisites
 For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtain the required packages for this software:
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
-#### Building FOUND
+### Building FOUND
 - Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
 - Compile the executable via GNU Make or CMake (below for more information)
-- You can now [use](#usage) FOUND!
+- You can now [use](usage) FOUND!
 
 ## Recompile
 This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
