@@ -1,0 +1,13 @@
+<map id="found::LOSTVectorGenerationAlgorithm" name="found::LOSTVectorGenerationAlgorithm">
+<area shape="rect" id="Node000001" title="The LOSTVectorGenerationAlgorithm class houses the a Vector Assembly Algorithm that calculates the po..." alt="" coords="129,285,342,325"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1VectorGenerationAlgorithm.html" title="The VectorGenerationAlgorithm class houses the Vector Assembly Algorithm." alt="" coords="5,197,249,223"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,230,215,283,212,287,149,234"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="19,108,235,148"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="130,162,130,197,125,197,125,162"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="9,5,117,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="79,41,118,106,114,109,75,44"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="142,5,241,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="180,44,141,109,136,106,175,41"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1Quaternion.html" title="A Quaternion is a mutable object that represents a Quaternion." alt="" coords="274,197,413,223"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="321,234,259,287,256,283,318,230"/>
+</map>
