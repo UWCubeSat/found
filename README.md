@@ -3,23 +3,40 @@
 FOUND is a system that Earth satellites can use to calculate their orbits using pictures taken by the satellite of Earth. It is being developed at Husky Satellite Lab, a CubeSat team at the University of Washington. It will be deployed and tested on HuskySat-2, the team's next mission.
 
 # Installation
+There are currently two options:
+ 1. `Docker` ensures that FOUND runs the same way on any machine, eliminating issues related to differences in operating systems, installed libraries, or configuration settings.
+ 2. `Install Script` is only reccomended if you are using a linux computer to build the main excecutable \(Docker also works for this purpose). If you plan on doing any development, it is reccomended that you use Docker. 
 
+## Docker
+To install Docker on your system, visit the [official Docker installation guide](https://docs.docker.com/get-docker/). If you are using a linux computer it is reccomended that you install Docker with `apt-get` instead.
+
+#### Prerequisites
+- Visual Studio Code
+- `Dev Containers` VScode extension (`code --install-extension ms-vscode-remote.remote-containers`)
+#### Building FOUND
+- Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
+- Open up FOUND in VScode (`code path/to/found`)
+- Open FOUND in container (Press `F1` and select Dev Containers: Open Folder in Container)
+- You can now [use](#usage) FOUND!
+
+
+## Install Script
 If you are using Windows, you must download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default) to run the following
 code.
 
-## Prerequisites
+#### Prerequisites
 For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtain the required packages for this software:
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
-## Building FOUND
+#### Building FOUND
 - Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
 - Go into the directory (`cd found`)
 - Compile the executable via GNU Make or CMake (below for more information)
-- Execute the executable (`./build/bin/found`)
-- Execute the test suite (`./build/bin/found-test`)
+- You can now [use](#usage) FOUND!
 
+## Recompile
 This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
 
 1. Run GNU Make: `./build.sh make [GNU Make options]`
@@ -39,7 +56,7 @@ There are currently two options:
 1. `calibration`: FOUND needs to know its own camera attitude, but does not find that information. Thus, this step produces a relative attitude based on a reference attitude that is always known, and one measurement of the FOUND camera's attitude. The output is to a `.found` file that stores this information.
 2. `distance`: FOUND then uses an image taken from space together with a `.found` file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible).
 
-To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`.
+To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`. To execute the test suite run  `./build/bin/found-test`.
 
 ## Example Usage
 Here, we present a common usage for this program. After generating the binary via `make` or simply `make compile`, execute the command:
