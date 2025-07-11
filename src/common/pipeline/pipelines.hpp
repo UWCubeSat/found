@@ -1,6 +1,7 @@
 #ifndef SRC_COMMON_PIPELINE_PIPELINES_HPP_
 #define SRC_COMMON_PIPELINE_PIPELINES_HPP_
 
+#include <optional>
 #include <stdexcept>
 #include <cassert>
 
@@ -18,6 +19,8 @@ namespace found {
  * @param Input The input type
  * @param Output The output type
  * @param N The number of stages it uses
+ * 
+ * @pre Output must be able to be default constructed
  */
 template<typename Input,
          typename Output,
@@ -63,9 +66,8 @@ class Pipeline : public FunctionStage<Input, Output> {
     size_t size = 0;
     /// Whether we're complete
     bool ready = false;
-    /// The final product. This is only sometimes used,
-    /// but is better than using placement new
-    Output finalProduct;
+    /// The final product. This is only sometimes used
+    std::optional<Output> finalProduct;
 
     /**
      * Adds a stage to this pipeline
@@ -218,6 +220,7 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * been called successfully
      */
     Output Run(const Input &input) override {
+        assert(!this->finalProduct);
         // MANUAL VERIFICATION: The below branch is fully tested via pipeline-test.cpp
         if (!this->ready)
             throw std::runtime_error("This is an illegal action: the pipeline is not ready yet");
@@ -226,8 +229,10 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
         // If this pipeline is not composed, construct output
         // into ourself, otherwise construct into the outer pipeline
         if (this->product == nullptr) {
-            *this->lastProduct = &this->finalProduct;
-            this->product = &this->finalProduct;
+            // engage our finalProduct
+            this->finalProduct.emplace();
+            *this->lastProduct = &this->finalProduct.value();
+            this->product = &this->finalProduct.value();
         } else {
             *this->lastProduct = this->product;
         }
@@ -257,6 +262,13 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      */
     ModifyingPipeline() = default;
 
+    /**
+     * Adds a stage to this
+     * 
+     * @param stage The ModifyingStage<T> to add to this
+     * 
+     * @return this, with the added stage
+     */
     ModifyingPipeline &AddStage(ModifyingStage<T> &stage) {
         assert(this->size < N - 1);
         Pipeline<T, T, N>::AddStageHelper(stage);
@@ -288,12 +300,15 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      * the registered stages, in order
      */
     T Run(const T &input) override {
+        assert(!this->finalProduct);
         if (!this->ready)
             throw std::runtime_error("This is an illegal action: the pipeline is not ready yet");
         // Construct here if there is no next product,
         // or construct there if there is
         if (this->product == nullptr) {
-            this->product = &this->finalProduct;
+            // engage our finalProduct
+            this->finalProduct.emplace();
+            this->product = &this->finalProduct.value();
         }
         *this->product = input;
         for (size_t i = 0; i < this->size; i++) {

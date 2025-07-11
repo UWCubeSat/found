@@ -79,6 +79,10 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 
     /**
      * Place documentation here. Press enter to automatically make a new line
+     * 
+     * @param image The image to process
+     * 
+     * @return The edge points in the image most closely resembling that of earth
      * */
     Points Run(const Image &image) override;
  private:

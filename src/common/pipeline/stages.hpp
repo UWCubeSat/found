@@ -25,6 +25,11 @@ class Action {
 /**
  * Stage is an interface that
  * wraps an SISO function
+ * 
+ * @param Input The input type
+ * @param Output The output type
+ * 
+ * @pre Input must be able to be default constructed
  */
 template<typename Input, typename Output>
 class Stage : public Action {
@@ -91,6 +96,11 @@ class FunctionStage : public Stage<const raw_type<Input> &, raw_type<Output>> {
     Output *product = nullptr;
 };
 
+/**
+ * ModifyingStage is a stage that modifies a resource
+ * 
+ * @param T The type of resource being modified
+ */
 template<typename T>
 class ModifyingStage : public Stage<raw_type<T> &, void> {
  public:
@@ -113,10 +123,16 @@ class ModifyingStage : public Stage<raw_type<T> &, void> {
 
     /**
      * Sets the resource to modify
+     * 
+     * @param resource The resource to modify
+     * 
+     * @post When used in a ModifyingPipeline,
+     * this will modify resource via Run(T &)
      */
     void SetResource(T &resource) {this->resource = &resource;}
 
  private:
+    /// The pointer to the resource
     T *resource = nullptr;
 };
 

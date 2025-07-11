@@ -6,8 +6,8 @@ if [ "$1" = "cmake" ]; then
     echo cmake $1 ..
     cmake $1 .. 
     shift
-    echo cmake --build . "$@"
-    cmake --build . "$@"
+    echo cmake --build . $@
+    cmake --build . $@
 elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "Usage: ./build.sh make [GNU Make Options]"
     echo "Usage: ./build.sh cmake \"[CMake Config Options]\" [CMake Build Options]"
@@ -19,7 +19,7 @@ elif [ "$1" = "clean_all" ]; then
     rm -rf build .cache
 elif [ "$1" = "make" ]; then
     shift
-    make "$@"
+    make $@
 else
     echo "Usage: ./build.sh make [GNU Make Options]"
     echo "Usage: ./build.sh cmake \"[CMake Config Options]\" [CMake Build Options]"

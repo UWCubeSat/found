@@ -45,8 +45,8 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     Vec3 circlePt = spats[0];
 
     // Mid point between 2 vectors
-    Vec3 mid1 = midpoint(spats[0], spats[1]);
-    Vec3 mid2 = midpoint(spats[1], spats[2]);
+    Vec3 mid1 = Midpoint(spats[0], spats[1]);
+    Vec3 mid2 = Midpoint(spats[1], spats[2]);
 
     Vec3 mid1N = diff1;
     Vec3 mid2N = diff2;

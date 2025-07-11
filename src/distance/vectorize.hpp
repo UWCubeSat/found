@@ -98,6 +98,12 @@ class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorit
 
     /**
      * Place documentation here. Press enter to automatically make a new line
+     * 
+     * @param x_E The position vector of the satellite with respect to the
+     * camera coordiinate system
+     * 
+     * @return The position vector of the satellite with respect to the
+     * planet's inertial reference frame
      * */
     PositionVector Run(const PositionVector &x_E) override;
  private:

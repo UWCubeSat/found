@@ -28,8 +28,7 @@ function(check_program_version out_var program_name required_version)
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
     # Extract the version number (first x.y or x.y.z match)
-    string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" VERSION_EXTRACTED
-                 "${VERSION_RAW}")
+    string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" VERSION_EXTRACTED "${VERSION_RAW}")
     if(VERSION_EXTRACTED VERSION_LESS ${required_version})
         message(
             FATAL_ERROR
@@ -79,7 +78,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Include dirs
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${SRC_DIR})
-include_directories(${CACHE_DIR})
 
 # Logging macros
 option(DISABLE_LOGGING "Disable logging" OFF)
@@ -121,7 +119,8 @@ file(MAKE_DIRECTORY ${STB_IMAGE_DIR})
 FetchContent_Declare(
     ${STB_IMAGE}
     URL https://raw.githubusercontent.com/nothings/stb/master/${STB_IMAGE}.h
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
 
 # Download stb_image and compile into library
 if(NOT EXISTS "${STB_IMAGE_HEADER}")
@@ -133,9 +132,23 @@ if(NOT EXISTS ${STB_IMAGE_SRC})
 endif()
 add_library(${STB_IMAGE} STATIC ${STB_IMAGE_SRC})
 target_compile_definitions(${STB_IMAGE} PRIVATE STB_IMAGE_IMPLEMENTATION)
+target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
 # Set the source libraries
 set(SRC_LIBS ${STB_IMAGE})
+
+##### FOUND Library #####
+
+add_library(found_lib STATIC ${FILTERED_SRC})
+target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
+target_include_directories(found_lib
+        PUBLIC
+        $<BUILD_INTERFACE:${SRC_DIR}>
+        $<INSTALL_INTERFACE:include>)
+target_compile_definitions(found_lib PRIVATE 
+        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+add_library(found::found_lib ALIAS found_lib)
 
 ########## Test Libraries ##########
 
@@ -143,31 +156,20 @@ if(ENABLE_WORKFLOW)
 
 ##### Googletest #####
 
+# We lose the cache here, but I'll take that tradeoff for ease here
 set(GTEST googletest)
 set(GTEST_VERSION release-1.12.1)
-set(GTEST_DIR ${CACHE_DIR}/${GTEST}-${GTEST_VERSION})
-set(GTEST_INSTALL_DIR ${GTEST_DIR}/src/${GTEST}-build/install)
-set(GTEST_LIBS gtest gtest_main gmock gmock_main)
+set(GTEST_LIBS gmock gmock_main)
 
-ExternalProject_Add(
-    ${GTEST}
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
     GIT_REPOSITORY https://github.com/google/${GTEST}.git
     GIT_TAG ${GTEST_VERSION}
-    PREFIX ${GTEST_DIR}
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=install -DCMAKE_RULE_MESSAGES=OFF
-               -DCMAKE_INSTALL_MESSAGE=NEVER
-    UPDATE_COMMAND ""
-    TEST_COMMAND ""
-    BUILD_ALWAYS OFF
-    LOG_CONFIGURE OFF
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+)
 
-foreach(lib ${GTEST_LIBS})
-    add_library(${lib} STATIC IMPORTED GLOBAL)
-    set_target_properties(
-        ${lib} PROPERTIES IMPORTED_LOCATION "${GTEST_INSTALL_DIR}/lib/lib${lib}.a")
-    add_dependencies(${lib} ${GTEST})
-endforeach()
+FetchContent_MakeAvailable(googletest)
 
 set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
 
@@ -197,24 +199,14 @@ add_compile_options(-Wdouble-promotion -Werror)
 
 ##### compile #####
 
-add_library(found_lib STATIC ${FILTERED_SRC})
-target_link_libraries(found_lib PUBLIC ${STB_IMAGE})
-target_include_directories(found_lib
-        PUBLIC
-        $<BUILD_INTERFACE:${SRC_DIR}>
-        $<INSTALL_INTERFACE:include>)
-add_library(found::found_lib ALIAS found_lib)
-
 file(MAKE_DIRECTORY ${BIN_DIR})
+
 add_executable(found ${SRC_MAIN})
-target_link_libraries(found PUBLIC ${SRC_LIBS} found_lib)
-if(NOT DISABLE_LOGGING)
-    target_compile_definitions(found PRIVATE ENABLE_LOGGING
-                                             LOGGING_LEVEL=${LOGGING_LEVEL})
-    target_compile_definitions(found_lib PRIVATE
-                               ENABLE_LOGGING
-                               LOGGING_LEVEL=${LOGGING_LEVEL})
-endif()
+
+target_link_libraries(found PRIVATE ${SRC_LIBS} found_lib)
+target_compile_definitions(found PRIVATE 
+        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
 set_target_properties(found PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_custom_target(compile
                   DEPENDS found
@@ -224,23 +216,26 @@ if(ENABLE_WORKFLOW)
 
 ##### test #####
 
-add_executable(found-test ${TEST} ${FILTERED_SRC})
-target_include_directories(found-test
-                            PRIVATE "${GTEST_INSTALL_DIR}/include")
+add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
                                                 LOGGING_LEVEL=INFO)
-target_compile_options(found-test PRIVATE --coverage -pthread)
-target_link_libraries(found-test PRIVATE --coverage)
-if(NOT OMIT_ASAN)
-    target_compile_options(found-test PRIVATE -fsanitize=address
-                                                -fomit-frame-pointer)
-    target_link_libraries(found-test PRIVATE -fsanitize=address
-                                                -fomit-frame-pointer)
-endif()
-target_link_libraries(found-test PRIVATE ${TEST_LIBS})
+target_compile_options(found-test PRIVATE
+    --coverage
+    -pthread
+    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
+    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>
+)
+target_link_libraries(found-test PRIVATE
+    --coverage
+    ${TEST_LIBS}
+    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
+    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>)
 set_target_properties(found-test PROPERTIES
                         RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-add_dependencies(found-test ${GTEST} ${TEST_LIBS})
+add_dependencies(found-test ${TEST_LIBS})
+add_custom_target(test
+                  DEPENDS found-test
+                  COMMENT "Compiles test code")
 
 ##### coverage #####
 
@@ -277,7 +272,7 @@ endif()
 
 add_custom_target(
     documentation
-    COMMAND ./doxygen.sh
+    COMMAND doxygen
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     VERBATIM
     DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
@@ -299,7 +294,8 @@ if(ENABLE_WORKFLOW)
     add_dependencies(default documentation)
     add_dependencies(documentation lint)
     add_dependencies(lint coverage)
-    add_dependencies(coverage compile)
+    add_dependencies(coverage test)
+    add_dependencies(test compile)
 else()
     add_dependencies(default compile)
 endif()

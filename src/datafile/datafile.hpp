@@ -95,8 +95,10 @@ struct DataFile {
      * Moves another DataFile
      * 
      * @param other The file to copy
+     * 
+     * @return The resulting data file (this)
      */
-    DataFile& operator=(DataFile &&other) = default;
+    DataFile &operator=(DataFile &&other) = default;
 };
 
 }  // namespace found

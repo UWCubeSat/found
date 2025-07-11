@@ -253,7 +253,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param base The base
      * @param power The power
      * 
-     * Return base ^ power
+     * @return base ^ power
      */
     inline uint64_t Pow(uint64_t base, uint64_t power) {
         uint64_t result = 1;
@@ -296,6 +296,11 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
     /**
     * Place documentation here. Press enter to automatically make a new line
+    * 
+    * @param p The points in the image on Earth's horizon
+    * 
+    * @return The position vector of the satellite with respect
+    * to the camera's coordinate system
     * */
     PositionVector Run(const Points &p) override;
  private:

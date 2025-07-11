@@ -246,8 +246,7 @@ $(DOXYGEN_AWESOME_ARTIFACT):
 $(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET) $(DOXYGEN_AWESOME_ARTIFACT)
 	$(call PRINT_TARGET_HEADER, $(DOXYGEN_TARGET))
 	mkdir -p $(BUILD_DOCUMENTATION_DOXYGEN_DIR)
-	chmod +rwx doxygen.sh
-	./doxygen.sh
+	doxygen
 
 # The clean target (not in default target, cleans just the build folder)
 $(CLEAN_TARGET):
