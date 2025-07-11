@@ -12,10 +12,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Build all
       uses: nick-fields/retry@v3.0.2
@@ -26,10 +26,10 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
@@ -43,10 +43,10 @@ jobs:
   
   float:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
@@ -63,10 +63,10 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Stylecheck
       run: make google_stylecheck
@@ -79,17 +79,21 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
+
+    - name: Move contents
+      run: mv /__w/found/found /home/ubuntu/
 
     - name: Coverage
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
         timeout_minutes: 3
-        command: make clean && make coverage -j16
+        command: cd /home/ubuntu/found && make clean && make coverage -j16
+        shell: bash
     
     - name: Upload Coverage Report
       if: ${{ always() }}
@@ -100,11 +104,11 @@ jobs:
   
   documentation:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
     needs: [build, lint, coverage]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     
     - name: Generate Documentation
       uses: nick-fields/retry@v3.0.2
@@ -138,11 +142,11 @@ jobs:
   
   cmake-build:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
     
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Build all
       uses: nick-fields/retry@v3.0.2
@@ -153,10 +157,10 @@ jobs:
 
   cmake-float:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
@@ -170,10 +174,10 @@ jobs:
   
   cmake-test:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
