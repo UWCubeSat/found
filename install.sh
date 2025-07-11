@@ -51,7 +51,7 @@ case "$OS" in
             exit 1
         fi
         INSTALL="$PM install -y"
-        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz"
+        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz valgrind"
         ;;
     Darwin*)
         if ! command -v brew &> /dev/null; then
