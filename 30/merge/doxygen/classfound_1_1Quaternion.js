@@ -1,8 +1,7 @@
 var classfound_1_1Quaternion =
 [
-    [ "Quaternion", "classfound_1_1Quaternion.html#a75a2cb6a1763272e7dfcd23e08df7561", null ],
-    [ "Quaternion", "classfound_1_1Quaternion.html#a7e8daa5396a4b99d4ee0461cb8d381d8", null ],
     [ "Quaternion", "classfound_1_1Quaternion.html#a6b4cb7111e1a2f0075d27cbc89393456", null ],
+    [ "Quaternion", "classfound_1_1Quaternion.html#a7e8daa5396a4b99d4ee0461cb8d381d8", null ],
     [ "Quaternion", "classfound_1_1Quaternion.html#a0293c4ad2cf7c33132946efeecdb4d85", null ],
     [ "Angle", "classfound_1_1Quaternion.html#a05f87920a68264d12073eb1193ff96a2", null ],
     [ "Canonicalize", "classfound_1_1Quaternion.html#a845cd9f18792c3d147dfec403dedf004", null ],

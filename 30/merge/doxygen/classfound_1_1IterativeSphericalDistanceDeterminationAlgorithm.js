@@ -1,7 +1,6 @@
 var classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm =
 [
     [ "IterativeSphericalDistanceDeterminationAlgorithm", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092", null ],
-    [ "~IterativeSphericalDistanceDeterminationAlgorithm", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a8276fb19bf8aee42d8cb8b1fde915fa8", null ],
     [ "GenerateLoss", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a07e087c0e390d5480c5f21ad5b3e07c5", null ],
     [ "Pow", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a6c2b5b765b46ebda847ea706b015d623", null ],
     [ "Run", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a149b99bb435a5f995f34100fe53ac414", null ],

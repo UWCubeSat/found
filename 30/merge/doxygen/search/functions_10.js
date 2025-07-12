@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['tospherical_0',['tospherical',['../classfound_1_1Quaternion.html#adc189bf5e924b2505f69c1d65d95343e',1,'found::Quaternion::ToSpherical()'],['../classfound_1_1Attitude.html#a41c6b6b15fabdf08f70c3ad6ceb3e18d',1,'found::Attitude::ToSpherical()']]],
-  ['trace_1',['Trace',['../classfound_1_1Mat3.html#a442a7fcf8012e3056a2f708dfe1118f4',1,'found::Mat3']]],
-  ['transpose_2',['Transpose',['../classfound_1_1Mat3.html#acd127d627657f84b969157b5602224e7',1,'found::Mat3']]]
+  ['vec3_0',['vec3',['../classfound_1_1Vec3.html#a6355657ab2aee712b39b38f7b27aae39',1,'found::Vec3::Vec3(decimal x, decimal y, decimal z)'],['../classfound_1_1Vec3.html#afbb6a207c191966662294dfb29e6cc2b',1,'found::Vec3::Vec3()=default']]],
+  ['vector_1',['Vector',['../classfound_1_1Quaternion.html#a075f7b0efb538968108462e80373a718',1,'found::Quaternion']]]
 ];

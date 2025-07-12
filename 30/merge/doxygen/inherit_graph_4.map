@@ -44,7 +44,7 @@
 <area shape="poly" id="edge15_Node000011_Node000015" title=" " alt="" coords="998,408,1110,418,1109,424,997,413"/>
 <area shape="rect" id="Node000016" href="$classfound_1_1SequentialPipeline.html" title="SequentialPipeline is composite Stage (i.e." alt="" coords="1107,473,1295,513"/>
 <area shape="poly" id="edge16_Node000011_Node000016" title=" " alt="" coords="966,424,1070,459,1113,471,1112,476,1069,464,964,429"/>
-<area shape="rect" id="Node000019" href="$classfound_1_1ModifyingStage.html" title=" " alt="" coords="500,422,707,447"/>
+<area shape="rect" id="Node000019" href="$classfound_1_1ModifyingStage.html" title="ModifyingStage is a stage that modifies a resource." alt="" coords="500,422,707,447"/>
 <area shape="poly" id="edge19_Node000018_Node000019" title=" " alt="" coords="400,432,500,432,500,437,400,437"/>
 <area shape="rect" id="Node000024" href="$classfound_1_1FunctionStage.html" title=" " alt="" coords="497,537,710,591"/>
 <area shape="poly" id="edge24_Node000023_Node000024" title=" " alt="" coords="387,724,410,714,430,701,447,680,454,659,461,637,478,614,515,589,518,594,482,618,466,639,459,661,452,683,434,705,412,719,389,729"/>

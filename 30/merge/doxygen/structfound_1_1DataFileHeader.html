@@ -110,33 +110,19 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a4195a88cc69f3da902ae753edf8e3d52" id="r_a4195a88cc69f3da902ae753edf8e3d52"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFileHeader.html#a4195a88cc69f3da902ae753edf8e3d52">version</a> = 1U</td></tr>
 <tr class="memdesc:a4195a88cc69f3da902ae753edf8e3d52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Version of the file format.  <br /></td></tr>
 <tr class="separator:a4195a88cc69f3da902ae753edf8e3d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd86dada0574499097a5e29f8ff94f67" id="r_abd86dada0574499097a5e29f8ff94f67"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFileHeader.html#abd86dada0574499097a5e29f8ff94f67">num_positions</a></td></tr>
-<tr class="memdesc:abd86dada0574499097a5e29f8ff94f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of position entries (<a class="el" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector.">Vec3</a> elements) in the file.  <br /></td></tr>
+<tr class="memitem:abd86dada0574499097a5e29f8ff94f67" id="r_abd86dada0574499097a5e29f8ff94f67"><td class="memItemLeft" align="right" valign="top"><a id="abd86dada0574499097a5e29f8ff94f67" name="abd86dada0574499097a5e29f8ff94f67"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>num_positions</b></td></tr>
+<tr class="memdesc:abd86dada0574499097a5e29f8ff94f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of position entries (<a class="el" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector.">Vec3</a> elements) in the file. <br /></td></tr>
 <tr class="separator:abd86dada0574499097a5e29f8ff94f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9a8c7d909141180a79bbe7277da5f07" id="r_ac9a8c7d909141180a79bbe7277da5f07"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfound_1_1DataFileHeader.html#ac9a8c7d909141180a79bbe7277da5f07">crc</a></td></tr>
-<tr class="memdesc:ac9a8c7d909141180a79bbe7277da5f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">CRC32 checksum of the header (excluding this field) for validation.  <br /></td></tr>
+<tr class="memitem:ac9a8c7d909141180a79bbe7277da5f07" id="r_ac9a8c7d909141180a79bbe7277da5f07"><td class="memItemLeft" align="right" valign="top"><a id="ac9a8c7d909141180a79bbe7277da5f07" name="ac9a8c7d909141180a79bbe7277da5f07"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>crc</b></td></tr>
+<tr class="memdesc:ac9a8c7d909141180a79bbe7277da5f07"><td class="mdescLeft">&#160;</td><td class="mdescRight">CRC32 checksum of the header (excluding this field) for validation. <br /></td></tr>
 <tr class="separator:ac9a8c7d909141180a79bbe7277da5f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the header of a data file used in the serialization process. </p>
 <p>Contains metadata such as a magic identifier, version, number of position records, and a CRC32 checksum for integrity verification. </p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="ac9a8c7d909141180a79bbe7277da5f07" name="ac9a8c7d909141180a79bbe7277da5f07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9a8c7d909141180a79bbe7277da5f07">&#9670;&#160;</a></span>crc</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t found::DataFileHeader::crc</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>CRC32 checksum of the header (excluding this field) for validation. </p>
-
-</div>
-</div>
 <a id="af39bcedbc66cfe3954d9e2399503cad1" name="af39bcedbc66cfe3954d9e2399503cad1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af39bcedbc66cfe3954d9e2399503cad1">&#9670;&#160;</a></span>magic</h2>
 
@@ -151,22 +137,6 @@ Public Attributes</h2></td></tr>
 
 <p>Magic identifier used to validate file type. </p>
 <p>The magic string "FOUN" is used to identify this file format during deserialization. This is similar to other file formats (e.g., PNG, PDF) that include a recognizable signature at the start of the file. If the magic value doesn't match, the file is considered invalid or corrupted. </p>
-
-</div>
-</div>
-<a id="abd86dada0574499097a5e29f8ff94f67" name="abd86dada0574499097a5e29f8ff94f67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd86dada0574499097a5e29f8ff94f67">&#9670;&#160;</a></span>num_positions</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t found::DataFileHeader::num_positions</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Number of position entries (<a class="el" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector.">Vec3</a> elements) in the file. </p>
 
 </div>
 </div>
@@ -195,7 +165,7 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacefound.html">found</a></li><li class="navelem"><a class="el" href="structfound_1_1DataFileHeader.html">DataFileHeader</a></li>
+    <li class="navelem"><b>found</b></li><li class="navelem"><a class="el" href="structfound_1_1DataFileHeader.html">DataFileHeader</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

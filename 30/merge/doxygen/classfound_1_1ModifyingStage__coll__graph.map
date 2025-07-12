@@ -1,5 +1,5 @@
 <map id="found::ModifyingStage&lt; T &gt;" name="found::ModifyingStage&lt; T &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,167,212,192"/>
+<area shape="rect" id="Node000001" title="ModifyingStage is a stage that modifies a resource." alt="" coords="5,167,212,192"/>
 <area shape="rect" id="Node000002" href="$classfound_1_1Stage.html" title=" " alt="" coords="19,79,198,119"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,132,111,166,106,166,106,132"/>
 <area shape="rect" id="Node000003" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="55,5,163,31"/>

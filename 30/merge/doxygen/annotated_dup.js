@@ -1,19 +1,19 @@
 var annotated_dup =
 [
-    [ "found", "namespacefound.html", [
+    [ "found", null, [
       [ "_d_u_", "unionfound_1_1__d__u__.html", "unionfound_1_1__d__u__" ],
       [ "_f_u_", "unionfound_1_1__f__u__.html", "unionfound_1_1__f__u__" ],
       [ "Action", "classfound_1_1Action.html", "classfound_1_1Action" ],
       [ "ApproximateOrbitPropagationAlgorithm", "classfound_1_1ApproximateOrbitPropagationAlgorithm.html", "classfound_1_1ApproximateOrbitPropagationAlgorithm" ],
       [ "Attitude", "classfound_1_1Attitude.html", "classfound_1_1Attitude" ],
-      [ "CalibrationAlgorithm", "classfound_1_1CalibrationAlgorithm.html", "classfound_1_1CalibrationAlgorithm" ],
+      [ "CalibrationAlgorithm", "classfound_1_1CalibrationAlgorithm.html", null ],
       [ "CalibrationPipelineExecutor", "classfound_1_1CalibrationPipelineExecutor.html", "classfound_1_1CalibrationPipelineExecutor" ],
       [ "Camera", "classfound_1_1Camera.html", "classfound_1_1Camera" ],
       [ "Component", "structfound_1_1Component.html", "structfound_1_1Component" ],
       [ "DataFile", "structfound_1_1DataFile.html", "structfound_1_1DataFile" ],
       [ "DataFileHeader", "structfound_1_1DataFileHeader.html", "structfound_1_1DataFileHeader" ],
       [ "DateTime", "structfound_1_1DateTime.html", "structfound_1_1DateTime" ],
-      [ "DistanceDeterminationAlgorithm", "classfound_1_1DistanceDeterminationAlgorithm.html", "classfound_1_1DistanceDeterminationAlgorithm" ],
+      [ "DistanceDeterminationAlgorithm", "classfound_1_1DistanceDeterminationAlgorithm.html", null ],
       [ "DistancePipelineExecutor", "classfound_1_1DistancePipelineExecutor.html", "classfound_1_1DistancePipelineExecutor" ],
       [ "EarthSphericalVec3", "structfound_1_1EarthSphericalVec3.html", "structfound_1_1EarthSphericalVec3" ],
       [ "Edge", "structfound_1_1Edge.html", "structfound_1_1Edge" ],
@@ -43,7 +43,7 @@ var annotated_dup =
       [ "Stage", "classfound_1_1Stage.html", "classfound_1_1Stage" ],
       [ "Vec2", "structfound_1_1Vec2.html", "structfound_1_1Vec2" ],
       [ "Vec3", "classfound_1_1Vec3.html", "classfound_1_1Vec3" ],
-      [ "VectorGenerationAlgorithm", "classfound_1_1VectorGenerationAlgorithm.html", "classfound_1_1VectorGenerationAlgorithm" ]
+      [ "VectorGenerationAlgorithm", "classfound_1_1VectorGenerationAlgorithm.html", null ]
     ] ],
     [ "CalibrationOptions", "classCalibrationOptions.html", null ],
     [ "DistanceOptions", "classDistanceOptions.html", null ],

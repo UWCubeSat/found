@@ -26,15 +26,6 @@ var NAVTREE =
 [
   [ "FOUND", "index.html", [
     [ "FOUND: Open-Source Universal Navigation Determiner", "index.html", "index" ],
-    [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
-      [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Functions", "namespacemembers_func.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ],
-        [ "Typedefs", "namespacemembers_type.html", null ]
-      ] ]
-    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -48,14 +39,7 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ],
-      [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
-        [ "Functions", "globals_func.html", null ],
-        [ "Variables", "globals_vars.html", null ],
-        [ "Typedefs", "globals_type.html", null ],
-        [ "Macros", "globals_defs.html", null ]
-      ] ]
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -63,10 +47,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a502f8c6d14dceddd84129e20c98b553b",
-"classfound_1_1Vec3.html#a6c9f87daf429fa98560b87c06aad9cd9",
-"namespacefound.html#a94f29456fb18c7892af920755a4d33c9",
-"style_8hpp.html#a0c12fd80043bf308cd8b1a683d96ddb0"
+"functions_b.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

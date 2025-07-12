@@ -5,8 +5,7 @@ var searchData=
   ['dcm_2',['dcm',['../classfound_1_1Attitude.html#a57595fd4b8114ead25aa42b6feda1151',1,'found::Attitude']]],
   ['de_3',['de',['../classfound_1_1EulerAngles.html#ad2a3eb2f0ef98d6becc9aafc2bda0236',1,'found::EulerAngles']]],
   ['discriminatorratio_5f_4',['discriminatorRatio_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['distance_5fsize_5',['distance_size',['../namespacefound.html#a6f0103eec64306d04b943a4d4bc1edc0',1,'found']]],
-  ['distancealgorithm_6',['distanceAlgorithm',['../classfound_1_1DistancePipelineExecutor.html#a85a7982e86b1e105715b5306996ef7e5',1,'found::DistancePipelineExecutor']]],
-  ['distanceratiosq_5f_7',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['dt_5f_8',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
+  ['distancealgorithm_5',['distanceAlgorithm',['../classfound_1_1DistancePipelineExecutor.html#a85a7982e86b1e105715b5306996ef7e5',1,'found::DistancePipelineExecutor']]],
+  ['distanceratiosq_5f_6',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['dt_5f_7',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];
