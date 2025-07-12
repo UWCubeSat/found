@@ -10,11 +10,11 @@ var searchData=
   ['dcmtype_7',['DCMType',['../classfound_1_1Attitude.html#a72ecb692024cc00fc1b91668443b1dc2ac4a90bff74903171e4d024c63fe45b28',1,'found::Attitude']]],
   ['de_8',['de',['../classfound_1_1EulerAngles.html#ad2a3eb2f0ef98d6becc9aafc2bda0236',1,'found::EulerAngles']]],
   ['det_9',['Det',['../classfound_1_1Mat3.html#a25652f0fa565e68c33446bb11f4f93b7',1,'found::Mat3']]],
-  ['detection_10',['Edge Detection',['../index.html#autotoc_md13',1,'']]],
-  ['determination_11',['determination',['../index.html#autotoc_md14',1,'Distance Determination'],['../index.html#autotoc_md12',1,'Distance Determination'],['../index.html#autotoc_md16',1,'Orbit Determination']]],
+  ['detection_10',['Edge Detection',['../index.html#autotoc_md11',1,'']]],
+  ['determination_11',['determination',['../index.html#autotoc_md12',1,'Distance Determination'],['../index.html#autotoc_md10',1,'Distance Determination'],['../index.html#autotoc_md14',1,'Orbit Determination']]],
   ['determiner_12',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['discriminatorratio_5f_13',['discriminatorRatio_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['distance_20determination_14',['distance determination',['../index.html#autotoc_md14',1,'Distance Determination'],['../index.html#autotoc_md12',1,'Distance Determination']]],
+  ['distance_20determination_14',['distance determination',['../index.html#autotoc_md12',1,'Distance Determination'],['../index.html#autotoc_md10',1,'Distance Determination']]],
   ['distancealgorithm_15',['distanceAlgorithm',['../classfound_1_1DistancePipelineExecutor.html#a85a7982e86b1e105715b5306996ef7e5',1,'found::DistancePipelineExecutor']]],
   ['distancedeterminationalgorithm_16',['DistanceDeterminationAlgorithm',['../classfound_1_1DistanceDeterminationAlgorithm.html',1,'found']]],
   ['distanceoptions_17',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
@@ -22,6 +22,6 @@ var searchData=
   ['distanceratiosq_5f_19',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
   ['doaction_20',['doaction',['../classfound_1_1ModifyingStage.html#a860cdb8578c0717bd3921282b29a5bba',1,'found::ModifyingStage::DoAction()'],['../classfound_1_1FunctionStage.html#a4b8e2c89cb8c82b89cb0a795486f2651',1,'found::FunctionStage::DoAction()'],['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Pipeline.html#ae103e91d6f40898eee3d864893457aa1',1,'found::Pipeline::DoAction() override']]],
   ['doactionhelper_21',['DoActionHelper',['../classfound_1_1Pipeline.html#a283af81df154b3ac0c38434d44377291',1,'found::Pipeline']]],
-  ['docker_22',['Docker',['../index.html#autotoc_md5',1,'']]],
+  ['docker_22',['Setup via Docker',['../index.html#autotoc_md3',1,'']]],
   ['dt_5f_23',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

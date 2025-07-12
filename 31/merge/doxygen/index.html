@@ -97,52 +97,48 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <h1><a class="anchor" id="autotoc_md1"></a>
 Installation</h1>
 <p>There are currently two options:</p><ol type="1">
-<li><code>Install Script</code> works well for Windows and Linuxs but will not work on Apple Silicon.</li>
+<li><a href="install.sh"><code>Install Script</code></a> works well for Windows WSL and Linux but will not work on Apple Silicon.</li>
 </ol>
 <ol type="1">
 <li><code>Docker</code> ensures that FOUND runs the same way on any machine. If your using Apple Silicon, this is the only option.</li>
 </ol>
 <h2><a class="anchor" id="autotoc_md2"></a>
-Install Script</h2>
-<p>If you are using Windows, you must download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default) to run the following code.</p>
-<h3><a class="anchor" id="autotoc_md3"></a>
-Prerequisites</h3>
-<p>For Linux Ubuntu/Oracle and MacOS (uses either <code>apt-get</code>, <code>yum</code> or <code>brew</code>) obtain the required packages for this software:</p><ul>
+Setup via Install Script</h2>
+<p>For Windows users, please download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default). <br  />
+ For Linux Ubuntu/Oracle users (uses either <code>apt-get</code>, <code>yum</code> or <code>brew</code>) install this package's dependencies via the <a href="install.sh"><code>Install Script</code></a> in this repository:</p><ul>
 <li>Copy the install script into your environment: <a href="https://github.com/UWCubeSat/found/blob/main/install.sh">Link to install script</a></li>
 <li>Change permissions for the install script to execute (<code>sudo chmod +rwx install.sh</code>)</li>
 <li>Run the install script in root/sudo as an executable (<code>sudo ./install.sh</code>)</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md4"></a>
-Building FOUND</h3>
-<ul>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Setup via Docker</h2>
+<p>This option requires you to have Docker and Visual Studio Code. To install Docker on your system, visit the <a href="https://docs.docker.com/get-docker/">official Docker installation guide</a>. If you are using a Linux computer it is reccomended that you install Docker with <code>apt-get</code> instead. <br  />
+ You will need the <code>Dev Containers</code> VScode extension. This can be installed by looking it up in the extension's view or with <code>code --install-extension ms-vscode-remote.remote-containers</code>.</p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Building FOUND</h1>
+<ol type="1">
 <li>Clone the repository (<code>git clone <a href="https://github.com/UWCubeSat/found.git">https://github.com/UWCubeSat/found.git</a></code>)</li>
 <li>Go into the directory (<code>cd found</code>)</li>
+<li>Docker Users: Open FOUND in container (Press <code>F1</code> and select Dev Containers: Open Folder in Container)</li>
 <li>Compile the executable via GNU Make or CMake (below for more information)</li>
-<li>You can now [use](usage) FOUND!</li>
-</ul>
+<li>Execute the executable (<code>./build/bin/found</code>, <a class="el" href="index.html#usage">Usage</a> below)</li>
+</ol>
 <h2><a class="anchor" id="autotoc_md5"></a>
-Docker</h2>
-<p>This option requires you to have Docker and Visual Studio Code. To install Docker on your system, visit the <a href="https://docs.docker.com/get-docker/">official Docker installation guide</a>. If you are using a Linux computer it is reccomended that you install Docker with <code>apt-get</code> instead. <br  />
-</p>
-<p>You will need the <code>Dev Containers</code> VScode extension. This can be installed by looking it up in the extension's view or with <code>code --install-extension ms-vscode-remote.remote-containers</code>. </p>
-<h3><a class="anchor" id="autotoc_md6"></a>
-Building FOUND</h3>
-<ul>
-<li>Clone the repository (<code>git clone <a href="https://github.com/UWCubeSat/found.git">https://github.com/UWCubeSat/found.git</a></code>)</li>
-<li>Open up FOUND in VScode (<code>code path/to/found</code>)</li>
-<li>Open FOUND in container (Press <code>F1</code> and select Dev Containers: Open Folder in Container)</li>
-<li>You can now [use](usage) FOUND!</li>
-</ul>
-<h2><a class="anchor" id="autotoc_md7"></a>
 Compilation</h2>
-<p>This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The <code>build.sh</code> script abstracts the difference for you. It is run as:</p>
-<ol type="1">
+<p>This repository uses a dual build system, using GNU Make and CMake. Consumers compiling the system should run either:</p><ol type="1">
+<li><code>./build.sh make release</code>. <br  />
+</li>
+<li><code>./build.sh cmake -DCMAKE_BUILD_TYPE=Release</code></li>
+</ol>
+<p>Developers: if your code changes, you must remake your file. The <code>build.sh</code> script abstracts the difference for you. It is run as:</p><ol type="1">
 <li>Run GNU Make: <code>./build.sh make [GNU Make options]</code></li>
 <li>Run CMake: <code>./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"</code></li>
 <li>Clean the build folder: <code>./build.sh clean</code></li>
 <li>Clean the build and cache folders: <code>./build.sh clean_all</code></li>
 </ol>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<p>All valid and useful targets can be found on our <a href="https://www.notion.so/huskysat/Software-Resources-1fa4a4f5c8e0804d8af4ffcd0132e60c">notion</a>.</p>
+<p><a class="anchor" id="usage"></a> </p>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Usage</h1>
 <p>The main executable, which is found in <code>./build/bin/found</code>, operates as a standard command-line based program. The usage is: </p><div align="center"></div><div align="center"><code>./build/bin/found &lt;option&gt; [flags]</code></div><div align="center"></div><p> There are currently two options:</p>
 <ol type="1">
@@ -150,8 +146,8 @@ Usage</h1>
 <li><code>distance</code>: FOUND then uses an image taken from space together with a <code>.found</code> file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible).</li>
 </ol>
 <p>To learn more about the different flags, execute <code>./build/bin/found --help</code> or <code>./build/bin/found -h</code>. <br  />
- For developers wishing to run the FOUND test suit the executable can be found in <code>./build/bin/found-test</code>.</p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+ Developers: FOUND's test suit executable can be found in <code>./build/bin/found-test</code>.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Example Usage</h2>
 <p>Here, we present a common usage for this program. After generating the binary via <code>make</code> or simply <code>make compile</code>, execute the command:</p>
 <div class="fragment"><div class="line">./build/bin/found calibration         \</div>
@@ -199,46 +195,46 @@ Example Usage</h2>
 <div class="line">    --camera-pixel-size 20e-6                      \</div>
 <div class="line">    --reference-orientation 190,0,0                \</div>
 <div class="line">    --output-file other.found</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
 Capabilities</h1>
 <p>FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Calibration</h2>
 <p>This is a "simplistic" algorithm, and simply figures out the relative attitude between our local and reference attitude. The main algorithm responsible for this is:</p><ul>
 <li>[X] LOST-based Calibration Algorithm (LOST is the reference)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Distance Determination</h2>
 <p>This algorithm is comprised of 3 main steps</p>
-<h3><a class="anchor" id="autotoc_md13"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 Edge Detection</h3>
 <p>After images from a satellite are received, their images are parsed to locate Earth's horizon in the image. FOUND is capable of:</p><ul>
 <li>[X] Simple Edge Detection via Space/Ether Identification</li>
 <li>[ ] Laplacian of Gaussian (LoG) Filtered Edge Detection</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md14"></a>
+<h3><a class="anchor" id="autotoc_md12"></a>
 Distance Determination</h3>
 <p>The edge information is then used to evaluate the relative size of Earth in the image and find the distance of the satellite from Earth using principals of scale. FOUND is capable of:</p><ul>
 <li>[X] Simple Spherical Planet Distance Determination</li>
 <li>[X] Iterative Spherical Planet Distance Determination with SoftMax Activation and Selective Randomization</li>
 <li>[ ] Distance Determination with an Ellipsoid Planet Assumption</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md15"></a>
+<h3><a class="anchor" id="autotoc_md13"></a>
 Vector Generation</h3>
 <p>The distance information will then be used to form a vector of the satellite relative to Earth's coordinate axes. FOUND is capable of:</p><ul>
 <li>[X] Star-Tracker Assisted Vector Generation via LOST-based Calibration</li>
 <li>[ ] Feature Detection Assisted Vector Generation (to be developed for future mission)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Orbit Determination</h2>
 <p>This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:</p><ul>
 <li>[ ] Runge-Kutta Based Orbital Prediction</li>
 <li>[ ] Lambert's Problem-Based Orbital Prediction</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md17"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 Tools</h1>
 <p>We have tools that can be used with our main <code>found</code> program. They can be found in [our tools folder](tools).</p>
-<h1><a class="anchor" id="autotoc_md18"></a>
+<h1><a class="anchor" id="autotoc_md16"></a>
 CMake Integration</h1>
 <p>This project's code can be integrated with yours via cmake. To use: </p><div class="fragment"><div class="line">include(FetchContent)</div>
 <div class="line"> </div>
