@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['labelpresent_0',['LabelPresent',['../namespacefound.html#a532a003b6775ad0c1e340256e492be0a',1,'found']]],
-  ['locedgedetectionalgorithm_1',['LoCEdgeDetectionAlgorithm',['../classfound_1_1LoCEdgeDetectionAlgorithm.html#a66171d921010bb784930003cb5a14ade',1,'found::LoCEdgeDetectionAlgorithm']]],
-  ['lostcalibrationalgorithm_2',['LOSTCalibrationAlgorithm',['../classfound_1_1LOSTCalibrationAlgorithm.html#a8c640b1ea3cf3b79972830ece635ea51',1,'found::LOSTCalibrationAlgorithm']]],
-  ['lostvectorgenerationalgorithm_3',['lostvectorgenerationalgorithm',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a29a6972b8eb3c8dba96bbf52628a0c6e',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)'],['../classfound_1_1LOSTVectorGenerationAlgorithm.html#a3d7b70a44dde02449fd647b0380201b4',1,'found::LOSTVectorGenerationAlgorithm::LOSTVectorGenerationAlgorithm(Quaternion orientation)']]]
+  ['magnitude_0',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()']]],
+  ['magnitudesq_1',['magnitudesq',['../structfound_1_1Vec2.html#ab4d7bbb2908f7962e50263a2e6731788',1,'found::Vec2::MagnitudeSq()'],['../classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23',1,'found::Vec3::MagnitudeSq()']]],
+  ['modifyingpipeline_2',['ModifyingPipeline',['../classfound_1_1ModifyingPipeline.html#a31655f2bf17e8e059988c8aa1fe728dc',1,'found::ModifyingPipeline']]],
+  ['modifyingstage_3',['ModifyingStage',['../classfound_1_1ModifyingStage.html#a4865377e21d359c2c7f2f889aa7d0962',1,'found::ModifyingStage']]]
 ];

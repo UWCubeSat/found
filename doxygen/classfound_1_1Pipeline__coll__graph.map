@@ -1,7 +1,10 @@
-<map id="found::Pipeline&lt; Input, Output &gt;" name="found::Pipeline&lt; Input, Output &gt;">
-<area shape="rect" id="Node000001" title="Pipeline is composite Stage (i.e." alt="" coords="5,167,176,207"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1Stage.html" title="A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output..." alt="" coords="13,79,169,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,133,93,166,88,166,88,133"/>
-<area shape="rect" id="Node000003" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="37,5,145,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,44,93,79,88,79,88,44"/>
+<map id="found::Pipeline&lt; Input, Output, N &gt;" name="found::Pipeline&lt; Input, Output, N &gt;">
+<area shape="rect" id="Node000001" title="A Pipeline&lt;Input, Output, N&gt; is an abstract Pipeline that takes an Input, outputs an Output,..." alt="" coords="5,287,176,327"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1FunctionStage.html" title="A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin..." alt="" coords="94,197,253,237"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="148,249,110,288,107,285,144,245"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="90,80,265,135"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="178,149,177,197,171,197,173,149"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="14,5,122,31"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="72,44,84,237,90,286,85,287,79,238,66,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="95,37,146,78,143,82,92,42"/>
 </map>

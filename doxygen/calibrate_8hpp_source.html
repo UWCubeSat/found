@@ -98,23 +98,23 @@ $(document).ready(function(){initNavTree('calibrate_8hpp_source.html',''); initR
   <div class="headertitle"><div class="title">calibrate.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="calibrate_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef CALIBRATE_H_</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define CALIBRATE_H_</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SRC_CALIBRATE_CALIBRATE_HPP_</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SRC_CALIBRATE_CALIBRATE_HPP_</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="pipeline_8hpp.html">common/pipeline.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="attitude-utils_8hpp.html">common/spatial/attitude-utils.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;common/pipeline/stages.hpp&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;common/spatial/attitude-utils.hpp&quot;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span>found {</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="foldopen" id="foldopen00016" data-start="{" data-end="};">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classfound_1_1CalibrationAlgorithm.html">   16</a></span><span class="keyword">class </span><a class="code hl_class" href="classfound_1_1CalibrationAlgorithm.html">CalibrationAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classfound_1_1Stage.html">Stage</a>&lt;std::pair&lt;EulerAngles, EulerAngles&gt;, Quaternion&gt; {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classfound_1_1CalibrationAlgorithm.html">   16</a></span><span class="keyword">class </span><a class="code hl_class" href="classfound_1_1CalibrationAlgorithm.html">CalibrationAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classfound_1_1FunctionStage.html">FunctionStage</a>&lt;std::pair&lt;EulerAngles, EulerAngles&gt;, Quaternion&gt; {</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="comment">// Constructs this</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classfound_1_1CalibrationAlgorithm.html#a46c2ed50ba5920a8c1d6e4577cd7c672">   19</a></span>    <a class="code hl_function" href="classfound_1_1CalibrationAlgorithm.html#a46c2ed50ba5920a8c1d6e4577cd7c672">CalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_class" href="classfound_1_1CalibrationAlgorithm.html">CalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="comment">// Destroys this</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classfound_1_1CalibrationAlgorithm.html#a6808c32c4b9a39b8c83333feb141c398">   21</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classfound_1_1CalibrationAlgorithm.html#a6808c32c4b9a39b8c83333feb141c398">~CalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classfound_1_1CalibrationAlgorithm.html">~CalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>};</div>
 </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
@@ -122,31 +122,25 @@ $(document).ready(function(){initNavTree('calibrate_8hpp_source.html',''); initR
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classfound_1_1LOSTCalibrationAlgorithm.html">   29</a></span><span class="keyword">class </span><a class="code hl_class" href="classfound_1_1LOSTCalibrationAlgorithm.html">LOSTCalibrationAlgorithm</a> : <span class="keyword">public</span> <a class="code hl_class" href="classfound_1_1CalibrationAlgorithm.html">CalibrationAlgorithm</a> {</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="comment">// Constructs this</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classfound_1_1LOSTCalibrationAlgorithm.html#a8c640b1ea3cf3b79972830ece635ea51">   32</a></span>    <a class="code hl_function" href="classfound_1_1LOSTCalibrationAlgorithm.html#a8c640b1ea3cf3b79972830ece635ea51">LOSTCalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <a class="code hl_class" href="classfound_1_1LOSTCalibrationAlgorithm.html">LOSTCalibrationAlgorithm</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classfound_1_1Quaternion.html">Quaternion</a> <a class="code hl_function" href="classfound_1_1LOSTCalibrationAlgorithm.html#af0697309d926e83e09e8001b7478ee6a">Run</a>(<span class="keyword">const</span> std::pair&lt;EulerAngles, EulerAngles&gt; &amp;orientations) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
 </div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}  <span class="comment">// namespace found</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#endif  </span><span class="comment">// CALIBRATE_H_</span></div>
-<div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_CALIBRATE_CALIBRATE_HPP_</span></div>
 <div class="ttc" id="aclassfound_1_1CalibrationAlgorithm_html"><div class="ttname"><a href="classfound_1_1CalibrationAlgorithm.html">found::CalibrationAlgorithm</a></div><div class="ttdoc">The CalibrationAlgorithm is an interface for algorithms that calibrate our orientation to the referen...</div><div class="ttdef"><b>Definition</b> calibrate.hpp:16</div></div>
-<div class="ttc" id="aclassfound_1_1CalibrationAlgorithm_html_a46c2ed50ba5920a8c1d6e4577cd7c672"><div class="ttname"><a href="classfound_1_1CalibrationAlgorithm.html#a46c2ed50ba5920a8c1d6e4577cd7c672">found::CalibrationAlgorithm::CalibrationAlgorithm</a></div><div class="ttdeci">CalibrationAlgorithm()=default</div></div>
-<div class="ttc" id="aclassfound_1_1CalibrationAlgorithm_html_a6808c32c4b9a39b8c83333feb141c398"><div class="ttname"><a href="classfound_1_1CalibrationAlgorithm.html#a6808c32c4b9a39b8c83333feb141c398">found::CalibrationAlgorithm::~CalibrationAlgorithm</a></div><div class="ttdeci">virtual ~CalibrationAlgorithm()=default</div></div>
+<div class="ttc" id="aclassfound_1_1FunctionStage_html"><div class="ttname"><a href="classfound_1_1FunctionStage.html">found::FunctionStage</a></div><div class="ttdoc">A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin...</div><div class="ttdef"><b>Definition</b> stages.hpp:56</div></div>
 <div class="ttc" id="aclassfound_1_1LOSTCalibrationAlgorithm_html"><div class="ttname"><a href="classfound_1_1LOSTCalibrationAlgorithm.html">found::LOSTCalibrationAlgorithm</a></div><div class="ttdoc">The LostCalibrationAlgorithm class houses the calibration algorithm that uses the orientation informa...</div><div class="ttdef"><b>Definition</b> calibrate.hpp:29</div></div>
-<div class="ttc" id="aclassfound_1_1LOSTCalibrationAlgorithm_html_a8c640b1ea3cf3b79972830ece635ea51"><div class="ttname"><a href="classfound_1_1LOSTCalibrationAlgorithm.html#a8c640b1ea3cf3b79972830ece635ea51">found::LOSTCalibrationAlgorithm::LOSTCalibrationAlgorithm</a></div><div class="ttdeci">LOSTCalibrationAlgorithm()=default</div></div>
 <div class="ttc" id="aclassfound_1_1LOSTCalibrationAlgorithm_html_af0697309d926e83e09e8001b7478ee6a"><div class="ttname"><a href="classfound_1_1LOSTCalibrationAlgorithm.html#af0697309d926e83e09e8001b7478ee6a">found::LOSTCalibrationAlgorithm::Run</a></div><div class="ttdeci">Quaternion Run(const std::pair&lt; EulerAngles, EulerAngles &gt; &amp;orientations) override</div><div class="ttdoc">Runs the calibration algorithm.</div><div class="ttdef"><b>Definition</b> calibrate.cpp:9</div></div>
-<div class="ttc" id="aclassfound_1_1Quaternion_html"><div class="ttname"><a href="classfound_1_1Quaternion.html">found::Quaternion</a></div><div class="ttdoc">A Quaternion is a mutable object that represents a Quaternion.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:192</div></div>
-<div class="ttc" id="aclassfound_1_1Stage_html"><div class="ttname"><a href="classfound_1_1Stage.html">found::Stage</a></div><div class="ttdoc">A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output...</div><div class="ttdef"><b>Definition</b> pipeline.hpp:32</div></div>
-<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
-<div class="ttc" id="apipeline_8hpp_html"><div class="ttname"><a href="pipeline_8hpp.html">pipeline.hpp</a></div></div>
+<div class="ttc" id="aclassfound_1_1Quaternion_html"><div class="ttname"><a href="classfound_1_1Quaternion.html">found::Quaternion</a></div><div class="ttdoc">A Quaternion is a mutable object that represents a Quaternion.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:474</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_78b64f2f30040831534be8fffdbc5b44.html">calibrate</a></li><li class="navelem"><a class="el" href="calibrate_8hpp.html">calibrate.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_78b64f2f30040831534be8fffdbc5b44.html">calibrate</a></li><li class="navelem"><b>calibrate.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

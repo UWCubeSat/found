@@ -98,17 +98,17 @@ $(document).ready(function(){initNavTree('datafile_8hpp_source.html',''); initRe
   <div class="headertitle"><div class="title">datafile.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="datafile_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef DATAFILE_H</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define DATAFILE_H</span></div>
+<a href="datafile_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SRC_DATAFILE_DATAFILE_HPP_</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SRC_DATAFILE_DATAFILE_HPP_</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="attitude-utils_8hpp.html">common/spatial/attitude-utils.hpp</a>&quot;</span>  <span class="comment">// Includes Vec3 and EulerAngles</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;<a class="code" href="style_8hpp.html">common/style.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;common/spatial/attitude-utils.hpp&quot;</span>  <span class="comment">// Includes Vec3 and EulerAngles</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;common/style.hpp&quot;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span>found {</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
 <div class="foldopen" id="foldopen00028" data-start="{" data-end="};">
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structfound_1_1DataFileHeader.html">   28</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structfound_1_1DataFileHeader.html">DataFileHeader</a> {</div>
@@ -136,16 +136,14 @@ $(document).ready(function(){initNavTree('datafile_8hpp_source.html',''); initRe
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="structfound_1_1DataFile.html#a3e144e16a4a0858e218e8cd46949d661">   92</a></span>    <a class="code hl_function" href="structfound_1_1DataFile.html#a3e144e16a4a0858e218e8cd46949d661">DataFile</a>(<a class="code hl_struct" href="structfound_1_1DataFile.html">DataFile</a> &amp;&amp;other) <span class="keyword">noexcept</span> = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="structfound_1_1DataFile.html#a141f42534b7e86e2f2d3e1b5fcb6ef7c">   99</a></span>    <a class="code hl_struct" href="structfound_1_1DataFile.html">DataFile</a>&amp; <a class="code hl_function" href="structfound_1_1DataFile.html#a141f42534b7e86e2f2d3e1b5fcb6ef7c">operator=</a>(<a class="code hl_struct" href="structfound_1_1DataFile.html">DataFile</a> &amp;&amp;other) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>};</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="structfound_1_1DataFile.html#a141f42534b7e86e2f2d3e1b5fcb6ef7c">  101</a></span>    <a class="code hl_struct" href="structfound_1_1DataFile.html">DataFile</a> &amp;<a class="code hl_function" href="structfound_1_1DataFile.html#a141f42534b7e86e2f2d3e1b5fcb6ef7c">operator=</a>(<a class="code hl_struct" href="structfound_1_1DataFile.html">DataFile</a> &amp;&amp;other) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>};</div>
 </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}  <span class="comment">// namespace found</span></div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="preprocessor">#endif  </span><span class="comment">// DATAFILE_H</span></div>
-<div class="ttc" id="aattitude-utils_8hpp_html"><div class="ttname"><a href="attitude-utils_8hpp.html">attitude-utils.hpp</a></div></div>
-<div class="ttc" id="aclassfound_1_1Quaternion_html"><div class="ttname"><a href="classfound_1_1Quaternion.html">found::Quaternion</a></div><div class="ttdoc">A Quaternion is a mutable object that represents a Quaternion.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:192</div></div>
-<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}  <span class="comment">// namespace found</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_DATAFILE_DATAFILE_HPP_</span></div>
+<div class="ttc" id="aclassfound_1_1Quaternion_html"><div class="ttname"><a href="classfound_1_1Quaternion.html">found::Quaternion</a></div><div class="ttdoc">A Quaternion is a mutable object that represents a Quaternion.</div><div class="ttdef"><b>Definition</b> attitude-utils.hpp:474</div></div>
 <div class="ttc" id="astructfound_1_1DataFileHeader_html"><div class="ttname"><a href="structfound_1_1DataFileHeader.html">found::DataFileHeader</a></div><div class="ttdoc">Represents the header of a data file used in the serialization process.</div><div class="ttdef"><b>Definition</b> datafile.hpp:28</div></div>
 <div class="ttc" id="astructfound_1_1DataFileHeader_html_a4195a88cc69f3da902ae753edf8e3d52"><div class="ttname"><a href="structfound_1_1DataFileHeader.html#a4195a88cc69f3da902ae753edf8e3d52">found::DataFileHeader::version</a></div><div class="ttdeci">uint32_t version</div><div class="ttdoc">Version of the file format.</div><div class="ttdef"><b>Definition</b> datafile.hpp:43</div></div>
 <div class="ttc" id="astructfound_1_1DataFileHeader_html_abd86dada0574499097a5e29f8ff94f67"><div class="ttname"><a href="structfound_1_1DataFileHeader.html#abd86dada0574499097a5e29f8ff94f67">found::DataFileHeader::num_positions</a></div><div class="ttdeci">uint32_t num_positions</div><div class="ttdoc">Number of position entries (Vec3 elements) in the file.</div><div class="ttdef"><b>Definition</b> datafile.hpp:48</div></div>
@@ -159,7 +157,6 @@ $(document).ready(function(){initNavTree('datafile_8hpp_source.html',''); initRe
 <div class="ttc" id="astructfound_1_1DataFile_html_a89f82815dac4cc58f2247d85b6050a58"><div class="ttname"><a href="structfound_1_1DataFile.html#a89f82815dac4cc58f2247d85b6050a58">found::DataFile::positions</a></div><div class="ttdeci">std::unique_ptr&lt; LocationRecord[]&gt; positions</div><div class="ttdoc">Collection of location records in the file.</div><div class="ttdef"><b>Definition</b> datafile.hpp:75</div></div>
 <div class="ttc" id="astructfound_1_1DataFile_html_ab5b0d0feadf717bceba91c1a0b3c601c"><div class="ttname"><a href="structfound_1_1DataFile.html#ab5b0d0feadf717bceba91c1a0b3c601c">found::DataFile::relative_attitude</a></div><div class="ttdeci">Quaternion relative_attitude</div><div class="ttdoc">Relative orientation (attitude) of the object as Euler angles.</div><div class="ttdef"><b>Definition</b> datafile.hpp:70</div></div>
 <div class="ttc" id="astructfound_1_1DataFile_html_abe152ebab9b43fc3d700a4ba244c5d56"><div class="ttname"><a href="structfound_1_1DataFile.html#abe152ebab9b43fc3d700a4ba244c5d56">found::DataFile::header</a></div><div class="ttdeci">DataFileHeader header</div><div class="ttdoc">Metadata header for the file (includes magic, version, and CRC).</div><div class="ttdef"><b>Definition</b> datafile.hpp:65</div></div>
-<div class="ttc" id="astyle_8hpp_html"><div class="ttname"><a href="style_8hpp.html">style.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

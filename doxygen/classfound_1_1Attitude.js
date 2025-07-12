@@ -6,8 +6,8 @@ var classfound_1_1Attitude =
       [ "DCMType", "classfound_1_1Attitude.html#a72ecb692024cc00fc1b91668443b1dc2ac4a90bff74903171e4d024c63fe45b28", null ]
     ] ],
     [ "Attitude", "classfound_1_1Attitude.html#a10f48b4c7544ae9f068f625ed9c9d225", null ],
-    [ "Attitude", "classfound_1_1Attitude.html#a8bdd7582354631f77504c8e1fe7ca569", null ],
-    [ "Attitude", "classfound_1_1Attitude.html#a8bd8d8716f8ad6d4a8fbbab94e36df02", null ],
+    [ "Attitude", "classfound_1_1Attitude.html#a3aef1c07b64b74d7e2bfb56d14b66411", null ],
+    [ "Attitude", "classfound_1_1Attitude.html#a45ff523992236c7db10fdb95a23a2bb9", null ],
     [ "GetDCM", "classfound_1_1Attitude.html#ae2c0a79e2fc3680008469be345393f6d", null ],
     [ "GetQuaternion", "classfound_1_1Attitude.html#a40f21f587bb724c8c90a3401d28b3eb5", null ],
     [ "Rotate", "classfound_1_1Attitude.html#aa05352ffe0bdf138dc6d377a31d4652d", null ],

@@ -1,9 +1,11 @@
 <map id="found::LOSTVectorGenerationAlgorithm" name="found::LOSTVectorGenerationAlgorithm">
-<area shape="rect" id="Node000001" title="The LOSTVectorGenerationAlgorithm class houses the a Vector Assembly Algorithm that calculates the po..." alt="" coords="21,240,234,280"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1VectorGenerationAlgorithm.html" title="The VectorGenerationAlgorithm class houses the Vector Assembly Algorithm." alt="" coords="5,167,249,192"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="130,206,130,240,125,240,125,206"/>
-<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title=" " alt="" coords="19,79,235,119"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="130,132,130,166,125,166,125,132"/>
-<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="73,5,181,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="130,44,130,79,125,79,125,44"/>
+<area shape="rect" id="Node000001" title="The LOSTVectorGenerationAlgorithm class houses the a Vector Assembly Algorithm that calculates the po..." alt="" coords="22,328,235,368"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1VectorGenerationAlgorithm.html" title="The VectorGenerationAlgorithm class houses the Vector Assembly Algorithm." alt="" coords="7,255,251,280"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="131,294,131,328,126,328,126,294"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1FunctionStage.html" title=" " alt="" coords="5,167,252,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="131,220,131,254,126,254,126,220"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Stage.html" title="Stage is an interface that wraps an SISO function." alt="" coords="51,79,207,119"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="131,133,131,166,126,166,126,133"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="75,5,183,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="131,44,131,79,126,79,126,44"/>
 </map>

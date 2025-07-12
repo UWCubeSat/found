@@ -26,15 +26,6 @@ var NAVTREE =
 [
   [ "FOUND", "index.html", [
     [ "FOUND: Open-Source Universal Navigation Determiner", "index.html", "index" ],
-    [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
-      [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Functions", "namespacemembers_func.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ],
-        [ "Typedefs", "namespacemembers_type.html", null ]
-      ] ]
-    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -48,14 +39,7 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ],
-      [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
-        [ "Functions", "globals_func.html", null ],
-        [ "Variables", "globals_vars.html", null ],
-        [ "Typedefs", "globals_type.html", null ],
-        [ "Macros", "globals_defs.html", null ]
-      ] ]
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -63,9 +47,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classfound_1_1LOSTVectorGenerationAlgorithm.html",
-"decimal_8hpp.html#a2562bda367ecef5f1c60df62450e23ad",
-"namespacemembers_vars.html"
+"functions_b.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

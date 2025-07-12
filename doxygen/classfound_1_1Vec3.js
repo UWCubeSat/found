@@ -1,10 +1,8 @@
 var classfound_1_1Vec3 =
 [
     [ "Vec3", "classfound_1_1Vec3.html#a6355657ab2aee712b39b38f7b27aae39", null ],
-    [ "Vec3", "classfound_1_1Vec3.html#a28a457ab6a5ee18b826465b307ce3a01", null ],
+    [ "Vec3", "classfound_1_1Vec3.html#afbb6a207c191966662294dfb29e6cc2b", null ],
     [ "CrossProduct", "classfound_1_1Vec3.html#abdce3c486d0e1edabd01863d4d71b7c2", null ],
-    [ "getDeclination", "classfound_1_1Vec3.html#a16ffac45f45a61b17d7183c87a1ac9d4", null ],
-    [ "getRightAscension", "classfound_1_1Vec3.html#a3cad134f2e7e2d676515f0d2074755c9", null ],
     [ "Magnitude", "classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30", null ],
     [ "MagnitudeSq", "classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23", null ],
     [ "Normalize", "classfound_1_1Vec3.html#ad0f53a4ff60ad7d64e9195c696fb587d", null ],

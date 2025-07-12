@@ -16,5 +16,6 @@ var index =
       ] ],
       [ "Orbit Determination", "index.html#autotoc_md12", null ]
     ] ],
-    [ "CMake Integration", "index.html#autotoc_md13", null ]
+    [ "Tools", "index.html#autotoc_md13", null ],
+    [ "CMake Integration", "index.html#autotoc_md14", null ]
 ];

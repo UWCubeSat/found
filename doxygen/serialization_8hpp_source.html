@@ -98,43 +98,37 @@ $(document).ready(function(){initNavTree('serialization_8hpp_source.html',''); i
   <div class="headertitle"><div class="title">serialization.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="serialization_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SERIALIZATION_H</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SERIALIZATION_H</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SRC_DATAFILE_SERIALIZATION_HPP_</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SRC_DATAFILE_SERIALIZATION_HPP_</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="datafile_8hpp.html">datafile/datafile.hpp</a>&quot;</span>  <span class="comment">// Include the header for DataFile and DataFileHeader</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span>found {</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacefound.html#a96291e3a63d72cd13860807975ada16c">serializeDataFile</a>(<span class="keyword">const</span> DataFile&amp; data, std::ostream&amp; stream);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keywordtype">void</span> serializeDataFile(<span class="keyword">const</span> DataFile&amp; data, std::ostream&amp; stream);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>DataFile <a class="code hl_function" href="namespacefound.html#a9ce3fdd94adf410735ab0209368d47d6">deserializeDataFile</a>(std::istream&amp; stream);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>DataFile deserializeDataFile(std::istream&amp; stream);</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>DataFile <a class="code hl_function" href="namespacefound.html#a9ce3fdd94adf410735ab0209368d47d6">deserializeDataFile</a>(std::istream&amp; stream, <span class="keyword">const</span> std::string &amp;path);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>DataFile deserializeDataFile(std::istream&amp; stream, <span class="keyword">const</span> std::string &amp;path);</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>DataFileHeader <a class="code hl_function" href="namespacefound.html#a17c6d8f51d19fda62b6e8af79e8cea91">readHeader</a>(std::istream&amp; stream);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>DataFileHeader readHeader(std::istream&amp; stream);</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacefound.html#aba8fa1ff49787683342ddac77ecf3676">hton</a>(DataFileHeader&amp; header);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> hton(DataFileHeader&amp; header);</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacefound.html#ac1edda17e3c125f50c39833c2295fe09">ntoh</a>(DataFileHeader&amp; header);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keywordtype">void</span> ntoh(DataFileHeader&amp; header);</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}  <span class="comment">// namespace found</span></div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif  </span><span class="comment">// SERIALIZATION_H</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_DATAFILE_SERIALIZATION_HPP_</span></div>
 <div class="ttc" id="adatafile_8hpp_html"><div class="ttname"><a href="datafile_8hpp.html">datafile.hpp</a></div><div class="ttdoc">Declares data structures for serialized spatial data files, including headers, location records,...</div></div>
-<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
-<div class="ttc" id="anamespacefound_html_a17c6d8f51d19fda62b6e8af79e8cea91"><div class="ttname"><a href="namespacefound.html#a17c6d8f51d19fda62b6e8af79e8cea91">found::readHeader</a></div><div class="ttdeci">DataFileHeader readHeader(std::istream &amp;stream)</div><div class="ttdoc">Reads only the header of a DataFile from an input stream.</div><div class="ttdef"><b>Definition</b> serialization.cpp:296</div></div>
-<div class="ttc" id="anamespacefound_html_a96291e3a63d72cd13860807975ada16c"><div class="ttname"><a href="namespacefound.html#a96291e3a63d72cd13860807975ada16c">found::serializeDataFile</a></div><div class="ttdeci">void serializeDataFile(const DataFile &amp;data, std::ostream &amp;stream)</div><div class="ttdoc">Serializes a DataFile object to an output stream.</div><div class="ttdef"><b>Definition</b> serialization.cpp:250</div></div>
-<div class="ttc" id="anamespacefound_html_a9ce3fdd94adf410735ab0209368d47d6"><div class="ttname"><a href="namespacefound.html#a9ce3fdd94adf410735ab0209368d47d6">found::deserializeDataFile</a></div><div class="ttdeci">DataFile deserializeDataFile(std::istream &amp;stream)</div><div class="ttdoc">Deserializes a DataFile object from an input stream.</div><div class="ttdef"><b>Definition</b> serialization.cpp:263</div></div>
-<div class="ttc" id="anamespacefound_html_aba8fa1ff49787683342ddac77ecf3676"><div class="ttname"><a href="namespacefound.html#aba8fa1ff49787683342ddac77ecf3676">found::hton</a></div><div class="ttdeci">void hton(DataFileHeader &amp;header)</div><div class="ttdoc">Converts a DataFileHeader from host to network byte order.</div><div class="ttdef"><b>Definition</b> serialization.cpp:14</div></div>
-<div class="ttc" id="anamespacefound_html_ac1edda17e3c125f50c39833c2295fe09"><div class="ttname"><a href="namespacefound.html#ac1edda17e3c125f50c39833c2295fe09">found::ntoh</a></div><div class="ttdeci">void ntoh(DataFileHeader &amp;header)</div><div class="ttdoc">Converts a DataFileHeader from network to host byte order.</div><div class="ttdef"><b>Definition</b> serialization.cpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f11582f6fee03950cf7c4ad394de98d8.html">datafile</a></li><li class="navelem"><a class="el" href="serialization_8hpp.html">serialization.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f11582f6fee03950cf7c4ad394de98d8.html">datafile</a></li><li class="navelem"><b>serialization.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

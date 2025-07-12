@@ -150,7 +150,7 @@ Example Usage</h2>
 <div class="line">    --reference-orientation 190,0,0</div>
 </div><!-- fragment --><p>For the distance flags:</p><ol type="1">
 <li>The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases</li>
-<li>We then specify our calibration data, which we generated above</li>
+<li>We then specify our calibration data, which we generated from <code>tools.generator</code> (check out [our tools folder](tools) for more information)</li>
 <li>We can specify camera parameters, like the focal length (m)</li>
 <li>Or the pixel size (m)</li>
 <li>We then have our reference orientation, which we need to use in conjunction with our calibration data</li>
@@ -213,6 +213,9 @@ Orbit Determination</h2>
 <li>[ ] Lambert's Problem-Based Orbital Prediction</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md13"></a>
+Tools</h1>
+<p>We have tools that can be used with our main <code>found</code> program. They can be found in [our tools folder](tools).</p>
+<h1><a class="anchor" id="autotoc_md14"></a>
 CMake Integration</h1>
 <p>This project's code can be integrated with yours via cmake. To use: </p><div class="fragment"><div class="line">include(FetchContent)</div>
 <div class="line"> </div>

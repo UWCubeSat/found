@@ -1,17 +1,20 @@
 <map id="found::DistancePipelineExecutor" name="found::DistancePipelineExecutor">
-<area shape="rect" id="Node000001" title="DistancePipelineExecutor is the pipeline executor for the distance determination pipeline." alt="" coords="153,285,385,311"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="5,190,180,215"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,219,248,283,246,288,125,224"/>
-<area shape="rect" id="Node000003" href="$classDistanceOptions.html" title=" " alt="" coords="204,190,333,215"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="271,229,271,285,266,285,266,229"/>
-<area shape="rect" id="Node000004" href="$classfound_1_1Pipeline.html" title=" " alt="" coords="358,183,537,223"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="400,231,292,288,289,283,398,227"/>
-<area shape="rect" id="Node000005" href="$classfound_1_1Stage.html" title="A Stage is a data structure that wraps a function, and taking in parameter Input and returning Output..." alt="" coords="213,80,369,120"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="334,125,420,180,417,185,331,130"/>
-<area shape="rect" id="Node000006" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="237,5,345,31"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="294,44,294,80,289,80,289,44"/>
-<area shape="rect" id="Node000007" href="$structfound_1_1Image.html" title="Represents an image." alt="" coords="393,87,501,113"/>
-<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="450,126,450,183,445,183,445,126"/>
-<area shape="rect" id="Node000008" href="$classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="526,87,625,113"/>
-<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="568,126,558,144,544,161,506,185,503,180,540,157,553,141,563,124"/>
+<area shape="rect" id="Node000001" title="DistancePipelineExecutor is the pipeline executor for the distance determination pipeline." alt="" coords="1249,55,1481,80"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="956,5,1131,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1141,30,1282,52,1281,57,1140,35"/>
+<area shape="rect" id="Node000003" href="$classDistanceOptions.html" title=" " alt="" coords="979,55,1108,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1122,65,1249,65,1249,70,1122,70"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1SequentialPipeline.html" title=" " alt="" coords="949,104,1137,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1150,107,1300,77,1301,83,1151,113"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Pipeline.html" title="A Pipeline&lt;Input, Output, N&gt; is an abstract Pipeline that takes an Input, outputs an Output,..." alt="" coords="641,71,812,111"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="826,101,950,117,949,122,825,106"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1FunctionStage.html" title="A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin..." alt="" coords="433,107,592,147"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="605,109,641,103,642,108,606,114"/>
+<area shape="rect" id="Node000007" href="$classfound_1_1Stage.html" title=" " alt="" coords="163,107,337,161"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="351,129,433,127,433,132,351,134"/>
+<area shape="rect" id="Node000008" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,89,113,115"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="127,93,137,93,377,87,616,87,641,87,641,93,616,93,377,92,137,98,127,99"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="127,111,163,117,162,122,126,116"/>
+<area shape="rect" id="Node000009" href="$structfound_1_1Image.html" title="Represents an image." alt="" coords="673,136,781,161"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="794,142,949,134,949,139,794,148"/>
 </map>

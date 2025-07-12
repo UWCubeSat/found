@@ -98,14 +98,14 @@ $(document).ready(function(){initNavTree('logging_8hpp_source.html',''); initRes
   <div class="headertitle"><div class="title">logging.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="logging_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef LOGGING_H</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define LOGGING_H</span></div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SRC_COMMON_LOGGING_HPP_</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SRC_COMMON_LOGGING_HPP_</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// Levels as Numbers (in order of increasing severity)</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="logging_8hpp.html#ae1103fea1e1b3c41ca3322d5389f7162">    7</a></span><span class="preprocessor">#define INFO 0</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a271d8f7f52be750e5c744a394ec71344">    8</a></span><span class="preprocessor">#define WARN 1</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a8fe83ac76edc595f6b98cd4a4127aed5">    9</a></span><span class="preprocessor">#define ERROR 2</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#define INFO 0</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define WARN 1</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define ERROR 2</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#ifdef ENABLE_LOGGING</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
@@ -143,7 +143,7 @@ $(document).ready(function(){initNavTree('logging_8hpp_source.html',''); initRes
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">    #define LOG_ERROR(msg) LOG(ERROR, msg)</span></div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefound.html">found</a> {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">namespace </span>found {</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment">// The output streams to where the logs go. To override</span></div>
@@ -193,20 +193,19 @@ $(document).ready(function(){initNavTree('logging_8hpp_source.html',''); initRes
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="logging_8hpp.html#ac8e803773221119947b55f6ae85a9c63">  115</a></span><span class="preprocessor">#define LOG_INFO(msg)</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="logging_8hpp.html#aeaf09e51c5a1f84078e5c6aa59dc48de">  116</a></span><span class="preprocessor">#define LOG_WARN(msg)</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="logging_8hpp.html#a7ebf4c3b4fb05d6f9094089ded75cbdd">  117</a></span><span class="preprocessor">#define LOG_ERROR(msg)</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="preprocessor">#define LOG_INFO(msg)</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="preprocessor">#define LOG_WARN(msg)</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="preprocessor">#define LOG_ERROR(msg)</span></div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">#endif  </span><span class="comment">// LOGGING_H</span></div>
-<div class="ttc" id="anamespacefound_html"><div class="ttname"><a href="namespacefound.html">found</a></div><div class="ttdef"><b>Definition</b> calibrate.cpp:7</div></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_COMMON_LOGGING_HPP_</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_fdedb0aba14d44ce9d99bc100e026e6a.html">common</a></li><li class="navelem"><a class="el" href="logging_8hpp.html">logging.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_fdedb0aba14d44ce9d99bc100e026e6a.html">common</a></li><li class="navelem"><b>logging.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
