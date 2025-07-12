@@ -1,6 +1,7 @@
 # FOUND Tools
 This folder hosts tools that can be used with FOUND for analysis or artificial generation.
 
+# Usage
 ## Python Environment Setup
 If you are using the Dev Container the Python environments are already setup so you can skip this step.  
 
@@ -18,8 +19,8 @@ Once you've installed the package manager of your choice, create the virtual env
 
 For more information, visit each tool's folder for its `README.md`.
 
-## Tools
-### 1. Generator
+### Tools
+#### 1. Generator
    
 Generates artificial images of Earth from a given position and orientation
 - Tool Name: `generator`

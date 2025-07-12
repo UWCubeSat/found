@@ -51,9 +51,9 @@ find "$TOOLS_DIR" -mindepth 2 -maxdepth 2 -name environment.yml | while read -r 
   echo "Processing environment: $envname"
 
   if "$ENV_MGR" env list | grep -qw "$envname"; then
-    CMD="y | "$ENV_MGR" env update -n "$envname" -f "$envfile""
+    CMD=""$ENV_MGR" env update -y -n "$envname" -f "$envfile""
   else
-    CMD="y | "$ENV_MGR" env update -n "$envname" -f "$envfile""
+    CMD=""$ENV_MGR" env update -y -n "$envname" -f "$envfile""
   fi
   execute_cmd $CMD
 done
