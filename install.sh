@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Exit on any command failure
 set -e
 
 # Executes a command with a banner
@@ -17,6 +18,7 @@ execute_cmd() {
     printf "%s\n" "$hash_line"
     printf "\n"
 
+    # Execute the command and check for errors
     if ! eval "$cmd"; then
         echo "Command failed: $cmd"
         exit 1
@@ -30,11 +32,16 @@ else
     SUDO="sudo"
 fi
 
+# Detect the operating system using uname
 OS="$(uname -s)"
 INSTALL=""
 
+# Perform necessary setup and get the
+# installation command depending on
+# the OS
 case "$OS" in
     Linux*)
+        # Detect the package manager
         PM=""
         if command -v apt-get &> /dev/null; then
             PM="$SUDO apt-get"
@@ -51,14 +58,17 @@ case "$OS" in
             exit 1
         fi
         INSTALL="$PM install -y"
+        # List of packages to install
         PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz valgrind"
         ;;
     Darwin*)
+        # Check if Homebrew is installed; install it if not
         if ! command -v brew &> /dev/null; then
             echo "Homebrew not found. Installing Homebrew..."
             execute_cmd "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
         fi
         INSTALL="brew install"
+        # List of packages to install
         PACKAGES="git gcc make cmake wget gnu-tar python pipx graphviz"
         ;;
     *)
@@ -67,11 +77,13 @@ case "$OS" in
         ;;
 esac
 
+# Install each package and echo the command
 for PACKAGE in $PACKAGES; do
     CMD="$INSTALL $PACKAGE"
     execute_cmd $CMD
 done
 
+# Install doxygen
 CMD="$INSTALL doxygen || ( \
     $INSTALL bison && \
     $INSTALL flex && \
@@ -84,8 +96,10 @@ CMD="$INSTALL doxygen || ( \
 )"
 execute_cmd $CMD
 
+# Python packages to install
 PYTHON_PACKAGES="git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint git+https://github.com/gcovr/gcovr.git@8.3#egg=gcovr"
 
+# Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
     if [ "$(id -u)" -eq 0 ]; then
         CMD="pip install --break-system-packages $PACKAGE"

@@ -21,12 +21,7 @@ elif [ "$1" = "clean_all" ]; then
     rm -rf build .cache
 elif [ "$1" = "make" ]; then
     shift
-<<<<<<< HEAD
-    echo make --build . "$@"
-    make "$@"
-=======
     make $@
->>>>>>> main
 else
     echo "Usage: ./build.sh make [GNU Make Options]"
     echo "Usage: ./build.sh cmake \"[CMake Config Options]\" [CMake Build Options]"
