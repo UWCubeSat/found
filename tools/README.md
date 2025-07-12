@@ -10,7 +10,7 @@ To setup a virutal environment for a tool your going to want an environment mana
 micromamba shell init -s <your_shell> -p ~/micromamba && /
 source ~/.bashrc  # or ~/.zshrc, depending on your shell
 ```
-Once you've installed the package manager of your choice, create the virtual environments by running `.\tools\setup-tools-envs.sh` in the `found` directory.
+Once you've installed the package manager of your choice, create the virtual environments by running `setup-tools-envs.sh` in the `found` directory.
 
 ## Setup
 1. Activate the environment for that tool (`micromamba activate <environment-name>`)

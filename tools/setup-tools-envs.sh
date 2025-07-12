@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TOOLS_DIR="/workspace/tools"
+# Print and execute a command with a banner
+execute_cmd() {
+    echo "$@"
+    "$@"
+}
 
+# Path to where to look for environment.yml files
+TOOLS_DIR="/workspace/tools"
 
 # Detect available environment manager
 detect_env_mgr() {
@@ -14,8 +20,6 @@ detect_env_mgr() {
     echo "mamba"
   elif command -v micromamba &> /dev/null; then
     echo "micromamba"
-  elif [[ -x "$MICROMAMBA_BIN" ]]; then
-    echo "$MICROMAMBA_BIN"
   else
     echo ""
   fi
@@ -47,10 +51,9 @@ find "$TOOLS_DIR" -mindepth 2 -maxdepth 2 -name environment.yml | while read -r 
   echo "Processing environment: $envname"
 
   if "$ENV_MGR" env list | grep -qw "$envname"; then
-    echo "Updating existing environment: $envname"
-    "$ENV_MGR" env update -n "$envname" -f "$envfile" -y
+    CMD="y | "$ENV_MGR" env update -n "$envname" -f "$envfile""
   else
-    echo "Creating new environment: $envname"
-    "$ENV_MGR" env create -n "$envname" -f "$envfile" -y
+    CMD="y | "$ENV_MGR" env update -n "$envname" -f "$envfile""
   fi
+  execute_cmd $CMD
 done
