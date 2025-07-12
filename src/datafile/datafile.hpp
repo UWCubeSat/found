@@ -1,5 +1,5 @@
-#ifndef DATAFILE_H
-#define DATAFILE_H
+#ifndef SRC_DATAFILE_DATAFILE_HPP_
+#define SRC_DATAFILE_DATAFILE_HPP_
 
 #include <memory>
 #include <cstdint>
@@ -95,10 +95,12 @@ struct DataFile {
      * Moves another DataFile
      * 
      * @param other The file to copy
+     * 
+     * @return The resulting data file (this)
      */
-    DataFile& operator=(DataFile &&other) = default;
+    DataFile &operator=(DataFile &&other) = default;
 };
 
 }  // namespace found
 
-#endif  // DATAFILE_H
+#endif  // SRC_DATAFILE_DATAFILE_HPP_

@@ -1,11 +1,11 @@
-#ifndef DISTANCE_H
-#define DISTANCE_H
+#ifndef SRC_DISTANCE_DISTANCE_HPP_
+#define SRC_DISTANCE_DISTANCE_HPP_
 
 #include <utility>
 #include <memory>
 
 #include "common/style.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 
@@ -20,7 +20,7 @@ namespace found {
  * three consecutive points A B and C, angle APB is less than
  * angle APC
  */
-class DistanceDeterminationAlgorithm : public Stage<Points, PositionVector> {
+class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVector> {
  public:
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
@@ -253,7 +253,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param base The base
      * @param power The power
      * 
-     * Return base ^ power
+     * @return base ^ power
      */
     inline uint64_t Pow(uint64_t base, uint64_t power) {
         uint64_t result = 1;
@@ -296,6 +296,11 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
     /**
     * Place documentation here. Press enter to automatically make a new line
+    * 
+    * @param p The points in the image on Earth's horizon
+    * 
+    * @return The position vector of the satellite with respect
+    * to the camera's coordinate system
     * */
     PositionVector Run(const Points &p) override;
  private:
@@ -304,4 +309,4 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
 }  // namespace found
 
-#endif  // DISTANCE_H
+#endif  // SRC_DISTANCE_DISTANCE_HPP_

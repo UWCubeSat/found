@@ -1,5 +1,5 @@
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef SRC_COMMAND_LINE_PARSING_OPTIONS_HPP_
+#define SRC_COMMAND_LINE_PARSING_OPTIONS_HPP_
 
 // this file uses the "X" pattern.
 
@@ -102,4 +102,4 @@ class OrbitOptions {
 #undef FOUND_CLI_OPTION
 };
 
-#endif  // OPTIONS_H
+#endif  // SRC_COMMAND_LINE_PARSING_OPTIONS_HPP_

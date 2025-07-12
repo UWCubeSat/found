@@ -1,5 +1,5 @@
-#ifndef DISTANCE_MOCKS_H
-#define DISTANCE_MOCKS_H
+#ifndef TEST_COMMON_MOCKS_DISTANCE_MOCKS_HPP_
+#define TEST_COMMON_MOCKS_DISTANCE_MOCKS_HPP_
 
 #include "common/style.hpp"
 
@@ -26,4 +26,4 @@ class MockVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
 
 }  // namespace found
 
-#endif  // DISTANCE_MOCKS_H
+#endif  // TEST_COMMON_MOCKS_DISTANCE_MOCKS_HPP_

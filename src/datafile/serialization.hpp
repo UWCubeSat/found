@@ -1,5 +1,5 @@
-#ifndef SERIALIZATION_H
-#define SERIALIZATION_H
+#ifndef SRC_DATAFILE_SERIALIZATION_HPP_
+#define SRC_DATAFILE_SERIALIZATION_HPP_
 
 #include <string>
 
@@ -65,4 +65,4 @@ void ntoh(DataFileHeader& header);
 
 }  // namespace found
 
-#endif  // SERIALIZATION_H
+#endif  // SRC_DATAFILE_SERIALIZATION_HPP_

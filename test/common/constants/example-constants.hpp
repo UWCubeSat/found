@@ -1,3 +1,6 @@
+#ifndef TEST_COMMON_CONSTANTS_EXAMPLE_CONSTANTS_HPP_
+#define TEST_COMMON_CONSTANTS_EXAMPLE_CONSTANTS_HPP_
+
 /**
  * This is our constants file. We define it as an .hpp file simply
  * because all our variables are "constants". In practice, you should
@@ -31,3 +34,5 @@ Points expectedPoints = {expectedPoint1, expectedPoint2};
 // Expected Size of Points
 const std::size_t expectedSize = 2;
 }  // namespace found
+
+#endif  // TEST_COMMON_CONSTANTS_EXAMPLE_CONSTANTS_HPP_

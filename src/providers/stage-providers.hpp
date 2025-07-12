@@ -1,11 +1,11 @@
-#ifndef STAGE_PROVIDERS_H_
-#define STAGE_PROVIDERS_H_
+#ifndef SRC_PROVIDERS_STAGE_PROVIDERS_HPP_
+#define SRC_PROVIDERS_STAGE_PROVIDERS_HPP_
 
 #include <memory>
 
 #include "command-line/parsing/options.hpp"
 
-#include "common/pipeline.hpp"
+#include "common/pipeline/pipelines.hpp"
 
 #include "calibrate/calibrate.hpp"
 
@@ -117,4 +117,4 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
 
 }  // namespace found
 
-#endif  // STAGE_PROVIDERS_H_
+#endif  // SRC_PROVIDERS_STAGE_PROVIDERS_HPP_

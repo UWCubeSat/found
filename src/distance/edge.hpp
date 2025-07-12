@@ -1,11 +1,11 @@
-#ifndef EDGE_H
-#define EDGE_H
+#ifndef SRC_DISTANCE_EDGE_HPP_
+#define SRC_DISTANCE_EDGE_HPP_
 
 #include <memory>
 #include <functional>
 
 #include "common/style.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 
 namespace found {
 
@@ -13,7 +13,7 @@ namespace found {
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture.
 */
-class EdgeDetectionAlgorithm : public Stage<Image, Points> {};
+class EdgeDetectionAlgorithm : public FunctionStage<Image, Points> {};
 
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
@@ -79,6 +79,10 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 
     /**
      * Place documentation here. Press enter to automatically make a new line
+     * 
+     * @param image The image to process
+     * 
+     * @return The edge points in the image most closely resembling that of earth
      * */
     Points Run(const Image &image) override;
  private:
@@ -102,4 +106,4 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
 }  // namespace found
 
-#endif
+#endif  // SRC_DISTANCE_EDGE_HPP_

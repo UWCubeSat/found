@@ -1,9 +1,9 @@
-#ifndef CALIBRATE_H_
-#define CALIBRATE_H_
+#ifndef SRC_CALIBRATE_CALIBRATE_HPP_
+#define SRC_CALIBRATE_CALIBRATE_HPP_
 
 #include <utility>
 
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 #include "common/spatial/attitude-utils.hpp"
 
 namespace found {
@@ -13,7 +13,7 @@ namespace found {
  * algorithms that calibrate our orientation to the
  * reference orientation
  */
-class CalibrationAlgorithm : public Stage<std::pair<EulerAngles, EulerAngles>, Quaternion> {
+class CalibrationAlgorithm : public FunctionStage<std::pair<EulerAngles, EulerAngles>, Quaternion> {
  public:
     // Constructs this
     CalibrationAlgorithm() = default;
@@ -45,4 +45,4 @@ class LOSTCalibrationAlgorithm : public CalibrationAlgorithm {
 
 }  // namespace found
 
-#endif  // CALIBRATE_H_
+#endif  // SRC_CALIBRATE_CALIBRATE_HPP_

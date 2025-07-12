@@ -1,5 +1,5 @@
-#ifndef STYLE_H
-#define STYLE_H
+#ifndef SRC_COMMON_STYLE_HPP_
+#define SRC_COMMON_STYLE_HPP_
 
 #include <vector>
 #include <unordered_set>
@@ -9,7 +9,7 @@
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/pipelines.hpp"
 
 namespace found {
 
@@ -179,15 +179,20 @@ typedef struct OrbitParams OrbitParams;
 /// will tell you the position and velocity of the satellite at any given time
 typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPrediction;
 
+/// Number of (maximum) stages for each pipeline
+constexpr size_t calibration_size = 1;
+constexpr size_t distance_size = 3;
+constexpr size_t orbit_size = 2;
+
 /// Pipeline for Calibration
-typedef Pipeline<std::pair<EulerAngles, EulerAngles>, Quaternion> CalibrationPipeline;
+typedef SequentialPipeline<std::pair<EulerAngles, EulerAngles>, Quaternion, calibration_size> CalibrationPipeline;
 
 /// Pipeline for Distance Determination
-typedef Pipeline<Image, PositionVector> DistancePipeline;
+typedef SequentialPipeline<Image, PositionVector, distance_size> DistancePipeline;
 
 /// Pipeline for Orbital Determination
-typedef Pipeline<LocationRecords, LocationRecords> OrbitPipeline;
+typedef SequentialPipeline<LocationRecords, LocationRecords, orbit_size> OrbitPipeline;
 
 }  // namespace found
 
-#endif  // STYLE_H
+#endif  // SRC_COMMON_STYLE_HPP_
