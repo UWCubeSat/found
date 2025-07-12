@@ -1,0 +1,12 @@
+<map id="found::ModifyingPipeline&lt; T, N &gt;" name="found::ModifyingPipeline&lt; T, N &gt;">
+<area shape="rect" id="Node000001" title="A ModifyingPipeline modifies a resource with a given set of stages." alt="" coords="5,376,188,416"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Pipeline.html" title="A Pipeline&lt;Input, Output, N&gt; is an abstract Pipeline that takes an Input, outputs an Output,..." alt="" coords="11,287,182,327"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,341,99,376,94,376,94,341"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1FunctionStage.html" title="A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin..." alt="" coords="100,197,259,237"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="154,249,116,288,113,285,150,245"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Stage.html" title=" " alt="" coords="96,80,271,135"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="184,149,183,197,177,197,179,149"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="20,5,128,31"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="78,44,90,237,96,286,91,287,85,238,72,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="101,37,152,78,149,82,98,42"/>
+</map>
