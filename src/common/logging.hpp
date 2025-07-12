@@ -1,5 +1,5 @@
-#ifndef LOGGING_H
-#define LOGGING_H
+#ifndef SRC_COMMON_LOGGING_HPP_
+#define SRC_COMMON_LOGGING_HPP_
 
 ///// LOGGING LEVELS /////
 
@@ -118,4 +118,4 @@ namespace found {
 
 #endif
 
-#endif  // LOGGING_H
+#endif  // SRC_COMMON_LOGGING_HPP_

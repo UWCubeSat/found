@@ -1,9 +1,9 @@
-#ifndef PREPROCESSING_H_
-#define PREPROCESSING_H_
+#ifndef SRC_COMMAND_LINE_EXECUTION_EXECUTORS_HPP_
+#define SRC_COMMAND_LINE_EXECUTION_EXECUTORS_HPP_
 
 #include <memory>
 
-#include "common/pipeline.hpp"
+#include "common/pipeline/pipelines.hpp"
 #include "command-line/parsing/options.hpp"
 #include "common/style.hpp"
 
@@ -136,4 +136,4 @@ class OrbitPipelineExecutor : public PipelineExecutor {
 
 }  // namespace found
 
-#endif  // PREPROCESSING_H_
+#endif  // SRC_COMMAND_LINE_EXECUTION_EXECUTORS_HPP_

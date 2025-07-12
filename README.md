@@ -70,7 +70,7 @@ We can then use this calibration information to now make some position estimates
 
 For the distance flags:
 1. The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases
-2. We then specify our calibration data, which we generated above
+2. We then specify our calibration data, which we generated from `tools.generator` (check out [our tools folder](tools) for more information)
 3. We can specify camera parameters, like the focal length (m)
 4. Or the pixel size (m)
 5. We then have our reference orientation, which we need to use in conjunction with our calibration data
@@ -140,6 +140,9 @@ The distance information will then be used to form a vector of the satellite rel
 This stage takes multiple vectors of the satellite at different points in the satellite's orbit to project the satellite's future path of travel. FOUND will be capable of:
 - [ ] Runge-Kutta Based Orbital Prediction
 - [ ] Lambert's Problem-Based Orbital Prediction
+
+# Tools
+We have tools that can be used with our main `found` program. They can be found in [our tools folder](tools).
 
 # CMake Integration
 

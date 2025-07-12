@@ -1,9 +1,9 @@
-#ifndef VECTORIZE_H
-#define VECTORIZE_H
+#ifndef SRC_DISTANCE_VECTORIZE_HPP_
+#define SRC_DISTANCE_VECTORIZE_HPP_
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 
 namespace found {
 
@@ -12,7 +12,7 @@ namespace found {
  * finds the position from Earth with respect to its center with a 3D Vector (Vec3).
  * 
 */
-class VectorGenerationAlgorithm : public Stage<PositionVector, PositionVector> {
+class VectorGenerationAlgorithm : public FunctionStage<PositionVector, PositionVector> {
  public:
     // Constructs this
     VectorGenerationAlgorithm() = default;
@@ -98,6 +98,12 @@ class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorit
 
     /**
      * Place documentation here. Press enter to automatically make a new line
+     * 
+     * @param x_E The position vector of the satellite with respect to the
+     * camera coordiinate system
+     * 
+     * @return The position vector of the satellite with respect to the
+     * planet's inertial reference frame
      * */
     PositionVector Run(const PositionVector &x_E) override;
  private:
@@ -106,4 +112,4 @@ class FeatureDetectionVectorGenerationAlgorithm : public VectorGenerationAlgorit
 
 }  // namespace found
 
-#endif
+#endif  // SRC_DISTANCE_VECTORIZE_HPP_

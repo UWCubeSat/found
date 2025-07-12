@@ -1,5 +1,5 @@
-#ifndef ENCODING_H
-#define ENCODING_H
+#ifndef SRC_DATAFILE_ENCODING_HPP_
+#define SRC_DATAFILE_ENCODING_HPP_
 
 #include <endian.h>
 #include <stdint.h>
@@ -258,4 +258,4 @@ uint32_t calculateCRC32(const void* data, size_t length);
 
 }  // namespace found
 
-#endif  // SERIALIZATION_H
+#endif  // SRC_DATAFILE_ENCODING_HPP_

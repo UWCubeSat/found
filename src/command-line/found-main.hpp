@@ -1,5 +1,5 @@
-#ifndef FOUND_MAIN_H
-#define FOUND_MAIN_H
+#ifndef SRC_COMMAND_LINE_FOUND_MAIN_HPP_
+#define SRC_COMMAND_LINE_FOUND_MAIN_HPP_
 
 namespace found {
 
@@ -20,4 +20,4 @@ int main(int argc, char **argv);
 
 }  // namespace found
 
-#endif  // FOUND_MAIN_H
+#endif  // SRC_COMMAND_LINE_FOUND_MAIN_HPP_

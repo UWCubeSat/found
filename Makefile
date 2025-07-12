@@ -92,7 +92,7 @@ LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
 LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
-CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=c++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
+CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=gnu++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
 CXXFLAGS_TEST := $(CXXFLAGS) $(LIBS_TEST) $(LOGGING_MACROS_TEST)
 ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
@@ -246,8 +246,7 @@ $(DOXYGEN_AWESOME_ARTIFACT):
 $(DOXYGEN_TARGET): $(COMPILE_SETUP_TARGET) $(DOXYGEN_AWESOME_ARTIFACT)
 	$(call PRINT_TARGET_HEADER, $(DOXYGEN_TARGET))
 	mkdir -p $(BUILD_DOCUMENTATION_DOXYGEN_DIR)
-	chmod +rwx doxygen.sh
-	./doxygen.sh
+	doxygen
 
 # The clean target (not in default target, cleans just the build folder)
 $(CLEAN_TARGET):

@@ -1,5 +1,5 @@
-#ifndef DISTANCE_OUTPUT_H
-#define DISTANCE_OUTPUT_H
+#ifndef SRC_DISTANCE_OUTPUT_HPP_
+#define SRC_DISTANCE_OUTPUT_HPP_
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
@@ -44,4 +44,4 @@ namespace found {
 }  // namespace found
 
 
-#endif  // DISTANCE_OUTPUT_H
+#endif  // SRC_DISTANCE_OUTPUT_HPP_

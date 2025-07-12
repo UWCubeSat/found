@@ -1,5 +1,5 @@
-#ifndef TIME_H
-#define TIME_H
+#ifndef SRC_COMMON_TIME_TIME_HPP_
+#define SRC_COMMON_TIME_TIME_HPP_
 
 #include <ctime>
 
@@ -113,4 +113,4 @@ decimal getCurrentGreenwichMeanSiderealTime();
 
 }  // namespace found
 
-#endif  // TIME_H
+#endif  // SRC_COMMON_TIME_TIME_HPP_

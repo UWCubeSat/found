@@ -139,9 +139,9 @@ TEST(TimeTest, TestGetJulianDateNow) {
     decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
 
     #ifndef FOUND_FLOAT_MODE
-        ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
-    #else
         ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
+    #else
+        ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
     #endif
 }
 

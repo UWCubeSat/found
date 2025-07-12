@@ -12,10 +12,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Build all
       uses: nick-fields/retry@v3.0.2
@@ -26,10 +26,10 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
@@ -43,30 +43,35 @@ jobs:
   
   float:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
+    # Only CMake coverage needs to pass (Makefile coverage is broken in
+    # /__w/found/found for some reason)
+    #
+    # Does not pass on GitHub Ubuntu Runner version 2.326.0, but Makefile
+    # coverage last passed on 2.325.0 with exact same code
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
         timeout_minutes: 3
         command: make clean && make compile FLOAT_MODE=true -j16
-    - name: Coverage
+    - name: Float Coverage
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
         timeout_minutes: 3
-        command: make clean && make coverage FLOAT_MODE=true -j16    
+        command: ./build.sh clean_all && ./build.sh cmake -DFLOAT_MODE=ON --target coverage --parallel 16  
 
   lint:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Stylecheck
       run: make google_stylecheck
@@ -79,19 +84,25 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
+    # Only CMake coverage needs to pass (Makefile coverage is broken in
+    # /__w/found/found for some reason)
+    #
+    # Does not pass on GitHub Ubuntu Runner version 2.326.0, but Makefile
+    # coverage last passed on 2.325.0 with exact same code
     - name: Coverage
       uses: nick-fields/retry@v3.0.2
       with:
         max_attempts: 3
         timeout_minutes: 3
-        command: make clean && make coverage -j16
+        command: ./build.sh cmake "" --target coverage --parallel 16
     
     - name: Upload Coverage Report
+      if: ${{ always() }}
       uses: actions/upload-artifact@v4
       with:
         name: Coverage Report
@@ -99,11 +110,11 @@ jobs:
   
   documentation:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
     needs: [build, lint, coverage]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     
     - name: Generate Documentation
       uses: nick-fields/retry@v3.0.2
@@ -112,8 +123,8 @@ jobs:
         timeout_minutes: 3
         command: |
           make clean
-          make coverage -j16
-          make doxygen_generate
+          ./build.sh cmake "" --target coverage --parallel 16
+          ./build.sh cmake "" --target documentation --parallel 16
     
     - name: Install rsync (for JamesIves/github-pages-deploy-action@v4)
       run: apt install -y rsync
@@ -135,13 +146,12 @@ jobs:
         folder: build/documentation/
         target-folder: ${{ env.TARGET_FOLDER }}
   
-  cmake-build:
+  cmake-build-all:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
-    
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Build all
       uses: nick-fields/retry@v3.0.2
@@ -152,10 +162,10 @@ jobs:
 
   cmake-float:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
@@ -169,10 +179,10 @@ jobs:
   
   cmake-test:
     runs-on: ubuntu-latest
-    container: nguy8tri/huskysat:latest
+    container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2

@@ -1,11 +1,11 @@
-#ifndef ORBIT_H
-#define ORBIT_H
+#ifndef SRC_ORBIT_ORBIT_HPP_
+#define SRC_ORBIT_ORBIT_HPP_
 
 #include <vector>
 #include <utility>
 
 #include "common/spatial/attitude-utils.hpp"
-#include "common/pipeline.hpp"
+#include "common/pipeline/stages.hpp"
 #include "common/style.hpp"
 
 namespace found {
@@ -14,7 +14,7 @@ namespace found {
  * The OrbitPropagationAlgorithm is an algorithm that propagates an orbit
  * over a specified time period.
  */
-class OrbitPropagationAlgorithm : public Stage<LocationRecords, LocationRecords> {
+class OrbitPropagationAlgorithm : public FunctionStage<LocationRecords, LocationRecords> {
  public:
     /// Constructs this
     OrbitPropagationAlgorithm() = default;
@@ -65,4 +65,4 @@ class ApproximateOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
 
 }  // namespace found
 
-#endif  // ORBIT_H
+#endif  // SRC_ORBIT_ORBIT_HPP_
