@@ -1,1 +1,5 @@
-* text eol=lf
+# Default to LF line endings for text files
+* text=auto eol=lf
+
+# Explicitly treat these as binary so Git won't normalize them
+*.png binary
