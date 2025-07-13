@@ -29,8 +29,8 @@ case "$1" in
         shift
         mkdir -p build && cd build
 
-        CONFIG_OPTS="$1"
-        shift
+        CONFIG_OPTS="${1:-}"  # Use empty string if not set
+        if [ $# -gt 0 ]; then shift; fi
 
         CMD="cmake $CONFIG_OPTS .. && cmake --build . $*"
         ;;
