@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Print and execute a command with a banner
 execute_cmd() {
-    echo "$@"
+    echo ">>> $*"
     "$@"
 }
 
@@ -43,6 +43,12 @@ if [[ "$ENV_MGR" == *micromamba ]]; then
   eval "$("$ENV_MGR" shell hook --shell bash)"
 fi
 
+# Set the -y flag only for mamba or micromamba
+USE_YES_FLAG=false
+if [[ "$ENV_MGR" == "mamba" || "$ENV_MGR" == "micromamba" ]]; then
+  USE_YES_FLAG=true
+fi
+
 # Process all environment.yml files under tools
 find "$TOOLS_DIR" -mindepth 2 -maxdepth 2 -name environment.yml | while read -r envfile; do
   envname=$(awk '/^name:/ {print $2}' "$envfile")
@@ -51,9 +57,16 @@ find "$TOOLS_DIR" -mindepth 2 -maxdepth 2 -name environment.yml | while read -r 
   echo "Processing environment: $envname"
 
   if "$ENV_MGR" env list | grep -qw "$envname"; then
-    CMD=""$ENV_MGR" env update -y -n "$envname" -f "$envfile""
+    if $USE_YES_FLAG; then
+      execute_cmd "$ENV_MGR" env update -n "$envname" -f "$envfile" -y
+    else
+      execute_cmd "$ENV_MGR" env update -n "$envname" -f "$envfile"
+    fi
   else
-    CMD=""$ENV_MGR" env update -y -n "$envname" -f "$envfile""
+    if $USE_YES_FLAG; then
+      execute_cmd "$ENV_MGR" env create -n "$envname" -f "$envfile" -y
+    else
+      execute_cmd "$ENV_MGR" env create -n "$envname" -f "$envfile"
+    fi
   fi
-  execute_cmd $CMD
 done

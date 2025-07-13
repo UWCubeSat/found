@@ -30,3 +30,4 @@ COPY install.sh /tmp/install.sh
 RUN chmod +x /tmp/install.sh && /tmp/install.sh || (cat /tmp/install.log && exit 1) && \
     rm -f /tmp/install.sh /tmp/install.log && \
     rm -rf /var/lib/apt/lists/*
+    
