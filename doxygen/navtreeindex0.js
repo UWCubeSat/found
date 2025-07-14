@@ -248,6 +248,6 @@ var NAVTREEINDEX0 =
 "factory_8hpp_source.html":[2,0,0,6,1],
 "files.html":[2,0],
 "found-main_8hpp_source.html":[2,0,0,1,2],
-"functions.html":[1,3,0],
-"functions.html":[1,3,0,0]
+"functions.html":[1,3,0,0],
+"functions.html":[1,3,0]
 };

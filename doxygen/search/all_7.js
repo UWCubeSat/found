@@ -1,7 +1,7 @@
 var searchData=
 [
   ['generateloss_0',['GenerateLoss',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a07e087c0e390d5480c5f21ad5b3e07c5',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['generation_1',['Vector Generation',['../index.html#autotoc_md11',1,'']]],
+  ['generation_1',['Vector Generation',['../index.html#autotoc_md13',1,'']]],
   ['getcenter_2',['getCenter',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a40fbe05fc8f83c43d25c95f8014bef39',1,'found::SphericalDistanceDeterminationAlgorithm']]],
   ['getdcm_3',['GetDCM',['../classfound_1_1Attitude.html#ae2c0a79e2fc3680008469be345393f6d',1,'found::Attitude']]],
   ['getdistance_4',['getDistance',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a0e9fb0cba410dfc3559e1de6732557f3',1,'found::SphericalDistanceDeterminationAlgorithm']]],
