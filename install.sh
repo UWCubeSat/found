@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Exit on any command failure
 set -e
@@ -25,9 +25,15 @@ execute_cmd() {
     fi
 }
 
+# Detect if running as root (UID 0)
+if [ "$(id -u)" -eq 0 ]; then
+    SUDO=""
+else
+    SUDO="sudo"
+fi
+
 # Detect the operating system using uname
 OS="$(uname -s)"
-
 INSTALL=""
 
 # Perform necessary setup and get the
@@ -38,22 +44,22 @@ case "$OS" in
         # Detect the package manager
         PM=""
         if command -v apt-get &> /dev/null; then
-            PM="sudo apt-get"
-            execute_cmd sudo apt-get -y update
-            execute_cmd sudo apt-get -y dist-upgrade
+            PM="$SUDO apt-get"
+            execute_cmd $SUDO apt-get -y update
+            execute_cmd $SUDO apt-get -y dist-upgrade
         elif command -v yum &> /dev/null; then
-            PM="sudo yum"
-            execute_cmd yum -y update
+            PM="$SUDO yum"
+            execute_cmd $SUDO yum -y update
         # elif command -v dnf &> /dev/null; then
-        #     PM="dnf"
-        #     execute_cmd dnf -y upgrade
+        #     PM="$SUDO dnf"
+        #     execute_cmd $SUDO dnf -y upgrade
         else
             echo "No known package manager found"
             exit 1
         fi
         INSTALL="$PM install -y"
         # List of packages to install
-        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz"
+        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz valgrind"
         ;;
     Darwin*)
         # Check if Homebrew is installed; install it if not
@@ -95,8 +101,13 @@ PYTHON_PACKAGES="git+https://github.com/cpplint/cpplint.git@2.0.0#egg=cpplint gi
 
 # Install each package and echo the command
 for PACKAGE in $PYTHON_PACKAGES; do
-    CMD="pipx install $PACKAGE"
+    if [ "$(id -u)" -eq 0 ]; then
+        CMD="pip install --break-system-packages $PACKAGE"
+    else
+        CMD="pipx install $PACKAGE"
+    fi
     execute_cmd $CMD
+    
 done
 execute_cmd pipx ensurepath
 

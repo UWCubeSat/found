@@ -3,30 +3,42 @@
 FOUND is a system that Earth satellites can use to calculate their orbits using pictures taken by the satellite of Earth. It is being developed at Husky Satellite Lab, a CubeSat team at the University of Washington. It will be deployed and tested on HuskySat-2, the team's next mission.
 
 # Installation
+There are currently two options:
+ 1. [`Install Script`](install.sh) works well for Windows WSL and Linux but will not work on Apple Silicon. 
+ 1. `Docker` ensures that FOUND runs the same way on any machine. If your using Apple Silicon, this is the only option.
 
-If you are using Windows, you must download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default) to run the following
-code.
-
-## Prerequisites
-For Linux Ubuntu/Oracle and MacOS (uses either `apt-get`, `yum` or `brew`) obtain the required packages for this software:
+## Setup via Install Script
+For Windows users, please download Windows Subsystem for Linux, and use a Linux distribution (Ubuntu by default).  
+For Linux Ubuntu/Oracle users (uses either `apt-get`, `yum` or `brew`) install this package's dependencies via the [`Install Script`](install.sh) in this repository:
 - Copy the install script into your environment: [Link to install script](https://github.com/UWCubeSat/found/blob/main/install.sh)
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
-## Building FOUND
-- Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
-- Go into the directory (`cd found`)
-- Compile the executable via GNU Make or CMake (below for more information)
-- Execute the executable (`./build/bin/found`)
-- Execute the test suite (`./build/bin/found-test`)
+## Setup via Docker
+This option requires you to have Docker and Visual Studio Code.  To install Docker on your system, visit the [official Docker installation guide](https://docs.docker.com/get-docker/). If you are using a Linux computer it is reccomended that you install Docker with `apt-get` instead.  
+You will need the `Dev Containers` VScode extension. This can be installed by looking it up in the extension's view or with `code --install-extension ms-vscode-remote.remote-containers`.
 
-This repository uses a dual build system, using GNU Make and CMake. As usual if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
+# Building FOUND
+1. Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
+2. Go into the directory (`cd found`)
+3. Docker Users: Open FOUND in container (Press `F1` and select Dev Containers: Open Folder in Container)
+4. Compile the executable via GNU Make or CMake (below for more information)
+5. Execute the executable (`./build/bin/found`, [Usage](#usage) below)
 
+## Compilation
+This repository uses a dual build system, using GNU Make and CMake. Consumers compiling the system should run either:
+1. `./build.sh make release`.  
+2. `./build.sh cmake -DCMAKE_BUILD_TYPE=Release`
+
+Developers: if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
 1. Run GNU Make: `./build.sh make [GNU Make options]`
 2. Run CMake: `./build.sh cmake "[CMake Configuration Options]" "[CMake Build Options]"`
 3. Clean the build folder: `./build.sh clean`
 4. Clean the build and cache folders: `./build.sh clean_all`
 
+All valid and useful targets can be found on our [notion](https://www.notion.so/huskysat/Software-Resources-1fa4a4f5c8e0804d8af4ffcd0132e60c).
+
+<a name="usage"></a>
 # Usage
 The main executable, which is found in `./build/bin/found`, operates as a standard command-line based program. The usage is:
 <div align="center">
@@ -39,7 +51,8 @@ There are currently two options:
 1. `calibration`: FOUND needs to know its own camera attitude, but does not find that information. Thus, this step produces a relative attitude based on a reference attitude that is always known, and one measurement of the FOUND camera's attitude. The output is to a `.found` file that stores this information.
 2. `distance`: FOUND then uses an image taken from space together with a `.found` file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible).
 
-To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`.
+To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`.  
+Developers: FOUND's test suit executable can be found in `./build/bin/found-test`.
 
 ## Example Usage
 Here, we present a common usage for this program. After generating the binary via `make` or simply `make compile`, execute the command:

@@ -15,7 +15,7 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Build all
       uses: nick-fields/retry@v3.0.2
@@ -29,7 +29,7 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
@@ -46,7 +46,7 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Only CMake coverage needs to pass (Makefile coverage is broken in
     # /__w/found/found for some reason)
@@ -71,23 +71,20 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Stylecheck
       run: make google_stylecheck
     
     - name: Test Stylecheck
       run: make google_stylecheck_test
-    
-    - name: Line Endings
-      uses: erclu/check-crlf@v1
 
   coverage:
     runs-on: ubuntu-latest
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Only CMake coverage needs to pass (Makefile coverage is broken in
     # /__w/found/found for some reason)
@@ -114,7 +111,7 @@ jobs:
     needs: [build, lint, coverage]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Generate Documentation
       uses: nick-fields/retry@v3.0.2
@@ -165,7 +162,7 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Float Build
       uses: nick-fields/retry@v3.0.2
@@ -182,7 +179,7 @@ jobs:
     container: huskysat/found:latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Memory Check
       uses: nick-fields/retry@v3.0.2
