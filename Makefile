@@ -36,6 +36,14 @@ STB_IMAGE_CACHE_DIR := $(CACHE_DIR)/$(STB_IMAGE)
 STB_IMAGE_CACHE_ARTIFACT := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).cpp
 STB_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(STB_IMAGE)
 
+# Define the FFTW library
+FFTW := fftw
+FFTW_VERSION := 3.3.10
+FFTW_URL := https://www.$(FFTW).org/$(FFTW)-$(FFTW_VERSION).tar.gz
+FFTW_CACHE_ARTIFACT := $(CACHE_DIR)/$(FFTW)-$(FFTW_VERSION).tar.gz
+FFTW_CACHE_DIR := $(CACHE_DIR)/$(FFTW)-3.3.10
+FFTW_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(FFTW)
+
 # Define the GoogleTest library and build targets
 GTEST := googletest
 GTEST_VERSION := release-1.12.1

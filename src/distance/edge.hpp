@@ -60,34 +60,71 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     decimal offset_;
 };
 
-/**
- * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
- * a picture of Earth and finds all points on the horizon within the picture by employing a 
- * Laplacian of Gaussian (LoC) filter to the image.
-*/
-class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
- public:
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
-
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * */
-    virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
-
-    /**
-     * Place documentation here. Press enter to automatically make a new line
-     * 
-     * @param image The image to process
-     * 
-     * @return The edge points in the image most closely resembling that of earth
-     * */
-    Points Run(const Image &image) override;
- private:
-    // useful fields specific to this algorithm and helper methods
+struct Mask {
+    int width;
+    int height;
+    int channels;
+    unsigned char *data;
 };
+
+// class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+//  public:
+//     ConvolutionEdgeDetectionAlgorithm(Mask mask);
+
+//     /// @brief Destroys the algorithm
+//     virtual ~SimpleEdgeDetectionAlgorithm() {}
+
+//     Points Run(const Image &image) override {
+//          // Step 1: Convolve with Mask
+//          Image convolvedImage;
+//          delete
+//          // Step 2: Use criterion over mask
+//          for(size_t i = 0; i ‹ image.width * image.height; i++) { 
+//             bool isEdge = this-›ApplyCriterion(i, convolvedImage);
+//          // Use it to figure out the edge points
+//          }
+//          // (maybe) Step 3: Do Connected Components
+//     }
+//  protected:
+//     virtual bool ApplyCriterion(size_t index, Image &image) = 0;
+// };
+
+// /**
+//  * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
+//  * a picture of Earth and finds all points on the horizon within the picture by employing a 
+//  * Laplacian of Gaussian (LoC) filter to the image.
+// */
+// class LoCEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlgorithm {
+//  public:
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * */
+//     LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * */
+//     virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+
+//     /**
+//      * Place documentation here. Press enter to automatically make a new line
+//      * 
+//      * @param image The image to process
+//      * 
+//      * @return The edge points in the image most closely resembling that of earth
+//      * */
+//     Points Run(const Image &image) override{
+   
+//     ConvolutionEdgeDetectionAlgorithm::Run(image);
+
+//     }
+
+//     bool ApplyCriterion(size_t index, Image &image) override {
+//          // Zero Crossing
+//     }
+//  private:
+//     // useful fields specific to this algorithm and helper methods
+// };
 
 /**
  * Computes the groups of components within the image

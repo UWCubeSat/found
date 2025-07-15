@@ -89,6 +89,9 @@ set(LOGGING_LEVEL
 option(FLOAT_MODE "Enable FOUND_FLOAT_MODE" OFF)
 if(FLOAT_MODE)
     add_compile_definitions(FOUND_FLOAT_MODE)
+    set(FFTW_PRECISION_FLAG "--enable-float")
+else()
+    set(FFTW_PRECISION_FLAG "--enable-long-double")
 endif()
 
 # Debug config
@@ -134,13 +137,48 @@ add_library(${STB_IMAGE} STATIC ${STB_IMAGE_SRC})
 target_compile_definitions(${STB_IMAGE} PRIVATE STB_IMAGE_IMPLEMENTATION)
 target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
+##### fftw #####
+
+# fftw definitions
+set(FFTW "fftw")
+set(FFTW_VERSION "3.3.10")
+set(FFTW_URL "https://www.${FFTW}.org/${FFTW}-${FFTW_VERSION}.tar.gz")
+set(FFTW_DIR "${CACHE_DIR}/${FFTW}-${FFTW_VERSION}")
+set(FFTW_BUILD_DIR "${FFTW_DIR}/build")
+set(FFTW_INSTALL_DIR "${FFTW_DIR}/install")
+set(FFTW_LIB "${FFTW_INSTALL_DIR}/lib/libfftw3.a")
+
+# Download and build fftw as a static library
+ExternalProject_Add(
+    ${FFTW}_ep
+    URL ${FFTW_URL}
+    PREFIX ${FFTW_DIR}
+    SOURCE_DIR ${FFTW_DIR}
+    BINARY_DIR ${FFTW_BUILD_DIR}
+    CONFIGURE_COMMAND ${FFTW_DIR}/configure --prefix=${FFTW_INSTALL_DIR} --enable-static --disable-shared --disable-fortran ${FFTW_PRECISION_FLAG}
+    BUILD_COMMAND $(MAKE)
+    INSTALL_COMMAND $(MAKE) install
+    BUILD_BYPRODUCTS ${FFTW_LIB}
+    LOG_DOWNLOAD ON
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    LOG_INSTALL ON
+)
+
+add_library(${FFTW} STATIC IMPORTED GLOBAL)
+set_target_properties(${FFTW} PROPERTIES
+    IMPORTED_LOCATION ${FFTW_LIB}
+    INTERFACE_INCLUDE_DIRECTORIES ${FFTW_INSTALL_DIR}/include
+)
+add_dependencies(${FFTW} ${FFTW}_ep)
+
 # Set the source libraries
-set(SRC_LIBS ${STB_IMAGE})
+list(APPEND SRC_LIBS ${FFTW} ${STB_IMAGE})
 
 ##### FOUND Library #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
-target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
+target_link_libraries(found_lib PRIVATE ${SRC_LIBS})
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
