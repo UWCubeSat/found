@@ -104,6 +104,16 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  */
 Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
 
+/**
+ * Convolves the image with a kernel.
+ * 
+ * @param image The image to convolve
+ * @param kernel The kernel to convolve with
+ *
+ * @return The convolved image
+ */
+Image Convolve(const Image &image, const Image &kernel);
+
 }  // namespace found
 
 #endif  // SRC_DISTANCE_EDGE_HPP_
