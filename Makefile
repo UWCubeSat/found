@@ -40,8 +40,10 @@ STB_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(STB_IMAGE)
 FFTW := fftw
 FFTW_VERSION := 3.3.10
 FFTW_URL := https://www.$(FFTW).org/$(FFTW)-$(FFTW_VERSION).tar.gz
-FFTW_CACHE_ARTIFACT := $(CACHE_DIR)/$(FFTW)-$(FFTW_VERSION).tar.gz
-FFTW_CACHE_DIR := $(CACHE_DIR)/$(FFTW)-3.3.10
+FFTW_CACHE_DIR := $(CACHE_DIR)/$(FFTW)-$(FFTW_VERSION)
+FFTW_TAR := $(CACHE_DIR)/$(FFTW)-$(FFTW_VERSION).tar.gz
+FFTW_SRC_DIR := $(FFTW_CACHE_DIR)/src
+FFTW_BUILD_DIR := $(FFTW_CACHE_DIR)/build
 FFTW_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(FFTW)
 
 # Define the GoogleTest library and build targets
@@ -91,6 +93,9 @@ endif
 # FLOAT_MODE can be defined to enable FOUND_FLOAT_MODE
 ifdef FLOAT_MODE
 	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion
+	FFTW_PRECISION_FLAG := --enable-float
+else
+	FFTW_PRECISION_FLAG := --enable-long-double
 endif
 
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
@@ -106,7 +111,10 @@ ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
 CXXFLAGS += $(LOGGING_MACROS)
-LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o # Any external libraries go here
+# Any external libraries go here
+LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o 
+LIBS += -I$(FFTW_IMAGE_DIR)/include
+LDFLAGS += $(FFTW_IMAGE_DIR)/lib/libfftw3*.a
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
 # Targets
@@ -162,7 +170,7 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(FFTW_IMAGE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
@@ -180,12 +188,24 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 	wget $(STB_IMAGE_URL) -P $(STB_IMAGE_CACHE_DIR)
 	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
 	$(CXX) -I$(CACHE_DIR) -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o # Exclude CXXFLAGS because we know its fine
+$(FFTW_IMAGE_DIR): $(FFTW_TAR) $(BUILD_LIBRARY_SRC_DIR)
+	mkdir -p $(FFTW_SRC_DIR) $(FFTW_BUILD_DIR)
+	tar -xzf $(FFTW_TAR) -C $(FFTW_SRC_DIR) --strip-components=1
+	cd $(FFTW_BUILD_DIR) && \
+		$(FFTW_SRC_DIR)/configure --prefix=$(FFTW_BUILD_DIR)/install \
+		--enable-static --disable-shared --disable-fortran $(FFTW_PRECISION_FLAG)
+	$(MAKE) -C $(FFTW_BUILD_DIR) -j
+	$(MAKE) -C $(FFTW_BUILD_DIR) install
+	cp -r $(FFTW_BUILD_DIR)/install $(FFTW_IMAGE_DIR)
+
+$(FFTW_TAR):
+	wget -O $(FFTW_TAR) $(FFTW_URL)
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR) $(FFTW_IMAGE_DIR)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR) $(FFTW_IMAGE_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -c $< -o $@
 compile_message:
