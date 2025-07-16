@@ -144,36 +144,46 @@ set(FFTW "fftw")
 set(FFTW_VERSION "3.3.10")
 set(FFTW_URL "https://www.${FFTW}.org/${FFTW}-${FFTW_VERSION}.tar.gz")
 set(FFTW_DIR "${CACHE_DIR}/${FFTW}-${FFTW_VERSION}")
-set(FFTW_BUILD_DIR "${FFTW_DIR}/build")
-set(FFTW_INSTALL_DIR "${FFTW_DIR}/install")
-set(FFTW_LIB "${FFTW_INSTALL_DIR}/lib/libfftw3.a")
+set(FFTW_INSTALL_DIR ${FFTW_DIR}/include)
 
-# Download and build fftw as a static library
+# ExternalProject build + install
 ExternalProject_Add(
-    ${FFTW}_ep
+    fftw_ep
     URL ${FFTW_URL}
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     PREFIX ${FFTW_DIR}
-    SOURCE_DIR ${FFTW_DIR}
-    BINARY_DIR ${FFTW_BUILD_DIR}
-    CONFIGURE_COMMAND ${FFTW_DIR}/configure --prefix=${FFTW_INSTALL_DIR} --enable-static --disable-shared --disable-fortran ${FFTW_PRECISION_FLAG}
-    BUILD_COMMAND $(MAKE)
-    INSTALL_COMMAND $(MAKE) install
-    BUILD_BYPRODUCTS ${FFTW_LIB}
+    INSTALL_DIR ${FFTW_INSTALL_DIR}
+    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFTW_INSTALL_DIR} --enable-static --disable-shared --disable-fortran ${FFTW_PRECISION_FLAG}
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
     LOG_DOWNLOAD ON
     LOG_CONFIGURE ON
     LOG_BUILD ON
     LOG_INSTALL ON
 )
 
-add_library(${FFTW} STATIC IMPORTED GLOBAL)
-set_target_properties(${FFTW} PROPERTIES
-    IMPORTED_LOCATION ${FFTW_LIB}
-    INTERFACE_INCLUDE_DIRECTORIES ${FFTW_INSTALL_DIR}/include
+# Path to built library
+set(FFTW_LIB "${FFTW_INSTALL_DIR}/lib/libfftw3l.a")
+set(FFTW_INCLUDE_DIR "${FFTW_INSTALL_DIR}/include")
+
+# Define an IMPORTED static library target that represents the actual FFTW binary, 
+# which we will set the real path to after the build
+add_library(fftw_real STATIC IMPORTED GLOBAL)
+add_dependencies(fftw_real fftw_ep)
+
+# Set its properties now (CMake allows this because we won't use until build)
+set_target_properties(fftw_real PROPERTIES
+    IMPORTED_LOCATION "${FFTW_LIB}"
+    INTERFACE_INCLUDE_DIRECTORIES "${FFTW_INCLUDE_DIR}"
 )
-add_dependencies(${FFTW} ${FFTW}_ep)
+
+# Wrapper INTERFACE target to link in configuration phase safely
+add_library(fftw INTERFACE)
+add_dependencies(fftw fftw_ep)
+target_link_libraries(fftw INTERFACE fftw_real)
 
 # Set the source libraries
-list(APPEND SRC_LIBS ${FFTW} ${STB_IMAGE})
+list(APPEND SRC_LIBS ${STB_IMAGE} fftw)
 
 ##### FOUND Library #####
 
@@ -346,6 +356,11 @@ install(TARGETS found_lib
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
 install(TARGETS ${STB_IMAGE}
+        EXPORT foundTargets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        INCLUDES DESTINATION include)
+install(TARGETS fftw
         EXPORT foundTargets
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib

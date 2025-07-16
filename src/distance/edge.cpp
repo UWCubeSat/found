@@ -366,38 +366,4 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     return result;
 }
 
-// Image Convolve(const Image &image, const Image &kernel){
-//     // Step 0: Setup the Problem
-//     Image result = {image.width, image.height, image.channels, new unsigned char[image.width * image.height * image.channels]{}};
-//     int kernelWidth = kernel.width;
-//     int kernelHeight = kernel.height;
-//     int kernelChannels = kernel.channels;
-
-//     // Step 1: Iterate through the image, convolving with the kernel
-//     for (int y = 0; y < image.height; y++) {
-//         for (int x = 0; x < image.width; x++) {
-//             for (int c = 0; c < image.channels; c++) {
-//                 decimal sum = 0;
-//                 int count = 0;
-//                 for (int ky = -kernelHeight / 2; ky <= kernelHeight / 2; ky++) {
-//                     for (int kx = -kernelWidth / 2; kx <= kernelWidth / 2; kx++) {
-//                         int nx = x + kx;
-//                         int ny = y + ky;
-//                         if (nx >= 0 && nx < image.width && ny >= 0 && ny < image.height) {
-//                             sum += kernel.image[(ky + kernelHeight / 2) * kernelWidth * kernelChannels +
-//                                                 (kx + kernelWidth / 2) * kernelChannels + c] *
-//                                     image.image[ny * image.width * image.channels + nx * image.channels + c];
-//                             count++;
-//                         }
-//                     }
-//                 }
-//                 result.image[y * result.width * result.channels + x * result.channels + c] =
-//                     static_cast<unsigned char>(sum / count);
-//             }
-//         }
-//     }
-
-//     return result;
-// }
-
 }  // namespace found
