@@ -192,11 +192,13 @@ $(FFTW_IMAGE_DIR): $(FFTW_TAR) $(BUILD_LIBRARY_SRC_DIR)
 	mkdir -p $(FFTW_SRC_DIR) $(FFTW_BUILD_DIR)
 	tar -xzf $(FFTW_TAR) -C $(FFTW_SRC_DIR) --strip-components=1
 	cd $(FFTW_BUILD_DIR) && \
-		$(FFTW_SRC_DIR)/configure --prefix=$(FFTW_BUILD_DIR)/install \
-		--enable-static --disable-shared --disable-fortran $(FFTW_PRECISION_FLAG)
+	$(abspath $(FFTW_SRC_DIR))/configure --srcdir=$(abspath $(FFTW_SRC_DIR)) \
+	--prefix=$(abspath $(FFTW_BUILD_DIR))/install \
+	--enable-static --disable-shared --disable-fortran $(FFTW_PRECISION_FLAG)
 	$(MAKE) -C $(FFTW_BUILD_DIR) -j
 	$(MAKE) -C $(FFTW_BUILD_DIR) install
 	cp -r $(FFTW_BUILD_DIR)/install $(FFTW_IMAGE_DIR)
+
 
 $(FFTW_TAR):
 	wget -O $(FFTW_TAR) $(FFTW_URL)
