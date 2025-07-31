@@ -49,7 +49,7 @@ The main executable, which is found in `./build/bin/found`, operates as a standa
 There are currently two options:
 
 1. `calibration`: FOUND needs to know its own camera attitude, but does not find that information. Thus, this step produces a relative attitude based on a reference attitude that is always known, and one measurement of the FOUND camera's attitude. The output is to a `.found` file that stores this information.
-2. `distance`: FOUND then uses an image taken from space together with a `.found` file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible).
+2. `distance`: FOUND then uses an image taken from space together with a `.found` file to figure out the position of the image, and hence the satellite, relative to the Celestial Coordinate System (conversion to lattitude/longitude/altitude is also possible). It prints these outputs to terminal as well as saving them in a `.found` file if one already exists or is specified by a flag. 
 
 To learn more about the different flags, execute `./build/bin/found --help` or `./build/bin/found -h`.  
 Developers: FOUND's test suit executable can be found in `./build/bin/found-test`.

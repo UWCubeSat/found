@@ -22,23 +22,27 @@ upper = inscribed_angle + half_fov * (1 - padding)
 absolute_lower = -inscribed_angle + half_fov * (1 + padding)
 lower = max(lower, absolute_lower)
 
-cam_angles = np.array([lower, inscribed_angle, upper])
+cam_angles = np.linspace(lower, upper, num=4)
 print(f"camera angles (radians): {cam_angles}")
 cam_angles = np.degrees(cam_angles)
 print(f"camera angles (degrees): {cam_angles}")
 
+spin = np.pi 
+y_anles = np.sin(spin) * cam_angles
+x_angles = np.cos(spin) * cam_angles
+
 for i, p in enumerate(cam_angles):
 
     # Construct position and orientation
-    position = f"{distance} 0 0"
-    orientation = f"180 {p:.2f} 0"
+    position = f"{-distance} 0 0"
+    orientation = f"{y_anles[i]:.2f} {x_angles[i]:.2f} 0"
 
     # Build and call the command
     cmd = [
         "python", "-m", "tools.generator",
         "--position", *position.split(),
         "--orientation", *orientation.split(),
-        "--filename", f"tools/simulator/output_{i}",
+        "--filename", f"tools/simulator/output_n{i}",
         "--focal-length", f"{focal_length:.2f}"
     ]
     print(f"Running: {' '.join(cmd)}")
