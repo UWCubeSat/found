@@ -8,7 +8,9 @@ execute_cmd() {
 }
 
 # Path to where to look for environment.yml files
-TOOLS_DIR="/workspace/tools"
+# Get the directory where this script is located, then get the tools directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLS_DIR="$SCRIPT_DIR"
 
 # Detect available environment manager
 detect_env_mgr() {
