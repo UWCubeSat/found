@@ -15,7 +15,11 @@ googletest*
 
 # Don't include personally generated images in the root folder
 /*.png
-/tools/*.png
+
+# Don't include simulator generated data and images
+/tools/simulator/data/
+/tools/simulator/output*/
+/tools/simulator/*.png
 
 # Don't inlcude any .gcov files in the root folder
 /*.gcov
