@@ -107,6 +107,7 @@ def generate_command_flags(distance: float,
         ]
         flag_list.append(cmd)
 
+    print(flag_list)  # Show first 2 commands for brevity
     return flag_list
 
 # Example usage function

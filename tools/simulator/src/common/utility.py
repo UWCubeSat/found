@@ -29,4 +29,4 @@ def focal_length_from_fov_and_resolution(fov_radians: float,
     Returns:
         Focal length in meters
     """
-    return (resolution_pixels * pixel_size_meters) / 2 / np.tan(fov_radians / 2)
+    return (resolution_pixels * pixel_size_meters) / (2 * np.tan(fov_radians / 2))
