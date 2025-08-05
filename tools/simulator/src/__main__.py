@@ -12,6 +12,7 @@ import os
 import subprocess
 from pathlib import Path
 from datetime import datetime
+import itertools
 
 # Import the __init__ module to trigger path manipulation FIRST
 import __init__
@@ -25,9 +26,177 @@ from common.constants import (
     SIMULATION_RANGES, 
     DEFAULT_SIMULATION, 
     DEFAULT_PIXEL_SIZE,
-    EARTH_MEAN_RADIUS
 )
 from common.utility import focal_length_from_fov_and_resolution
+
+
+def lookup_image_command(output_dir: Path, image_name: str) -> str:
+    """
+    Look up the command used to generate a specific image.
+    
+    Args:
+        output_dir: Path to the simulation output directory
+        image_name: Name of the image file (with or without .png extension)
+    
+    Returns:
+        The full command string used to generate the image, or None if not found
+    """
+    metadata_file = output_dir / "image_commands.txt"
+    
+    if not metadata_file.exists():
+        print(f"❌ Metadata file not found: {metadata_file}")
+        return None
+    
+    # Normalize image name (ensure .png extension)
+    if not image_name.endswith('.png'):
+        image_name += '.png'
+    
+    try:
+        with open(metadata_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('#') or not line:
+                    continue
+                
+                if ' | ' in line:
+                    file_name, command = line.split(' | ', 1)
+                    if file_name.strip() == image_name:
+                        return command.strip()
+        
+        print(f"❌ Image '{image_name}' not found in metadata")
+        return None
+        
+    except Exception as e:
+        print(f"❌ Error reading metadata file: {e}")
+        return None
+
+
+def reproduce_image(output_dir: Path, image_name: str, new_output_path: str = None):
+    """
+    Reproduce a specific image by looking up and re-running its original command.
+    
+    Args:
+        output_dir: Path to the original simulation output directory
+        image_name: Name of the image to reproduce
+        new_output_path: Optional new output path (defaults to current directory)
+    """
+    command = lookup_image_command(output_dir, image_name)
+    
+    if not command:
+        return False
+    
+    print(f"🔍 Found command for {image_name}:")
+    print(f"   {command}")
+    
+    if new_output_path:
+        # Replace the filename in the command
+        cmd_parts = command.split()
+        try:
+            filename_idx = cmd_parts.index('--filename') + 1
+            cmd_parts[filename_idx] = new_output_path
+            command = ' '.join(cmd_parts)
+            print(f"📝 Modified output path to: {new_output_path}")
+        except (ValueError, IndexError):
+            print("⚠️  Could not modify output path in command")
+    
+    print("🚀 Re-running command...")
+    
+    try:
+        result = subprocess.run(
+            command.split(),
+            cwd=Path(__file__).parent.parent.parent.parent,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+        
+        if result.returncode == 0:
+            print("✅ Image reproduced successfully!")
+            return True
+        else:
+            print("❌ Command failed:")
+            print(f"   {result.stderr}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error running command: {e}")
+        return False
+
+
+def analyze_simulation_results(output_dir: Path):
+    """
+    Analyze and summarize simulation results from a metadata file.
+    
+    Args:
+        output_dir: Path to the simulation output directory
+    """
+    metadata_file = output_dir / "image_commands.txt"
+    
+    if not metadata_file.exists():
+        print(f"❌ Metadata file not found: {metadata_file}")
+        return
+    
+    print(f"📊 Analyzing simulation results in: {output_dir}")
+    print("=" * 50)
+    
+    total_images = 0
+    unique_distances = set()
+    unique_fovs = set()
+    unique_resolutions = set()
+    
+    try:
+        with open(metadata_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('#') or not line:
+                    continue
+                
+                if ' | ' in line:
+                    file_name, command = line.split(' | ', 1)
+                    total_images += 1
+                    
+                    # Parse command for parameters
+                    cmd_parts = command.split()
+                    
+                    # Extract key parameters
+                    try:
+                        if '--position' in cmd_parts:
+                            pos_idx = cmd_parts.index('--position')
+                            distance = float(cmd_parts[pos_idx + 1])
+                            unique_distances.add(distance)
+                        
+                        if '--x-resolution' in cmd_parts:
+                            res_idx = cmd_parts.index('--x-resolution')
+                            resolution = int(cmd_parts[res_idx + 1])
+                            unique_resolutions.add(resolution)
+                            
+                        if '--focal-length' in cmd_parts:
+                            focal_idx = cmd_parts.index('--focal-length')
+                            focal_length = float(cmd_parts[focal_idx + 1])
+                            # Calculate FOV from focal length and resolution (approximate)
+                            if '--pixel-size' in cmd_parts:
+                                pixel_idx = cmd_parts.index('--pixel-size')
+                                pixel_size = float(cmd_parts[pixel_idx + 1])
+                                sensor_width = resolution * pixel_size
+                                fov_rad = 2 * np.arctan(sensor_width / (2 * focal_length))
+                                fov_deg = np.degrees(fov_rad)
+                                unique_fovs.add(round(fov_deg, 1))
+                    except (ValueError, IndexError):
+                        pass  # Skip parsing errors
+    
+        print(f"📈 Summary:")
+        print(f"   Total images: {total_images}")
+        print(f"   Unique distances: {len(unique_distances)} ({sorted([d/1_000_000 for d in unique_distances])} Mm)")
+        print(f"   Unique FOVs: {len(unique_fovs)} ({sorted(unique_fovs)}°)")
+        print(f"   Unique resolutions: {len(unique_resolutions)} ({sorted(unique_resolutions)} px)")
+        
+        print(f"\n📁 Files in directory:")
+        png_files = list(output_dir.glob("*.png"))
+        print(f"   PNG files: {len(png_files)}")
+        print(f"   Metadata file: {metadata_file.name}")
+        
+    except Exception as e:
+        print(f"❌ Error analyzing results: {e}")
 
 
 def create_output_directory(base_name: str = "simulation") -> Path:
@@ -77,8 +246,8 @@ def run_quick_test():
     command_flags = generate_command_flags(
         distance=distance,
         fov=fov,
-        num_cam_angles=2,
-        num_spins=1,
+        num_cam_angles=3,
+        num_spins=8,
         padding=0.1
     )
     
@@ -94,7 +263,8 @@ def run_quick_test():
             "--focal-length", f"{focal_length:.6f}",
             "--x-resolution", str(resolution),
             "--y-resolution", str(resolution),
-            "--pixel-size", f"{DEFAULT_PIXEL_SIZE:.2e}"
+            "--pixel-size", f"{DEFAULT_PIXEL_SIZE:.2e}",
+            
         ]
 
         print(generator_cmd) # Debugging output
@@ -129,8 +299,8 @@ def run_quick_test():
 
 
 def run_default_simulation():
-    """Run the default simulation using parameters from constants.py."""
-    print("🛰️  Starting Default Satellite Imaging Simulation")
+    """Run the default simulation using all combinations of parameters from constants.py."""
+    print("🛰️  Starting Default Satellite Imaging Simulation (All Combinations)")
     print("=" * 60)
     
     # Get default simulation parameters from constants
@@ -143,72 +313,103 @@ def run_default_simulation():
     print(f"   FOV range: {DEFAULT_SIMULATION['fovs']} -> {len(default_fovs)} values")
     print(f"   Resolution range: {DEFAULT_SIMULATION['resolutions']} -> {len(default_resolutions)} values")
     
+    # Calculate total combinations
+    total_combinations = len(default_distances) * len(default_fovs) * len(default_resolutions)
+    print(f"\n🔢 Total parameter combinations: {total_combinations}")
+    
     # Create output directory
-    output_dir = create_output_directory("default")
+    output_dir = create_output_directory("default_full")
     
-    # Use middle values for demonstration
-    sample_distance = default_distances[len(default_distances)//2]
-    sample_fov = default_fovs[len(default_fovs)//2]
-    sample_resolution = default_resolutions[len(default_resolutions)//2]
+    # Create metadata file to track all commands
+    metadata_file = output_dir / "image_commands.txt"
     
-    print(f"\n🎯 Selected Parameters:")
-    print(f"   Distance: {sample_distance/1_000_000:.1f} Mm")
-    print(f"   FOV: {np.degrees(sample_fov):.1f}°")
-    print(f"   Resolution: {sample_resolution}x{sample_resolution} px")
+    # Generate all combinations of parameters
+    param_combinations = list(itertools.product(default_distances, default_fovs, default_resolutions))
     
-    # Calculate focal length
-    focal_length = focal_length_from_fov_and_resolution(
-        sample_fov / 2,
-        sample_resolution,
-        DEFAULT_PIXEL_SIZE
-    )
+    print(f"\n🚀 Generating images for {len(param_combinations)} parameter combinations...")
+    print(f"   Each combination will generate multiple camera angles/orientations")
+    print(f"   Command metadata will be saved to: {metadata_file}")
     
-    print(f"   Focal length: {focal_length*1000:.2f} mm")
+    image_counter = 0
     
-    # Generate command flags
-    command_flags = generate_command_flags(
-        distance=sample_distance,
-        fov=sample_fov,
-        num_cam_angles=4,
-        num_spins=2,
-        padding=0.1
-    )
+    # Write header to metadata file
+    with open(metadata_file, 'w') as f:
+        f.write("# Satellite Imaging Simulation - Command Metadata\n")
+        f.write(f"# Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"# Total parameter combinations: {len(param_combinations)}\n")
+        f.write("# Format: IMAGE_FILE | FULL_COMMAND\n")
+        f.write("# " + "="*80 + "\n\n")
     
-    print(f"\n🚀 Generating {len(command_flags)} images...")
-    
-    for i, cmd_flags in enumerate(command_flags):
-        output_file = output_dir / f"simulation_img_{i:03d}"
+    for combo_idx, (distance, fov, resolution) in enumerate(param_combinations):
+        print(f"\n🎯 Combination {combo_idx + 1}/{len(param_combinations)}:")
+        print(f"   Distance: {distance/1_000_000:.1f} Mm")
+        print(f"   FOV: {np.degrees(fov):.1f}°")
+        print(f"   Resolution: {resolution}x{resolution} px")
         
-        generator_cmd = [
-            "python", "-m", "tools.generator",
-            *cmd_flags,
-            "--filename", str(output_file),
-            "--focal-length", f"{focal_length:.6f}",
-            "--x-resolution", str(sample_resolution),
-            "--y-resolution", str(sample_resolution),
-            "--pixel-size", f"{DEFAULT_PIXEL_SIZE:.2e}"
-        ]
+        # Calculate focal length for this combination
+        focal_length = focal_length_from_fov_and_resolution(
+            fov,
+            resolution,
+            DEFAULT_PIXEL_SIZE
+        )
         
-        print(f"   Processing image {i+1}/{len(command_flags)}...")
+        print(f"   Focal length: {focal_length*1000:.2f} mm")
         
-        try:
-            result = subprocess.run(
-                generator_cmd,
-                cwd=Path(__file__).parent.parent.parent.parent,
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+        # Generate command flags for this parameter combination
+        command_flags = generate_command_flags(
+            distance=distance,
+            fov=fov,
+            num_cam_angles=3,
+            num_spins=8,
+            padding=0.1
+        )
+        
+        print(f"   Generating {len(command_flags)} images for this combination...")
+        
+        for angle_idx, cmd_flags in enumerate(command_flags):
+            image_counter += 1
+            output_file = output_dir / f"img_{image_counter:04d}_combo{combo_idx+1:02d}_angle{angle_idx+1:02d}"
             
-            if result.returncode == 0:
-                print(f"   ✅ Generated: {output_file}.png")
-            else:
-                print(f"   ❌ Failed: {result.stderr[:100]}...")
+            generator_cmd = [
+                "python", "-m", "tools.generator",
+                *cmd_flags,
+                "--filename", str(output_file),
+                "--focal-length", f"{focal_length:.6f}",
+                "--x-resolution", str(resolution),
+                "--y-resolution", str(resolution),
+                "--pixel-size", f"{DEFAULT_PIXEL_SIZE:.2e}",
+                "--grayscale"  # Add grayscale flag for smaller file sizes
+            ]
+            
+            # Save command to metadata file
+            with open(metadata_file, 'a') as f:
+                image_name = f"img_{image_counter:04d}_combo{combo_idx+1:02d}_angle{angle_idx+1:02d}.png"
+                f.write(f"{image_name} | {' '.join(generator_cmd)}\n")
+            
+            print(f"     Image {image_counter} (angle {angle_idx+1}/{len(command_flags)})...", end=" ")
+        
+            try:
+                result = subprocess.run(
+                    generator_cmd,
+                    cwd=Path(__file__).parent.parent.parent.parent,
+                    capture_output=True,
+                    text=True,
+                    timeout=60
+                )
                 
-        except Exception as e:
-            print(f"   ❌ Error: {str(e)[:100]}...")
+                if result.returncode == 0:
+                    print("✅")
+                else:
+                    print("❌")
+                    print(f"     Error: {result.stderr[:100]}...")
+                    
+            except Exception as e:
+                print("❌")
+                print(f"     Error: {str(e)[:100]}...")
     
-    print(f"\n✅ Simulation complete! Check {output_dir}/")
+    print(f"\n✅ Full simulation complete! Generated {image_counter} total images.")
+    print(f"   Output directory: {output_dir}/")
+    print(f"   Parameter combinations tested: {len(param_combinations)}")
     return output_dir
 
 
@@ -218,17 +419,80 @@ def main():
     print("=" * 40)
     print("Choose simulation mode:")
     print("1. Quick test (2 images, fast)")
-    print("2. Default simulation (8 images, full parameters)")
-    print("3. Exit")
+    print("2. Full parameter sweep (all combinations - many images!)")
+    print("3. Post-analysis tools (lookup/reproduce specific images)")
+    print("4. Exit")
     
     try:
-        choice = input("\nEnter choice (1-3): ").strip()
+        choice = input("\nEnter choice (1-4): ").strip()
         
         if choice == "1":
             run_quick_test()
         elif choice == "2":
-            run_default_simulation()
+            # Get default simulation parameters to show user what they're getting into
+            default_distances = SIMULATION_RANGES['distances'][DEFAULT_SIMULATION['distances']]
+            default_fovs = SIMULATION_RANGES['fovs'][DEFAULT_SIMULATION['fovs']]
+            default_resolutions = SIMULATION_RANGES['resolutions'][DEFAULT_SIMULATION['resolutions']]
+            
+            total_combinations = len(default_distances) * len(default_fovs) * len(default_resolutions)
+            images_per_combo = 4  # 2 cam_angles * 2 spins
+            total_images = total_combinations * images_per_combo
+            
+            print(f"\n⚠️  WARNING: This will generate approximately {total_images} images!")
+            print(f"   ({total_combinations} parameter combinations × {images_per_combo} angles each)")
+            print(f"   This may take a very long time and use significant disk space.")
+            
+            confirm = input("Continue? (y/N): ").strip().lower()
+            if confirm in ['y', 'yes']:
+                run_default_simulation()
+            else:
+                print("Operation cancelled.")
         elif choice == "3":
+            # Post-analysis tools
+            print("\n🔍 Post-Analysis Tools")
+            print("=" * 30)
+            
+            # Ask for output directory
+            output_dir_str = input("Enter path to simulation output directory: ").strip()
+            output_dir = Path(output_dir_str)
+            
+            if not output_dir.exists():
+                print(f"❌ Directory not found: {output_dir}")
+                return
+            
+            metadata_file = output_dir / "image_commands.txt"
+            if not metadata_file.exists():
+                print(f"❌ No metadata file found in {output_dir}")
+                print("   This directory may not contain simulation results.")
+                return
+            
+            print("Choose analysis option:")
+            print("1. Look up command for specific image")
+            print("2. Reproduce specific image")
+            print("3. Analyze simulation results summary")
+            
+            analysis_choice = input("Enter choice (1-3): ").strip()
+            
+            if analysis_choice == "1":
+                image_name = input("Enter image name (e.g., img_0001_combo01_angle01.png): ").strip()
+                command = lookup_image_command(output_dir, image_name)
+                if command:
+                    print(f"\n✅ Command for {image_name}:")
+                    print(f"   {command}")
+                    
+            elif analysis_choice == "2":
+                image_name = input("Enter image name to reproduce: ").strip()
+                new_path = input("Enter new output path (optional, press Enter to use original): ").strip()
+                new_path = new_path if new_path else None
+                reproduce_image(output_dir, image_name, new_path)
+                
+            elif analysis_choice == "3":
+                analyze_simulation_results(output_dir)
+                
+            else:
+                print("❌ Invalid choice.")
+                
+        elif choice == "4":
             print("👋 Goodbye!")
             return
         else:

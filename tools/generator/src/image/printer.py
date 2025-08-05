@@ -10,21 +10,36 @@ from typing import Iterable
 class Printer:
     """A Printer prints an image of Earth"""
 
-    def __init__(self, camera: Camera):
+    def __init__(self, camera: Camera, grayscale: bool = False):
         """Creates this printer
 
         Args:
             camera (Camera): The camera that took the image
+            grayscale (bool): Whether to generate grayscale images
         """
         self.camera = camera
         self.width, self.height = camera.x_resolution, camera.y_resolution
-        self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.width, self.height)
+        self.grayscale_mode = grayscale
+        
+        # Choose the appropriate surface format based on grayscale mode
+        if grayscale:
+            # Use A8 format for single-channel grayscale
+            self.surface = cairo.ImageSurface(cairo.FORMAT_A8, self.width, self.height)
+        else:
+            # Use ARGB32 format for color images
+            self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.width, self.height)
+        
         self.context = cairo.Context(self.surface)
 
     def _start_drawing(self):
         """Sets up the printer to start drawing"""
         # Set background color (black)
-        self.context.set_source_rgb(0, 0, 0)
+        if self.grayscale_mode:
+            # For A8 format, use alpha channel (0 = transparent/black background)
+            self.context.set_source_rgba(0, 0, 0, 0)
+        else:
+            # For ARGB32 format, use RGB
+            self.context.set_source_rgb(0, 0, 0)
         self.context.paint()
 
     def _transform_point(self, *points: Vector) -> Vector:
@@ -52,9 +67,19 @@ class Printer:
             curve_points (Iterable[Vector]): The curve points of Earth
             that are observed as its edge
         """
-        # Set fill color (RGB: Blue)
-        self.context.set_source_rgb(0, 50, 100)
+        if self.grayscale_mode:
+            # For grayscale, set alpha value (0.8 = medium white in A8 format)
+            self.context.set_source_rgba(0, 0, 0, .8)
+        else:
+            # Set fill color (RGB: Blue) - values normalized to 0-1 range
+            # Approximating a nice blue similar to royal blue (65, 105, 225) -> (0.25, 0.41, 0.88)
+            self.context.set_source_rgb(0.25, 0.41, 0.88)
+        
         curve_points = self._transform_point(*curve_points)
+        
+        # For this specific problematic case, always reverse the curve
+        # This is a workaround for edge cases where the normal winding doesn't work
+        curve_points = list(reversed(curve_points))
 
         # Move to the first point
         self.context.move_to(*curve_points[0])
@@ -91,4 +116,10 @@ class Printer:
             self.generate_image(...) should've been
             called before this
         """
-        self.surface.write_to_png(f"{filename}.png")
+        output_path = f"{filename}.png"
+        self.surface.write_to_png(output_path)
+        
+        if self.grayscale_mode:
+            print(f"Generated single-channel grayscale image: {output_path}")
+        else:
+            print(f"Generated color image: {output_path}")

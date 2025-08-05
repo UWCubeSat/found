@@ -81,6 +81,11 @@ def parse_args() -> argparse.Namespace:
         help="The y resolution of the camera (in pixels)",
     )
     parser.add_argument("--filename", default=None, help="The output file name")
+    parser.add_argument(
+        "--grayscale", 
+        action="store_true", 
+        help="Generate grayscale image instead of color"
+    )
     args = parser.parse_args()
 
     position, orientation = Vector(*args.position), Attitude(
@@ -100,6 +105,7 @@ def parse_args() -> argparse.Namespace:
             if args.filename
             else f"{Path(__file__).resolve().parents[3]}/{position},{orientation}"
         ),
+        args.grayscale,
     )
 
 
@@ -207,6 +213,7 @@ def print_image(
     camera: Camera,
     image_points: List[Vector],
     filename: str,
+    grayscale: bool = False,
 ):
     """Generates an image
 
@@ -214,12 +221,13 @@ def print_image(
         camera (Camera): The camera that took the image
         image_points (List[Vector]): The edge points that go onto the image
         filename (str): The file to save the image to
+        grayscale (bool): Whether to generate a grayscale image
 
     Precondition:
         image_points is given with respect to the camera 2d axes
     """
     # Step 6: Draw and Save Image
-    printer = Printer(camera)
+    printer = Printer(camera, grayscale)
     printer.generate_image(image_points)
     printer.save_image(filename)
 
@@ -249,6 +257,7 @@ if __name__ == "__main__":
         x_resolution,
         y_resolution,
         filename,
+        grayscale,
     ) = parse_args()
 
     camera, image_points = generate_points(
@@ -261,4 +270,4 @@ if __name__ == "__main__":
         y_resolution,
     )
 
-    print_image(camera, image_points, filename)
+    print_image(camera, image_points, filename, grayscale)
