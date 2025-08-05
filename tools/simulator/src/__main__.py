@@ -199,6 +199,227 @@ def analyze_simulation_results(output_dir: Path):
         print(f"❌ Error analyzing results: {e}")
 
 
+def calculate_nadir_deviation(orientation_str: str) -> float:
+    """
+    Calculate angular deviation from nadir (straight down) given orientation string.
+    
+    Args:
+        orientation_str: String like "0.00 9.92 0" representing RA, Dec, Roll
+    
+    Returns:
+        Angular deviation from nadir in degrees
+    """
+    try:
+        parts = orientation_str.split()
+        ra, dec, roll = float(parts[0]), float(parts[1]), float(parts[2])
+        
+        # Nadir is straight down: RA=0, Dec=0, Roll=0
+        # Calculate angular distance from nadir point
+        nadir_deviation = np.sqrt(ra**2 + dec**2)
+        return nadir_deviation
+    except:
+        return 0.0
+
+
+def run_found_distance_analysis(output_dir: Path, distance_binary_path: str = "./build/bin/found"):
+    """
+    Run 'found distance' on all images and analyze accuracy vs parameters.
+    
+    Args:
+        output_dir: Path to simulation output directory
+        distance_binary_path: Path to the found binary
+    """
+    print(f"🔬 Running Distance Analysis on: {output_dir}")
+    print("=" * 60)
+    
+    metadata_file = output_dir / "image_commands.txt"
+    if not metadata_file.exists():
+        print(f"❌ Metadata file not found: {metadata_file}")
+        return
+    
+    # Results storage
+    results = []
+    
+    try:
+        with open(metadata_file, 'r') as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if line.startswith('#') or not line:
+                    continue
+                
+                if ' | ' not in line:
+                    continue
+                
+                file_name, command = line.split(' | ', 1)
+                image_path = output_dir / file_name.strip()
+                
+                if not image_path.exists():
+                    print(f"⚠️  Image not found: {image_path}")
+                    continue
+                
+                print(f"📸 Processing {file_name.strip()} ({line_num})...")
+                
+                # Parse simulation parameters from command
+                cmd_parts = command.split()
+                params = {}
+                
+                try:
+                    # Extract parameters
+                    if '--position' in cmd_parts:
+                        pos_idx = cmd_parts.index('--position')
+                        params['true_distance'] = abs(float(cmd_parts[pos_idx + 1]))  # Distance from Earth center
+                    
+                    if '--orientation' in cmd_parts:
+                        ori_idx = cmd_parts.index('--orientation')
+                        orientation_str = f"{cmd_parts[ori_idx + 1]} {cmd_parts[ori_idx + 2]} {cmd_parts[ori_idx + 3]}"
+                        params['orientation'] = orientation_str
+                        params['nadir_deviation'] = calculate_nadir_deviation(orientation_str)
+                    
+                    if '--focal-length' in cmd_parts:
+                        focal_idx = cmd_parts.index('--focal-length')
+                        params['focal_length'] = float(cmd_parts[focal_idx + 1])
+                    
+                    if '--pixel-size' in cmd_parts:
+                        pixel_idx = cmd_parts.index('--pixel-size')
+                        params['pixel_size'] = float(cmd_parts[pixel_idx + 1])
+                    
+                    if '--x-resolution' in cmd_parts:
+                        res_idx = cmd_parts.index('--x-resolution')
+                        params['resolution'] = int(cmd_parts[res_idx + 1])
+                        params['num_pixels'] = params['resolution'] ** 2
+                
+                except (ValueError, IndexError) as e:
+                    print(f"   ❌ Failed to parse parameters: {e}")
+                    continue
+                
+                # Run found distance command
+                distance_cmd = [
+                    distance_binary_path, "distance",
+                    "--image", str(image_path),
+                    "--reference-as-orientation",
+                    "--camera-focal-length", str(params.get('focal_length', 0.01)),
+                    "--camera-pixel-size", str(params.get('pixel_size', 20e-6)),
+                    "--reference-orientation", *params.get('orientation', '0 0 0').split()
+                ]
+                
+                try:
+                    result = subprocess.run(
+                        distance_cmd,
+                        cwd=Path(__file__).parent.parent.parent.parent,
+                        capture_output=True,
+                        text=True,
+                        timeout=30
+                    )
+                    
+                    if result.returncode == 0:
+                        # Parse distance result
+                        output_lines = result.stdout.strip().split('\n')
+                        measured_distance = None
+                        
+                        for line in output_lines:
+                            if 'distance:' in line.lower():
+                                try:
+                                    # Extract distance value (assuming format like "Distance: 12345.67 meters")
+                                    distance_str = line.split(':')[-1].strip()
+                                    measured_distance = float(distance_str.split()[0])
+                                    break
+                                except:
+                                    continue
+                        
+                        if measured_distance is not None:
+                            true_dist = params['true_distance']
+                            error = measured_distance - true_dist
+                            relative_error = (error / true_dist) * 100
+                            
+                            params.update({
+                                'measured_distance': measured_distance,
+                                'error': error,
+                                'relative_error': relative_error,
+                                'image_file': file_name.strip()
+                            })
+                            
+                            results.append(params)
+                            
+                            print(f"   ✅ True: {true_dist/1000:.1f}km, Measured: {measured_distance/1000:.1f}km, Error: {relative_error:.2f}%")
+                        else:
+                            print(f"   ❌ Could not parse distance from output: {result.stdout[:100]}...")
+                    else:
+                        print(f"   ❌ Distance command failed: {result.stderr[:100]}...")
+                
+                except subprocess.TimeoutExpired:
+                    print(f"   ⏰ Distance analysis timeout")
+                except Exception as e:
+                    print(f"   ❌ Error running distance analysis: {e}")
+    
+    except Exception as e:
+        print(f"❌ Error reading metadata: {e}")
+        return
+    
+    # Analysis and correlation
+    if not results:
+        print("❌ No successful distance measurements")
+        return
+    
+    print(f"\n📊 Analysis Results ({len(results)} successful measurements)")
+    print("=" * 60)
+    
+    # Statistical summary
+    errors = [r['relative_error'] for r in results]
+    nadir_devs = [r['nadir_deviation'] for r in results]
+    focal_lengths = [r['focal_length'] for r in results]
+    distances = [r['true_distance'] for r in results]
+    num_pixels = [r['num_pixels'] for r in results]
+    
+    print(f"📈 Error Statistics:")
+    print(f"   Mean relative error: {np.mean(errors):.2f}%")
+    print(f"   Std deviation: {np.std(errors):.2f}%")
+    print(f"   Min error: {np.min(errors):.2f}%")
+    print(f"   Max error: {np.max(errors):.2f}%")
+    
+    print(f"\n📐 Parameter Ranges:")
+    print(f"   Nadir deviation: {np.min(nadir_devs):.1f}° to {np.max(nadir_devs):.1f}°")
+    print(f"   Focal length: {np.min(focal_lengths)*1000:.1f}mm to {np.max(focal_lengths)*1000:.1f}mm")
+    print(f"   True distance: {np.min(distances)/1000:.1f}km to {np.max(distances)/1000:.1f}km")
+    print(f"   Num pixels: {np.min(num_pixels):,} to {np.max(num_pixels):,}")
+    
+    # Correlation analysis
+    print(f"\n🔗 Correlation Analysis:")
+    correlations = {
+        'Nadir Deviation vs Error': np.corrcoef(nadir_devs, errors)[0,1],
+        'Focal Length vs Error': np.corrcoef(focal_lengths, errors)[0,1],
+        'Distance vs Error': np.corrcoef(distances, errors)[0,1],
+        'Num Pixels vs Error': np.corrcoef(num_pixels, errors)[0,1]
+    }
+    
+    for param, corr in correlations.items():
+        strength = "Strong" if abs(corr) > 0.7 else "Moderate" if abs(corr) > 0.3 else "Weak"
+        direction = "positive" if corr > 0 else "negative"
+        print(f"   {param}: {corr:.3f} ({strength} {direction})")
+    
+    # Save detailed results
+    results_file = output_dir / "distance_analysis_results.csv"
+    try:
+        import csv
+        with open(results_file, 'w', newline='') as csvfile:
+            if results:
+                fieldnames = results[0].keys()
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(results)
+        print(f"\n💾 Detailed results saved to: {results_file}")
+    except Exception as e:
+        print(f"⚠️  Could not save CSV results: {e}")
+    
+    print(f"\n🎯 Best Performing Images:")
+    sorted_results = sorted(results, key=lambda x: abs(x['relative_error']))
+    for i, result in enumerate(sorted_results[:3]):
+        print(f"   #{i+1}: {result['image_file']} - Error: {result['relative_error']:.2f}% (Nadir dev: {result['nadir_deviation']:.1f}°)")
+    
+    print(f"\n📉 Worst Performing Images:")
+    for i, result in enumerate(sorted_results[-3:]):
+        print(f"   #{i+1}: {result['image_file']} - Error: {result['relative_error']:.2f}% (Nadir dev: {result['nadir_deviation']:.1f}°)")
+
+
 def create_output_directory(base_name: str = "simulation") -> Path:
     """Create a timestamped output directory for simulation results."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -214,6 +435,18 @@ def create_output_directory(base_name: str = "simulation") -> Path:
     
     print(f"📁 Created output directory: {output_dir}")
     return output_dir
+
+
+def save_command_metadata(output_dir: Path, image_filename: str, command_list: list):
+    """Save the generator command for an image to metadata file."""
+    metadata_file = output_dir / "image_commands.txt"
+    
+    # Convert command list to string
+    command_str = ' '.join(command_list)
+    
+    # Append to metadata file
+    with open(metadata_file, 'a') as f:
+        f.write(f"{image_filename} | {command_str}\n")
 
 
 def run_quick_test():

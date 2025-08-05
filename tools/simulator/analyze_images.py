@@ -11,6 +11,9 @@ Usage examples:
     
     # Analyze all results
     python analyze_images.py summary /path/to/output/dir
+    
+    # Run distance analysis with correlation
+    python analyze_images.py distance /path/to/output/dir [/path/to/found/binary]
 """
 
 import sys
@@ -19,7 +22,7 @@ from pathlib import Path
 # Add the src directory to path to import our modules
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from __main__ import lookup_image_command, reproduce_image, analyze_simulation_results
+from __main__ import lookup_image_command, reproduce_image, analyze_simulation_results, run_found_distance_analysis
 
 
 def main():
@@ -28,6 +31,7 @@ def main():
         print("  python analyze_images.py lookup <output_dir> <image_name>")
         print("  python analyze_images.py reproduce <output_dir> <image_name> [new_output]")
         print("  python analyze_images.py summary <output_dir>")
+        print("  python analyze_images.py distance <output_dir> [found_binary_path]")
         return
     
     command = sys.argv[1]
@@ -54,8 +58,14 @@ def main():
     elif command == "summary":
         analyze_simulation_results(output_dir)
     
+    elif command == "distance":
+        # Distance analysis with optional binary path
+        binary_path = sys.argv[3] if len(sys.argv) > 3 else "./build/bin/found"
+        run_found_distance_analysis(output_dir, binary_path)
+    
     else:
         print(f"❌ Unknown command: {command}")
+        print("Available commands: lookup, reproduce, summary, distance")
 
 
 if __name__ == "__main__":
