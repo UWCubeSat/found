@@ -72,14 +72,9 @@ class Printer:
             self.context.set_source_rgba(0, 0, 0, .8)
         else:
             # Set fill color (RGB: Blue) - values normalized to 0-1 range
-            # Approximating a nice blue similar to royal blue (65, 105, 225) -> (0.25, 0.41, 0.88)
-            self.context.set_source_rgb(0.25, 0.41, 0.88)
+            self.context.set_source_rgb(0, 50, 100)
         
         curve_points = self._transform_point(*curve_points)
-        
-        # For this specific problematic case, always reverse the curve
-        # This is a workaround for edge cases where the normal winding doesn't work
-        curve_points = list(reversed(curve_points))
 
         # Move to the first point
         self.context.move_to(*curve_points[0])
