@@ -5,19 +5,16 @@
 
 namespace found {
 
-std::tuple<std::vector<double>, std::vector<Vec3>, std::vector<Vec3>>
-rk4(double t, const Vec3& y,
+std::vector<State> rk4(double t, const Vec3& y, const Vec3& v,
     std::function<Vec3(double, const Vec3&, const Vec3&)> f,
     std::function<Vec3(double, const Vec3&, const Vec3&)> g,
-    double dt, int n, const Vec3& v) {
-    std::vector<Vec3> y_vals = { y };
-    std::vector<Vec3> v_vals = { v };
-    std::vector<double> t_vals = { t };
+    double dt, std::size_t n) {
+    std::vector<State> states = { { t, y, v } };
 
-    for (int i = 0; i < n; ++i) {
-        double curr_t = t_vals.back();
-        Vec3 curr_y = y_vals.back();
-        Vec3 curr_v = v_vals.back();
+    for (std::size_t i = 0; i < n; ++i) {
+        double curr_t = states.back().t;
+        Vec3 curr_y = states.back().r;
+        Vec3 curr_v = states.back().v;
 
         Vec3 k1 = f(curr_t, curr_y, curr_v);
         Vec3 l1 = g(curr_t, curr_y, curr_v);
@@ -35,12 +32,10 @@ rk4(double t, const Vec3& y,
         Vec3 v_new = curr_v + (l1 + l2 * 2.0 + l3 * 2.0 + l4) * (dt / 6.0);
         double t_new = curr_t + dt;
 
-        y_vals.push_back(y_new);
-        v_vals.push_back(v_new);
-        t_vals.push_back(t_new);
+        states.push_back({ t_new, y_new, v_new });
     }
 
-    return { t_vals, y_vals, v_vals };
+    return states;
 }
 
 OrbitalElements state_vector_to_elements(const Vec3& R, const Vec3& V, double mu) {

@@ -105,75 +105,35 @@ struct LocationRecord {
 typedef std::vector<LocationRecord> LocationRecords;
 
 /**
- * OrbitParams defines the orbital
- * parameters of a given orbit
+ * @brief Represents a set of classical orbital elements.
+ *  
+ * This struct stores orbital parameters such as eccentricity,
+ * inclination, RAAN, etc., which are useful for orbit propagation
+ * and analysis.
+ * 
  */
-struct OrbitParams {
-    /// The initial position of the satellite with respect to Earth
-    /// (at t = 0 and theta = 0)
-    Vec3 initialCondition;
-
-    /**
-     * The position of the satellite as a function of the number of revolutions
-     * it has done
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The position vector after theta revolutions have taken place
-     * */
-    Vec3 (* position)(int theta);
-
-    /**
-     * The major axis vector as a function with respect to the revolutions
-     * of the satellite
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The major axis vector after theta revolutions have taken
-     * place
-     * */
-    Vec3 (* majorAxis)(int theta);
-
-    /**
-     * The minor axis vector as a function with respect to the revolutions
-     * of the satellite
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The minor axis vector after theta revolutions have taken
-     * place
-     * */
-    Vec3 (* minorAxis)(int theta);
-
-    /**
-     * The angular speed that the satellite's orbit plane rotates in plane at with respect
-     * to the number of revolutions in the satellite's orbit. This is the same as
-     * the speed at which the major axis rotates around the barycenter of orbit in the plane
-     * of orbit, which is approximately at Earth's center
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The angular speed at which the plane of orbit rotates at, in plane, after theta 
-     * revolutions
-     * */
-    decimal (* inPlaneRotation)(int theta);
-
-    /**
-     * The angular speed that the satellite's orbit plane rotates out of plane at with 
-     * respect to the number of revolutions in the satellite's orbit. This is the same as
-     * the angular speed at which the plane of orbit changes
-     * 
-     * @param theta The number of revolutions the satellite has done
-     * 
-     * @return The angular speed at which the orbital plane rotates at, out of plane, after
-     * theta revolutions
-     * */
-    decimal (* outPlaneRotation)(int theta);
+struct OrbitalElements {
+    double angularMomentum;      // Specific angular momentum (h)
+    double eccentricity;       // Eccentricity (e)
+    double inclination;        // Inclination (i) in radians
+    double raan;               // Right Ascension of the Ascending Node (Ω) in radians
+    double argumentOfPerigee;  // Argument of Perigee (ω) in radians
+    double trueAnomaly;        // True Anomaly (ν) in radians
+    double periapsis;         // Periapsis distance
+    double apoapsis;          // Apoapsis distance
 };
 
-/// The output for Orbit Trajectory Calculation Algorithms. Currently set to
-/// a struct that holds the orbit equations.
-typedef struct OrbitParams OrbitParams;
+/**
+ * @brief Represents the state of an orbiting body at a specific time.
+ * 
+ * This struct encapsulates the time, position, and velocity of an orbiting
+ * object, which can be used for orbit propagation and analysis.
+ */
+struct State {
+  double t;  // s
+  Vec3   r;  // position (km if mu in km^3/s^2)
+  Vec3   v;  // velocity (km/s)
+};
 
 /// The output for Kinematic Profile Completion. Currently set to two functions that
 /// will tell you the position and velocity of the satellite at any given time

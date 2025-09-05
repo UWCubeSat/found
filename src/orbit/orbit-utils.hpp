@@ -6,7 +6,6 @@
 #include "../spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 
-
 namespace found {
 
 /**
@@ -14,18 +13,19 @@ namespace found {
  * 
  * @param t Initial time
  * @param y Initial position vector
- * @param f Function to compute derivative of position
- * @param g Function to compute derivative of velocity
+ * @param v Initial velocity vector
+ * @param f Function to compute first derivative
+ * @param g Function to compute second derivative
  * @param dt Time step
  * @param n Number of integration steps
- * @param v Initial velocity vector
- * @return Tuple containing time steps, position vectors, and velocity vectors
+ * @return Vector of states at each time step (a state contains time, position, and velocity)
  */
-std::tuple<std::vector<double>, std::vector<Vec3>, std::vector<Vec3>>
-rk4(double t, const Vec3& y,
+std::vector<State> rk4(double t, const Vec3& y, const Vec3& v,
     std::function<Vec3(double, const Vec3&, const Vec3&)> f,
     std::function<Vec3(double, const Vec3&, const Vec3&)> g,
-    double dt, int n, const Vec3& v);
+    double dt, std::size_t n);
+
+
 
 /**
  * @brief Converts a state vector (position and velocity) to classical orbital elements.
@@ -35,7 +35,7 @@ rk4(double t, const Vec3& y,
  * @param mu Gravitational parameter
  * @return OrbitalElements structure containing classical orbital parameters
  */
-OrbitParams state_vector_to_elements(const Vec3& R, const Vec3& V, double mu);
+OrbitalElements state_vector_to_elements(const Vec3& R, const Vec3& V, double mu);
 
 /**
  * @brief Converts orbital elements to a state vector (position and velocity).
