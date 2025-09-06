@@ -53,6 +53,10 @@ class DistanceErrorAnalyzer:
         # Round FOV to nearest degree for grouping
         self.df['fov_rounded'] = np.round(self.df['fov_degrees'])
         
+        # Calculate altitude from true_distance (assuming Earth radius = 6371000 m)
+        earth_radius = 6371000  # meters
+        self.df['altitude'] = self.df['true_distance'] - earth_radius
+        
         # Extract orientation components
         orientation_parts = self.df['orientation'].str.split(expand=True).astype(float)
         self.df['orientation_x'] = orientation_parts[0]
@@ -85,6 +89,7 @@ class DistanceErrorAnalyzer:
         print(f"FOV rounded values: {sorted(self.df_clean['fov_rounded'].unique())}")
         print(f"Resolution range: {self.df_clean['resolution'].min()} to {self.df_clean['resolution'].max()}")
         print(f"Focal length range: {self.df_clean['focal_length'].min():.6f} to {self.df_clean['focal_length'].max():.6f}")
+        print(f"Altitude range: {self.df_clean['altitude'].min():.0f} to {self.df_clean['altitude'].max():.0f} meters")
     
     def identify_and_separate_outliers(self):
         """Identify and separate extreme outliers (>3 standard deviations) from the main dataset."""
@@ -130,83 +135,197 @@ class DistanceErrorAnalyzer:
         }
     
     def plot_error_vs_parameters(self, save_plots: bool = True):
-        """Create comprehensive plots showing error relationships using clean data."""
+        """Create five separate charts showing error relationships using clean data."""
         # Set up the plotting style
         plt.style.use('default')
         sns.set_palette("husl")
         
-        # Create a figure with multiple subplots
-        fig, axes = plt.subplots(2, 3, figsize=(18, 12))
-        fig.suptitle('Distance Measurement Error Analysis (Excluding 3σ Outliers)', fontsize=16, fontweight='bold')
+        # Chart 1: Error vs Field of View
+        plt.figure(figsize=(10, 6))
+        if self.df_clean['fov_rounded'].nunique() > 1:
+            fov_groups = self.df_clean.groupby('fov_rounded')['abs_relative_error']
+            fov_means = fov_groups.mean()
+            fov_stds = fov_groups.std()
+            
+            plt.errorbar(fov_means.index, fov_means.values, 
+                        yerr=fov_stds.values, marker='s', capsize=5, color='orange')
+        else:
+            plt.scatter(self.df_clean['fov_rounded'], self.df_clean['abs_relative_error'], 
+                       alpha=0.6, color='orange')
         
-        # Plot 1: Error vs Field of View (rounded)
-        axes[0, 0].scatter(self.df_clean['fov_rounded'], self.df_clean['abs_relative_error'], 
-                          alpha=0.6, c=self.df_clean['resolution'], cmap='viridis')
-        axes[0, 0].set_xlabel('Field of View (degrees, rounded)')
-        axes[0, 0].set_ylabel('Absolute Relative Error')
-        axes[0, 0].set_title('Error vs Field of View')
-        axes[0, 0].grid(True, alpha=0.3)
+        plt.xlabel('Field of View (degrees)')
+        plt.ylabel('Absolute Relative Error')
+        plt.title('Error vs Field of View')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
         
-        # Plot 2: Error vs Resolution
+        if save_plots:
+            output_path = self.csv_path.parent / 'error_vs_fov.png'
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            print(f"FOV plot saved to {output_path}")
+        plt.show()
+        
+        # Chart 2: Error vs Resolution
+        plt.figure(figsize=(10, 6))
         resolution_groups = self.df_clean.groupby('resolution')['abs_relative_error']
         resolution_means = resolution_groups.mean()
         resolution_stds = resolution_groups.std()
         
-        axes[0, 1].errorbar(resolution_means.index, resolution_means.values, 
-                           yerr=resolution_stds.values, marker='o', capsize=5)
-        axes[0, 1].set_xlabel('Resolution (pixels)')
-        axes[0, 1].set_ylabel('Absolute Relative Error')
-        axes[0, 1].set_title('Error vs Resolution')
-        axes[0, 1].set_xscale('log')
-        axes[0, 1].grid(True, alpha=0.3)
+        plt.errorbar(resolution_means.index, resolution_means.values, 
+                    yerr=resolution_stds.values, marker='o', capsize=5, color='blue')
+        plt.xlabel('Resolution (pixels)')
+        plt.ylabel('Absolute Relative Error')
+        plt.title('Error vs Resolution')
+        plt.xscale('log')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
         
-        # Plot 3: Error vs Focal Length
-        focal_groups = self.df_clean.groupby('focal_length')['abs_relative_error']
-        focal_means = focal_groups.mean()
-        focal_stds = focal_groups.std()
+        if save_plots:
+            output_path = self.csv_path.parent / 'error_vs_resolution.png'
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            print(f"Resolution plot saved to {output_path}")
+        plt.show()
         
-        axes[0, 2].errorbar(focal_means.index, focal_means.values,
-                           yerr=focal_stds.values, marker='s', capsize=5)
-        axes[0, 2].set_xlabel('Focal Length (m)')
-        axes[0, 2].set_ylabel('Absolute Relative Error')
-        axes[0, 2].set_title('Error vs Focal Length')
-        axes[0, 2].grid(True, alpha=0.3)
+        # Chart 3: Error in meters vs Altitude
+        plt.figure(figsize=(10, 6))
+        plt.scatter(self.df_clean['altitude'], self.df_clean['abs_error'], 
+                   alpha=0.6, c=self.df_clean['fov_rounded'], cmap='plasma')
+        plt.xlabel('Altitude (meters)')
+        plt.ylabel('Absolute Error (meters)')
+        plt.title('Error in Meters vs Altitude')
+        plt.grid(True, alpha=0.3)
         
-        # Plot 4: Error vs Nadir Deviation
-        axes[1, 0].scatter(self.df_clean['nadir_deviation'], self.df_clean['abs_relative_error'],
-                          alpha=0.6, c=self.df_clean['fov_rounded'], cmap='plasma')
-        axes[1, 0].set_xlabel('Nadir Deviation')
-        axes[1, 0].set_ylabel('Absolute Relative Error')
-        axes[1, 0].set_title('Error vs Nadir Deviation')
-        axes[1, 0].grid(True, alpha=0.3)
-        
-        # Plot 5: Error vs Orientation Magnitude
-        axes[1, 1].scatter(self.df_clean['orientation_magnitude'], self.df_clean['abs_relative_error'],
-                          alpha=0.6, c=self.df_clean['resolution'], cmap='viridis')
-        axes[1, 1].set_xlabel('Orientation Magnitude (radians)')
-        axes[1, 1].set_ylabel('Absolute Relative Error')
-        axes[1, 1].set_title('Error vs Orientation Magnitude')
-        axes[1, 1].grid(True, alpha=0.3)
-        
-        # Plot 6: Error Distribution by Resolution
-        resolutions = sorted(self.df_clean['resolution'].unique())
-        for i, res in enumerate(resolutions):
-            subset = self.df_clean[self.df_clean['resolution'] == res]['abs_relative_error']
-            axes[1, 2].hist(subset, alpha=0.7, label=f'{res}px', bins=20)
-        
-        axes[1, 2].set_xlabel('Absolute Relative Error')
-        axes[1, 2].set_ylabel('Frequency')
-        axes[1, 2].set_title('Error Distribution by Resolution')
-        axes[1, 2].legend()
-        axes[1, 2].grid(True, alpha=0.3)
+        # Add colorbar to show FOV values
+        cbar = plt.colorbar()
+        cbar.set_label('Field of View (degrees)')
         
         plt.tight_layout()
         
         if save_plots:
-            output_path = self.csv_path.parent / 'error_analysis_plots_clean.png'
+            output_path = self.csv_path.parent / 'error_vs_altitude.png'
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
-            print(f"Clean data plots saved to {output_path}")
+            print(f"Altitude plot saved to {output_path}")
+        plt.show()
         
+        # Chart 4: FOV Error Scaled by Altitude (separate line for each resolution)
+        plt.figure(figsize=(12, 8))
+        # Calculate error as percentage of altitude
+        self.df_clean['error_percent_altitude'] = (self.df_clean['abs_error'] / self.df_clean['altitude']) * 100
+        
+        if self.df_clean['fov_rounded'].nunique() > 1:
+            # Get unique resolutions and create a color map
+            resolutions = sorted(self.df_clean['resolution'].unique())
+            colors = plt.cm.tab10(np.linspace(0, 1, len(resolutions)))
+            
+            for i, resolution in enumerate(resolutions):
+                # Filter data for this resolution
+                res_data = self.df_clean[self.df_clean['resolution'] == resolution]
+                
+                if len(res_data) > 0:
+                    # Group by FOV for this resolution
+                    fov_groups = res_data.groupby('fov_rounded')['error_percent_altitude']
+                    fov_means = fov_groups.mean()
+                    fov_stds = fov_groups.std()
+                    
+                    # Plot line with error bars for this resolution
+                    plt.errorbar(fov_means.index, fov_means.values, 
+                                yerr=fov_stds.values, marker='o', capsize=3, 
+                                color=colors[i], label=f'{resolution}px', linewidth=2)
+            
+            plt.legend(title='Resolution', bbox_to_anchor=(1.05, 1), loc='upper left')
+        else:
+            # Fallback if only one FOV value
+            for i, resolution in enumerate(resolutions):
+                res_data = self.df_clean[self.df_clean['resolution'] == resolution]
+                if len(res_data) > 0:
+                    plt.scatter(res_data['fov_rounded'], res_data['error_percent_altitude'], 
+                               alpha=0.6, color=colors[i], label=f'{resolution}px')
+            plt.legend(title='Resolution')
+        
+        plt.xlabel('Field of View (degrees)')
+        plt.ylabel('Error as % of Altitude')
+        plt.title('FOV Error Scaled by Altitude (by Resolution)')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        if save_plots:
+            output_path = self.csv_path.parent / 'fov_error_scaled_by_altitude.png'
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            print(f"FOV error scaled by altitude plot saved to {output_path}")
+        plt.show()
+        
+        # Chart 5: Resolution Error Scaled by Altitude
+        plt.figure(figsize=(10, 6))
+        resolution_groups_scaled = self.df_clean.groupby('resolution')['error_percent_altitude']
+        resolution_means_scaled = resolution_groups_scaled.mean()
+        resolution_stds_scaled = resolution_groups_scaled.std()
+        
+        plt.errorbar(resolution_means_scaled.index, resolution_means_scaled.values, 
+                    yerr=resolution_stds_scaled.values, marker='o', capsize=5, color='red')
+        plt.xlabel('Resolution (pixels)')
+        plt.ylabel('Error as % of Altitude')
+        plt.title('Resolution Error Scaled by Altitude')
+        plt.xscale('log')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        if save_plots:
+            output_path = self.csv_path.parent / 'resolution_error_scaled_by_altitude.png'
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            print(f"Resolution error scaled by altitude plot saved to {output_path}")
+        plt.show()
+        
+        # Chart 6: FOV Error for High Resolution Only (1024px and above)
+        plt.figure(figsize=(12, 8))
+        # Filter data to only include resolutions >= 1024
+        high_res_data = self.df_clean[self.df_clean['resolution'] >= 1024]
+        
+        if len(high_res_data) > 0 and high_res_data['fov_rounded'].nunique() > 1:
+            # Get unique resolutions >= 1024 and create a color map
+            resolutions = sorted(high_res_data['resolution'].unique())
+            colors = plt.cm.tab10(np.linspace(0, 1, len(resolutions)))
+            
+            for i, resolution in enumerate(resolutions):
+                # Filter data for this resolution
+                res_data = high_res_data[high_res_data['resolution'] == resolution]
+                
+                if len(res_data) > 0:
+                    # Group by FOV for this resolution
+                    fov_groups = res_data.groupby('fov_rounded')['error_percent_altitude']
+                    fov_means = fov_groups.mean()
+                    fov_stds = fov_groups.std()
+                    
+                    # Plot line with error bars for this resolution
+                    plt.errorbar(fov_means.index, fov_means.values, 
+                                yerr=fov_stds.values, marker='o', capsize=3, 
+                                color=colors[i], label=f'{resolution}px', linewidth=2)
+            
+            plt.legend(title='Resolution (≥1024px)', bbox_to_anchor=(1.05, 1), loc='upper left')
+        else:
+            # Fallback if no high resolution data or only one FOV value
+            if len(high_res_data) > 0:
+                resolutions = sorted(high_res_data['resolution'].unique())
+                colors = plt.cm.tab10(np.linspace(0, 1, len(resolutions)))
+                for i, resolution in enumerate(resolutions):
+                    res_data = high_res_data[high_res_data['resolution'] == resolution]
+                    if len(res_data) > 0:
+                        plt.scatter(res_data['fov_rounded'], res_data['error_percent_altitude'], 
+                                   alpha=0.6, color=colors[i], label=f'{resolution}px')
+                plt.legend(title='Resolution (≥1024px)')
+            else:
+                plt.text(0.5, 0.5, 'No data with resolution ≥ 1024px', 
+                        transform=plt.gca().transAxes, ha='center', va='center')
+        
+        plt.xlabel('Field of View (degrees)')
+        plt.ylabel('Error as % of Altitude')
+        plt.title('FOV Error for High Resolution (≥1024px)')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        if save_plots:
+            output_path = self.csv_path.parent / 'fov_error_high_resolution.png'
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            print(f"FOV error for high resolution plot saved to {output_path}")
         plt.show()
     
     def create_correlation_matrix(self, save_plot: bool = True):
@@ -338,6 +457,7 @@ class DistanceErrorAnalyzer:
         parameters = {
             'FOV (degrees)': 'fov_rounded',
             'Resolution (px)': 'resolution', 
+            'Altitude (m)': 'altitude',
             'Focal Length (m)': 'focal_length',
             'Nadir Deviation': 'nadir_deviation',
             'Orientation Mag': 'orientation_magnitude'
@@ -357,6 +477,7 @@ class DistanceErrorAnalyzer:
         correlation_params = {
             'FOV (degrees)': 'fov_rounded',
             'Resolution (px)': 'resolution', 
+            'Altitude (m)': 'altitude',
             'Focal Length (m)': 'focal_length',
             'Nadir Deviation': 'nadir_deviation',
             'Orientation Mag': 'orientation_magnitude'
@@ -384,6 +505,15 @@ class DistanceErrorAnalyzer:
             report.append(f"Resolution {res:>4}px: Mean={stats['mean']:.4f}, Std={stats['std']:.4f}")
         report.append("")
         
+        # Error by FOV analysis using clean data
+        if self.df_clean['fov_rounded'].nunique() > 1:
+            report.append("ERROR BY FIELD OF VIEW (CLEAN DATA):")
+            report.append("-" * 40)
+            fov_analysis = self.analyze_error_by_parameter('fov_rounded')
+            for fov, stats in fov_analysis['stats'].iterrows():
+                report.append(f"FOV {fov:>4}°: Mean={stats['mean']:.4f}, Std={stats['std']:.4f}")
+            report.append("")
+        
         # Key findings using clean data
         report.append("KEY FINDINGS (CLEAN DATA):")
         report.append("-" * 40)
@@ -401,6 +531,14 @@ class DistanceErrorAnalyzer:
         worst_res = res_means.idxmax()
         report.append(f"• Best performing resolution: {best_res}px (error: {res_means[best_res]:.4f})")
         report.append(f"• Worst performing resolution: {worst_res}px (error: {res_means[worst_res]:.4f})")
+        
+        # Best and worst FOV performance (if applicable)
+        if self.df_clean['fov_rounded'].nunique() > 1:
+            fov_means = self.df_clean.groupby('fov_rounded')['abs_relative_error'].mean()
+            best_fov = fov_means.idxmin()
+            worst_fov = fov_means.idxmax()
+            report.append(f"• Best performing FOV: {best_fov}° (error: {fov_means[best_fov]:.4f})")
+            report.append(f"• Worst performing FOV: {worst_fov}° (error: {fov_means[worst_fov]:.4f})")
         
         # FOV impact
         fov_corr = correlations.get('FOV (degrees)', 0)
@@ -448,6 +586,113 @@ class DistanceErrorAnalyzer:
         
         return "\n".join(report)
     
+    def print_altitude_error_statistics(self):
+        """Print detailed statistics of absolute error vs altitude, broken down by FOV and resolution (≥1024px)."""
+        print("\n" + "="*80)
+        print("ABSOLUTE ERROR vs ALTITUDE STATISTICS (High Resolution ≥1024px)")
+        print("="*80)
+        
+        # Filter data to only include resolutions >= 1024
+        high_res_data = self.df_clean[self.df_clean['resolution'] >= 1024].copy()
+        
+        if len(high_res_data) == 0:
+            print("No data found with resolution ≥ 1024px")
+            return
+        
+        print(f"Total high-resolution samples: {len(high_res_data)}")
+        print(f"Resolutions included: {sorted(high_res_data['resolution'].unique())}")
+        print(f"FOV values: {sorted(high_res_data['fov_rounded'].unique())}")
+        print()
+        
+        # Create altitude bins for better analysis
+        high_res_data['altitude_km'] = high_res_data['altitude'] / 1000
+        altitude_bins = [0, 200, 300, 400, 500, 600, 700, 800, 900, 1000, float('inf')]
+        altitude_labels = ['0-200km', '200-300km', '300-400km', '400-500km', '500-600km', 
+                          '600-700km', '700-800km', '800-900km', '900-1000km', '1000+km']
+        high_res_data['altitude_bin'] = pd.cut(high_res_data['altitude_km'], 
+                                              bins=altitude_bins, labels=altitude_labels, right=False)
+        
+        # Group by resolution, FOV, and altitude bin
+        for resolution in sorted(high_res_data['resolution'].unique()):
+            res_data = high_res_data[high_res_data['resolution'] == resolution]
+            print(f"\nRESOLUTION: {resolution}px")
+            print("-" * 60)
+            
+            for fov in sorted(res_data['fov_rounded'].unique()):
+                fov_data = res_data[res_data['fov_rounded'] == fov]
+                if len(fov_data) == 0:
+                    continue
+                    
+                print(f"\n  Field of View: {fov}° ({len(fov_data)} samples)")
+                print("  " + "-" * 50)
+                
+                # Overall statistics for this FOV/resolution combination
+                overall_stats = {
+                    'mean_error': fov_data['abs_error'].mean(),
+                    'std_error': fov_data['abs_error'].std(),
+                    'median_error': fov_data['abs_error'].median(),
+                    'min_error': fov_data['abs_error'].min(),
+                    'max_error': fov_data['abs_error'].max(),
+                    'mean_altitude': fov_data['altitude'].mean(),
+                    'altitude_range': f"{fov_data['altitude'].min():.0f} - {fov_data['altitude'].max():.0f}m"
+                }
+                
+                print(f"    Overall Error Stats:")
+                print(f"      Mean ± Std: {overall_stats['mean_error']:.2f} ± {overall_stats['std_error']:.2f} meters")
+                print(f"      Median: {overall_stats['median_error']:.2f} meters")
+                print(f"      Range: {overall_stats['min_error']:.2f} - {overall_stats['max_error']:.2f} meters")
+                print(f"      Mean Altitude: {overall_stats['mean_altitude']:.0f}m ({overall_stats['altitude_range']})")
+                
+                # Error as percentage of altitude
+                fov_data['error_percent'] = (fov_data['abs_error'] / fov_data['altitude']) * 100
+                print(f"      Error as % of altitude: {fov_data['error_percent'].mean():.4f}% ± {fov_data['error_percent'].std():.4f}%")
+                
+                # Statistics by altitude bins
+                print(f"\n    Error by Altitude Range:")
+                print(f"      {'Range':<12} {'Count':<6} {'Mean Error':<12} {'Std Error':<12} {'Error %':<10}")
+                print(f"      {'-'*12} {'-'*6} {'-'*12} {'-'*12} {'-'*10}")
+                
+                for altitude_bin in altitude_labels:
+                    bin_data = fov_data[fov_data['altitude_bin'] == altitude_bin]
+                    if len(bin_data) > 0:
+                        mean_err = bin_data['abs_error'].mean()
+                        std_err = bin_data['abs_error'].std() if len(bin_data) > 1 else 0
+                        error_pct = bin_data['error_percent'].mean()
+                        print(f"      {altitude_bin:<12} {len(bin_data):<6} {mean_err:<12.2f} {std_err:<12.2f} {error_pct:<10.4f}%")
+                
+                # Correlation with altitude
+                if len(fov_data) > 1 and fov_data['altitude'].nunique() > 1:
+                    altitude_corr = fov_data['altitude'].corr(fov_data['abs_error'])
+                    print(f"    Correlation with altitude: {altitude_corr:.4f}")
+        
+        print("\n" + "="*80)
+        print("SUMMARY STATISTICS ACROSS ALL HIGH-RESOLUTION COMBINATIONS")
+        print("="*80)
+        
+        # Overall summary for all high-res data
+        print(f"Total samples: {len(high_res_data)}")
+        print(f"Mean absolute error: {high_res_data['abs_error'].mean():.2f} ± {high_res_data['abs_error'].std():.2f} meters")
+        print(f"Mean error as % of altitude: {(high_res_data['abs_error'] / high_res_data['altitude'] * 100).mean():.4f}%")
+        
+        # Best/worst performing combinations
+        combo_stats = high_res_data.groupby(['resolution', 'fov_rounded']).agg({
+            'abs_error': ['mean', 'std', 'count']
+        }).round(4)
+        combo_stats.columns = ['mean_error', 'std_error', 'count']
+        combo_stats = combo_stats.reset_index()
+        
+        # Sort by mean error
+        best_combo = combo_stats.loc[combo_stats['mean_error'].idxmin()]
+        worst_combo = combo_stats.loc[combo_stats['mean_error'].idxmax()]
+        
+        print(f"\nBest performing combination:")
+        print(f"  {best_combo['resolution']}px, {best_combo['fov_rounded']}°: {best_combo['mean_error']:.2f} ± {best_combo['std_error']:.2f}m ({best_combo['count']} samples)")
+        
+        print(f"\nWorst performing combination:")
+        print(f"  {worst_combo['resolution']}px, {worst_combo['fov_rounded']}°: {worst_combo['mean_error']:.2f} ± {worst_combo['std_error']:.2f}m ({worst_combo['count']} samples)")
+        
+        print("\n" + "="*80)
+
     def save_processed_data(self):
         """Save the processed clean data and outlier data with additional calculated columns."""
         # Save clean data
@@ -487,6 +732,9 @@ def main():
     # Generate and print summary report
     report = analyzer.generate_summary_report()
     print(report)
+    
+    # Print detailed altitude error statistics
+    analyzer.print_altitude_error_statistics()
     
     # Save report to file
     report_path = analyzer.csv_path.parent / 'analysis_report.txt'
