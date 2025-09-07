@@ -35,7 +35,7 @@ This repository uses a dual build system, using GNU Make and CMake. Consumers co
 1. `./build.sh make release`.  
 2. `./build.sh cmake -DCMAKE_BUILD_TYPE=Release`
 
-If you are not in a container, but would like to build the binary in a container use the `--container` flag (See [Setup via Docker](#docker-setup)). This is supported for both GNU Make and Cmake.
+If you are not in a container, but would like to build the binary in a container use the `--container` flag (See [Setup via Docker](#docker-setup)). This is supported for both GNU Make and Cmake. When using this option logs are written to a timestamped file in `logs\`. 
 
 Developers: if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
 1. Run GNU Make: `./build.sh make [GNU Make options]`
