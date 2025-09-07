@@ -7,6 +7,28 @@ execute_cmd() {
     eval "$@"
 }
 
+# Utility: Run build in Docker container
+run_in_container() {
+    local BUILD_CMD="$1"
+
+    mkdir -p logs
+    TS=$(date +"%Y%m%d-%H%M%S")
+    LOGFILE="logs/build-$TS.log"
+
+    IMAGE_NAME="found-build-image"
+    docker build --platform linux/amd64 -f .devcontainer/Dockerfile -t $IMAGE_NAME .
+
+    docker run --rm \
+        --platform linux/amd64 \
+        -v "$(pwd)":/workspace \
+        -w /workspace \
+        $IMAGE_NAME \
+        bash -c "$BUILD_CMD" &> "$LOGFILE"
+
+    echo "Build logs saved to $LOGFILE"
+    exit 0
+}
+
 # Display help message
 display_help() {
     echo "Usage:"
@@ -23,41 +45,55 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# Parse first argument
+# Check for --container flag remove it and update args if present
+USE_CONTAINER=0
+for arg in "$@"; do
+    if [ "$arg" = "--container" ]; then
+        USE_CONTAINER=1
+        # Remove --container from args
+        ARGS=()
+        for arg in "$@"; do
+            if [ "$arg" != "--container" ]; then
+                ARGS+=("$arg")
+            fi
+        done
+        set -- "${ARGS[@]}"
+        break
+    fi
+done
+
+# Parse the first argument to determine action
 case "$1" in
     cmake)
         shift
-        mkdir -p build && cd build
-
         CONFIG_OPTS="${1:-}"  # Use empty string if not set
         if [ $# -gt 0 ]; then shift; fi
 
-        CMD="cmake $CONFIG_OPTS .. && cmake --build . $*"
+        CMD="mkdir -p build && cd build && cmake $CONFIG_OPTS .. && cmake --build . $*"
         ;;
-
     make)
         shift
         CMD="make $*"
         ;;
-
     clean)
         CMD="rm -rf build"
         ;;
-
     clean_all)
         CMD="rm -rf build .cache"
         ;;
-
     -h|--help)
         display_help
         exit 0
         ;;
-
     *)
         display_help
         exit 1
         ;;
 esac
 
-# Run the final command
-execute_cmd "$CMD"
+# Run command (use container if specified)
+if [ "${USE_CONTAINER}" -eq 0 ]; then
+    execute_cmd "$CMD"
+else
+    run_in_container "$CMD"
+fi

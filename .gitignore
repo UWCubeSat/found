@@ -19,6 +19,9 @@ googletest*
 # Don't inlcude any .gcov files in the root folder
 /*.gcov
 
+# Ignore build logs directory
+logs/
+
 # Exclude all .found files
 /*.found
 

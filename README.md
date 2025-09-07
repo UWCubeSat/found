@@ -14,14 +14,19 @@ For Linux Ubuntu/Oracle users (uses either `apt-get`, `yum` or `brew`) install t
 - Change permissions for the install script to execute (`sudo chmod +rwx install.sh`)
 - Run the install script in root/sudo as an executable (`sudo ./install.sh`)
 
+<a name="docker-setup"></a>
 ## Setup via Docker
-This option requires you to have Docker and Visual Studio Code.  To install Docker on your system, visit the [official Docker installation guide](https://docs.docker.com/get-docker/). If you are using a Linux computer it is reccomended that you install Docker with `apt-get` instead.  
-You will need the `Dev Containers` VScode extension. This can be installed by looking it up in the extension's view or with `code --install-extension ms-vscode-remote.remote-containers`.
+This option requires you to have Docker installed. To install Docker on your system, visit the [official Docker installation guide](https://docs.docker.com/get-docker/). If you are using a Linux computer it is reccomended that you install Docker with `apt-get` instead. If you just want to compile the binary your done! Use the `--container` flag when compiling.
+
+If you want to be able to use the binary, you can install Visual Studio Code and the `Dev Containers` VScode extension. This can be installed by looking it up in the extension's view or with `code --install-extension ms-vscode-remote.remote-containers`. Open the project in VScode an option to  "open FOUND in container" should appear in a pop-up in the bottom right corner. Alternatively Press `F1` and select Dev Containers: Open Folder in Container. This replaces [step 2](#step-2-build-found) of building found.
+
+You do not need vscode to use the binary, but the process for automatically mounting the project and python tools in the container is currently only supported for vscode. 
+
 
 # Building FOUND
 1. Clone the repository (`git clone https://github.com/UWCubeSat/found.git`)
+<a name="step-2-build-found"></a>
 2. Go into the directory (`cd found`)
-3. Docker Users: Open FOUND in container (Press `F1` and select Dev Containers: Open Folder in Container)
 4. Compile the executable via GNU Make or CMake (below for more information)
 5. Execute the executable (`./build/bin/found`, [Usage](#usage) below)
 
@@ -29,6 +34,8 @@ You will need the `Dev Containers` VScode extension. This can be installed by lo
 This repository uses a dual build system, using GNU Make and CMake. Consumers compiling the system should run either:
 1. `./build.sh make release`.  
 2. `./build.sh cmake -DCMAKE_BUILD_TYPE=Release`
+
+If you are not in a container, but would like to build the binary in a container use the `--container` flag (See [Setup via Docker](#docker-setup)). This is supported for both GNU Make and Cmake.
 
 Developers: if your code changes, you must remake your file. The `build.sh` script abstracts the difference for you. It is run as:
 1. Run GNU Make: `./build.sh make [GNU Make options]`
