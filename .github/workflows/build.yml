@@ -1,0 +1,192 @@
+name: Build, Test, Lint, Coverage, and Documentation
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: ["main"]
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: make clean && make compile -j16
+  
+  test:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Memory Check
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: |
+          make clean
+          make test OMIT_ASAN=true -j16
+          valgrind ./build/bin/found-test
+  
+  float:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Only CMake coverage needs to pass (Makefile coverage is broken in
+    # /__w/found/found for some reason)
+    #
+    # Does not pass on GitHub Ubuntu Runner version 2.326.0, but Makefile
+    # coverage last passed on 2.325.0 with exact same code
+    - name: Float Build
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: make clean && make compile FLOAT_MODE=true -j16
+    - name: Float Coverage
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: ./build.sh clean_all && ./build.sh cmake -DFLOAT_MODE=ON --target coverage --parallel 16  
+
+  lint:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Stylecheck
+      run: make google_stylecheck
+    
+    - name: Test Stylecheck
+      run: make google_stylecheck_test
+
+  coverage:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Only CMake coverage needs to pass (Makefile coverage is broken in
+    # /__w/found/found for some reason)
+    #
+    # Does not pass on GitHub Ubuntu Runner version 2.326.0, but Makefile
+    # coverage last passed on 2.325.0 with exact same code
+    - name: Coverage
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: ./build.sh cmake "" --target coverage --parallel 16
+    
+    - name: Upload Coverage Report
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: Coverage Report
+        path: build/documentation/coverage
+  
+  documentation:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+    needs: [build, lint, coverage]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Generate Documentation
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: |
+          make clean
+          ./build.sh cmake "" --target coverage --parallel 16
+          ./build.sh cmake "" --target documentation --parallel 16
+    
+    - name: Install rsync (for JamesIves/github-pages-deploy-action@v4)
+      run: apt install -y rsync
+    
+    - name: Set Target Folder in documentation
+      id: set-folder
+      run: |
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "TARGET_FOLDER=." >> $GITHUB_ENV
+        else
+          echo "TARGET_FOLDER=${{ github.ref_name }}" >> $GITHUB_ENV
+        fi
+      shell: bash
+    
+    - name: Upload Pages Artifact
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: documentation
+        folder: build/documentation/
+        target-folder: ${{ env.TARGET_FOLDER }}
+  
+  cmake-build-all:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build all
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: ./build.sh clean && ./build.sh cmake "" --parallel 16
+
+  cmake-float:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Float Build
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: |
+          ./build.sh clean
+          ./build.sh cmake -DFLOAT_MODE=ON --target compile --parallel 16
+          ./build.sh cmake -DFLOAT_MODE=ON --target coverage --parallel 16
+  
+  cmake-test:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Memory Check
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: |
+          ./build.sh clean
+          ./build.sh cmake -DOMIT_ASAN=ON --target found-test --parallel 16
+          valgrind ./build/bin/found-test

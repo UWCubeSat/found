@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  dev:
+    # emmulate intel amd64 on Apple Silicon for __float128 compatibility
+    platform: linux/amd64     
+    build:
+      # Ensures build context includes files like install.sh
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      - micromamba-data:/opt/micromamba
+    command: sleep infinity
+volumes:
+  micromamba-data:
