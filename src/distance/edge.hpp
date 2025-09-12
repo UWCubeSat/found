@@ -112,21 +112,21 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      */
-    bool ApplyCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image); 
+    bool ApplyCriterion(size_t index, const Tensor &convolution, const Image &image); 
    
     /** 
      * Convolves the image with the mask
      * 
      * @param image The image to convolve
      * 
-     * @return The ConvolvedOutput of the image with the mask
+     * @return The Tensor of the image with the mask
      * this can include decimals and negative numbers hence the new struct
      * This function clamps the edges to zero.
-     * The ConvolvedOutput will have the same dimensions as the image (including channels)
+     * The Tensor will have the same dimensions as the image (including channels)
      *
      * @pre The image and mask must have the same number of channels
      */
-    ConvolvedOutput ConvolveWithMask(const Image &image);
+    Tensor ConvolveWithMask(const Image &image);
 
  private:
      /**
@@ -143,7 +143,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * only. If the image has multiple channels, this function should be
      * called once for each channel and the results combined appropriately. 
      */
-    bool BoxBasedOutlierCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image);
+    bool BoxBasedOutlierCriterion(size_t index, const Tensor &convolution, const Image &image);
 
     /**
      * For multi channel images, combines the results of each channel's

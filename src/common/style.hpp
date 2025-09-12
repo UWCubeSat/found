@@ -95,38 +95,37 @@ struct Mask {
 };
 
 /**
- * Represents an ConvolvedOutput
+ * Represents a Tensor
  * 
- * @note If ConvolvedOutput points to heap allocated memory,
+ * @note If Tensor points to heap allocated memory,
  * it must be freed appropriately
  */
-struct ConvolvedOutput {
-    /// The ConvolvedOutput width
+struct Tensor {
+    /// The Tensor width
     int width;
-    /// The ConvolvedOutput height
+    /// The Tensor height
     int height;
-    /// The ConvolvedOutput channels
+    /// The Tensor channels
     int channels;
     /**
-     * The ConvolvedOutput contents
+     * The Tensor contents
      * 
      * @note For each pixel, the channels are collated, meaning that
      * for any pixel at index, the value of that pixel in channel n
      * (for 0 <= index < width * height and 0 <= n < channels) is
-     * ConvolvedOutput[channels * index + n]
+     * Tensor[channels * index + n]
      */
     std::unique_ptr<float[]> image;
     /**
-     * The ConvolvedOutput constructor
+     * The Tensor constructor
      *
      * @param w The width of the output
      * @param h The height of the output
      * @param c The number of channels in the output
      * @param data The raw image data
      * 
-     * @note TODO
      */
-    ConvolvedOutput(int w, int h, int c, std::unique_ptr<float[]> data) :
+    Tensor(int w, int h, int c, std::unique_ptr<float[]> data) :
         width(w), height(h), channels(c), image(std::move(data)) {}
 };
 

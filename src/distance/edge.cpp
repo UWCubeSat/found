@@ -143,7 +143,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Convolutional Edge Detection Algorithm //////
 
-ConvolvedOutput ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
+Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     // Step -1: check if image and mask channels match
     if (image.channels != mask_.channels) {
         throw std::invalid_argument("Image and mask channels do not match");
@@ -182,10 +182,10 @@ ConvolvedOutput ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image 
         }
     }
     // Apply the mask to the image
-    return ConvolvedOutput(image.width, image.height, image.channels, std::move(result));
+    return Tensor(image.width, image.height, image.channels, std::move(result));
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image) {
+bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const Tensor &convolution, const Image &image) {
     std::vector<bool> channelIsEdge(image.channels, false);
     // Apply the box based outlier criterion to each channel
     for (size_t i = 0; i < image.channels; i++) {
@@ -194,7 +194,12 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const Convo
     return CombineChannelCriterion(channelIsEdge);
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image) {
+/**
+ * 
+ */
+Mat3 findInertiaTensor()
+
+bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(size_t index, const Tensor &convolution, const Image &image) {
     return true;
 }
 

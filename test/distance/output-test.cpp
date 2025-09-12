@@ -8,7 +8,7 @@
 
 namespace found {
 
-TEST(DistanceOutputTest, TestGetEarthCoordinatesNoRotationSimpleVector) {
+TEST(DistanceOutputTest, TestGetEarthCoordinaTensorotationSimpleVector) {
     Vec3 celestialVector{1, 0, 0};
     decimal gmst = 0;
     EarthSphericalVec3 actual = GetEarthCoordinates(celestialVector, gmst);
