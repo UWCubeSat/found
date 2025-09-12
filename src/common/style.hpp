@@ -91,7 +91,7 @@ struct Mask {
      * (for 0 <= index < width * height and 0 <= n < channels) is
      * image[channels * index + n]
      */
-    float *data;
+    decimal *data;
 };
 
 /**
@@ -115,7 +115,7 @@ struct Tensor {
      * (for 0 <= index < width * height and 0 <= n < channels) is
      * Tensor[channels * index + n]
      */
-    std::unique_ptr<float[]> image;
+    std::unique_ptr<decimal[]> image;
     /**
      * The Tensor constructor
      *
@@ -125,7 +125,7 @@ struct Tensor {
      * @param data The raw image data
      * 
      */
-    Tensor(int w, int h, int c, std::unique_ptr<float[]> data) :
+    Tensor(int w, int h, int c, std::unique_ptr<decimal[]> data) :
         width(w), height(h), channels(c), image(std::move(data)) {}
 };
 

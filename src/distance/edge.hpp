@@ -74,8 +74,8 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @note Mask should outlive this class
      */
-    ConvolutionEdgeDetectionAlgorithm(size_t boxBasedMaskSize, Mask&&  mask, float channelCriterionRatio = 1.f,
-      float eigenValueRatio = .3f, float edgeGradientRatio = .6f, float spacePlanetGraytoneRatio = .3f) :
+    ConvolutionEdgeDetectionAlgorithm(size_t boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
+     decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f) :
         boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
         eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
         spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio) {}
@@ -112,7 +112,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      */
-    bool ApplyCriterion(size_t index, const Tensor &convolution, const Image &image); 
+    bool ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image); 
    
     /** 
      * Convolves the image with the mask
@@ -143,7 +143,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * only. If the image has multiple channels, this function should be
      * called once for each channel and the results combined appropriately. 
      */
-    bool BoxBasedOutlierCriterion(size_t index, const Tensor &convolution, const Image &image);
+    bool BoxBasedOutlierCriterion(int64_t index, const Tensor &convolution, const Image &image);
 
     /**
      * For multi channel images, combines the results of each channel's
@@ -157,15 +157,15 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
 
     /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
-    float eigenValueRatio_;
+    decimal eigenValueRatio_;
     /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
-    float edgeGradientRatio_;
+    decimal edgeGradientRatio_;
     /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
-    float spacePlanetGraytoneRatio_;
+    decimal spacePlanetGraytoneRatio_;
     /// The size of the box to use for box based outlier identification edge should appear straight in this box
     size_t boxBasedMaskSize_; 
     /// ratio of channels that must meet the criterion to consider the pixel an edge
-    float channelCriterionRatio_; 
+    decimal channelCriterionRatio_; 
     /// The mask to convolve with
     Mask mask_;
 };

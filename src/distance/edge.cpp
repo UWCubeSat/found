@@ -149,7 +149,7 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
         throw std::invalid_argument("Image and mask channels do not match");
     }
     // Step 0: setup basic constants
-    auto result = std::make_unique<float[]>(image.width * image.height * image.channels);
+    auto result = std::make_unique<decimal[]>(image.width * image.height * image.channels);
     int64_t center = (static_cast<int64_t>(mask_.center_height) * mask_.width + mask_.center_width);
     int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
 
@@ -158,8 +158,8 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     for (int channel = 0; channel < image.channels; ++channel) {
         // Step 2b: loop through the image pixels
         for (int64_t k = channel; k < image_size; k += image.channels) {
-            // use double for precision then cast back to float once kernel addition is done
-            double c = 0;
+            // use double for precision then cast back to float once kernel addition is done TODO: switch to decimal
+            decimal c = 0;
             // Step 2c: apply the mask to the image
             for (int i = -mask_.center_height; i <= mask_.height - mask_.center_height - 1; ++i) {
                 int row = (k / image.channels) / image.width - i;
@@ -173,8 +173,8 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
                     if (col < 0 || col > image.width - 1) {
                         continue;
                     }
-                    c += static_cast<double>(mask_.data[(center + i * mask_.width + j) * mask_.channels + channel]) *
-                         static_cast<double>(image.image[(static_cast<int64_t>(row) * image.width + col) *
+                    c += static_cast<decimal>(mask_.data[(center + i * mask_.width + j) * mask_.channels + channel]) *
+                         static_cast<decimal>(image.image[(static_cast<int64_t>(row) * image.width + col) *
                                                          image.channels + channel]);
                 }
             }
@@ -185,7 +185,7 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     return Tensor(image.width, image.height, image.channels, std::move(result));
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const Tensor &convolution, const Image &image) {
+bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image) {
     std::vector<bool> channelIsEdge(image.channels, false);
     // Apply the box based outlier criterion to each channel
     for (size_t i = 0; i < image.channels; i++) {
@@ -195,11 +195,23 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const Tenso
 }
 
 /**
+ * Finds the inertia tensor of the convolution values in the box around index works on the channel of the given index.
  * 
+ * @param index The index of the pixel that the inertia tensor will be caluclated with respect to. Also center of the box
+ * @param width The width of the box
+ * @param height The height of the box
+ * @param channel The number of channels in the mass
+ * @param mass The distribution of mass. The box will be part of this distribution.
+ * 
+ * @return A 3x3 matrix representing the inertia tensor of the box around index
  */
-Mat3 findInertiaTensor()
+inline Mat3 findInertiaTensor(int64_t index, size_t width, size_t height, size_t channel, const Tensor &mass){
+    Mat3 inertiaTensor;
+    decimal I_xx =0;
 
-bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(size_t index, const Tensor &convolution, const Image &image) {
+}
+
+bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, const Tensor &convolution, const Image &image) {
     return true;
 }
 

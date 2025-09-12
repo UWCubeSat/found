@@ -11,7 +11,7 @@
 #include "src/distance/edge.hpp"
 namespace found {
 
-float identity_mask_data[9] = {
+decimal identity_mask_data[9] = {
     0, 0, 0,
     0, 1, 0,
     0, 0, 0
@@ -25,7 +25,7 @@ Mask identity_mask = {
     &identity_mask_data[0]
 };
 
-float blur_mask_data[9] = {
+decimal blur_mask_data[9] = {
     1, 1, 1,
     1, 1, 1,
     1, 1, 1
@@ -39,7 +39,7 @@ Mask blur_mask = {
     &blur_mask_data[0]
 };
 
-float negative_mask_data[9] = {
+decimal negative_mask_data[9] = {
     -1, -1, -1,
     -1, -1, -1,
     -1, -1, -1
@@ -53,7 +53,7 @@ Mask negative_mask = {
     &negative_mask_data[0]
 };
 
-float float_mask_data[9] = {
+decimal float_mask_data[9] = {
     0, 0, 0,
     0, 0.5f, 0,
     0, 0, 0
@@ -76,7 +76,7 @@ Mask off_center_mask = {
     &identity_mask_data[0]
 };
 
-float non_square_horizontal_mask_data[5] = {
+decimal non_square_horizontal_mask_data[5] = {
     1, 2, 3, 4, 5
 };
 Mask non_square_horizontal_mask = {
@@ -88,7 +88,7 @@ Mask non_square_horizontal_mask = {
     &non_square_horizontal_mask_data[0]
 };
 
-float non_square_vertical_mask_data[5] = {
+decimal non_square_vertical_mask_data[5] = {
     1, 2, 3, 4, 5
 };
 Mask non_square_vertical_mask = {
@@ -100,7 +100,7 @@ Mask non_square_vertical_mask = {
     &non_square_vertical_mask_data[0]
 };
 
-float multi_channel_mask_data[27] = {
+decimal multi_channel_mask_data[27] = {
     0, 0, 0,    0, 0, 0,    0, 0, 0,
     1, 0, 0,    0, 1, 0,    0, 0, 1,
     0, 0, 0,    0, 0, 0,    0, 0, 0
@@ -178,8 +178,8 @@ Image multi_channel_image = {
 class TestConvolutionEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlgorithm {
     public:
         // Inherit the constructor
-        TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, size_t boxBasedMaskSize = 5, float channelCriterionRatio = 1.f,
-      float eigenValueRatio = .3f, float edgeGradientRatio = .6f, float spacePlanetGraytoneRatio = .3f) :
+        TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, size_t boxBasedMaskSize = 5, decimal channelCriterionRatio = 1.f,
+     decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f) :
             ConvolutionEdgeDetectionAlgorithm(boxBasedMaskSize, std::move(mask), channelCriterionRatio, 
             eigenValueRatio, edgeGradientRatio, spacePlanetGraytoneRatio) {}
         //expose the ConvolveWithMask method
@@ -210,16 +210,16 @@ struct ConvolveTestParams {
     const char* algorithm_name;
     const Image* image;
     const char* image_name;
-    float *expected_data;
+    decimal* expected_data;
     size_t expected_size;
     int width;
     int height;
     int channels;
 };
 
-// Helper function to create expected_data_ptr from a float array
-std::unique_ptr<float[]> make_expected_ptr(const float* expected_data, size_t size) {
-    auto expected_data_ptr = std::make_unique<float[]>(size);
+// Helper function to create expected_data_ptr from a decimal array
+std::unique_ptr<decimal[]> make_expected_ptr(const decimal* expected_data, size_t size) {
+    auto expected_data_ptr = std::make_unique<decimal[]>(size);
     for (size_t i = 0; i < size; ++i) {
         expected_data_ptr[i] = expected_data[i];
     }
@@ -248,12 +248,12 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
      * The second channel should remain the same
      * The third channel should be shifted right
      */
-    float expected_data[27] = {
+   decimal expected_data[27] = {
         2, 1, 0,    3, 2, 1,    0, 3, 2,
         5, 4, 0,    6, 5, 4,    0, 6, 5,
         8, 7, 0,    9, 8, 7,    0, 9, 8
     };
-    auto expected_data_ptr = std::make_unique<float[]>(27);
+    auto expected_data_ptr = std::make_unique<decimal[]>(27);
     for (size_t i = 0; i < 27; ++i) {
         expected_data_ptr[i] = expected_data[i];
     }
@@ -271,46 +271,46 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
 ////// Parameterized Tests for Various Masks and Images //////
 
 // Expected outputs for identity mask test 0 - 3
-float expected_identity_single_pixel[1] = {1};
-float expected_identity_three_by_three[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-float expected_identity_non_square_horizontal[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-float expected_identity_non_square_vertical[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+decimal expected_identity_single_pixel[1] = {1};
+decimal expected_identity_three_by_three[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+decimal expected_identity_non_square_horizontal[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+decimal expected_identity_non_square_vertical[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     
 // Expected outputs for blur mask test 4 - 7
-float expected_blur_single_pixel[1] = {1};
-float expected_blur_three_by_three[9] = {12, 21, 16, 27, 45, 33, 24, 39, 28};
-float expected_blur_non_square_horizontal[10] = {16, 27, 33, 39, 28, 16, 27, 33, 39, 28};
-float expected_blur_non_square_vertical[10] = {10, 10, 21, 21, 33, 33, 45, 45, 34, 34};
+decimal expected_blur_single_pixel[1] = {1};
+decimal expected_blur_three_by_three[9] = {12, 21, 16, 27, 45, 33, 24, 39, 28};
+decimal expected_blur_non_square_horizontal[10] = {16, 27, 33, 39, 28, 16, 27, 33, 39, 28};
+decimal expected_blur_non_square_vertical[10] = {10, 10, 21, 21, 33, 33, 45, 45, 34, 34};
 
 // Expected outputs for negative mask test 8 - 11
-float expected_negative_single_pixel[1] = {-1};
-float expected_negative_three_by_three[9] = {-12, -21, -16, -27, -45, -33, -24, -39, -28};
-float expected_negative_non_square_horizontal[10] = {-16, -27, -33, -39, -28, -16, -27, -33, -39, -28};
-float expected_negative_non_square_vertical[10] = {-10, -10, -21, -21, -33, -33, -45, -45, -34, -34};
+decimal expected_negative_single_pixel[1] = {-1};
+decimal expected_negative_three_by_three[9] = {-12, -21, -16, -27, -45, -33, -24, -39, -28};
+decimal expected_negative_non_square_horizontal[10] = {-16, -27, -33, -39, -28, -16, -27, -33, -39, -28};
+decimal expected_negative_non_square_vertical[10] = {-10, -10, -21, -21, -33, -33, -45, -45, -34, -34};
 
-// Expected outputs for float mask test 12 - 15
-float expected_float_single_pixel[1] = {0.5f};
-float expected_float_three_by_three[9] = {.5f, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f};
-float expected_float_non_square_horizontal[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
-float expected_float_non_square_vertical[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
+// Expected outputs fordecimalmask test 12 - 15
+decimal expected_float_single_pixel[1] = {0.5f};
+decimal expected_float_three_by_three[9] = {.5f, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f};
+decimal expected_float_non_square_horizontal[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
+decimal expected_float_non_square_vertical[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
 
 // Expected outputs for off-center mask test 16 - 19
-float expected_off_center_single_pixel[1] = {0};
-float expected_off_center_three_by_three[9] = {0, 0, 0, 0, 1, 2, 0, 4, 5};
-float expected_off_center_non_square_horizontal[10] = {0, 0, 0, 0, 0, 0, 1, 2, 3, 4};
-float expected_off_center_non_square_vertical[10] = {0, 0, 0, 1, 0, 3, 0, 5, 0, 7};
+decimal expected_off_center_single_pixel[1] = {0};
+decimal expected_off_center_three_by_three[9] = {0, 0, 0, 0, 1, 2, 0, 4, 5};
+decimal expected_off_center_non_square_horizontal[10] = {0, 0, 0, 0, 0, 0, 1, 2, 3, 4};
+decimal expected_off_center_non_square_vertical[10] = {0, 0, 0, 1, 0, 3, 0, 5, 0, 7};
 
 // Expected outputs for horizontal mask test 20 - 23
-float expected_horizontal_single_pixel[1] = {3};
-float expected_horizontal_three_by_three[9] = {10, 16, 22, 28, 43, 58, 46, 70, 94};
-float expected_horizontal_non_square_horizontal[10] = {10, 20, 35, 44, 46, 40, 70, 110, 114, 106};
-float expected_horizontal_non_square_vertical[10] = {7, 10, 17, 24, 27, 38, 37, 52, 47, 66};
+decimal expected_horizontal_single_pixel[1] = {3};
+decimal expected_horizontal_three_by_three[9] = {10, 16, 22, 28, 43, 58, 46, 70, 94};
+decimal expected_horizontal_non_square_horizontal[10] = {10, 20, 35, 44, 46, 40, 70, 110, 114, 106};
+decimal expected_horizontal_non_square_vertical[10] = {7, 10, 17, 24, 27, 38, 37, 52, 47, 66};
 
 // Expected outputs for vertical mask test 24 - 27
-float expected_vertical_single_pixel[1] = {3};
-float expected_vertical_three_by_three[9] = {18, 24, 30, 30, 39, 48, 42, 54, 66};
-float expected_vertical_non_square_horizontal[10] = {15, 20, 25, 30, 35, 22, 29, 36, 43, 50};
-float expected_vertical_non_square_vertical[10] = {14, 20, 30, 40, 55, 70, 74, 88, 80, 92};
+decimal expected_vertical_single_pixel[1] = {3};
+decimal expected_vertical_three_by_three[9] = {18, 24, 30, 30, 39, 48, 42, 54, 66};
+decimal expected_vertical_non_square_horizontal[10] = {15, 20, 25, 30, 35, 22, 29, 36, 43, 50};
+decimal expected_vertical_non_square_vertical[10] = {14, 20, 30, 40, 55, 70, 74, 88, 80, 92};
 
 // Parameterized test fixture
 class ConvolveParameterizedTestFixture : public ::testing::TestWithParam<ConvolveTestParams> {};
