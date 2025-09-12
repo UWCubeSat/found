@@ -143,11 +143,6 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Convolutional Edge Detection Algorithm //////
 
-Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
-    (void)image;
-    return Points{};
-}
-
 ConvolvedOutput ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     // Step -1: check if image and mask channels match
     if (image.channels != mask_.channels) {
@@ -188,6 +183,29 @@ ConvolvedOutput ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image 
     }
     // Apply the mask to the image
     return ConvolvedOutput(image.width, image.height, image.channels, std::move(result));
+}
+
+bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image) {
+    std::vector<bool> channelIsEdge(image.channels, false);
+    // Apply the box based outlier criterion to each channel
+    for (size_t i = 0; i < image.channels; i++) {
+        channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, convolution, image);
+    }
+    return CombineChannelCriterion(channelIsEdge);
+}
+
+bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image) {
+    return true;
+}
+
+bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vector<bool> &channelIsEdge) {
+    // Step 1: Count the number of channels that are edges
+    size_t edgeCount = 0;
+    for (bool isEdge : channelIsEdge) {
+        if (isEdge) edgeCount++;
+    }
+    // Step 2: Determine if the pixel is an edge based on the ratio
+    return edgeCount >= channelCriterionRatio_ * channelIsEdge.size();
 }
 
 ////// Connected Components Algorithm //////

@@ -178,12 +178,18 @@ Image multi_channel_image = {
 class TestConvolutionEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlgorithm {
     public:
         // Inherit the constructor
-        using ConvolutionEdgeDetectionAlgorithm::ConvolutionEdgeDetectionAlgorithm;
+        TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, size_t boxBasedMaskSize = 5, float channelCriterionRatio = 1.f,
+      float eigenValueRatio = .3f, float edgeGradientRatio = .6f, float spacePlanetGraytoneRatio = .3f) :
+            ConvolutionEdgeDetectionAlgorithm(boxBasedMaskSize, std::move(mask), channelCriterionRatio, 
+            eigenValueRatio, edgeGradientRatio, spacePlanetGraytoneRatio) {}
         //expose the ConvolveWithMask method
         using ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask;
-        // Override the ApplyCriterion method to use a simple threshold
-        bool ApplyCriterion(size_t index, Image &image) override {
-            return image.image[index] > 0;
+        // expose the ApplyCriterion method
+        using ConvolutionEdgeDetectionAlgorithm::ApplyCriterion;
+        // expose the BoxBasedOutlierCriterion method
+        Points Run(const Image &image) override {
+            (void)image;
+            return Points{};
         }
 
 };

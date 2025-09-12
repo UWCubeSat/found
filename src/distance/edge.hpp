@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <functional>
-#include <utility>
 
 #include "common/style.hpp"
 #include "common/pipeline/stages.hpp"
@@ -50,7 +49,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * three consecutive points A B and C, angle APB is less than
      * angle APC
      */
-    Points Run(const Image &convolved) override;
+    Points Run(const Image &image) override;
 
  private:
     /// The space-ether threshold to use
@@ -59,6 +58,116 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     int borderLength_;
     /// The edge offset to use
     decimal offset_;
+};
+
+/**
+ * The ConvolutionEdgeDetectionAlgorithm class houses the Convolutional Edge Detection Algorithm.
+ * This algorithm convolves and image with a kernel 
+ */
+class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+ public:
+    /**
+     * @brief Constructs a new ConvolutionEdgeDetectionAlgorithm
+     * 
+     * @param mask The mask to convolve with
+     * @param threshold The threshold to use for detecting edges
+     * 
+     * @note Mask should outlive this class
+     */
+    ConvolutionEdgeDetectionAlgorithm(size_t boxBasedMaskSize, Mask&&  mask, float channelCriterionRatio = 1.f,
+      float eigenValueRatio = .3f, float edgeGradientRatio = .6f, float spacePlanetGraytoneRatio = .3f) :
+        boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
+        eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
+        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio) {}
+
+    /// @brief Destroys the algorithm
+    virtual ~ConvolutionEdgeDetectionAlgorithm() {}
+
+    /**
+     * Provides an estimate of the edge points of Earth using
+     * convolution and box-based outlier identification
+     * 
+     * @param image The image of Earth
+     * 
+     * @return The points on Earth's edge in image
+     * 
+     * @post The edge points returned are in polar order, i.e.
+     * if we define the centroid of the points as P, for any
+     * three consecutive points A B and C, angle APB is less than
+     * angle APC
+     */
+    Points Run(const Image &image) override;
+
+ protected:
+    /**
+     * Applies the edge detection criterion to a pixel and
+     * combines results across channels
+     *
+     * @param index The index of the pixel to check should only be channel 0
+     * @param convolution The output of the convolution to check against
+     * @param image The original image to check against
+     * 
+     * @note From using both the convolution and the original image we can use
+     * more advanced techniques for noise reduction and edge detection
+     * 
+     * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
+     */
+    bool ApplyCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image); 
+   
+    /** 
+     * Convolves the image with the mask
+     * 
+     * @param image The image to convolve
+     * 
+     * @return The ConvolvedOutput of the image with the mask
+     * this can include decimals and negative numbers hence the new struct
+     * This function clamps the edges to zero.
+     * The ConvolvedOutput will have the same dimensions as the image (including channels)
+     *
+     * @pre The image and mask must have the same number of channels
+     */
+    ConvolvedOutput ConvolveWithMask(const Image &image);
+
+ private:
+     /**
+     * Applies a Box-Based Outlier Identification to a pixel:
+     * https://sites.utexas.edu/near/files/2017/04/Position-Estimation-using-Image-Dervatives.pdf
+     * 
+     * @param index The index of the pixel to check 
+     * @param convolution The convolution output to check against
+     * @param image The original image to check against
+     * 
+     * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
+     * 
+     * @note This function operates on the channel of the provided index
+     * only. If the image has multiple channels, this function should be
+     * called once for each channel and the results combined appropriately. 
+     */
+    bool BoxBasedOutlierCriterion(size_t index, const ConvolvedOutput &convolution, const Image &image);
+
+    /**
+     * For multi channel images, combines the results of each channel's
+     * edge detection criterion into a single result using the channelCriterionRatio_
+     * 
+     * @param channelIsEdge A vector of booleans, one for each channel,
+     * indicating whether that channel met the edge detection criterion
+     * 
+     * @return true if the pixel meets the combined criterion (is an edge), false otherwise (noise)
+     */
+    bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
+
+    /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
+    float eigenValueRatio_;
+    /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
+    float edgeGradientRatio_;
+    /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
+    float spacePlanetGraytoneRatio_;
+    /// The size of the box to use for box based outlier identification edge should appear straight in this box
+    size_t boxBasedMaskSize_; 
+    /// ratio of channels that must meet the criterion to consider the pixel an edge
+    float channelCriterionRatio_; 
+    /// The mask to convolve with
+    Mask mask_;
 };
 
 /**
@@ -88,68 +197,6 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     Points Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
-};
-
-/**
- * The ConvolutionEdgeDetectionAlgorithm class houses the Convolutional Edge Detection Algorithm.
- * This algorithm convolves and image with a kernel 
- */
-class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
- public:
-    /**
-     * @brief Constructs a new ConvolutionEdgeDetectionAlgorithm
-     * 
-     * @param mask The mask to convolve with
-     * @param threshold The threshold to use for detecting edges
-     * 
-     * @note Mask should outlive this class
-     */
-    explicit ConvolutionEdgeDetectionAlgorithm(Mask&&  mask) :
-        mask_(std::move(mask)) {}
-
-    /// @brief Destroys the algorithm
-    virtual ~ConvolutionEdgeDetectionAlgorithm() {}
-
-    /**
-     * Provides an estimate of the edge points of Earth, as
-     * the shared edge between space and Earth.
-     * 
-     * @param image The image of Earth
-     * 
-     * @return The points on Earth's edge in image
-     * 
-     * @post The edge points returned are in ___ order
-     */
-    Points Run(const Image &image) override;
-
- protected:
-        /**
-         * Applies the edge detection criterion to a pixel
-         * 
-         * @param index The index of the pixel to check
-         * @param image The image to check the pixel against
-         * 
-         * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
-         */
-        virtual bool ApplyCriterion(size_t index, Image &image) = 0;
-
-        /**
-         * Convolves the image with the mask
-         * 
-         * @param image The image to convolve
-         * 
-         * @return The ConvolvedOutput of the image with the mask
-         * this can include decimals and negative numbers hence the new struct
-         * This function clamps the edges to zero.
-         * The ConvolvedOutput will have the same dimensions as the image (including channels)
-         *
-         * @pre The image and mask must have the same number of channels
-         */
-        virtual ConvolvedOutput  ConvolveWithMask(const Image &image);
-
- private:
-        /// The mask to convolve with
-        Mask mask_;
 };
 
 /**
