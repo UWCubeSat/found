@@ -144,9 +144,25 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Convolutional Edge Detection Algorithm //////
 
+Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 0: Define Common Variables
+    int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
+    // Step 1: Convolve the image with the mask
+    Tensor convolution = ConvolveWithMask(image);
+    // Step 2: Identify the edge using the criterion
+    Points result;
+    for (int64_t k = 0; k < image_size; k += image.channels) {
+        if (ApplyCriterion(k, convolution, image)) {
+            result.push_back({DECIMAL(k / image.channels % image.width), DECIMAL(k / image.channels / image.width)});
+        }
+    }
+    // TODO: Step 3: Post-process the edge points to remove noise and ensure polar ordering
+    // Step 4: Return the points
+    return result;
+}
+
 Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     // Step -1: check if image and mask channels match 
-    // TODO: move to run
     if (image.channels != mask_.channels) {
         throw std::invalid_argument("Image and mask channels do not match");
     }

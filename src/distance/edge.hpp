@@ -137,6 +137,8 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * @param convolution The convolution output to check against
      * @param image The original image to check against
      * 
+     * @pre Assumes convolution and image have the same number of channels
+     * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      * 
      * @note This function operates on the channel of the provided index
