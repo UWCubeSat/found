@@ -226,9 +226,6 @@ std::unique_ptr<decimal[]> make_expected_ptr(const decimal* expected_data, size_
     return expected_data_ptr;
 }
 
-class IdentityMaskConvolveParameterizedTestFixture : public ::testing::TestWithParam<Image> {
-};
-
 ////// Test Channel Error Handling //////
 
 TEST(ConvolutionEdgeDetectionTest, TestMultiChannelMaskSingleChannelImage) {
