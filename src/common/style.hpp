@@ -80,9 +80,9 @@ struct Mask {
     /// The Mask channels
     int channels;
     /// The Mask center width
-    int center_width;
+    int centerWidth;
     /// The Mask center height
-    int center_height;
+    int centerHeight;
     /**
      * The Mask contents
      * 
@@ -113,9 +113,9 @@ struct Tensor {
      * @note For each pixel, the channels are collated, meaning that
      * for any pixel at index, the value of that pixel in channel n
      * (for 0 <= index < width * height and 0 <= n < channels) is
-     * Tensor[channels * index + n]
+     * tensor[channels * index + n]
      */
-    std::unique_ptr<decimal[]> image;
+    std::unique_ptr<decimal[]> tensor;
     /**
      * The Tensor constructor
      *
@@ -126,7 +126,7 @@ struct Tensor {
      * 
      */
     Tensor(int w, int h, int c, std::unique_ptr<decimal[]> data) :
-        width(w), height(h), channels(c), image(std::move(data)) {}
+        width(w), height(h), channels(c), tensor(std::move(data)) {}
 };
 
 /**

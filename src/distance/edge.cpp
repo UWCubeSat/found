@@ -10,6 +10,7 @@
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
+#include "common/spatial/attitude-utils.hpp"
 
 namespace found {
 
@@ -150,7 +151,7 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     }
     // Step 0: setup basic constants
     auto result = std::make_unique<decimal[]>(image.width * image.height * image.channels);
-    int64_t center = (static_cast<int64_t>(mask_.center_height) * mask_.width + mask_.center_width);
+    int64_t center = (static_cast<int64_t>(mask_.centerHeight) * mask_.width + mask_.centerWidth);
     int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
 
     // Step 2: perform convolution
@@ -161,13 +162,13 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
             // use double for precision then cast back to float once kernel addition is done TODO: switch to decimal
             decimal c = 0;
             // Step 2c: apply the mask to the image
-            for (int i = -mask_.center_height; i <= mask_.height - mask_.center_height - 1; ++i) {
+            for (int i = -mask_.centerHeight; i <= mask_.height - mask_.centerHeight - 1; ++i) {
                 int row = (k / image.channels) / image.width - i;
                 // "valid" padding (ignores pixels outside the image)
                 if (row < 0 || row > image.height - 1) {
                     continue;
                 }
-                for (int j = -mask_.center_width; j <= mask_.width - mask_.center_width - 1; ++j) {
+                for (int j = -mask_.centerWidth; j <= mask_.width - mask_.centerWidth - 1; ++j) {
                     int col = ((k / image.channels) % image.width) - j;
                     // "valid" padding (ignores pixels outside the image)
                     if (col < 0 || col > image.width - 1) {
@@ -194,25 +195,37 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
     return CombineChannelCriterion(channelIsEdge);
 }
 
-/**
- * Finds the inertia tensor of the convolution values in the box around index works on the channel of the given index.
- * 
- * @param index The index of the pixel that the inertia tensor will be caluclated with respect to. Also center of the box
- * @param width The width of the box
- * @param height The height of the box
- * @param channel The number of channels in the mass
- * @param mass The distribution of mass. The box will be part of this distribution.
- * 
- * @return A 3x3 matrix representing the inertia tensor of the box around index
- */
-inline Mat3 findInertiaTensor(int64_t index, size_t width, size_t height, size_t channel, const Tensor &mass){
-    Mat3 inertiaTensor;
-    decimal I_xx =0;
-
-}
-
 bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, const Tensor &convolution, const Image &image) {
-    return true;
+    // Step 1: find the inertia tensor of the box around index
+    int boxCenter = boxBasedMaskSize_ / 2;
+    // Only need to caluclate 3 values due to symmetry and evaluating a 2D-plane 
+    decimal inertiaTensor[3] = {0, 0, 0}; 
+    for (int i = -boxCenter; i <= boxBasedMaskSize_ - boxCenter - 1; ++i) {
+        int row = (index / convolution.channels) / convolution.width - i;
+        // "valid" padding (ignores pixels outside the image)
+        if (row < 0 || row > convolution.height - 1) {
+            continue;
+        }
+        for (int j = -boxCenter; j <= boxBasedMaskSize_ - boxCenter - 1; ++j) {
+            int col = ((index / convolution.channels) % convolution.width) - j;
+            // "valid" padding (ignores pixels outside the image)
+            if (col < 0 || col > convolution.width - 1) {
+                continue;
+            }
+            inertiaTensor[0] += convolution.tensor[(static_cast<int64_t>(row) * convolution.width + col) * convolution.channels] * (j * j);
+            inertiaTensor[1] += convolution.tensor[(static_cast<int64_t>(row) * convolution.width + col) * convolution.channels] * (i * i);
+            inertiaTensor[2] -= convolution.tensor[(static_cast<int64_t>(row) * convolution.width + col) * convolution.channels] * (i * j);
+        }
+    }
+
+    // Step 2: find the eigenvalues and eigenvector with lowest eigenvalue of the inertia tensor
+    decimal discrim = DECIMAL_SQRT((DECIMAL_POW((inertiaTensor[0]-inertiaTensor[1]), 2) + 4*DECIMAL_POW(inertiaTensor[2], 2)));
+    decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
+    decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
+    // Step 2a: check the ratio of the eigenvalues
+    if (lambda2 / lambda1 < 0) return false;
+    // Step 2b: find the eigenvector with the lowest eigenvalue
+    Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
 }
 
 bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vector<bool> &channelIsEdge) {

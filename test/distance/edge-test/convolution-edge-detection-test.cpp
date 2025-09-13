@@ -178,7 +178,7 @@ Image multi_channel_image = {
 class TestConvolutionEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlgorithm {
     public:
         // Inherit the constructor
-        TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, size_t boxBasedMaskSize = 5, decimal channelCriterionRatio = 1.f,
+        TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, int boxBasedMaskSize = 5, decimal channelCriterionRatio = 1.f,
      decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f) :
             ConvolutionEdgeDetectionAlgorithm(boxBasedMaskSize, std::move(mask), channelCriterionRatio, 
             eigenValueRatio, edgeGradientRatio, spacePlanetGraytoneRatio) {}

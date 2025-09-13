@@ -74,7 +74,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @note Mask should outlive this class
      */
-    ConvolutionEdgeDetectionAlgorithm(size_t boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
+    ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
      decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f) :
         boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
         eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
@@ -163,7 +163,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
     decimal spacePlanetGraytoneRatio_;
     /// The size of the box to use for box based outlier identification edge should appear straight in this box
-    size_t boxBasedMaskSize_; 
+    int boxBasedMaskSize_;
     /// ratio of channels that must meet the criterion to consider the pixel an edge
     decimal channelCriterionRatio_; 
     /// The mask to convolve with
