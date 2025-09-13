@@ -81,6 +81,14 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
         EXPECT_EQ(val1.image[i], val2.image[i]) << "Pixel index: " << i; \
     }
 
+#define ASSERT_TENSOR_EQ(val1, val2) \
+    ASSERT_EQ(val1.width, val2.width); \
+    ASSERT_EQ(val1.height, val2.height); \
+    ASSERT_EQ(val1.channels, val2.channels); \
+    for (int i = 0; i < val1.width * val1.height * val1.channels; ++i) { \
+        EXPECT_EQ(val1.tensor[i], val2.tensor[i]) << "Pixel index: " << i; \
+    }
+
 #define ASSERT_DF_EQ_DEFAULT(val1, val2) \
     ASSERT_EQ(val1.header.version, val2.header.version); \
     ASSERT_EQ(val1.header.num_positions, val2.header.num_positions); \

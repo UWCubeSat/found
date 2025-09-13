@@ -265,7 +265,7 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
     };
     Tensor actual = multiChannelConvolve.ConvolveWithMask(multi_channel_image);
 
-    ASSERT_IMAGE_EQ(expected, actual);
+    ASSERT_TENSOR_EQ(expected, actual);
 }
 
 ////// Parameterized Tests for Various Masks and Images //////
@@ -330,7 +330,7 @@ TEST_P(ConvolveParameterizedTestFixture, OutputMatchesExpected) {
     Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));
 
     // Print out algorithm (mask) and image names on failure
-    ASSERT_IMAGE_EQ(expected, actual);
+    ASSERT_TENSOR_EQ(expected, actual);
 }
 
 // Instantiate test suite
