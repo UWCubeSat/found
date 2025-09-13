@@ -87,6 +87,13 @@ struct Vec2 {
      * @return this - other
      */
     Vec2 operator-(const Vec2 &other) const;
+
+    /**
+     * Orthogonalization
+     * 
+     * @return The orthogonal vector to this
+     */
+    Vec2 Orthogonal() const;
 };
 
 class Mat3;  // define above so we can use in Vec3 class

@@ -67,4 +67,8 @@
 #define DECIMAL_FMA(x,y,z)      (DECIMAL(std::fma(x),y,z))
 #define DECIMAL_HYPOT(x,y)      (DECIMAL(std::hypot(x),y))
 
+// choice method wrapped with Decimal typecast
+#define DECIMAL_MAX(x,y)   (DECIMAL(std::max(x,y)))
+#define DECIMAL_MIN(x,y)   (DECIMAL(std::min(x,y)))
+
 #endif  // SRC_COMMON_DECIMAL_HPP_

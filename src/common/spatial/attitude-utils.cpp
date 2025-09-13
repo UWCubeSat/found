@@ -43,6 +43,10 @@ Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
 }
 
+Vec2 Vec2::Orthogonal() const {
+    return {-y, x};
+}
+
 decimal Vec3::Magnitude() const {
     return sqrt(MagnitudeSq());
 }

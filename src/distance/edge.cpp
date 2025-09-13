@@ -145,7 +145,8 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 ////// Convolutional Edge Detection Algorithm //////
 
 Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
-    // Step -1: check if image and mask channels match
+    // Step -1: check if image and mask channels match 
+    // TODO: move to run
     if (image.channels != mask_.channels) {
         throw std::invalid_argument("Image and mask channels do not match");
     }
@@ -223,9 +224,47 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
     decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
     decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
     // Step 2a: check the ratio of the eigenvalues
-    if (lambda2 / lambda1 < 0) return false;
+    if (lambda2 / lambda1 > eigenValueRatio_) return false;
     // Step 2b: find the eigenvector with the lowest eigenvalue
     Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
+
+    // Step 3: test gradient ratio in the edge direction
+    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
+    int x_coord = DECIMAL_CEIL(edgeDirection.x * radius);
+    int y_coord = DECIMAL_CEIL(edgeDirection.y * radius);
+    int row = (index / convolution.channels) / convolution.width;
+    int col = ((index / convolution.channels) % convolution.width);
+    // pixels to check fall within the image
+    if (0 < row - y_coord && row - y_coord < convolution.height - 1 &&
+        0 < row + y_coord && row + y_coord < convolution.height - 1 &&
+        0 < col - x_coord && col - x_coord < convolution.width - 1 &&
+        0 < col + x_coord && col + x_coord < convolution.width + 1) {
+        
+        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + y_coord) * convolution.width + col + x_coord) * convolution.channels];
+        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - y_coord) * convolution.width + col - x_coord) * convolution.channels];
+        if (DECIMAL_MIN(edgeGradient1, edgeGradient2) / DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
+    }
+
+    // Step 3: test graytone values orthogonal to the edge direction
+    Vec2 orthogonalDirection = edgeDirection.Orthogonal();
+    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(orthogonalDirection.x, orthogonalDirection.y);
+    int x_coord = DECIMAL_CEIL(orthogonalDirection.x * radius);
+    int y_coord = DECIMAL_CEIL(orthogonalDirection.y * radius);
+    int row = (index / convolution.channels) / convolution.width;
+    int col = ((index / convolution.channels) % convolution.width);
+    // pixels to check fall within the image
+    if (0 < row - y_coord && row - y_coord < convolution.height - 1 &&
+        0 < row + y_coord && row + y_coord < convolution.height - 1 &&
+        0 < col - x_coord && col - x_coord < convolution.width - 1 &&
+        0 < col + x_coord && col + x_coord < convolution.width + 1) {
+        
+        decimal grayTone1 = image.image[(static_cast<int64_t>(row + y_coord) * image.width + col + x_coord) * image.channels];
+        decimal grayTone2 = image.image[(static_cast<int64_t>(row - y_coord) * image.width + col - x_coord) * image.channels];
+        if (DECIMAL_MIN(grayTone1, grayTone2) / DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
+    }
+
+    // If no criteria fail, return true
+    return true;
 }
 
 bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vector<bool> &channelIsEdge) {
