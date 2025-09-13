@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <functional>
+#include <vector>
+#include <utility>
 
 #include "common/style.hpp"
 #include "common/pipeline/stages.hpp"
@@ -112,8 +114,8 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      */
-    bool ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image); 
-   
+    bool ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image);
+
     /** 
      * Convolves the image with the mask
      * 
@@ -158,18 +160,18 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
 
-   /// The size of the box to use for box based outlier identification edge should appear straight in this box
-   int boxBasedMaskSize_;
-   /// The mask to convolve with
-   Mask mask_;
-   /// ratio of channels that must meet the criterion to consider the pixel an edge
-   decimal channelCriterionRatio_;
-   /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
-   decimal eigenValueRatio_;
-   /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
-   decimal edgeGradientRatio_;
-   /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
-   decimal spacePlanetGraytoneRatio_;
+    /// The size of the box to use for box based outlier identification edge should appear straight in this box
+    int boxBasedMaskSize_;
+    /// The mask to convolve with
+    Mask mask_;
+    /// ratio of channels that must meet the criterion to consider the pixel an edge
+    decimal channelCriterionRatio_;
+    /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
+    decimal eigenValueRatio_;
+    /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
+    decimal edgeGradientRatio_;
+    /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
+    decimal spacePlanetGraytoneRatio_;
 };
 
 /**

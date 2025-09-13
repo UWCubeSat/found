@@ -162,7 +162,7 @@ Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
 }
 
 Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
-    // Step -1: check if image and mask channels match 
+    // Step -1: check if image and mask channels match
     if (image.channels != mask_.channels) {
         throw std::invalid_argument("Image and mask channels do not match");
     }
@@ -261,7 +261,8 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
         // gradient at the two ends of the edge direction
         decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) * convolution.width + col + xCoordBox) * convolution.channels];
         decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) * convolution.width + col - xCoordBox) * convolution.channels];
-        if (DECIMAL_MIN(edgeGradient1, edgeGradient2) / DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
+            if (DECIMAL_MIN(edgeGradient1, edgeGradient2) /
+                DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
     }
 
     // Step 3c: test graytone values with greatest distance (projection) to the edge 
@@ -276,7 +277,8 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
         // graytone farthest from the edge hopefully one is plannet and one space
         decimal grayTone1 = image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) * image.width + col + xCoordBoxOrtho) * image.channels];
         decimal grayTone2 = image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) * image.width + col - xCoordBoxOrtho) * image.channels];
-        if (DECIMAL_MIN(grayTone1, grayTone2) / DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
+            if (DECIMAL_MIN(grayTone1, grayTone2) /
+                DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
     }
 
     // If no criteria fail, return true
