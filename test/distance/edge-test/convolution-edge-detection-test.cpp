@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "test/common/common.hpp"
+#include "test/common/constants/edge-constants.hpp"
 
 #include "src/common/style.hpp"
 

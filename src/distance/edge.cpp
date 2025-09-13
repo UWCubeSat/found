@@ -212,8 +212,8 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
     return CombineChannelCriterion(channelIsEdge);
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
-                                                                 const Tensor &convolution, 
+bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
+                                                                 const Tensor &convolution,
                                                                  const Image &image) {
     // Step 1: find the inertia tensor of the box around index
     int boxCenter = boxBasedMaskSize_ / 2;
@@ -241,7 +241,7 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     }
 
     // Step 2: find the eigenvalues and eigenvector with lowest eigenvalue of the inertia tensor
-    decimal discrim = DECIMAL_SQRT((DECIMAL_POW((inertiaTensor[0]-inertiaTensor[1]), 2) + 
+    decimal discrim = DECIMAL_SQRT((DECIMAL_POW((inertiaTensor[0]-inertiaTensor[1]), 2) +
                                     4*DECIMAL_POW(inertiaTensor[2], 2)));
     decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
     decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
@@ -265,9 +265,9 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         0 < col - xCoordBox && col - xCoordBox < convolution.width - 1 &&
         0 < col + xCoordBox && col + xCoordBox < convolution.width + 1) {
         // gradient at the two ends of the edge direction
-        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) * convolution.width + 
+        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) * convolution.width +
                                                      col + xCoordBox) * convolution.channels];
-        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) * convolution.width + 
+        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) * convolution.width +
                                                      col - xCoordBox) * convolution.channels];
             if (DECIMAL_MIN(edgeGradient1, edgeGradient2) /
                 DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
@@ -283,9 +283,9 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         0 < col - xCoordBoxOrtho && col - xCoordBoxOrtho < convolution.width - 1 &&
         0 < col + xCoordBoxOrtho && col + xCoordBoxOrtho < convolution.width + 1) {
         // graytone farthest from the edge hopefully one is plannet and one space
-        decimal grayTone1 = image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) * image.width + 
+        decimal grayTone1 = image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) * image.width +
                                          col + xCoordBoxOrtho) * image.channels];
-        decimal grayTone2 = image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) * image.width + 
+        decimal grayTone2 = image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) * image.width +
                                          col - xCoordBoxOrtho) * image.channels];
             if (DECIMAL_MIN(grayTone1, grayTone2) /
                 DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
