@@ -243,6 +243,8 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
     if (lambda2 / lambda1 > eigenValueRatio_) return false;
     // Step 2b: find the eigenvector with the lowest eigenvalue
     Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
+    // Step 2c: deal with perfect horizontal line case (vertical line case works out)
+    if (lambda2 == 0) edgeDirection = Vec2{1, 0};
 
     // Step 3: test gradient ratio in the edge direction
     decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
