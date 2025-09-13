@@ -206,7 +206,7 @@ Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
 bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image) {
     std::vector<bool> channelIsEdge(image.channels, false);
     // Apply the box based outlier criterion to each channel
-    for (size_t i = 0; i < image.channels; i++) {
+    for (int i = 0; i < image.channels; i++) {
         channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, convolution, image);
     }
     return CombineChannelCriterion(channelIsEdge);
@@ -246,38 +246,36 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index, 
     // Step 2c: deal with perfect horizontal line case (vertical line case works out)
     if (lambda2 == 0) edgeDirection = Vec2{1, 0};
 
-    // Step 3: test gradient ratio in the edge direction
+    // Step 3a: Setup constants
     decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
-    int x_coord = DECIMAL_CEIL(edgeDirection.x * radius);
-    int y_coord = DECIMAL_CEIL(edgeDirection.y * radius);
     int row = (index / convolution.channels) / convolution.width;
     int col = ((index / convolution.channels) % convolution.width);
+    // Step 3b: Test gradient ratio at the ends of the edge direction
+    int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
+    int yCoordBox = DECIMAL_CEIL(edgeDirection.y * radius);
     // pixels to check fall within the image
-    if (0 < row - y_coord && row - y_coord < convolution.height - 1 &&
-        0 < row + y_coord && row + y_coord < convolution.height - 1 &&
-        0 < col - x_coord && col - x_coord < convolution.width - 1 &&
-        0 < col + x_coord && col + x_coord < convolution.width + 1) {
-        
-        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + y_coord) * convolution.width + col + x_coord) * convolution.channels];
-        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - y_coord) * convolution.width + col - x_coord) * convolution.channels];
+    if (0 < row - yCoordBox && row - yCoordBox < convolution.height - 1 &&
+        0 < row + yCoordBox && row + yCoordBox < convolution.height - 1 &&
+        0 < col - xCoordBox && col - xCoordBox < convolution.width - 1 &&
+        0 < col + xCoordBox && col + xCoordBox < convolution.width + 1) {
+        // gradient at the two ends of the edge direction
+        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) * convolution.width + col + xCoordBox) * convolution.channels];
+        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) * convolution.width + col - xCoordBox) * convolution.channels];
         if (DECIMAL_MIN(edgeGradient1, edgeGradient2) / DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
     }
 
-    // Step 3: test graytone values orthogonal to the edge direction
+    // Step 3c: test graytone values with greatest distance (projection) to the edge 
     Vec2 orthogonalDirection = edgeDirection.Orthogonal();
-    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(orthogonalDirection.x, orthogonalDirection.y);
-    int x_coord = DECIMAL_CEIL(orthogonalDirection.x * radius);
-    int y_coord = DECIMAL_CEIL(orthogonalDirection.y * radius);
-    int row = (index / convolution.channels) / convolution.width;
-    int col = ((index / convolution.channels) % convolution.width);
+    int xCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.x * radius);
+    int yCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.y * radius);
     // pixels to check fall within the image
-    if (0 < row - y_coord && row - y_coord < convolution.height - 1 &&
-        0 < row + y_coord && row + y_coord < convolution.height - 1 &&
-        0 < col - x_coord && col - x_coord < convolution.width - 1 &&
-        0 < col + x_coord && col + x_coord < convolution.width + 1) {
-        
-        decimal grayTone1 = image.image[(static_cast<int64_t>(row + y_coord) * image.width + col + x_coord) * image.channels];
-        decimal grayTone2 = image.image[(static_cast<int64_t>(row - y_coord) * image.width + col - x_coord) * image.channels];
+    if (0 < row - yCoordBoxOrtho && row - yCoordBoxOrtho < convolution.height - 1 &&
+        0 < row + yCoordBoxOrtho && row + yCoordBoxOrtho < convolution.height - 1 &&
+        0 < col - xCoordBoxOrtho && col - xCoordBoxOrtho < convolution.width - 1 &&
+        0 < col + xCoordBoxOrtho && col + xCoordBoxOrtho < convolution.width + 1) {
+        // graytone farthest from the edge hopefully one is plannet and one space
+        decimal grayTone1 = image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) * image.width + col + xCoordBoxOrtho) * image.channels];
+        decimal grayTone2 = image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) * image.width + col - xCoordBoxOrtho) * image.channels];
         if (DECIMAL_MIN(grayTone1, grayTone2) / DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
     }
 

@@ -158,18 +158,18 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
 
-    /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
-    decimal eigenValueRatio_;
-    /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
-    decimal edgeGradientRatio_;
-    /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
-    decimal spacePlanetGraytoneRatio_;
-    /// The size of the box to use for box based outlier identification edge should appear straight in this box
-    int boxBasedMaskSize_;
-    /// ratio of channels that must meet the criterion to consider the pixel an edge
-    decimal channelCriterionRatio_; 
-    /// The mask to convolve with
-    Mask mask_;
+   /// The size of the box to use for box based outlier identification edge should appear straight in this box
+   int boxBasedMaskSize_;
+   /// The mask to convolve with
+   Mask mask_;
+   /// ratio of channels that must meet the criterion to consider the pixel an edge
+   decimal channelCriterionRatio_;
+   /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
+   decimal eigenValueRatio_;
+   /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
+   decimal edgeGradientRatio_;
+   /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
+   decimal spacePlanetGraytoneRatio_;
 };
 
 /**
