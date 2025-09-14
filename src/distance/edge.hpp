@@ -78,7 +78,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
      decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f,
-     decimal threshold = 1.f) : 
+     decimal threshold = 1.f) :
         boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
         eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
         spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio), threshold_(threshold) {}

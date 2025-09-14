@@ -208,10 +208,9 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
     // Apply the box based outlier criterion to each channel
     for (int i = 0; i < image.channels; i++) {
         // Only apply the criterion if the convolution is above the threshold
-        if(DECIMAL_ABS(convolution.tensor[index]) > threshold_) {
+        if (DECIMAL_ABS(convolution.tensor[index]) > threshold_) {
             channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, convolution, image);
-        }
-        else {
+        } else {
             channelIsEdge[i] = false;
         }
     }

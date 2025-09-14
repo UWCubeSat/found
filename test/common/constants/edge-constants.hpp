@@ -15,186 +15,186 @@ struct EdgeTestData {
 
 
 // TestNoEdgeAllSpace
-extern unsigned char imageDataNoEdgeAllSpace[25] = {
+inline unsigned char imageDataNoEdgeAllSpace[25] = {
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0
 };
-extern Image imageNoEdgeAllSpace = {5, 5, 1, imageDataNoEdgeAllSpace};
-extern Points expectedNoEdgeAllSpace;
-extern EdgeTestData testNoEdgeAllSpace = {&imageNoEdgeAllSpace, &expectedNoEdgeAllSpace};
+inline Image imageNoEdgeAllSpace = {5, 5, 1, imageDataNoEdgeAllSpace};
+inline Points expectedNoEdgeAllSpace;
+inline EdgeTestData testNoEdgeAllSpace = {&imageNoEdgeAllSpace, &expectedNoEdgeAllSpace};
 
 // TestNoEdgeAllEarth
-extern unsigned char imageDataNoEdgeAllEarth[25] = {
+inline unsigned char imageDataNoEdgeAllEarth[25] = {
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5
 };
-extern Image imageNoEdgeAllEarth = {5, 5, 1, imageDataNoEdgeAllEarth};
-extern Points expectedNoEdgeAllEarth;
-extern EdgeTestData testNoEdgeAllEarth = {&imageNoEdgeAllEarth, &expectedNoEdgeAllEarth};
+inline Image imageNoEdgeAllEarth = {5, 5, 1, imageDataNoEdgeAllEarth};
+inline Points expectedNoEdgeAllEarth;
+inline EdgeTestData testNoEdgeAllEarth = {&imageNoEdgeAllEarth, &expectedNoEdgeAllEarth};
 
 // TestNoEdgeAllSpaceWithNoise
-extern unsigned char imageDataNoEdgeAllSpaceWithNoise[25] = {
+inline unsigned char imageDataNoEdgeAllSpaceWithNoise[25] = {
     5, 5, 5, 5, 5,
     5, 0, 0, 0, 5,
     5, 0, 0, 0, 5,
     5, 0, 0, 0, 5,
     5, 5, 5, 5, 5
 };
-extern Image imageNoEdgeAllSpaceWithNoise = {5, 5, 1, imageDataNoEdgeAllSpaceWithNoise};
-extern Points expectedNoEdgeAllSpaceWithNoise;
-extern EdgeTestData testNoEdgeAllSpaceWithNoise = {&imageNoEdgeAllSpaceWithNoise, &expectedNoEdgeAllSpaceWithNoise};
+inline Image imageNoEdgeAllSpaceWithNoise = {5, 5, 1, imageDataNoEdgeAllSpaceWithNoise};
+inline Points expectedNoEdgeAllSpaceWithNoise;
+inline EdgeTestData testNoEdgeAllSpaceWithNoise = {&imageNoEdgeAllSpaceWithNoise, &expectedNoEdgeAllSpaceWithNoise};
 
 // TestLeftStraightEdge
-extern unsigned char imageDataLeftStraightEdge[25] = {
+inline unsigned char imageDataLeftStraightEdge[25] = {
     5, 5, 5, 0, 0,
     5, 5, 5, 0, 0,
     5, 5, 5, 0, 0,
     5, 5, 5, 0, 0,
     5, 5, 5, 0, 0
 };
-extern Image imageLeftStraightEdge = {5, 5, 1, imageDataLeftStraightEdge};
-extern Points expectedLeftStraightEdge = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
-extern EdgeTestData testLeftStraightEdge = {&imageLeftStraightEdge, &expectedLeftStraightEdge};
+inline Image imageLeftStraightEdge = {5, 5, 1, imageDataLeftStraightEdge};
+inline Points expectedLeftStraightEdge = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
+inline EdgeTestData testLeftStraightEdge = {&imageLeftStraightEdge, &expectedLeftStraightEdge};
 
 // TestRightStraightEdge
-extern unsigned char imageDataRightStraightEdge[25] = {
+inline unsigned char imageDataRightStraightEdge[25] = {
     0, 0, 5, 5, 5,
     0, 0, 5, 5, 5,
     0, 0, 5, 5, 5,
     0, 0, 5, 5, 5,
     0, 0, 5, 5, 5
 };
-extern Image imageRightStraightEdge = {5, 5, 1, imageDataRightStraightEdge};
-extern Points expectedRightStraightEdge = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
-extern EdgeTestData testRightStraightEdge = {&imageRightStraightEdge, &expectedRightStraightEdge};
+inline Image imageRightStraightEdge = {5, 5, 1, imageDataRightStraightEdge};
+inline Points expectedRightStraightEdge = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
+inline EdgeTestData testRightStraightEdge = {&imageRightStraightEdge, &expectedRightStraightEdge};
 
 // TestUpStraightEdge
-extern unsigned char imageDataUpStraightEdge[25] = {
+inline unsigned char imageDataUpStraightEdge[25] = {
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0
 };
-extern Image imageUpStraightEdge = {5, 5, 1, imageDataUpStraightEdge};
-extern Points expectedUpStraightEdge = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}};
-extern EdgeTestData testUpStraightEdge = {&imageUpStraightEdge, &expectedUpStraightEdge};
+inline Image imageUpStraightEdge = {5, 5, 1, imageDataUpStraightEdge};
+inline Points expectedUpStraightEdge = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}};
+inline EdgeTestData testUpStraightEdge = {&imageUpStraightEdge, &expectedUpStraightEdge};
 
 // TestDownStraightEdge
-extern unsigned char imageDataDownStraightEdge[25] = {
+inline unsigned char imageDataDownStraightEdge[25] = {
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5
 };
-extern Image imageDownStraightEdge = {5, 5, 1, imageDataDownStraightEdge};
-extern Points expectedDownStraightEdge = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}};
-extern EdgeTestData testDownStraightEdge = {&imageDownStraightEdge, &expectedDownStraightEdge};
+inline Image imageDownStraightEdge = {5, 5, 1, imageDataDownStraightEdge};
+inline Points expectedDownStraightEdge = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}};
+inline EdgeTestData testDownStraightEdge = {&imageDownStraightEdge, &expectedDownStraightEdge};
 
 // TestTopTriangleEdge
-extern unsigned char imageDataTopTriangleEdge[25] = {
+inline unsigned char imageDataTopTriangleEdge[25] = {
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 5, 0, 0,
     0, 5, 5, 5, 0,
     5, 5, 5, 5, 5
 };
-extern Image imageTopTriangleEdge = {5, 5, 1, imageDataTopTriangleEdge};
-extern Points expectedTopTriangleEdge = {{0, 4}, {1, 3}, {2, 2}, {3, 3}, {4, 4}};
-extern EdgeTestData testTopTriangleEdge = {&imageTopTriangleEdge, &expectedTopTriangleEdge};
+inline Image imageTopTriangleEdge = {5, 5, 1, imageDataTopTriangleEdge};
+inline Points expectedTopTriangleEdge = {{0, 4}, {1, 3}, {2, 2}, {3, 3}, {4, 4}};
+inline EdgeTestData testTopTriangleEdge = {&imageTopTriangleEdge, &expectedTopTriangleEdge};
 
 // TestCornerQuarterEdge1
-extern unsigned char imageDataCornerQuarterEdge1[25] = {
+inline unsigned char imageDataCornerQuarterEdge1[25] = {
     5, 5, 5, 5, 5,
     0, 5, 5, 5, 5,
     0, 0, 5, 5, 5,
     0, 0, 0, 5, 5,
     0, 0, 0, 0, 5
 };
-extern Image imageCornerQuarterEdge1 = {5, 5, 1, imageDataCornerQuarterEdge1};
-extern Points expectedCornerQuarterEdge1_1 = {{0, 0}, {1, 1}, {2, 2}, {3, 3}};
-extern Points expectedCornerQuarterEdge1_2 = {{4, 4}, {1, 1}, {2, 2}, {3, 3}};
+inline Image imageCornerQuarterEdge1 = {5, 5, 1, imageDataCornerQuarterEdge1};
+inline Points expectedCornerQuarterEdge1_1 = {{0, 0}, {1, 1}, {2, 2}, {3, 3}};
+inline Points expectedCornerQuarterEdge1_2 = {{4, 4}, {1, 1}, {2, 2}, {3, 3}};
 // For this test, you may want to use both expectedCornerQuarterEdge1_1 and _2
-extern EdgeTestData testCornerQuarterEdge1_1 = {&imageCornerQuarterEdge1, &expectedCornerQuarterEdge1_1};
-extern EdgeTestData testCornerQuarterEdge1_2 = {&imageCornerQuarterEdge1, &expectedCornerQuarterEdge1_2};
+inline EdgeTestData testCornerQuarterEdge1_1 = {&imageCornerQuarterEdge1, &expectedCornerQuarterEdge1_1};
+inline EdgeTestData testCornerQuarterEdge1_2 = {&imageCornerQuarterEdge1, &expectedCornerQuarterEdge1_2};
 
 // TestCornerQuarterEdge2
-extern unsigned char imageDataCornerQuarterEdge2[20] = {
+inline unsigned char imageDataCornerQuarterEdge2[20] = {
     5, 5, 5, 5, 0,
     5, 5, 5, 5, 0,
     5, 5, 0, 0, 0,
     0, 0, 0, 0, 0
 };
-extern Image imageCornerQuarterEdge2 = {5, 4, 1, imageDataCornerQuarterEdge2};
-extern Points expectedCornerQuarterEdge2 = {{3, 0}, {3, 1}, {1, 2}};
-extern EdgeTestData testCornerQuarterEdge2 = {&imageCornerQuarterEdge2, &expectedCornerQuarterEdge2};
+inline Image imageCornerQuarterEdge2 = {5, 4, 1, imageDataCornerQuarterEdge2};
+inline Points expectedCornerQuarterEdge2 = {{3, 0}, {3, 1}, {1, 2}};
+inline EdgeTestData testCornerQuarterEdge2 = {&imageCornerQuarterEdge2, &expectedCornerQuarterEdge2};
 
 // TestSpaceBarelyVisible
-extern unsigned char imageDataSpaceBarelyVisible[25] = {
+inline unsigned char imageDataSpaceBarelyVisible[25] = {
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 0
 };
-extern Image imageSpaceBarelyVisible = {5, 5, 1, imageDataSpaceBarelyVisible};
-extern Points expectedSpaceBarelyVisible = {{3, 4}, {4, 3}};
-extern EdgeTestData testSpaceBarelyVisible = {&imageSpaceBarelyVisible, &expectedSpaceBarelyVisible};
+inline Image imageSpaceBarelyVisible = {5, 5, 1, imageDataSpaceBarelyVisible};
+inline Points expectedSpaceBarelyVisible = {{3, 4}, {4, 3}};
+inline EdgeTestData testSpaceBarelyVisible = {&imageSpaceBarelyVisible, &expectedSpaceBarelyVisible};
 
 // TestPlanetBarelyVisible
-extern unsigned char imageDataPlanetBarelyVisible[25] = {
+inline unsigned char imageDataPlanetBarelyVisible[25] = {
     5, 5, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0
 };
-extern Image imagePlanetBarelyVisible = {5, 5, 1, imageDataPlanetBarelyVisible};
-extern Points expectedPlanetBarelyVisible = {{0, 0}, {1, 0}};
-extern EdgeTestData testPlanetBarelyVisible = {&imagePlanetBarelyVisible, &expectedPlanetBarelyVisible};
+inline Image imagePlanetBarelyVisible = {5, 5, 1, imageDataPlanetBarelyVisible};
+inline Points expectedPlanetBarelyVisible = {{0, 0}, {1, 0}};
+inline EdgeTestData testPlanetBarelyVisible = {&imagePlanetBarelyVisible, &expectedPlanetBarelyVisible};
 
 // TestNoiseInPlanet1
-extern unsigned char imageDataNoiseInPlanet1[25] = {
+inline unsigned char imageDataNoiseInPlanet1[25] = {
     5, 5, 5, 0, 0,
     0, 0, 5, 0, 0,
     5, 5, 5, 0, 0,
     5, 0, 5, 0, 0,
     5, 0, 5, 0, 0
 };
-extern Image imageNoiseInPlanet1 = {5, 5, 1, imageDataNoiseInPlanet1};
-extern Points expectedNoiseInPlanet1 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
-extern EdgeTestData testNoiseInPlanet1 = {&imageNoiseInPlanet1, &expectedNoiseInPlanet1};
+inline Image imageNoiseInPlanet1 = {5, 5, 1, imageDataNoiseInPlanet1};
+inline Points expectedNoiseInPlanet1 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
+inline EdgeTestData testNoiseInPlanet1 = {&imageNoiseInPlanet1, &expectedNoiseInPlanet1};
 
 // TestNoiseInPlanet2
-extern unsigned char imageDataNoiseInPlanet2[25] = {
+inline unsigned char imageDataNoiseInPlanet2[25] = {
     5, 0, 5, 0, 0,
     5, 0, 5, 0, 0,
     5, 5, 5, 0, 0,
     0, 5, 5, 0, 0,
     5, 0, 5, 0, 0
 };
-extern Image imageNoiseInPlanet2 = {5, 5, 1, imageDataNoiseInPlanet2};
-extern Points expectedNoiseInPlanet2 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
-extern EdgeTestData testNoiseInPlanet2 = {&imageNoiseInPlanet2, &expectedNoiseInPlanet2};
+inline Image imageNoiseInPlanet2 = {5, 5, 1, imageDataNoiseInPlanet2};
+inline Points expectedNoiseInPlanet2 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}};
+inline EdgeTestData testNoiseInPlanet2 = {&imageNoiseInPlanet2, &expectedNoiseInPlanet2};
 
 // TestNoiseInSpace
-extern unsigned char imageDataNoiseInSpace[25] = {
+inline unsigned char imageDataNoiseInSpace[25] = {
     0, 0, 0, 0, 2,
     0, 9, 0, 7, 0,
     0, 0, 0, 0, 0,
     5, 5, 5, 5, 5,
     5, 5, 5, 5, 5
 };
-extern Image imageNoiseInSpace = {5, 5, 1, imageDataNoiseInSpace};
-extern Points expectedNoiseInSpace = {{0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}};
-extern EdgeTestData testNoiseInSpace = {&imageNoiseInSpace, &expectedNoiseInSpace};
+inline Image imageNoiseInSpace = {5, 5, 1, imageDataNoiseInSpace};
+inline Points expectedNoiseInSpace = {{0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}};
+inline EdgeTestData testNoiseInSpace = {&imageNoiseInSpace, &expectedNoiseInSpace};
 
 
 
