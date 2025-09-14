@@ -121,7 +121,7 @@ Mask multi_channel_mask = {
 
 // Setup different images for convolution tests
 unsigned char single_pixel_image_data[1] = {
-    1
+    0
 };
 Image single_pixel_image = {
     1,
@@ -273,25 +273,25 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
 ////// Parameterized Tests for Various Masks and Images //////
 
 // Expected outputs for identity mask test 0 - 3
-decimal expected_identity_single_pixel[1] = {1};
+decimal expected_identity_single_pixel[1] = {0};
 decimal expected_identity_three_by_three[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 decimal expected_identity_non_square_horizontal[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 decimal expected_identity_non_square_vertical[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     
 // Expected outputs for blur mask test 4 - 7
-decimal expected_blur_single_pixel[1] = {1};
+decimal expected_blur_single_pixel[1] = {0};
 decimal expected_blur_three_by_three[9] = {12, 21, 16, 27, 45, 33, 24, 39, 28};
 decimal expected_blur_non_square_horizontal[10] = {16, 27, 33, 39, 28, 16, 27, 33, 39, 28};
 decimal expected_blur_non_square_vertical[10] = {10, 10, 21, 21, 33, 33, 45, 45, 34, 34};
 
 // Expected outputs for negative mask test 8 - 11
-decimal expected_negative_single_pixel[1] = {-1};
+decimal expected_negative_single_pixel[1] = {0};
 decimal expected_negative_three_by_three[9] = {-12, -21, -16, -27, -45, -33, -24, -39, -28};
 decimal expected_negative_non_square_horizontal[10] = {-16, -27, -33, -39, -28, -16, -27, -33, -39, -28};
 decimal expected_negative_non_square_vertical[10] = {-10, -10, -21, -21, -33, -33, -45, -45, -34, -34};
 
 // Expected outputs fordecimalmask test 12 - 15
-decimal expected_float_single_pixel[1] = {0.5f};
+decimal expected_float_single_pixel[1] = {0};
 decimal expected_float_three_by_three[9] = {.5f, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f};
 decimal expected_float_non_square_horizontal[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
 decimal expected_float_non_square_vertical[10] = {.5, 1, 1.5f, 2, 2.5f, 3, 3.5f, 4, 4.5f, 5};
@@ -303,13 +303,13 @@ decimal expected_off_center_non_square_horizontal[10] = {0, 0, 0, 0, 0, 0, 1, 2,
 decimal expected_off_center_non_square_vertical[10] = {0, 0, 0, 1, 0, 3, 0, 5, 0, 7};
 
 // Expected outputs for horizontal mask test 20 - 23
-decimal expected_horizontal_single_pixel[1] = {3};
+decimal expected_horizontal_single_pixel[1] = {0};
 decimal expected_horizontal_three_by_three[9] = {10, 16, 22, 28, 43, 58, 46, 70, 94};
 decimal expected_horizontal_non_square_horizontal[10] = {10, 20, 35, 44, 46, 40, 70, 110, 114, 106};
 decimal expected_horizontal_non_square_vertical[10] = {7, 10, 17, 24, 27, 38, 37, 52, 47, 66};
 
 // Expected outputs for vertical mask test 24 - 27
-decimal expected_vertical_single_pixel[1] = {3};
+decimal expected_vertical_single_pixel[1] = {0};
 decimal expected_vertical_three_by_three[9] = {18, 24, 30, 30, 39, 48, 42, 54, 66};
 decimal expected_vertical_non_square_horizontal[10] = {15, 20, 25, 30, 35, 22, 29, 36, 43, 50};
 decimal expected_vertical_non_square_vertical[10] = {14, 20, 30, 40, 55, 70, 74, 88, 80, 92};

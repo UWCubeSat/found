@@ -56,7 +56,7 @@ INSTANTIATE_TEST_SUITE_P(
         SimpleEdgeDetectionTestParams{"TestPlanetBarelyVisible", &thickerBorderSEDA, &testPlanetBarelyVisible},
         SimpleEdgeDetectionTestParams{"TestNoiseInPlanet1", &minimalSEDA, &testNoiseInPlanet1},
         SimpleEdgeDetectionTestParams{"TestNoiseInPlanet2", &minimalSEDA, &testNoiseInPlanet2},
-        SimpleEdgeDetectionTestParams{"TestNoiseInSpace", &thickerBorderSEDA, &testNoiseInSpace},
+        SimpleEdgeDetectionTestParams{"TestNoiseInSpace", &thickerBorderSEDA, &testNoiseInSpace}
     )
 );
 
