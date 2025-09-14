@@ -185,8 +185,8 @@ class TestConvolutionEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlg
         // Inherit the constructor
         TestConvolutionEdgeDetectionAlgorithm(Mask&&  mask, 
                                               int boxBasedMaskSize = 5, 
-                                              decimal channelCriterionRatio = 1.f, 
                                               decimal threshold = 1.f, 
+                                              decimal channelCriterionRatio = 1.f, 
                                               decimal eigenValueRatio = .3f, 
                                               decimal edgeGradientRatio = .6f, 
                                               decimal spacePlanetGraytoneRatio = .3f) :
@@ -223,7 +223,7 @@ struct ConvolveTestParams {
 };
 
 // Helper function to create expected_data_ptr from a decimal array
-std::unique_ptr<decimal[]> make_expected_ptr(const decimal* expected_data, size_t size) {
+std::unique_ptr<decimal[]> makeExpectedPtr(const decimal* expected_data, size_t size) {
     auto expected_data_ptr = std::make_unique<decimal[]>(size);
     for (size_t i = 0; i < size; ++i) {
         expected_data_ptr[i] = expected_data[i];
@@ -250,20 +250,16 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
      * The second channel should remain the same
      * The third channel should be shifted right
      */
-   decimal expected_data[27] = {
+   decimal expectedData[27] = {
         2, 1, 0,    3, 2, 1,    0, 3, 2,
         5, 4, 0,    6, 5, 4,    0, 6, 5,
         8, 7, 0,    9, 8, 7,    0, 9, 8
     };
-    auto expected_data_ptr = std::make_unique<decimal[]>(27);
-    for (size_t i = 0; i < 27; ++i) {
-        expected_data_ptr[i] = expected_data[i];
-    }
     Tensor expected = {
         3,
         3,
         3,
-        std::move(expected_data_ptr)
+        std::move(makeExpectedPtr(&expectedData[0], 27))
     };
     Tensor actual = multiChannelConvolve.ConvolveWithMask(multi_channel_image);
 
@@ -321,12 +317,11 @@ TEST_P(ConvolveParameterizedTestFixture, OutputMatchesExpected) {
     const auto& param = GetParam();
 
     // Generate expected data
-    auto expected_data_ptr = make_expected_ptr(param.expected_data, param.expected_size);
     Tensor expected = {
         param.width,
         param.height,
         param.channels,
-        std::move(expected_data_ptr)
+        std::move(makeExpectedPtr(param.expected_data, param.expected_size))
     };
 
     Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));
@@ -388,6 +383,114 @@ INSTANTIATE_TEST_SUITE_P(
 ////// Test Criterion ///////
 /////////////////////////////
 
+// Setup different gradients for criterion tests
+decimal noEdgeTensorData[25] = {
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+};
+Tensor noEdgeTensor = {
+    5,
+    5,
+    1,
+    std::move(makeExpectedPtr(&noEdgeTensorData[0], 25))
+};
+decimal verticalEdgeTensorData[25] = {
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    10, 10, 10, 10, 10,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+};
+decimal horizontalEdgeTensorData[25] = {
+    0, 0, 10, 0, 0,
+    0, 0, 10, 0, 0,
+    0, 0, 10, 0, 0,
+    0, 0, 10, 0, 0,
+    0, 0, 10, 0, 0
+};
+decimal pointEdgeTensorData[25] = {
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 10, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+};
+decimal diagonalEdgeTensorData[25] = {
+    10, 0, 0, 0, 0,
+    0, 10, 0, 0, 0,
+    0, 0, 10, 0, 0,
+    0, 0, 0, 10, 0,
+    0, 0, 0, 0, 10
+};
+decimal toManyEdgeTensorData[25] = {
+    10, 0, 0, 0, 10,
+    0, 10, 0, 10, 0,
+    0, 0, 10, 0, 0,
+    0, 10, 0, 10, 0,
+    10, 0, 0, 0, 10
+};
+decimal onVerticalEdgeTensorData[25] = {
+    10, 0, 0, 0, 0,
+    10, 0, 0, 0, 0,
+    10, 0, 0, 0, 0,
+    10, 0, 0, 0, 0,
+    10, 0, 0, 0, 0
+};
+decimal onHorizontalEdgeTensorData[25] = {
+    10, 10, 10, 10, 10,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+};
 
+// setup classes for criterion tests
+TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, 1.f, -1.f);
+
+// Helper struct for parameterized tests
+struct CriterionTestParams {
+    TestConvolutionEdgeDetectionAlgorithm* algorithm;
+    const char* algorithm_name;
+    const Image* image;
+    const char* image_name;
+    const decimal* tensor;
+    const int width;
+    const int height;
+    const int channels;
+    bool expected_data;
+};
+
+// Parameterized test fixture
+class CriterionEdgeCaseParameterizedTestFixture : public ::testing::TestWithParam<CriterionTestParams> {};
+
+TEST_P(CriterionEdgeCaseParameterizedTestFixture, RejectEdge) {
+    const auto& param = GetParam();
+
+    // Generate tensor from param data
+    Tensor expected = {
+        param.width,
+        param.height,
+        param.channels,
+        std::move(makeExpectedPtr(param.tensor, param.width * param.height * param.channels))
+    };
+
+    Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));
+
+    // Print out algorithm (mask) and image names on failure
+    ASSERT_TENSOR_EQ(expected, actual);
+}
+
+// Instantiate test suite
+INSTANTIATE_TEST_SUITE_P(
+    CriterionEdgeCaseTest,
+    CriterionEdgeCaseParameterizedTestFixture,
+    ::testing::Values(
+        // Identity mask tests tests 0 - 3
+        CriterionTestParams{&imageDataNoEdgeAllSpace, "NoEdge", &testImageNoEdge, "NoEdge", &noEdgeTensorData[0], 5, 5, 1, false},
+    )
+);
 
 } // namespace found

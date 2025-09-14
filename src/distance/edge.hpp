@@ -107,15 +107,15 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * combines results across channels
      *
      * @param index The index of the pixel to check should only be channel 0
-     * @param convolution The output of the convolution to check against
+     * @param tensor The output of the convolution to check against
      * @param image The original image to check against
      * 
-     * @note From using both the convolution and the original image we can use
+     * @note From using both the tensor and the original image we can use
      * more advanced techniques for noise reduction and edge detection
      * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      */
-    bool ApplyCriterion(int64_t index, const Tensor &convolution, const Image &image);
+    bool ApplyCriterion(int64_t index, const Tensor &tensor, const Image &image);
 
     /** 
      * Convolves the image with the mask
@@ -137,7 +137,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * https://sites.utexas.edu/near/files/2017/04/Position-Estimation-using-Image-Dervatives.pdf
      * 
      * @param index The index of the pixel to check 
-     * @param convolution The convolution output to check against
+     * @param tensor The convolution output to check against
      * @param image The original image to check against
      * 
      * @pre Assumes convolution and image have the same number of channels
@@ -148,7 +148,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * only. If the image has multiple channels, this function should be
      * called once for each channel and the results combined appropriately. 
      */
-    bool BoxBasedOutlierCriterion(int64_t index, const Tensor &convolution, const Image &image);
+    bool BoxBasedOutlierCriterion(int64_t index, const Tensor &tensor, const Image &image);
 
     /**
      * For multi channel images, combines the results of each channel's
