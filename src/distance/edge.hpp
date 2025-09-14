@@ -77,10 +77,11 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * @note Mask should outlive this class
      */
     ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
-     decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f) :
+     decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f,
+     decimal threshold = 1.f) : 
         boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
         eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
-        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio) {}
+        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio), threshold_(threshold) {}
 
     /// @brief Destroys the algorithm
     virtual ~ConvolutionEdgeDetectionAlgorithm() {}
@@ -172,6 +173,8 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     decimal edgeGradientRatio_;
     /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
     decimal spacePlanetGraytoneRatio_;
+    /// The threshold to use for detecting edges
+    decimal threshold_;
 };
 
 /**

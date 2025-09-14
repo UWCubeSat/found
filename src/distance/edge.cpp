@@ -207,7 +207,13 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
     std::vector<bool> channelIsEdge(image.channels, false);
     // Apply the box based outlier criterion to each channel
     for (int i = 0; i < image.channels; i++) {
-        channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, convolution, image);
+        // Only apply the criterion if the convolution is above the threshold
+        if(DECIMAL_ABS(convolution.tensor[index]) > threshold_) {
+            channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, convolution, image);
+        }
+        else {
+            channelIsEdge[i] = false;
+        }
     }
     return CombineChannelCriterion(channelIsEdge);
 }
@@ -265,12 +271,12 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         0 < col - xCoordBox && col - xCoordBox < convolution.width - 1 &&
         0 < col + xCoordBox && col + xCoordBox < convolution.width + 1) {
         // gradient at the two ends of the edge direction
-        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) * convolution.width +
-                                                     col + xCoordBox) * convolution.channels];
-        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) * convolution.width +
-                                                     col - xCoordBox) * convolution.channels];
-            if (DECIMAL_MIN(edgeGradient1, edgeGradient2) /
-                DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
+        decimal edgeGradient1 = convolution.tensor[(static_cast<int64_t>(row + yCoordBox) *
+                                convolution.width + col + xCoordBox) * convolution.channels];
+        decimal edgeGradient2 = convolution.tensor[(static_cast<int64_t>(row - yCoordBox) *
+                                convolution.width + col - xCoordBox) * convolution.channels];
+        if (DECIMAL_MIN(edgeGradient1, edgeGradient2) /
+            DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
     }
 
     // Step 3c: test graytone values with greatest distance (projection) to the edge
