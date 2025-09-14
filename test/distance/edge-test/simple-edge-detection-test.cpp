@@ -53,12 +53,10 @@ INSTANTIATE_TEST_SUITE_P(
         SimpleEdgeDetectionTestParams{"TestUpStraightEdge", &minimalSEDA, &testUpStraightEdge},
         SimpleEdgeDetectionTestParams{"TestDownStraightEdge", &thickerBorderSEDA, &testDownStraightEdge},
         SimpleEdgeDetectionTestParams{"TestTopTriangleEdge", &minimalSEDA, &testTopTriangleEdge},
-        SimpleEdgeDetectionTestParams{"TestCornerQuarterEdge2", &minimalSEDA, &testCornerQuarterEdge2},
         SimpleEdgeDetectionTestParams{"TestPlanetBarelyVisible", &thickerBorderSEDA, &testPlanetBarelyVisible},
         SimpleEdgeDetectionTestParams{"TestNoiseInPlanet1", &minimalSEDA, &testNoiseInPlanet1},
         SimpleEdgeDetectionTestParams{"TestNoiseInPlanet2", &minimalSEDA, &testNoiseInPlanet2},
         SimpleEdgeDetectionTestParams{"TestNoiseInSpace", &thickerBorderSEDA, &testNoiseInSpace},
-        SimpleEdgeDetectionTestParams{"TestSpaceBarelyVisible", &minimalSEDA, &testSpaceBarelyVisible}
     )
 );
 

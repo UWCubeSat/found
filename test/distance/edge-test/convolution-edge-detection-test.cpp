@@ -12,6 +12,10 @@
 #include "src/distance/edge.hpp"
 namespace found {
 
+///////////////////////////////
+////// Test Convolution ///////
+///////////////////////////////
+
 decimal identity_mask_data[9] = {
     0, 0, 0,
     0, 1, 0,
@@ -379,5 +383,11 @@ INSTANTIATE_TEST_SUITE_P(
         ConvolveTestParams{&verticalConvolve, "Vertical", &non_square_vertical_image, "NonSquareVertical", expected_vertical_non_square_vertical, 10, 2, 5, 1}
     )
 );
+
+/////////////////////////////
+////// Test Criterion ///////
+/////////////////////////////
+
+
 
 } // namespace found
