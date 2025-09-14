@@ -212,9 +212,7 @@ TestConvolutionEdgeDetectionAlgorithm multiChannelConvolve(std::move(multi_chann
 // Helper struct for parameterized tests
 struct ConvolveTestParams {
     TestConvolutionEdgeDetectionAlgorithm* algorithm;
-    const char* algorithm_name;
     const Image* image;
-    const char* image_name;
     decimal* expected_data;
     size_t expected_size;
     int width;
@@ -234,11 +232,11 @@ std::unique_ptr<decimal[]> makeExpectedPtr(const decimal* expected_data, size_t 
 ////// Test Channel Error Handling //////
 
 TEST(ConvolutionEdgeDetectionTest, TestMultiChannelMaskSingleChannelImage) {
-    EXPECT_THROW(multiChannelConvolve.ConvolveWithMask(three_by_three_image), std::invalid_argument);
+    ASSERT_THROW(multiChannelConvolve.ConvolveWithMask(three_by_three_image), std::invalid_argument);
 }
 
 TEST(ConvolutionEdgeDetectionTest, TestSingleChannelMaskMultiChannelImage) {
-    EXPECT_THROW(identityConvolve.ConvolveWithMask(multi_channel_image), std::invalid_argument);
+    ASSERT_THROW(identityConvolve.ConvolveWithMask(multi_channel_image), std::invalid_argument);
 }
 
 ////// Test Multi-Channel Convolution //////
@@ -336,46 +334,46 @@ INSTANTIATE_TEST_SUITE_P(
     ConvolveParameterizedTestFixture,
     ::testing::Values(
         // Identity mask tests tests 0 - 3
-        ConvolveTestParams{&identityConvolve, "Identity", &single_pixel_image, "SinglePixel", expected_identity_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&identityConvolve, "Identity", &three_by_three_image, "ThreeByThree", expected_identity_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&identityConvolve, "Identity", &non_square_horizontal_image, "NonSquareHorizontal", expected_identity_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&identityConvolve, "Identity", &non_square_vertical_image, "NonSquareVertical", expected_identity_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&identityConvolve, &single_pixel_image, expected_identity_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&identityConvolve, &three_by_three_image, expected_identity_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&identityConvolve, &non_square_horizontal_image, expected_identity_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&identityConvolve, &non_square_vertical_image, expected_identity_non_square_vertical, 10, 2, 5, 1},
 
         // Blur mask tests tests 4 - 7
-        ConvolveTestParams{&blurConvolve, "Blur", &single_pixel_image, "SinglePixel", expected_blur_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&blurConvolve, "Blur", &three_by_three_image, "ThreeByThree", expected_blur_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&blurConvolve, "Blur", &non_square_horizontal_image, "NonSquareHorizontal", expected_blur_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&blurConvolve, "Blur", &non_square_vertical_image, "NonSquareVertical", expected_blur_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&blurConvolve, &single_pixel_image, expected_blur_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&blurConvolve, &three_by_three_image, expected_blur_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&blurConvolve, &non_square_horizontal_image, expected_blur_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&blurConvolve, &non_square_vertical_image, expected_blur_non_square_vertical, 10, 2, 5, 1},
 
         // Negative mask tests tests 8 - 11
-        ConvolveTestParams{&negativeConvolve, "Negative", &single_pixel_image, "SinglePixel", expected_negative_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&negativeConvolve, "Negative", &three_by_three_image, "ThreeByThree", expected_negative_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&negativeConvolve, "Negative", &non_square_horizontal_image, "NonSquareHorizontal", expected_negative_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&negativeConvolve, "Negative", &non_square_vertical_image, "NonSquareVertical", expected_negative_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&negativeConvolve, &single_pixel_image, expected_negative_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&negativeConvolve, &three_by_three_image, expected_negative_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&negativeConvolve, &non_square_horizontal_image, expected_negative_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&negativeConvolve, &non_square_vertical_image, expected_negative_non_square_vertical, 10, 2, 5, 1},
 
         // Float mask tests tests 12 - 15
-        ConvolveTestParams{&floatConvolve, "Float", &single_pixel_image, "SinglePixel", expected_float_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&floatConvolve, "Float", &three_by_three_image, "ThreeByThree", expected_float_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&floatConvolve, "Float", &non_square_horizontal_image, "NonSquareHorizontal", expected_float_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&floatConvolve, "Float", &non_square_vertical_image, "NonSquareVertical", expected_float_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&floatConvolve, &single_pixel_image, expected_float_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&floatConvolve, &three_by_three_image, expected_float_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&floatConvolve, &non_square_horizontal_image, expected_float_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&floatConvolve, &non_square_vertical_image, expected_float_non_square_vertical, 10, 2, 5, 1},
 
         // Off-center mask tests tests 16 - 19
-        ConvolveTestParams{&offCenterConvolve, "OffCenter", &single_pixel_image, "SinglePixel", expected_off_center_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&offCenterConvolve, "OffCenter", &three_by_three_image, "ThreeByThree", expected_off_center_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&offCenterConvolve, "OffCenter", &non_square_horizontal_image, "NonSquareHorizontal", expected_off_center_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&offCenterConvolve, "OffCenter", &non_square_vertical_image, "NonSquareVertical", expected_off_center_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&offCenterConvolve, &single_pixel_image, expected_off_center_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&offCenterConvolve, &three_by_three_image, expected_off_center_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&offCenterConvolve, &non_square_horizontal_image, expected_off_center_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&offCenterConvolve, &non_square_vertical_image, expected_off_center_non_square_vertical, 10, 2, 5, 1},
 
         // Horizontal mask tests tests 20 - 23
-        ConvolveTestParams{&horizontalConvolve, "Horizontal", &single_pixel_image, "SinglePixel", expected_horizontal_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&horizontalConvolve, "Horizontal", &three_by_three_image, "ThreeByThree", expected_horizontal_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&horizontalConvolve, "Horizontal", &non_square_horizontal_image, "NonSquareHorizontal", expected_horizontal_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&horizontalConvolve, "Horizontal", &non_square_vertical_image, "NonSquareVertical", expected_horizontal_non_square_vertical, 10, 2, 5, 1},
+        ConvolveTestParams{&horizontalConvolve, &single_pixel_image, expected_horizontal_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&horizontalConvolve, &three_by_three_image, expected_horizontal_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&horizontalConvolve, &non_square_horizontal_image, expected_horizontal_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&horizontalConvolve, &non_square_vertical_image, expected_horizontal_non_square_vertical, 10, 2, 5, 1},
 
         // Vertical mask tests tests 24 - 27
-        ConvolveTestParams{&verticalConvolve, "Vertical", &single_pixel_image, "SinglePixel", expected_vertical_single_pixel, 1, 1, 1, 1},
-        ConvolveTestParams{&verticalConvolve, "Vertical", &three_by_three_image, "ThreeByThree", expected_vertical_three_by_three, 9, 3, 3, 1},
-        ConvolveTestParams{&verticalConvolve, "Vertical", &non_square_horizontal_image, "NonSquareHorizontal", expected_vertical_non_square_horizontal, 10, 5, 2, 1},
-        ConvolveTestParams{&verticalConvolve, "Vertical", &non_square_vertical_image, "NonSquareVertical", expected_vertical_non_square_vertical, 10, 2, 5, 1}
+        ConvolveTestParams{&verticalConvolve, &single_pixel_image, expected_vertical_single_pixel, 1, 1, 1, 1},
+        ConvolveTestParams{&verticalConvolve, &three_by_three_image, expected_vertical_three_by_three, 9, 3, 3, 1},
+        ConvolveTestParams{&verticalConvolve, &non_square_horizontal_image, expected_vertical_non_square_horizontal, 10, 5, 2, 1},
+        ConvolveTestParams{&verticalConvolve, &non_square_vertical_image, expected_vertical_non_square_vertical, 10, 2, 5, 1}
     )
 );
 
@@ -448,39 +446,83 @@ decimal onHorizontalEdgeTensorData[25] = {
 };
 
 // setup classes for criterion tests
-TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, 1.f, -1.f);
+TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, -1.f, 1.f);
+TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, -1.f, .5f);
 
 // Helper struct for parameterized tests
 struct CriterionTestParams {
     TestConvolutionEdgeDetectionAlgorithm* algorithm;
-    const char* algorithm_name;
     const Image* image;
-    const char* image_name;
     const decimal* tensor;
     const int width;
     const int height;
     const int channels;
-    bool expected_data;
+    const int index;
+    bool expected;
 };
 
-// Parameterized test fixture
+TEST(CriterionTest, TestAllChannelsMeetCriterion){
+    decimal multiChannelTensorData[3] = {1,1,1};
+    Tensor multiChannelTensor = {
+        1,
+        1,
+        3,
+        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+    };
+    // Image we pass in does not matter since box criterion will skip 
+    bool actual = fiveBoxCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
+
+    ASSERT_TRUE(actual);
+}
+
+TEST(CriterionTest, TestHalfChannelsMeetCriterion){
+    decimal multiChannelTensorData[3] = {1,1,0};
+    Tensor multiChannelTensor = {
+        1,
+        1,
+        3,
+        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+    };
+    // Image we pass in does not matter since box criterion will skip 
+    bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
+
+    bool expected = true;
+
+    ASSERT_TRUE(actual);
+}
+
+TEST(CriterionTest, TestNoChannelsMeetCriterion){
+    decimal multiChannelTensorData[3] = {0,0,0};
+    Tensor multiChannelTensor = {
+        1,
+        1,
+        3,
+        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+    };
+    // Image we pass in does not matter since box criterion will skip 
+    bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
+
+    ASSERT_FALSE(actual);
+}
+
+// Parameterized test fixture for edge cases
 class CriterionEdgeCaseParameterizedTestFixture : public ::testing::TestWithParam<CriterionTestParams> {};
 
 TEST_P(CriterionEdgeCaseParameterizedTestFixture, RejectEdge) {
     const auto& param = GetParam();
 
     // Generate tensor from param data
-    Tensor expected = {
+    Tensor paramTensor = {
         param.width,
         param.height,
         param.channels,
         std::move(makeExpectedPtr(param.tensor, param.width * param.height * param.channels))
     };
 
-    Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));
+    bool actual = param.algorithm->ApplyCriterion(param.index, paramTensor, *(param.image));
 
     // Print out algorithm (mask) and image names on failure
-    ASSERT_TENSOR_EQ(expected, actual);
+    ASSERT_EQ(param.expected, actual);
 }
 
 // Instantiate test suite
@@ -488,8 +530,25 @@ INSTANTIATE_TEST_SUITE_P(
     CriterionEdgeCaseTest,
     CriterionEdgeCaseParameterizedTestFixture,
     ::testing::Values(
-        // Identity mask tests tests 0 - 3
-        CriterionTestParams{&imageDataNoEdgeAllSpace, "NoEdge", &testImageNoEdge, "NoEdge", &noEdgeTensorData[0], 5, 5, 1, false},
+        // No Edge Tensor tests - should reject as there's no edge
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &noEdgeTensorData[0], 5, 5, 1, 12, false},
+        
+        // Vertical Edge Tensor tests - should detect the horizontal line in the middle
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &verticalEdgeTensorData[0], 5, 5, 1, 12, true},
+        
+        // Horizontal Edge Tensor tests - should detect the vertical line in the middle
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &horizontalEdgeTensorData[0], 5, 5, 1, 12, true},
+        
+        // Point Edge Tensor tests - should detect the single point in the middle
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &pointEdgeTensorData[0], 5, 5, 1, 12, true},
+        
+        // Diagonal Edge Tensor tests - should detect the diagonal line
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &diagonalEdgeTensorData[0], 5, 5, 1, 12, true},
+        
+        // Too Many Edge Tensor tests - should detect multiple edges
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, true}
+        
+        // The last two tensors (onVerticalEdgeTensorData and onHorizontalEdgeTensorData) are excluded as requested
     )
 );
 
