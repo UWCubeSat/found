@@ -4,6 +4,8 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "dev",
   "overrideCommand": false,
+  // Set the workspace folder inside the container
+  "workspaceFolder": "/workspace",
   // Set up git user name and email if provided as environment variables
   "postCreateCommand": "git config --global user.name \"${GIT_AUTHOR_NAME:-Your Name}\" && git config --global user.email \"${GIT_AUTHOR_EMAIL:-you@example.com}\" ",
   // Stop the container when the workspace is closed
