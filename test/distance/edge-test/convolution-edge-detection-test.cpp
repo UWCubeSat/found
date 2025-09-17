@@ -257,7 +257,7 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
         3,
         3,
         3,
-        std::move(makeExpectedPtr(&expectedData[0], 27))
+        makeExpectedPtr(&expectedData[0], 27)
     };
     Tensor actual = multiChannelConvolve.ConvolveWithMask(multi_channel_image);
 
@@ -319,7 +319,7 @@ TEST_P(ConvolveParameterizedTestFixture, OutputMatchesExpected) {
         param.width,
         param.height,
         param.channels,
-        std::move(makeExpectedPtr(param.expected_data, param.expected_size))
+        makeExpectedPtr(param.expected_data, param.expected_size)
     };
 
     Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));
@@ -393,7 +393,7 @@ Tensor noEdgeTensor = {
     5,
     5,
     1,
-    std::move(makeExpectedPtr(&noEdgeTensorData[0], 25))
+    makeExpectedPtr(&noEdgeTensorData[0], 25)
 };
 decimal verticalEdgeTensorData[25] = {
     0, 0, 0, 0, 0,
@@ -446,8 +446,8 @@ decimal onHorizontalEdgeTensorData[25] = {
 };
 
 // setup classes for criterion tests
-TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, -1.f, 1.f);
-TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, -1.f, .5f);
+TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, 0.f, 1.f);
+TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, 0.f, .5f);
 
 // Helper struct for parameterized tests
 struct CriterionTestParams {
@@ -467,7 +467,7 @@ TEST(CriterionTest, TestAllChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = fiveBoxCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -481,12 +481,10 @@ TEST(CriterionTest, TestHalfChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
-
-    bool expected = true;
 
     ASSERT_TRUE(actual);
 }
@@ -497,7 +495,7 @@ TEST(CriterionTest, TestNoChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -516,7 +514,7 @@ TEST_P(CriterionEdgeCaseParameterizedTestFixture, RejectEdge) {
         param.width,
         param.height,
         param.channels,
-        std::move(makeExpectedPtr(param.tensor, param.width * param.height * param.channels))
+        makeExpectedPtr(param.tensor, param.width * param.height * param.channels)
     };
 
     bool actual = param.algorithm->ApplyCriterion(param.index, paramTensor, *(param.image));
@@ -531,7 +529,7 @@ INSTANTIATE_TEST_SUITE_P(
     CriterionEdgeCaseParameterizedTestFixture,
     ::testing::Values(
         // No Edge Tensor tests - should reject as there's no edge
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &noEdgeTensorData[0], 5, 5, 1, 12, false},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &noEdgeTensorData[0], 5, 5, 1, 12, false}, / true
         
         // Vertical Edge Tensor tests - should detect the horizontal line in the middle
         CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &verticalEdgeTensorData[0], 5, 5, 1, 12, true},
@@ -546,7 +544,7 @@ INSTANTIATE_TEST_SUITE_P(
         CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &diagonalEdgeTensorData[0], 5, 5, 1, 12, true},
         
         // Too Many Edge Tensor tests - should detect multiple edges
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, true}
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, true} / false
         
         // The last two tensors (onVerticalEdgeTensorData and onHorizontalEdgeTensorData) are excluded as requested
     )
