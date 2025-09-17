@@ -261,7 +261,7 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
     int row = (index / tensor.channels) / tensor.width;
     int col = ((index / tensor.channels) % tensor.width);
-
+    
     // Step 3b: Test gradient ratio at the ends of the edge direction
     int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
     int yCoordBox = DECIMAL_CEIL(edgeDirection.y * radius);
