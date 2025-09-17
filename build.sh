@@ -20,7 +20,7 @@ run_in_container() {
 
     docker run --rm \
         --platform linux/amd64 \
-        -v "$(pwd)":/workspace \
+        --mount type=bind, source="$(pwd)", target=/workspace \
         -w /workspace \
         $IMAGE_NAME \
         bash -c "$BUILD_CMD" &> "$LOGFILE"
