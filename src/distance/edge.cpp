@@ -258,7 +258,7 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     if (DECIMAL_ZERO(lambda2) && DECIMAL_ZERO(inertiaTensor[0])) edgeDirection = Vec2{1, 0};
 
     // Step 3a: Setup constants
-    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y) / 2;
+    decimal radius = DECIMAL(boxBasedMaskSize_) / DECIMAL_MAX(edgeDirection.x, edgeDirection.y) / 2;
     int row = (index / tensor.channels) / tensor.width;
     int col = ((index / tensor.channels) % tensor.width);
 
@@ -293,7 +293,7 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
                                     * image.width + col + xCoordBoxOrtho) * image.channels]);
         decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho)
                                     * image.width + col - xCoordBoxOrtho) * image.channels]);
-        if (grayTone1 == grayTone2 && DECIMAL_MIN(grayTone1, grayTone2) /
+        if (grayTone1 == grayTone2 || DECIMAL_MIN(grayTone1, grayTone2) /
             DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
     }
 
