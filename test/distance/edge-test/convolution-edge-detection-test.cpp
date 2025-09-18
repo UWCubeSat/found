@@ -257,7 +257,7 @@ TEST(ConvolutionEdgeDetectionTest, TestMultiChannelConvolve) {
         3,
         3,
         3,
-        std::move(makeExpectedPtr(&expectedData[0], 27))
+        makeExpectedPtr(&expectedData[0], 27)
     };
     Tensor actual = multiChannelConvolve.ConvolveWithMask(multi_channel_image);
 
@@ -319,7 +319,7 @@ TEST_P(ConvolveParameterizedTestFixture, OutputMatchesExpected) {
         param.width,
         param.height,
         param.channels,
-        std::move(makeExpectedPtr(param.expected_data, param.expected_size))
+        makeExpectedPtr(param.expected_data, param.expected_size)
     };
 
     Tensor actual = param.algorithm->ConvolveWithMask(*(param.image));

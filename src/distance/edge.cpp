@@ -251,11 +251,11 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
     decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
     // Step 2a: check the ratio of the eigenvalues
-    if (lambda2 / lambda1 > eigenValueRatio_) return false;
+    if (DECIMAL_ZERO(lambda1) && DECIMAL_ZERO(lambda2) || lambda2 / lambda1 > eigenValueRatio_) return false;
     // Step 2b: find the eigenvector with the lowest eigenvalue
     Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
     // Step 2c: deal with perfect horizontal line case (vertical line case works out)
-    if (lambda2 == 0) edgeDirection = Vec2{1, 0};
+    if (DECIMAL_ZERO(lambda2) && DECIMAL_ZERO(inertiaTensor[0])) edgeDirection = Vec2{1, 0};
 
     // Step 3a: Setup constants
     decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
