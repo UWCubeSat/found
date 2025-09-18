@@ -389,12 +389,6 @@ decimal noEdgeTensorData[25] = {
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0
 };
-Tensor noEdgeTensor = {
-    5,
-    5,
-    1,
-    std::move(makeExpectedPtr(&noEdgeTensorData[0], 25))
-};
 decimal verticalEdgeTensorData[25] = {
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0,
@@ -467,7 +461,7 @@ TEST(CriterionTest, TestAllChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = fiveBoxCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -481,12 +475,10 @@ TEST(CriterionTest, TestHalfChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
-
-    bool expected = true;
 
     ASSERT_TRUE(actual);
 }
@@ -497,7 +489,7 @@ TEST(CriterionTest, TestNoChannelsMeetCriterion){
         1,
         1,
         3,
-        std::move(makeExpectedPtr(multiChannelTensorData, 3))
+        makeExpectedPtr(multiChannelTensorData, 3)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -516,7 +508,7 @@ TEST_P(CriterionEdgeCaseParameterizedTestFixture, RejectEdge) {
         param.width,
         param.height,
         param.channels,
-        std::move(makeExpectedPtr(param.tensor, param.width * param.height * param.channels))
+        makeExpectedPtr(param.tensor, param.width * param.height * param.channels)
     };
 
     bool actual = param.algorithm->ApplyCriterion(param.index, paramTensor, *(param.image));
