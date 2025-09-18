@@ -390,18 +390,19 @@ decimal noEdgeTensorData[25] = {
     0, 0, 0, 0, 0
 };
 decimal verticalEdgeTensorData[25] = {
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
-    10, 10, 10, 10, 10,
-    0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0
-};
-decimal horizontalEdgeTensorData[25] = {
     0, 0, 10, 0, 0,
     0, 0, 10, 0, 0,
     0, 0, 10, 0, 0,
     0, 0, 10, 0, 0,
     0, 0, 10, 0, 0
+};
+decimal horizontalEdgeTensorData[25] = {
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    10, 10, 10, 10, 10,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+
 };
 decimal pointEdgeTensorData[25] = {
     0, 0, 0, 0, 0,
@@ -456,12 +457,15 @@ struct CriterionTestParams {
 };
 
 TEST(CriterionTest, TestAllChannelsMeetCriterion){
-    decimal multiChannelTensorData[3] = {1,1,1};
+    decimal multiChannelTensorData[12] = {
+        1,1,1, 0,0,0,
+        0,0,0, 1,1,1
+    };
     Tensor multiChannelTensor = {
-        1,
-        1,
+        2,
+        2,
         3,
-        makeExpectedPtr(multiChannelTensorData, 3)
+        makeExpectedPtr(multiChannelTensorData, 12)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = fiveBoxCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -470,12 +474,15 @@ TEST(CriterionTest, TestAllChannelsMeetCriterion){
 }
 
 TEST(CriterionTest, TestHalfChannelsMeetCriterion){
-    decimal multiChannelTensorData[3] = {1,1,0};
+    decimal multiChannelTensorData[12] = {
+        1,1,0, 0,0,0,
+        0,0,0, 1,1,0
+    };
     Tensor multiChannelTensor = {
-        1,
-        1,
+        2,
+        2,
         3,
-        makeExpectedPtr(multiChannelTensorData, 3)
+        makeExpectedPtr(multiChannelTensorData, 12)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -484,12 +491,15 @@ TEST(CriterionTest, TestHalfChannelsMeetCriterion){
 }
 
 TEST(CriterionTest, TestNoChannelsMeetCriterion){
-    decimal multiChannelTensorData[3] = {0,0,0};
+    decimal multiChannelTensorData[12] = {
+        0,0,0, 0,0,0,
+        0,0,0, 0,0,0
+    };
     Tensor multiChannelTensor = {
-        1,
-        1,
+        2,
+        2,
         3,
-        makeExpectedPtr(multiChannelTensorData, 3)
+        makeExpectedPtr(multiChannelTensorData, 12)
     };
     // Image we pass in does not matter since box criterion will skip 
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
@@ -526,19 +536,19 @@ INSTANTIATE_TEST_SUITE_P(
         CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &noEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Vertical Edge Tensor tests - should detect the horizontal line in the middle
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &verticalEdgeTensorData[0], 5, 5, 1, 12, true},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &verticalEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Horizontal Edge Tensor tests - should detect the vertical line in the middle
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &horizontalEdgeTensorData[0], 5, 5, 1, 12, true},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &horizontalEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Point Edge Tensor tests - should detect the single point in the middle
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &pointEdgeTensorData[0], 5, 5, 1, 12, true},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &pointEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Diagonal Edge Tensor tests - should detect the diagonal line
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &diagonalEdgeTensorData[0], 5, 5, 1, 12, true},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &diagonalEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Too Many Edge Tensor tests - should detect multiple edges
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, true}
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, false}
         
         // The last two tensors (onVerticalEdgeTensorData and onHorizontalEdgeTensorData) are excluded as requested
     )

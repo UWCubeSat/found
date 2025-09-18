@@ -225,21 +225,21 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     // Only need to caluclate 3 values due to symmetry and evaluating a 2D-plane
     decimal inertiaTensor[3] = {0, 0, 0};
     for (int i = -boxCenter; i <= boxBasedMaskSize_ - boxCenter - 1; ++i) {
-        int row = (index / tensor.channels) / tensor.width - i;
+        int row = (index / tensor.channels) / tensor.width + i;
         // "valid" padding (ignores pixels outside the image)
         if (row < 0 || row > tensor.height - 1) {
             continue;
         }
         for (int j = -boxCenter; j <= boxBasedMaskSize_ - boxCenter - 1; ++j) {
-            int col = ((index / tensor.channels) % tensor.width) - j;
+            int col = ((index / tensor.channels) % tensor.width) + j;
             // "valid" padding (ignores pixels outside the image)
             if (col < 0 || col > tensor.width - 1) {
                 continue;
             }
             inertiaTensor[0] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
-                                                    tensor.channels] * (j * j);
-            inertiaTensor[1] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
                                                     tensor.channels] * (i * i);
+            inertiaTensor[1] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
+                                                    tensor.channels] * (j * j);
             inertiaTensor[2] -= tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
                                                     tensor.channels] * (i * j);
         }
@@ -251,14 +251,14 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
     decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
     // Step 2a: check the ratio of the eigenvalues
-    if (DECIMAL_ZERO(lambda1) && DECIMAL_ZERO(lambda2) || lambda2 / lambda1 > eigenValueRatio_) return false;
+    if ((DECIMAL_ZERO(lambda1) && DECIMAL_ZERO(lambda2)) || lambda2 / lambda1 > eigenValueRatio_) return false;
     // Step 2b: find the eigenvector with the lowest eigenvalue
     Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
     // Step 2c: deal with perfect horizontal line case (vertical line case works out)
     if (DECIMAL_ZERO(lambda2) && DECIMAL_ZERO(inertiaTensor[0])) edgeDirection = Vec2{1, 0};
 
     // Step 3a: Setup constants
-    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y);
+    decimal radius = boxBasedMaskSize_ / DECIMAL_MAX(edgeDirection.x, edgeDirection.y) / 2;
     int row = (index / tensor.channels) / tensor.width;
     int col = ((index / tensor.channels) % tensor.width);
 

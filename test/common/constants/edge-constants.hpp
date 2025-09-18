@@ -196,8 +196,6 @@ inline Image imageNoiseInSpace = {5, 5, 1, imageDataNoiseInSpace};
 inline Points expectedNoiseInSpace = {{0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}};
 inline EdgeTestData testNoiseInSpace = {&imageNoiseInSpace, &expectedNoiseInSpace};
 
-
-
 }
 
 #endif  // TEST_COMMON_CONSTANTS_EDGE_CONSTANTS_HPP_
