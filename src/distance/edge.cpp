@@ -289,12 +289,12 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         0 < col - xCoordBoxOrtho && col - xCoordBoxOrtho < tensor.width - 1 &&
         0 < col + xCoordBoxOrtho && col + xCoordBoxOrtho < tensor.width + 1) {
         // graytone farthest from the edge hopefully one is plannet and one space
-        decimal grayTone1 = image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) * image.width +
-                                         col + xCoordBoxOrtho) * image.channels];
-        decimal grayTone2 = image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) * image.width +
-                                         col - xCoordBoxOrtho) * image.channels];
-            if (DECIMAL_MIN(grayTone1, grayTone2) /
-                DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
+        decimal grayTone1 = static_cast<float>(image.image[(static_cast<int64_t>(row + yCoordBoxOrtho)
+                                            * image.width + col + xCoordBoxOrtho) * image.channels]);
+        decimal grayTone2 = static_cast<float>(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho)
+                                            * image.width + col - xCoordBoxOrtho) * image.channels]);
+        if (grayTone1 == grayTone2 && DECIMAL_MIN(grayTone1, grayTone2) /
+            DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
     }
 
     // If no criteria fail, return true
