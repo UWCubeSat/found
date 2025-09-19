@@ -207,7 +207,6 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
     std::vector<bool> channelIsEdge(image.channels, false);
     // Apply the box based outlier criterion to each channel
     for (int i = 0; i < image.channels; i++) {
-        // Only apply the criterion if the tensor is above the threshold
         if (DECIMAL_ABS(tensor.tensor[index]) > threshold_) {
             channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, tensor, image);
         } else {
@@ -250,51 +249,63 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
                                     4*DECIMAL_POW(inertiaTensor[2], 2)));
     decimal lambda1 = (inertiaTensor[0] + inertiaTensor[1] + discrim) / 2;
     decimal lambda2 = (inertiaTensor[0] + inertiaTensor[1] - discrim) / 2;
-    // Step 2a: check the ratio of the eigenvalues
-    if ((DECIMAL_ZERO(lambda1) && DECIMAL_ZERO(lambda2)) || lambda2 / lambda1 > eigenValueRatio_) return false;
+    if (DECIMAL_ZERO(lambda1)) lambda1 = 0;
+    if (DECIMAL_ZERO(lambda2)) lambda2 = 0;
+
+    // Step 2a: check the ratio of the eigenvalues also reject if both are zero
+    if ((lambda1 == 0 && lambda2 == 0) || lambda2 / lambda1 > eigenValueRatio_) return false;
+
     // Step 2b: find the eigenvector with the lowest eigenvalue
-    Vec2 edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
-    // Step 2c: deal with perfect horizontal line case (vertical line case works out)
-    if (DECIMAL_ZERO(lambda2) && DECIMAL_ZERO(inertiaTensor[0])) edgeDirection = Vec2{1, 0};
+    Vec2 edgeDirection;
+    if (DECIMAL_ZERO(inertiaTensor[2])) {
+        if (inertiaTensor[0] > inertiaTensor[1]) {
+            edgeDirection = Vec2{0, 1};
+        } else {
+            edgeDirection = Vec2{1, 0};
+        }
+    } else {
+        edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
+    }
 
     // Step 3a: Setup constants
-    decimal radius = DECIMAL(boxBasedMaskSize_) / DECIMAL_MAX(edgeDirection.x, edgeDirection.y) / 2;
+    decimal radius = DECIMAL(boxBasedMaskSize_ - 1) / 2 /
+                     std::max(std::abs(edgeDirection.x), std::abs(edgeDirection.y));
     int row = (index / tensor.channels) / tensor.width;
     int col = ((index / tensor.channels) % tensor.width);
 
     // Step 3b: Test gradient ratio at the ends of the edge direction
     int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
     int yCoordBox = DECIMAL_CEIL(edgeDirection.y * radius);
-    // pixels to check fall within the image
-    if (0 < row - yCoordBox && row - yCoordBox < tensor.height - 1 &&
-        0 < row + yCoordBox && row + yCoordBox < tensor.height - 1 &&
-        0 < col - xCoordBox && col - xCoordBox < tensor.width - 1 &&
-        0 < col + xCoordBox && col + xCoordBox < tensor.width + 1) {
+    if (0 <= row - yCoordBox && row - yCoordBox < tensor.height &&
+        0 <= row + yCoordBox && row + yCoordBox < tensor.height &&
+        0 <= col - xCoordBox && col - xCoordBox < tensor.width &&
+        0 <= col + xCoordBox && col + xCoordBox < tensor.width) {
         // gradient at the two ends of the edge direction
         decimal edgeGradient1 = tensor.tensor[(static_cast<int64_t>(row + yCoordBox) *
                                 tensor.width + col + xCoordBox) * tensor.channels];
         decimal edgeGradient2 = tensor.tensor[(static_cast<int64_t>(row - yCoordBox) *
                                 tensor.width + col - xCoordBox) * tensor.channels];
-        if (DECIMAL_MIN(edgeGradient1, edgeGradient2) /
-            DECIMAL_MAX(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
+
+        if (std::min(edgeGradient1, edgeGradient2) /
+            std::max(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
     }
 
     // Step 3c: test graytone values with greatest distance (projection) to the edge
     Vec2 orthogonalDirection = edgeDirection.Orthogonal();
     int xCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.x * radius);
     int yCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.y * radius);
-    // pixels to check fall within the image
-    if (0 < row - yCoordBoxOrtho && row - yCoordBoxOrtho < tensor.height - 1 &&
-        0 < row + yCoordBoxOrtho && row + yCoordBoxOrtho < tensor.height - 1 &&
-        0 < col - xCoordBoxOrtho && col - xCoordBoxOrtho < tensor.width - 1 &&
-        0 < col + xCoordBoxOrtho && col + xCoordBoxOrtho < tensor.width + 1) {
-        // graytone farthest from the edge hopefully one is plannet and one space
-        decimal grayTone1 = DECIMAL(image.image[(static_cast<int64_t>(row + yCoordBoxOrtho)
-                                    * image.width + col + xCoordBoxOrtho) * image.channels]);
-        decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho)
-                                    * image.width + col - xCoordBoxOrtho) * image.channels]);
-        if (grayTone1 == grayTone2 || DECIMAL_MIN(grayTone1, grayTone2) /
-            DECIMAL_MAX(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
+    if (0 <= row - yCoordBoxOrtho && row - yCoordBoxOrtho < tensor.height &&
+        0 <= row + yCoordBoxOrtho && row + yCoordBoxOrtho < tensor.height &&
+        0 <= col - xCoordBoxOrtho && col - xCoordBoxOrtho < tensor.width &&
+        0 <= col + xCoordBoxOrtho && col + xCoordBoxOrtho < tensor.width) {
+        // graytone farthest from the edge hopefully one is planet and one is space
+        decimal grayTone1 = DECIMAL(image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) *
+                            image.width + col + xCoordBoxOrtho) * image.channels]);
+        decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) *
+                            image.width + col - xCoordBoxOrtho) * image.channels]);
+
+        if (grayTone1 == grayTone2 || std::min(grayTone1, grayTone2) /
+            std::max(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
     }
 
     // If no criteria fail, return true

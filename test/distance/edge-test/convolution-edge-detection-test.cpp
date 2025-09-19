@@ -428,21 +428,21 @@ decimal toManyEdgeTensorData[25] = {
 decimal onVerticalEdgeTensorData[25] = {
     10, 0, 0, 0, 0,
     10, 0, 0, 0, 0,
-    10, 0, 0, 0, 0,
+    10, 0, 10, 0, 0,
     10, 0, 0, 0, 0,
     10, 0, 0, 0, 0
 };
 decimal onHorizontalEdgeTensorData[25] = {
     10, 10, 10, 10, 10,
     0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0,
+    0, 0, 10, 0, 0,
     0, 0, 0, 0, 0,
     0, 0, 0, 0, 0
 };
 
 // setup classes for criterion tests
-TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, -1.f, 1.f);
-TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, -1.f, .5f);
+TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, -1.f, 1.f, .5f);
+TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, 0.f, .5f);
 
 // Helper struct for parameterized tests
 struct CriterionTestParams {
@@ -548,9 +548,15 @@ INSTANTIATE_TEST_SUITE_P(
         CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &diagonalEdgeTensorData[0], 5, 5, 1, 12, false},
         
         // Too Many Edge Tensor tests - should detect multiple edges
-        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, false}
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &toManyEdgeTensorData[0], 5, 5, 1, 12, false},
         
-        // The last two tensors (onVerticalEdgeTensorData and onHorizontalEdgeTensorData) are excluded as requested
+        // On a star vertical and horizontal edge on the side
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &onVerticalEdgeTensorData[0], 5, 5, 1, 12, false},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &onHorizontalEdgeTensorData[0], 5, 5, 1, 12, false},
+
+        // On a side with star noise
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &onVerticalEdgeTensorData[0], 5, 5, 1, 10, true},
+        CriterionTestParams{&fiveBoxCriterion, &imageNoEdgeAllSpace, &onHorizontalEdgeTensorData[0], 5, 5, 1, 2, true}
     )
 );
 
