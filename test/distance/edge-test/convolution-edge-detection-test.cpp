@@ -189,10 +189,11 @@ class TestConvolutionEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlg
                                               decimal channelCriterionRatio = 1.f, 
                                               decimal eigenValueRatio = .3f, 
                                               decimal edgeGradientRatio = .6f, 
-                                              decimal spacePlanetGraytoneRatio = .3f) :
+                                              decimal spacePlanetGraytoneRatio = .3f,
+                                              decimal spacePlanetGradientThreshold = .3f) :
             ConvolutionEdgeDetectionAlgorithm(boxBasedMaskSize, std::move(mask), channelCriterionRatio, 
                                               eigenValueRatio, edgeGradientRatio, spacePlanetGraytoneRatio, 
-                                              threshold) {}
+                                              spacePlanetGradientThreshold, threshold) {}
         //expose the ConvolveWithMask method
         using ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask;
         // expose the ApplyCriterion method
@@ -441,7 +442,7 @@ decimal onHorizontalEdgeTensorData[25] = {
 };
 
 // setup classes for criterion tests
-TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, -1.f, 1.f, .5f);
+TestConvolutionEdgeDetectionAlgorithm fiveBoxCriterion(std::move(identity_mask), 5, 0.f, 1.f, .5f);
 TestConvolutionEdgeDetectionAlgorithm multiChannelCriterion(std::move(identity_mask), 5, 0.f, .5f);
 
 // Helper struct for parameterized tests
@@ -505,6 +506,26 @@ TEST(CriterionTest, TestNoChannelsMeetCriterion){
     bool actual = multiChannelCriterion.ApplyCriterion(0, multiChannelTensor, imageNoEdgeAllSpace);
 
     ASSERT_FALSE(actual);
+}
+
+TEST(CriterionTest, TestNegativeEdgeTensor) {
+    decimal negativeVerticalEdgeTensorData[25] = {
+        0, 0, -10, 0, 0,
+        0, 0, -10, 0, 0,
+        0, 0, -10, 0, 0,    
+        0, 0, -10, 0, 0,
+        0, 0, -10, 0, 0
+    };
+    Tensor negativeVerticalEdgeTensor = {
+        5,
+        5,
+        1,
+        makeExpectedPtr(negativeVerticalEdgeTensorData, 25)
+    };
+
+    bool actual = fiveBoxCriterion.ApplyCriterion(12, negativeVerticalEdgeTensor, imageLeftStraightEdge);
+
+    ASSERT_TRUE(actual);
 }
 
 // Parameterized test fixture for edge cases

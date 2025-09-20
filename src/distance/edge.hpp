@@ -78,10 +78,11 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
      decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f,
-     decimal threshold = 1.f) :
+     decimal spacePlanetGradientThreshold = .3f, decimal threshold = 1.f) :
         boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
         eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
-        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio), threshold_(threshold) {}
+        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio),
+        spacePlanetGradientThreshold_(spacePlanetGradientThreshold),threshold_(threshold) {}
 
     /// @brief Destroys the algorithm
     virtual ~ConvolutionEdgeDetectionAlgorithm() {}
@@ -140,7 +141,8 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * @param tensor The convolution output to check against
      * @param image The original image to check against
      * 
-     * @pre Assumes convolution and image have the same number of channels
+     * @pre Assumes convolution and image have the same number width, height, and number of channels. 
+     * Assumes index is not out of bounds for the tensor and image.
      * 
      * @return true if the pixel meets the criterion (is an edge), false otherwise (noise)
      * 
@@ -149,6 +151,18 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * called once for each channel and the results combined appropriately. 
      */
     bool BoxBasedOutlierCriterion(int64_t index, const Tensor &tensor, const Image &image);
+
+    /**
+     * Finds the edge direction within a box centered around the pixel at index
+     * 
+     * @param index The index of the pixel to center the box on
+     * @param tensor The data to compute the edge direction from
+     * 
+     * @return the unit vector representing the edge direction. The negative of this 
+     * output is also a valid edge direction. If there is no direction or the direction
+     * is not strong enough (lambda_min / lambda_max > eigenValueRatio), returns the zero vector
+     */
+    Vec2 FindEdgeDirection(int64_t index, const Tensor &tensor);
 
     /**
      * For multi channel images, combines the results of each channel's
@@ -161,20 +175,45 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
 
+    /**
+     * Sorts points into polar clockwise order around a center point
+     * Credit to DigitalLIgnote on Stack Overflow: https://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
+     * 
+     * @param a The points to be sorted
+     * 
+     * @pre points is not empty
+     * 
+     * @post points are sorted in polar clockwise order
+     */
+    void PolarSort(Points &points, const Vec2 &center);
+
     /// The size of the box to use for box based outlier identification edge should appear straight in this box
     int boxBasedMaskSize_;
     /// The mask to convolve with
     Mask mask_;
-    /// ratio of channels that must meet the criterion to consider the pixel an edge
+    /// ratio of channels that must meet the criterion to consider the pixel an edge.
     decimal channelCriterionRatio_;
-    /// The ratio of the eigenvalues must be lower than this value indicating a direction for the edge
+    /// The ratio of the eigenvalues must be lower than this value to indicate a direction for the edge.
     decimal eigenValueRatio_;
-    /// The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
+    /** 
+     * The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
+     * as they both supposedly belong to an edge and should share similar gradient values.
+     */ 
     decimal edgeGradientRatio_;
-    /// The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value
+    /** 
+     * The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value indicating
+     * a large difference in graytone values between space and the planet. 
+     */ 
     decimal spacePlanetGraytoneRatio_;
-    /// The threshold to use for detecting edges
+    /**
+     * The gradient of the supposed space and planet pixels must be lower than this threshold. They can not also be a possible
+     * edge candidate.
+     */
+    decimal spacePlanetGradientThreshold_;
+    /// The threshold the gradient must exceed to be considered as a possible edge
     decimal threshold_;
+    /// The index of a planet pixel
+    int64_t planetIndex_;
 };
 
 /**

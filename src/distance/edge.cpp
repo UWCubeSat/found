@@ -153,10 +153,13 @@ Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
     Points result;
     for (int64_t k = 0; k < image_size; k += image.channels) {
         if (ApplyCriterion(k, tensor, image)) {
-            result.push_back({DECIMAL(k / image.channels % image.width), DECIMAL(k / image.channels / image.width)});
+            result.push_back({DECIMAL(k / image.channels % image.width),
+                              DECIMAL(k / image.channels / image.width)});
         }
     }
-    // TODO: Step 3: Post-process the edge points to remove noise and ensure polar ordering
+    // Step 3: ensure polar ordering
+    PolarSort(result, Vec2{DECIMAL(planetIndex_ / image.channels % image.width),
+                           DECIMAL(planetIndex_ / image.channels / image.width)});
     // Step 4: Return the points
     return result;
 }
@@ -219,10 +222,77 @@ bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tens
 bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
                                                                  const Tensor &tensor,
                                                                  const Image &image) {
-    // Step 1: find the inertia tensor of the box around index
-    int boxCenter = boxBasedMaskSize_ / 2;
+    // Step 1: Find the edge direction using the inertia tensor of the box
+    Vec2 edgeDirection = FindEdgeDirection(index, tensor);
+    if (edgeDirection.MagnitudeSq() == 0) return false;
+
+    // Step 2a: Setup constants
+    decimal radius = DECIMAL(boxBasedMaskSize_ - 1) / 2 /
+                     std::max(std::abs(edgeDirection.x), std::abs(edgeDirection.y));
+    int row = (index / tensor.channels) / tensor.width;
+    int col = ((index / tensor.channels) % tensor.width);
+
+    // Step 2b: Test gradient ratio at the ends of the edge direction
+    int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
+    int yCoordBox = DECIMAL_CEIL(edgeDirection.y * radius);
+    if (0 <= row - yCoordBox && row - yCoordBox < tensor.height &&
+        0 <= row + yCoordBox && row + yCoordBox < tensor.height &&
+        0 <= col - xCoordBox && col - xCoordBox < tensor.width &&
+        0 <= col + xCoordBox && col + xCoordBox < tensor.width) {
+        // gradient at the two ends of the edge direction
+        decimal edgeGradient1 = std::abs(tensor.tensor[(static_cast<int64_t>(row + yCoordBox) *
+                                tensor.width + col + xCoordBox) * tensor.channels]);
+        decimal edgeGradient2 = std::abs(tensor.tensor[(static_cast<int64_t>(row - yCoordBox) *
+                                tensor.width + col - xCoordBox) * tensor.channels]);
+
+        if (std::min(edgeGradient1, edgeGradient2) /
+            std::max(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
+    }
+
+    // Step 3c: test graytone and gradient values with greatest distance (projection) to the edge
+    Vec2 orthogonalDirection = edgeDirection.Orthogonal();
+    int xCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.x * radius);
+    int yCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.y * radius);
+    if (0 <= row - yCoordBoxOrtho && row - yCoordBoxOrtho < tensor.height &&
+        0 <= row + yCoordBoxOrtho && row + yCoordBoxOrtho < tensor.height &&
+        0 <= col - xCoordBoxOrtho && col - xCoordBoxOrtho < tensor.width &&
+        0 <= col + xCoordBoxOrtho && col + xCoordBoxOrtho < tensor.width) {
+        // graytone farthest from the edge hopefully one is planet and one is space
+        decimal grayTone1 = DECIMAL(image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) *
+                            image.width + col + xCoordBoxOrtho) * image.channels]);
+        decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) *
+                            image.width + col - xCoordBoxOrtho) * image.channels]);
+        decimal edgeGradient1 = std::abs(tensor.tensor[(static_cast<int64_t>(row + yCoordBoxOrtho) *
+                                tensor.width + col + xCoordBoxOrtho) * tensor.channels]);
+        decimal edgeGradient2 = std::abs(tensor.tensor[(static_cast<int64_t>(row - yCoordBoxOrtho) *
+                                tensor.width + col - xCoordBoxOrtho) * tensor.channels]);
+
+        if (grayTone1 == grayTone2 ||
+            std::min(grayTone1, grayTone2) / std::max(grayTone1, grayTone2) > spacePlanetGraytoneRatio_ ||
+            edgeGradient1 > spacePlanetGradientThreshold_ ||
+            edgeGradient2 > spacePlanetGradientThreshold_) {
+            return false;
+        } else {
+            // Save the index of a planet pixel for future use
+            if (grayTone1 > grayTone2) {
+                planetIndex_ = (static_cast<int64_t>(row + yCoordBoxOrtho) * image.width + col + xCoordBoxOrtho) *
+                               image.channels;
+            } else {
+                planetIndex_ = (static_cast<int64_t>(row - yCoordBoxOrtho) * image.width + col - xCoordBoxOrtho) *
+                               image.channels;
+            }
+        }
+    }
+
+    // If no criteria fail, return true
+    return true;
+}
+
+Vec2 ConvolutionEdgeDetectionAlgorithm::FindEdgeDirection(int64_t index, const Tensor &tensor) {
     // Only need to caluclate 3 values due to symmetry and evaluating a 2D-plane
     decimal inertiaTensor[3] = {0, 0, 0};
+    int boxCenter = boxBasedMaskSize_ / 2;
+    // Step 1: find the inertia tensor of the box around index
     for (int i = -boxCenter; i <= boxBasedMaskSize_ - boxCenter - 1; ++i) {
         int row = (index / tensor.channels) / tensor.width + i;
         // "valid" padding (ignores pixels outside the image)
@@ -252,64 +322,17 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     if (DECIMAL_ZERO(lambda1)) lambda1 = 0;
     if (DECIMAL_ZERO(lambda2)) lambda2 = 0;
 
-    // Step 2a: check the ratio of the eigenvalues also reject if both are zero
-    if ((lambda1 == 0 && lambda2 == 0) || lambda2 / lambda1 > eigenValueRatio_) return false;
-
-    // Step 2b: find the eigenvector with the lowest eigenvalue
-    Vec2 edgeDirection;
-    if (DECIMAL_ZERO(inertiaTensor[2])) {
-        if (inertiaTensor[0] > inertiaTensor[1]) {
-            edgeDirection = Vec2{0, 1};
+    if ((lambda1 == 0 && lambda2 == 0) || lambda2 / lambda1 > eigenValueRatio_) {
+        return Vec2{0,0};
+    } else if (DECIMAL_ZERO(inertiaTensor[2])) {
+        if (std::abs(inertiaTensor[0]) > std::abs(inertiaTensor[1])) {
+            return Vec2{0, 1};
         } else {
-            edgeDirection = Vec2{1, 0};
+            return Vec2{1, 0};
         }
     } else {
-        edgeDirection = Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
+        return Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
     }
-
-    // Step 3a: Setup constants
-    decimal radius = DECIMAL(boxBasedMaskSize_ - 1) / 2 /
-                     std::max(std::abs(edgeDirection.x), std::abs(edgeDirection.y));
-    int row = (index / tensor.channels) / tensor.width;
-    int col = ((index / tensor.channels) % tensor.width);
-
-    // Step 3b: Test gradient ratio at the ends of the edge direction
-    int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
-    int yCoordBox = DECIMAL_CEIL(edgeDirection.y * radius);
-    if (0 <= row - yCoordBox && row - yCoordBox < tensor.height &&
-        0 <= row + yCoordBox && row + yCoordBox < tensor.height &&
-        0 <= col - xCoordBox && col - xCoordBox < tensor.width &&
-        0 <= col + xCoordBox && col + xCoordBox < tensor.width) {
-        // gradient at the two ends of the edge direction
-        decimal edgeGradient1 = tensor.tensor[(static_cast<int64_t>(row + yCoordBox) *
-                                tensor.width + col + xCoordBox) * tensor.channels];
-        decimal edgeGradient2 = tensor.tensor[(static_cast<int64_t>(row - yCoordBox) *
-                                tensor.width + col - xCoordBox) * tensor.channels];
-
-        if (std::min(edgeGradient1, edgeGradient2) /
-            std::max(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
-    }
-
-    // Step 3c: test graytone values with greatest distance (projection) to the edge
-    Vec2 orthogonalDirection = edgeDirection.Orthogonal();
-    int xCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.x * radius);
-    int yCoordBoxOrtho = DECIMAL_CEIL(orthogonalDirection.y * radius);
-    if (0 <= row - yCoordBoxOrtho && row - yCoordBoxOrtho < tensor.height &&
-        0 <= row + yCoordBoxOrtho && row + yCoordBoxOrtho < tensor.height &&
-        0 <= col - xCoordBoxOrtho && col - xCoordBoxOrtho < tensor.width &&
-        0 <= col + xCoordBoxOrtho && col + xCoordBoxOrtho < tensor.width) {
-        // graytone farthest from the edge hopefully one is planet and one is space
-        decimal grayTone1 = DECIMAL(image.image[(static_cast<int64_t>(row + yCoordBoxOrtho) *
-                            image.width + col + xCoordBoxOrtho) * image.channels]);
-        decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) *
-                            image.width + col - xCoordBoxOrtho) * image.channels]);
-
-        if (grayTone1 == grayTone2 || std::min(grayTone1, grayTone2) /
-            std::max(grayTone1, grayTone2) > spacePlanetGraytoneRatio_) return false;
-    }
-
-    // If no criteria fail, return true
-    return true;
 }
 
 bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vector<bool> &channelIsEdge) {
@@ -320,6 +343,39 @@ bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vecto
     }
     // Step 2: Determine if the pixel is an edge based on the ratio
     return edgeCount >= channelCriterionRatio_ * channelIsEdge.size();
+}
+
+void ConvolutionEdgeDetectionAlgorithm::PolarSort(Points &points, const Vec2 &center) {
+    std::sort(points.begin(), points.end(), [&center](const Vec2 &a, const Vec2 &b) {
+        // Computes the quadrant for a and b (0-3):
+        //     ^
+        //   1 | 0
+        //  ---+-->
+        //   2 | 3
+
+        const int dax = ((a.x - center.x) > 0) ? 1 : 0;
+        const int day = ((a.y - center.y) > 0) ? 1 : 0;
+        const int qa = (1 - dax) + (1 - day) + ((dax & (1 - day)) << 1);
+
+        /* The previous computes the following:
+
+           const int qa =
+           (  (a.x() > center.x())
+            ? ((a.y() > center.y())
+                ? 0 : 3)
+            : ((a.y() > center.y())
+                ? 1 : 2)); */
+
+        const int dbx = ((b.x - center.x) > 0) ? 1 : 0;
+        const int dby = ((b.y - center.y) > 0) ? 1 : 0;
+        const int qb = (1 - dbx) + (1 - dby) + ((dbx & (1 - dby)) << 1);
+
+        if (qa == qb) {
+            return (b.x - center.x) * (a.y - center.y) < (b.y - center.y) * (a.x - center.x);
+        } else {
+            return qa < qb;
+        }
+    });
 }
 
 ////// Connected Components Algorithm //////
