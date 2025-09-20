@@ -175,18 +175,6 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
 
-    /**
-     * Sorts points into polar clockwise order around a center point
-     * Credit to DigitalLIgnote on Stack Overflow: https://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
-     * 
-     * @param a The points to be sorted
-     * 
-     * @pre points is not empty
-     * 
-     * @post points are sorted in polar clockwise order
-     */
-    void PolarSort(Points &points, const Vec2 &center);
-
     /// The size of the box to use for box based outlier identification edge should appear straight in this box
     int boxBasedMaskSize_;
     /// The mask to convolve with
@@ -244,6 +232,21 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  private:
     // useful fields specific to this algorithm and helper methods
 };
+
+/**
+ * Sorts points into polar clockwise order around a center point
+ * Credit to DigitalLIgnote on Stack Overflow: https://stackoverflow.com/questions/6989100/sort-points-in-clockwise-order
+ * 
+ * @param Points The points to be sorted
+ * @param center The center point to sort around
+ * 
+ * @pre points is not empty
+ * 
+ * @post points are sorted in polar clockwise order
+ * 
+ * @note modifies the input points. Points with the same angle will be left in their original order
+ */
+void PolarSort(Points &points, const Vec2 &center);
 
 /**
  * Computes the groups of components within the image

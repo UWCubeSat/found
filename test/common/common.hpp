@@ -6,6 +6,8 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
+#include <algorithm>
 
 #include "src/common/decimal.hpp"
 #include "src/common/style.hpp"
@@ -112,6 +114,15 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 #define ASSERT_RANGE(num, lo, hi) \
     ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
     ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
+
+#define ASSERT_POINTS_POLAR_EQ(val1, val2) \
+    ASSERT_EQ(val1.size(), val2.size()); \
+    std::vector<Vec2> doubled(val1.begin(), val1.end()); \
+    doubled.insert(doubled.end(), val1.begin(), val1.end()); \
+    ASSERT_TRUE(std::search(doubled.begin(), doubled.end(), val2.begin(), val2.end(), \
+    [](const Vec2 &v1, const Vec2 &v2) { \
+        return vectorEqual(v1, v2); \
+    }) != doubled.end());
 
 ///// Definition of Assets /////
 

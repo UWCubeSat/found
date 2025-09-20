@@ -35,6 +35,7 @@ class SimpleEdgeDetectionParameterizedTestFixture : public ::testing::TestWithPa
 TEST_P(SimpleEdgeDetectionParameterizedTestFixture, OutputMatchesExpected) {
     const auto& param = GetParam();
     Points actual = param.algorithm->Run(*param.testData->image);
+    
     std::vector<testing::Matcher<Vec2>> matchers;
     std::transform(param.testData->expectedPoints->begin(), param.testData->expectedPoints->end(), std::back_inserter(matchers),
         [](const Vec2& val) { return Vec2Equal(val); });

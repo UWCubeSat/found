@@ -325,11 +325,7 @@ Vec2 ConvolutionEdgeDetectionAlgorithm::FindEdgeDirection(int64_t index, const T
     if ((lambda1 == 0 && lambda2 == 0) || lambda2 / lambda1 > eigenValueRatio_) {
         return Vec2{0,0};
     } else if (DECIMAL_ZERO(inertiaTensor[2])) {
-        if (std::abs(inertiaTensor[0]) > std::abs(inertiaTensor[1])) {
-            return Vec2{0, 1};
-        } else {
-            return Vec2{1, 0};
-        }
+        return (std::abs(inertiaTensor[0]) > std::abs(inertiaTensor[1])) ? Vec2{0, 1} : Vec2{1, 0};
     } else {
         return Vec2{inertiaTensor[2], lambda2 - inertiaTensor[0]}.Normalize();
     }
@@ -345,7 +341,9 @@ bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vecto
     return edgeCount >= channelCriterionRatio_ * channelIsEdge.size();
 }
 
-void ConvolutionEdgeDetectionAlgorithm::PolarSort(Points &points, const Vec2 &center) {
+////// Polar Sort Algorithm //////
+
+void PolarSort(Points &points, const Vec2 &center) {
     std::sort(points.begin(), points.end(), [&center](const Vec2 &a, const Vec2 &b) {
         // Computes the quadrant for a and b (0-3):
         //     ^
@@ -371,7 +369,7 @@ void ConvolutionEdgeDetectionAlgorithm::PolarSort(Points &points, const Vec2 &ce
         const int qb = (1 - dbx) + (1 - dby) + ((dbx & (1 - dby)) << 1);
 
         if (qa == qb) {
-            return (b.x - center.x) * (a.y - center.y) < (b.y - center.y) * (a.x - center.x);
+            return (b.x - center.x) * (a.y - center.y) <= (b.y - center.y) * (a.x - center.x);
         } else {
             return qa < qb;
         }
