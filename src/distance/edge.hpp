@@ -128,7 +128,10 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * This function clamps the edges to zero.
      * The Tensor will have the same dimensions as the image (including channels)
      *
-     * @pre The image and mask must have the same number of channels
+     * @throw If performing a multi channel convole the numbe of image channels and
+     * the number of mask channels must be the same or either the image or the mask is a 
+     * single channel. Example (image.channels = 1 and mask.channels = 4 is valid while
+     * image.channels = 2 and mask.channels = 4 is invalid)
      */
     Tensor ConvolveWithMask(const Image &image);
 

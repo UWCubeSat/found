@@ -232,7 +232,27 @@ std::unique_ptr<decimal[]> makeExpectedPtr(const decimal* expected_data, size_t 
 
 ////// Test Channel Error Handling //////
 
-TEST(ConvolutionEdgeDetectionTest, TestMultiChannelMaskSingleChannelImage) {
+TEST(ConvolutionEdgeDetectionTest, TestMultiChannelMaskSingleChannelImage) {    /** 
+     * Remember that the mask is flipped before convolution
+     * This means that the first channel should be shifted left
+     * The second channel should remain the same
+     * The third channel should be shifted right
+     */
+   decimal expectedData[27] = {
+        2, 1, 0,    3, 2, 1,    0, 3, 2,
+        5, 4, 0,    6, 5, 4,    0, 6, 5,
+        8, 7, 0,    9, 8, 7,    0, 9, 8
+    };
+    Tensor expected = {
+        3,
+        3,
+        3,
+        makeExpectedPtr(&expectedData[0], 27)
+    };
+    Tensor actual = multiChannelConvolve.ConvolveWithMask(three_by_three_image);
+
+    ASSERT_TENSOR_EQ(expected, actual);
+
     ASSERT_THROW(multiChannelConvolve.ConvolveWithMask(three_by_three_image), std::invalid_argument);
 }
 

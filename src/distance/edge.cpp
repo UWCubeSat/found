@@ -166,50 +166,54 @@ Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
 
 Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
     // Step -1: check if image and mask channels match
-    if (image.channels != mask_.channels) {
-        throw std::invalid_argument("Image and mask channels do not match");
+    if (image.channels > 1 && mask_.channels > 1 && image.channels != mask_.channels) {
+        throw std::invalid_argument("Invalid channel dimension pair for image and mask");
     }
     // Step 0: setup basic constants
-    auto result = std::make_unique<decimal[]>(image.width * image.height * image.channels);
+    int max_channels = std::max(image.channels, mask_.channels);
+    auto result = std::make_unique<decimal[]>(image.width * image.height * max_channels);
     int64_t center = (static_cast<int64_t>(mask_.centerHeight) * mask_.width + mask_.centerWidth);
-    int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
+    int64_t image_size = static_cast<int64_t>(image.width) * image.height * max_channels;
 
     // Step 2: perform the convolution
     // Step 2a: loop through the image channels
-    for (int channel = 0; channel < image.channels; ++channel) {
+    for (int channel = 0; channel < max_channels; ++channel) {
         // Step 2b: loop through the image pixels
-        for (int64_t k = channel; k < image_size; k += image.channels) {
+        for (int64_t k = channel; k < image_size; k += max_channels) {
             // use double for precision then cast back to float once kernel addition is done TODO: switch to decimal
             decimal c = 0;
             // Step 2c: apply the mask to the image
             for (int i = -mask_.centerHeight; i <= mask_.height - mask_.centerHeight - 1; ++i) {
-                int row = (k / image.channels) / image.width - i;
+                int row = (k / max_channels) / image.width - i;
                 // "valid" padding (ignores pixels outside the image)
                 if (row < 0 || row > image.height - 1) {
                     continue;
                 }
                 for (int j = -mask_.centerWidth; j <= mask_.width - mask_.centerWidth - 1; ++j) {
-                    int col = ((k / image.channels) % image.width) - j;
+                    int col = ((k / max_channels) % image.width) - j;
                     // "valid" padding (ignores pixels outside the image)
                     if (col < 0 || col > image.width - 1) {
                         continue;
                     }
-                    c += static_cast<decimal>(mask_.data[(center + i * mask_.width + j) * mask_.channels + channel]) *
-                         static_cast<decimal>(image.image[(static_cast<int64_t>(row) * image.width + col) *
-                                                         image.channels + channel]);
+                    c += static_cast<decimal>(mask_.data[(channel < mask_.channels) ?
+                            (center + i * mask_.width + j) * mask_.channels +channel :
+                            (center + i * mask_.width + j)]) *
+                         static_cast<decimal>(image.image[(channel < image.channels) ?
+                            (static_cast<int64_t>(row) * image.width + col) * max_channels + channel :
+                            (static_cast<int64_t>(row) * image.width + col)]);
                 }
             }
             result[k] = static_cast<float>(c);
         }
     }
     // Apply the mask to the image
-    return Tensor(image.width, image.height, image.channels, std::move(result));
+    return Tensor(image.width, image.height, max_channels, std::move(result));
 }
 
 bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tensor &tensor, const Image &image) {
-    std::vector<bool> channelIsEdge(image.channels, false);
+    std::vector<bool> channelIsEdge(tensor.channels, false);
     // Apply the box based outlier criterion to each channel
-    for (int i = 0; i < image.channels; i++) {
+    for (int i = 0; i < tensor.channels; i++) {
         if (DECIMAL_ABS(tensor.tensor[index]) > threshold_) {
             channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, tensor, image);
         } else {
