@@ -33,30 +33,22 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @param relativeOrientation The orientation of the FOUND camera with respect to the reference Orientation
      * @param referenceOrientation The orientation of the reference orientation
      * 
-     * @pre If using EulerAngles to generate the parameters, use SphericalToQuaternion, which provides the backwards
-     * rotation quaternions for both Euler angles. Using the normal quaternion will result in the opposite
-     * behavior (i.e. Run(x_E) will rotate the position vector away from its celestial equivalent instead of to it)
+     * @pre You must use a backwards rotation quaternion here. Remember that
+     * forwards and backwards quaternions are conjugates.
     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
         : orientation(relativeOrientation * referenceOrientation) {}
-    // TODO: I feel like we should be taking the conjugate of the above multiplication here, to mirror the blow
-    // constructor, because relativeOrientation == orientation * referenceOrientation^-1, but it works out for
-    // some reason. I'm not really sure why though, but the test cases all pass and don't when you attempt to
-    // conjugate this.
 
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The absolute orientation of the FOUND camera
      * 
-     * @pre If using EulerAngles to generate the parameters, use SphericalToQuaternion, which provides the backwards
-     * rotation quaternions for both Euler angles. Using the normal quaternion will result in the opposite
-     * behavior (i.e. Run(x_E) will rotate the position vector away from its celestial equivalent instead of to it)
-     * 
-     * @note We take the conjugate to turn this back into a forward rotation
+     * @pre You must use a backwards rotation quaternion here. Remember that
+     * forwards and backwards quaternions are conjugates.
     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
-    : orientation(orientation.Conjugate()) {}
+    : orientation(orientation) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm() = default;
@@ -64,6 +56,8 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
      * to Earth's center using information from LOST
+     * 
+     * @pre This class was initialized by backwards quaternion(s)
      * 
      * @param x_E The distance from Earth
      * 

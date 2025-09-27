@@ -744,8 +744,8 @@ Quaternion DCMToQuaternion(const Mat3 &);
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
  * 
- * @note Rotating a vector with this quaternion is equivalent to a forwards rotation (rotation into
- * the absolute frame)
+ * @note Rotating a vector with this quaternion is equivalent to a backwards rotation (rotation into
+ * the frame specified by the Euler angles).
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
