@@ -55,6 +55,8 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 #define ASSERT_VEC3_EQ_DEFAULT(val1, val2) ASSERT_VEC3_EQ(val1, val2, DEFAULT_TOLERANCE)
 
 #define ASSERT_QUAT_EQ(val1, val2, tolerance) \
+    if (val1.real < 0) val1 = -val1; \
+    if (val2.real < 0) val2 = -val2; \
     ASSERT_DECIMAL_EQ(val1.real, val2.real, tolerance); \
     ASSERT_DECIMAL_EQ(val1.i, val2.i, tolerance); \
     ASSERT_DECIMAL_EQ(val1.j, val2.j, tolerance); \

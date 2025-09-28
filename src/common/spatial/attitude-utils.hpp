@@ -470,6 +470,11 @@ class EulerAngles {
  * A Quaternion is a mutable object that represents a Quaternion. A Quaternion
  * is a common way to represent rotations in 3D.
  * 
+ * @note Quaternions in this system are assumed to be forward quaternions, or rotating
+ * out of the coordinate frame represented by the quaternion and into the absolute frame.
+ * This contrasts with backwards quaternions, which rotates into the coordinate frame
+ * represented by the quaternion relative to the absolute frame.
+ * 
 */
 class Quaternion {
  public:
@@ -594,6 +599,9 @@ class Quaternion {
      * rotations described by this quarterion
      * 
      * @return An EulerAngles object representing this in with Euler Angles
+     * 
+     * @warning This function was modified from LOST's version, which assumed that
+     * this Quaternion was a backwards quaternion
     */
     EulerAngles ToSpherical() const;
 
@@ -744,11 +752,10 @@ Quaternion DCMToQuaternion(const Mat3 &);
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
  * 
- * @note Rotating a vector with this quaternion is equivalent to a backwards rotation (rotation into
+ * @note Rotating a vector with this quaternion is equivalent to a forward rotation (rotation into
  * the frame specified by the Euler angles).
  * 
- * @warning Do not change this to return a forward quaternion unless you change conversion functions between
- * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
+ * @warning This function was modified from LOST's version, which provides a backwards quaternion!
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
@@ -763,8 +770,10 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
  * 
- * @warning Do not change this to return a forward quaternion unless you change conversion functions between
- * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
+ * @note Rotating a vector with this quaternion is equivalent to a forward rotation (rotation into
+ * the frame specified by the Euler angles).
+ * 
+ * @warning This function was modified from LOST's version, which provides a backwards quaternion!
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }

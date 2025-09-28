@@ -315,14 +315,16 @@ EulerAngles Quaternion::ToSpherical() const {
     // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
     // uses almost exactly the same euler angle scheme that we do, so we copy their equations almost
     // wholesale. The only differences are that 1, we use de and roll in the opposite directions,
-    // and 2, we store the conjugate of the quaternion (double check why?), which means we need to
-    // invert the final de and roll terms, as well as negate all the terms involving a mix between
-    // the real and imaginary parts.
-    decimal ra = atan2(2*(-real*k+i*j), 1-2*(j*j+k*k));
+    // and 2, so we invert the de and roll terms.
+    //
+    // WARNING: This function was modified from LOST's version, which assumed that this Quaternion was a
+    // backwards quaternion instead of forwards, which simply placed a negative sign in front of the real
+    // terms in the usages below
+    decimal ra = atan2(2*(real*k+i*j), 1-2*(j*j+k*k));
     if (ra < 0)
         ra += 2*DECIMAL_M_PI;
-    decimal de = -asin(2*(-real*j-i*k));  // allow de to be positive or negaive, as is convention
-    decimal roll = -atan2(2*(-real*i+j*k), 1-2*(i*i+j*j));
+    decimal de = -asin(2*(real*j-i*k));  // allow de to be positive or negaive, as is convention
+    decimal roll = -atan2(2*(real*i+j*k), 1-2*(i*i+j*j));
     if (roll < 0)
         roll += 2*DECIMAL_M_PI;
 
@@ -434,7 +436,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     Quaternion a = Quaternion({ 0, 0, 1 }, ra);
     Quaternion b = Quaternion({ 0, 1, 0 }, -dec);
     Quaternion c = Quaternion({ 1, 0, 0 }, -roll);
-    Quaternion result = (a*b*c).Conjugate();
+    Quaternion result = a*b*c;
     assert(result.IsUnit(0.00001));
     return result;
 }

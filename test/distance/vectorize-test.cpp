@@ -25,9 +25,10 @@ namespace found {
  * in two independent ways.
  */
 Vec3 ProjectVector(Vec3 &v, Quaternion &q) {
-    Vec3 x = q.Rotate({1, 0, 0});
-    Vec3 y = q.Rotate({0, 1, 0});
-    Vec3 z = q.Rotate({0, 0, 1});
+    Quaternion q_conj = q.Conjugate();
+    Vec3 x = q_conj.Rotate({1, 0, 0});
+    Vec3 y = q_conj.Rotate({0, 1, 0});
+    Vec3 z = q_conj.Rotate({0, 0, 1});
     return {(v*x)/(x*x), (v*y)/(y*y), (v*z)/(z*z)};
 }
 
@@ -140,8 +141,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
     PositionVector actual = vectorGen.Run(x_E);
 
     // Should be equivalent to this:
-    PositionVector expected = (QuaternionToDCM(referenceOrientation.Conjugate())
-        * QuaternionToDCM(relativeOrientation.Conjugate())) * -x_E;
+    PositionVector expected = (QuaternionToDCM(relativeOrientation) * QuaternionToDCM(referenceOrientation)) * -x_E;
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 
