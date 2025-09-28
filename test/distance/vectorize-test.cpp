@@ -140,7 +140,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
     PositionVector actual = vectorGen.Run(x_E);
 
     // Should be equivalent to this:
-    PositionVector expected = (QuaternionToDCM(referenceOrientation.Conjugate()) * QuaternionToDCM(relativeOrientation.Conjugate())) * -x_E;
+    PositionVector expected = (QuaternionToDCM(referenceOrientation.Conjugate())
+        * QuaternionToDCM(relativeOrientation.Conjugate())) * -x_E;
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 
