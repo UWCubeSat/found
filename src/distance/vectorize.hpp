@@ -33,7 +33,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @param relativeOrientation The orientation of the FOUND camera with respect to the reference Orientation
      * @param referenceOrientation The orientation of the reference orientation
      * 
-     * @pre You must use a forward rotation quaternion here. Remember that
+     * @pre You must use a backwards rotation quaternion here. Remember that
      * forwards and backwards quaternions are conjugates.
     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
@@ -44,7 +44,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * 
      * @param orientation The absolute orientation of the FOUND camera
      * 
-     * @pre You must use a forward rotation quaternion here. Remember that
+     * @pre You must use a backwards rotation quaternion here. Remember that
      * forwards and backwards quaternions are conjugates.
     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
@@ -57,7 +57,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
      * to Earth's center using information from LOST
      * 
-     * @pre This class was initialized by forward quaternion(s)
+     * @pre This class was initialized by backwards quaternion(s)
      * 
      * @param x_E The distance from Earth
      * 

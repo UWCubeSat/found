@@ -337,7 +337,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
     TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
         // Step 0: Determine Quaterion rotation
         found::Quaternion positionDirection = found::SphericalToQuaternion(
-            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0));
+            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).Conjugate();
 
         // Step I: Pick some distance (m) and a Camera
         decimal y_E = RADIUS_OF_EARTH + 10000000;
