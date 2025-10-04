@@ -78,7 +78,7 @@ We can then use this calibration information to now make some position estimates
     --calibration-data example-df.found            \
     --camera-focal-length 85e-3                    \
     --camera-pixel-size 20e-6                      \
-    --reference-orientation 190,0,0
+    --reference-orientation 110,0,0
 ```
 
 For the distance flags:
@@ -98,7 +98,7 @@ Feeding all this information, the program now analyzes the image, the calibratio
 
 This is close to the actual position, which is `{10378137, 0, 0} m`. To be specific, the difference is 0.995379% in magnitude and 1339.65 arcsec in direction (this is especially good since we're using low quality edge detection).
 
-Another thing to point out is the reference orientation, which was `{190,0,0}`. The image specified in the command was taken at an attitude of `{140,0,0}`, which if you remember, `{190,0,0}-{30,0,0}={140,0,0}` (this doesn't general hold, since attitude "subtraction" doesn't actually look like this). This of course is important to specify, otherwise, you'll get the same magnitude, but wrong direction. Should you not want to use the calibration file to do this odd math, you can instead do the equivalent command:
+Another thing to point out is the reference orientation, which was `{110,0,0}`. The image specified in the command was taken at an attitude of `{140,0,0}`, which if you remember, `{110,0,0}+{30,0,0}={140,0,0}` (this doesn't general hold, since attitude "subtraction" doesn't actually look like this). This of course is important to specify, otherwise, you'll get the same magnitude, but wrong direction. Should you not want to use the calibration file to do this odd math, you can instead do the equivalent command:
 
 ```bash
 ./build/bin/found distance                           \

@@ -19,7 +19,7 @@ from curve.spherical import SphericalCurveProvider
 from image.printer import Printer
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args() -> Tuple[Vector, Attitude, float, float, float, float, float, str]:
     """Parses out the arguments for this program
 
     Args:
@@ -33,7 +33,7 @@ def parse_args() -> argparse.Namespace:
         filename (str, Optional): The filename (including path) of the output image. Defaults to a name that describes position and orientation, outputted directly into the repository (found) folder.
 
     Returns:
-        argparse.Namespace: The arguments for this program
+        Tuple[Vector, Attitude, float, float, float, float, float, str]: The arguments for this program
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(

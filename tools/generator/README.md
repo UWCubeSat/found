@@ -12,6 +12,8 @@ Optional Flags
 Example Usage (from `found` root):
 ```bash
 
-python -m tools.generator  --position 10000000 0 0 --orientation 180 0 0
+python3 -m tools.generator --position 10378137 0 0 --orientation 140 0 0 --focal-length 85e-3 --pixel-size 20e-6 --x-resolution 512 --y-resolution 512 --filename example_earth.png
 
 ```
+
+![Example Image of Earth](../../test/common/assets/example_earth1.png)

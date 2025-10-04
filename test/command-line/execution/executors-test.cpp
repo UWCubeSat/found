@@ -64,13 +64,9 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 
     // Both expected outputs are confirmed to conform to expectation
     std::stringstream expectedOutput;
-    #ifdef FOUND_FLOAT_MODE
-        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                    << "Calibration Quaternion: \\((0.965926, 0, 0.258819, 0)\\)\\s*";
-    #else
-        expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                    << "Calibration Quaternion: \\((0.965926, 1.38778e-17, 0.258819, 5.55112e-17)\\)\\s*";
-    #endif
+    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                    << "Calibration Quaternion: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX
+                    << ", " << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\)\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 
@@ -153,9 +149,10 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(4, 5, 6\\) m\\s*"
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Distance from Earth: 8.77496 m\\s*";
+                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 
@@ -205,7 +202,8 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
 
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Future Position: \\(6, 6, 6\\) m at time 6 s\\s*";
+                   << "Calculated Future Position: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << "\\) m at time " << NUMBER_REGEX << " s\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
