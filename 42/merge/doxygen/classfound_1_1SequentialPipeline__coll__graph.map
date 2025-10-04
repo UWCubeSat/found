@@ -1,0 +1,12 @@
+<map id="found::SequentialPipeline&lt; Input, Output, N &gt;" name="found::SequentialPipeline&lt; Input, Output, N &gt;">
+<area shape="rect" id="Node000001" title="SequentialPipeline is composite Stage (i.e." alt="" coords="5,376,193,416"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Pipeline.html" title="A Pipeline&lt;Input, Output, N&gt; is an abstract Pipeline that takes an Input, outputs an Output,..." alt="" coords="14,287,185,327"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,341,102,376,97,376,97,341"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1FunctionStage.html" title="A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin..." alt="" coords="103,197,261,237"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="157,249,119,288,115,285,153,245"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Stage.html" title=" " alt="" coords="99,80,273,135"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="187,149,185,197,180,197,182,149"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="23,5,131,31"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="80,44,93,237,99,286,94,287,87,238,75,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="104,37,155,78,151,82,100,42"/>
+</map>
