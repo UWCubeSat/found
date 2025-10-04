@@ -122,6 +122,7 @@ Lastly, one thing you will not notice is that the `temp.found` file has changed.
     --output-file other.found
 ```
 
+In general, it is difficult to figure out arbitrary attitudes you should use. That's why `tools.attitude` (check out [our tools folder](tools) for more information) comes in handy. You can use it to come up with attitudes to plug into the calibration and distance stages, and it even shows you how to run commands for those stages, and for `tools.generator`.
 
 # Capabilities
 FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.

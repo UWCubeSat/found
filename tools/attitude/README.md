@@ -1,8 +1,8 @@
 # Attitude
 
-The `attitude` tool generates orientations to use for the calibration and distance modes of FOUND
+The `attitude` tool generates orientations to use for the calibration and distance modes of FOUND.
 
-Optional Flags
+Optional Flags:
 0. `--help`, `-h`: Help
 1. `--use-local`: Use a given local orientation to generate a reference orientation for FOUND
 2. `--local-attitude`: The local orientation to use with the flag above (must be used with above flag).
