@@ -1,0 +1,13 @@
+<map id="found::LOSTCalibrationAlgorithm" name="found::LOSTCalibrationAlgorithm">
+<area shape="rect" id="Node000001" title="The LostCalibrationAlgorithm class houses the calibration algorithm that uses the orientation informa..." alt="" coords="51,361,286,387"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1CalibrationAlgorithm.html" title="The CalibrationAlgorithm is an interface for algorithms that calibrate our orientation to the referen..." alt="" coords="67,287,270,312"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="171,326,171,361,166,361,166,326"/>
+<area shape="rect" id="Node000003" href="$classfound_1_1FunctionStage.html" title=" " alt="" coords="62,183,275,237"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="171,251,171,286,166,286,166,251"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1Stage.html" title="Stage is an interface that wraps an SISO function." alt="" coords="5,80,161,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="109,129,150,181,146,184,104,132"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="29,5,137,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="86,44,86,80,81,80,81,44"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1Quaternion.html" title="A Quaternion is a mutable object that represents a Quaternion." alt="" coords="186,87,325,113"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="240,125,192,184,188,181,235,122"/>
+</map>
