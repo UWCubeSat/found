@@ -39,6 +39,8 @@ class LOSTCalibrationAlgorithm : public CalibrationAlgorithm {
      * 
      * @note Set the reference orientation to 0 to make this absolute (i.e., 
      * the orientation of this camera becomes the relative rotation)
+     * 
+     * @post The resulting quaternion is a backwards quaternion
      */
     Quaternion Run(const std::pair<EulerAngles, EulerAngles> &orientations) override;
 };

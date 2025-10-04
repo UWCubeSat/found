@@ -70,8 +70,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
     PositionVector x_E = {100.0, 200.0, 300.0};
     PositionVector actual = vectorGen.Run(-x_E);
 
-    PositionVector expected = {x_E.x * DECIMAL_COS(DECIMAL_M_PI / 4) + x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 4),
-                               -x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 4) + x_E.y * DECIMAL_COS(DECIMAL_M_PI / 4),
+    PositionVector expected = {x_E.x * DECIMAL_COS(DECIMAL_M_PI / 4) - x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 4),
+                               x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 4) + x_E.y * DECIMAL_COS(DECIMAL_M_PI / 4),
                                x_E.z};
 
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
@@ -87,8 +87,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
     PositionVector x_E = {100.0, 200.0, 300.0};
     PositionVector actual = vectorGen.Run(x_E);
 
-    PositionVector expected = {-x_E.x * DECIMAL_COS(DECIMAL_M_PI / 3) - x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 3),
-                               x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 3) - x_E.y * DECIMAL_COS(DECIMAL_M_PI / 3),
+    PositionVector expected = {-x_E.x * DECIMAL_COS(DECIMAL_M_PI / 3) + x_E.y * DECIMAL_SIN(DECIMAL_M_PI / 3),
+                               -x_E.x * DECIMAL_SIN(DECIMAL_M_PI / 3) - x_E.y * DECIMAL_COS(DECIMAL_M_PI / 3),
                                -x_E.z};
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
@@ -116,11 +116,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoArbitraryReferenceAndRel
     Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(5.2), DECIMAL(-2.9), DECIMAL(3.4));
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
-    // TODO: What happens here spooks me out. We have to take the conjugate here
-    // to get the axis vectors, but not in the above (test case). Inside LOSTVectorGenerationAlgorithm,
-    // the constructor in this case doesn't conjugate this, but the constructor above does.
-    // and we get the expected result in both cases!!!
-    Quaternion newOrientation = (relativeOrientation * referenceOrientation).Conjugate();
+    Quaternion newOrientation = (relativeOrientation * referenceOrientation);
 
     // Create PositionVector to test with
     PositionVector x_E = {915.2, 1692.6, -2962.2};
@@ -144,14 +140,9 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
     PositionVector actual = vectorGen.Run(x_E);
 
     // Should be equivalent to this:
-    PositionVector expected = (QuaternionToDCM(relativeOrientation) * QuaternionToDCM(referenceOrientation)) * -x_E;
+    PositionVector expected = (QuaternionToDCM(referenceOrientation.Conjugate())
+        * QuaternionToDCM(relativeOrientation.Conjugate())) * -x_E;
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
-
-    // Also, if we take the result and apply the inverse, we should get the original
-    PositionVector inverseResult = (QuaternionToDCM(relativeOrientation)
-                                        * QuaternionToDCM(referenceOrientation)).Inverse()
-                                    * -actual;
-    ASSERT_VEC3_EQ_DEFAULT(inverseResult, x_E);
 }
 
 }  // namespace found

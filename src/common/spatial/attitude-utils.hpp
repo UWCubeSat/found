@@ -744,8 +744,11 @@ Quaternion DCMToQuaternion(const Mat3 &);
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
  * 
- * @note Rotating a vector with this quaternion is equivalent to a forwards rotation (rotation into
- * the absolute frame)
+ * @note Rotating a vector with this quaternion is equivalent to a backwards rotation (rotation into
+ * the frame specified by the Euler angles).
+ * 
+ * @warning Do not change this to return a forward quaternion unless you change conversion functions between
+ * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
 */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
@@ -759,6 +762,9 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
  * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
  * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+ * 
+ * @warning Do not change this to return a forward quaternion unless you change conversion functions between
+ * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.ra, angles.de, angles.roll); }

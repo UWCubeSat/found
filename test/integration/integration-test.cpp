@@ -105,9 +105,13 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 
     ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
 
+    Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3)));
+    Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6)));
+    Quaternion rel = ref * loc.Conjugate();
+
     DataFile expected{
         {},
-        LOSTCalibrationAlgorithm().Run({{1.1,1.2,1.3}, {1.4,1.5,1.6}})
+        rel
     };
 
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
@@ -230,9 +234,9 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
-                        "--reference-orientation", "190,0,0"};
-    // The relative orientation is EulerAngles{-30, 0, 0}, while the
-    // reference orientation is {190,0,0}, which adds to a total
+                        "--reference-orientation", "110,0,0"};
+    // The relative orientation is EulerAngles{30, 0, 0}, while the
+    // reference orientation is {110,0,0}, which adds to a total
     // orientation of {140, 0, 0} (they add up in this case, but
     // in general, they do not)
 
@@ -268,10 +272,10 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
-                        "--reference-orientation", "190,0,0",
+                        "--reference-orientation", "110,0,0",
                         "--output-file", other_path};
-    // The relative orientation is EulerAngles{-30, 0, 0}, while the
-    // reference orientation is {190,0,0}, which adds to a total
+    // The relative orientation is EulerAngles{30, 0, 0}, while the
+    // reference orientation is {110,0,0}, which adds to a total
     // orientation of {140, 0, 0} (they add up in this case, but
     // in general, they do not)
 
