@@ -14,29 +14,23 @@ from transform.transform import Attitude, DCM
 
 logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s]: %(message)s")
 
-def parse_args() -> Tuple[bool, DCM, DCM, int]:
+def parse_args() -> Tuple[DCM, DCM, int]:
     """Parse Arguments for the tool
-    
+
     Args:
-        use_local (bool): Whether to use a local attitude in the first test pair
         local_attitude (Optional[DCM]): The local attitude to use in the first test pair
         calibration_attitude (DCM): The calibration rotation (that rotates from the reference to local orientation)
         num_attitude_pairs (int): The number of test attitude pairs to generate
 
     Returns:
-        Tuple[bool, Attitude, DCM, int]: The arguments
+        Tuple[Attitude, DCM, int]: The arguments
     
     Note:
         We convert the local_attitude into a DCM for convenience
     """
     
     parser = argparse.ArgumentParser()
-    
-    parser.add_argument(
-        "--use-local",
-        action="store_true",
-        help="Whether to use a local orientation for the image"
-    )
+
     parser.add_argument(
         "--local-attitude",
         nargs=3,
@@ -65,36 +59,27 @@ def parse_args() -> Tuple[bool, DCM, DCM, int]:
     else:
         calibration_attitude = Attitude(*args.calibration_attitude).to_dcm()
 
-    if args.local_attitude is None:
-        return args.use_local, None, calibration_attitude, args.num_attitude_pairs
+    return DCM() if args.local_attitude is None else Attitude(*args.local_attitude).to_dcm(), calibration_attitude, args.num_attitude_pairs
 
-    return args.use_local, Attitude(*args.local_attitude).to_dcm(), calibration_attitude, args.num_attitude_pairs
-
-def validate_arguments(use_local: bool,
-                       local_attitude: Optional[DCM],
+def validate_arguments(local_attitude: Optional[DCM],
                        calibration_attitude: DCM,
                        num_attitude_pairs: int):
     """Validates the arguments
 
     Args:
-        use_local (bool): Whether to use a local attitude in the first test pair
         local_attitude (Optional[DCM]): The local attitude to use in the first test pair
         calibration_attitude (DCM): The calibration rotation
         num_attitude_pairs (int): The number of test attitude pairs to generate
     """
-    if use_local and not local_attitude:
-        raise RuntimeError("Local Attitude must be supplied when --use-local is used")
     if num_attitude_pairs < 1:
         raise RuntimeError("Must generate at least 1 test attitude pair")
 
-def produce_attitudes(use_local: bool,
-                      local_attitude: Optional[DCM],
+def produce_attitudes(local_attitude: Optional[DCM],
                       calibration_attitude: DCM,
                       num_attitude_pairs: int) -> Tuple[Tuple[DCM, DCM], List[Tuple[DCM, DCM]]]:
     """Produces the attitudes to use with FOUND and tools.generator
 
     Args:
-        use_local (bool): Whether to use a local attitude in the first test pair
         local_attitude (Optional[DCM]): The local attitude to use in the first test pair
         calibration_attitude (DCM): The calibration rotation
         num_attitude_pairs (int): The number of test attitude pairs to generate
@@ -105,7 +90,7 @@ def produce_attitudes(use_local: bool,
             2. A list of test attitudes to use (local, reference)
     """
     # Step 0: Validate the arguments
-    validate_arguments(use_local, local_attitude, calibration_attitude, num_attitude_pairs)
+    validate_arguments(local_attitude, calibration_attitude, num_attitude_pairs)
 
     # Step 2: Produce the calibration bases
     reference_attitude_cal = DCM()
@@ -116,12 +101,8 @@ def produce_attitudes(use_local: bool,
     test_attitudes = list()
     
     # Step 3a: Handle the First Test Attitude Differently if we are given a local attitude
-    if use_local:
-        loc_attitude = local_attitude
-        ref_attitude = calibration_attitude.rotate(local_attitude, inverse=True)
-    else:
-        ref_attitude = DCM()
-        loc_attitude = calibration_attitude.rotate(ref_attitude)
+    loc_attitude = local_attitude
+    ref_attitude = calibration_attitude.rotate(local_attitude, inverse=True)
     test_attitudes.append((loc_attitude, ref_attitude))
     
     # Step 3b: Handle the rest like as normal
@@ -212,4 +193,4 @@ def output_result(calibration_attitude: DCM,
 if __name__ == "__main__":
     arguments = parse_args()
     attitudes = produce_attitudes(*arguments)
-    output_result(arguments[2], *attitudes)
+    output_result(arguments[-2], *attitudes)

@@ -2,14 +2,23 @@
 
 The `attitude` tool generates orientations to use for the calibration and distance modes of FOUND.
 
+Terms:
+1. Local Attitude: The attitude of FOUND (the camera associated with it)
+2. Reference Attitude: Another attitude, locked relative to FOUND
+3. Calibration Attitude Pair: The Local and Reference Attitudes used to calibrate FOUND
+4. Distance Attitude Pair: The Local and Reference Attitudes used during position inference for FOUND (distance)
+
+# Flags
+
 Optional Flags:
 0. `--help`, `-h`: Help
-1. `--use-local`: Use a given local orientation to generate a reference orientation for FOUND
-2. `--local-attitude`: The local orientation to use with the flag above (must be used with above flag).
+2. `--local-attitude`: A local attitude to use for one of the local/reference attitude pairs for distance. If specified, this will appear in the first pair for use with the distance pipeline.
 3. `--calibration-attitude`: The calibration attitude to use (describes transformation from reference to local frame)
 4. `--num-attitude-pairs`: The number of attitude pairs to generate for the distance mode of FOUND
 
-Example Usage (from `found` root):
+# Example Usage
+
+From `found` root:
 ```bash
 >>> python3 -m tools.attitude --use-local --local-attitude 45 0 0 --num-attitude-pairs 3
 

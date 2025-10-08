@@ -23,16 +23,15 @@ RE_WHITESPACE = r"\s+"
 DEFAULT_NUM_POINTS = 50
 
 class Arguments:
-        def __init__(self, use_local: bool,
+        def __init__(self,
                      local_attitude: Optional[DCM],
                      calibration_attitude: DCM,
                      num_attitude_pairs: int = DEFAULT_NUM_POINTS):
-            self.use_local = use_local
             self.local_attitude = local_attitude
             self.calibration_attitude = calibration_attitude
             self.num_attitude_pairs = num_attitude_pairs
         def to_tuple(self):
-            return self.use_local, self.local_attitude, self.calibration_attitude, self.num_attitude_pairs
+            return self.local_attitude, self.calibration_attitude, self.num_attitude_pairs
 
 class IntegrationTest(unittest.TestCase):      
     
@@ -55,7 +54,7 @@ class IntegrationTest(unittest.TestCase):
         self.assertDCMAlmostEqual(dcm1, offset.rotate(dcm2))
 
     def test_no_rotation(self):
-        arguments = Arguments(False, None, DCM(Rotation.from_euler(ROTATION_ORDER, [0, 0, 0], degrees=True)))
+        arguments = Arguments(DCM(), DCM(Rotation.from_euler(ROTATION_ORDER, [0, 0, 0], degrees=True)))
         
         calibration, tests = produce_attitudes(*arguments.to_tuple())
         
@@ -65,7 +64,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertDCMAlmostEqual(local, reference)
     
     def test_simple_rotation(self):
-        arguments = Arguments(False, None, DCM(Rotation.from_euler(ROTATION_ORDER, [135, 0, 0], degrees=True)))
+        arguments = Arguments(DCM(), DCM(Rotation.from_euler(ROTATION_ORDER, [135, 0, 0], degrees=True)))
         
         calibration, tests = produce_attitudes(*arguments.to_tuple())
         
@@ -75,7 +74,7 @@ class IntegrationTest(unittest.TestCase):
             self.assertAttitudeOffsetRA(local, reference, 135)
     
     def test_rotation_general(self):
-        arguments = Arguments(False, None, DCM())
+        arguments = Arguments(DCM(), DCM())
         
         calibration, tests = produce_attitudes(*arguments.to_tuple())
         
@@ -83,10 +82,10 @@ class IntegrationTest(unittest.TestCase):
         
         for local, reference in tests:
             self.assertAttitudeOffsetGeneral(local, reference, arguments.calibration_attitude)
-    
+
     def test_rotation_general_with_local_attitude(self):
         local_attitude = DCM()
-        arguments = Arguments(True, local_attitude, DCM())
+        arguments = Arguments(local_attitude, DCM())
         
         calibration, tests = produce_attitudes(*arguments.to_tuple())
         
