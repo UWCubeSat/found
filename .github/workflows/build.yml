@@ -73,6 +73,9 @@ jobs:
     
     - name: Test Stylecheck
       run: make google_stylecheck_test
+    
+    - name: Line Ending Check (Ensure LF)
+      uses: erclu/check-crlf@master
 
   coverage:
     runs-on: ubuntu-latest
