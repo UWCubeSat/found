@@ -30,7 +30,7 @@ def parse_args() -> Tuple[Vector, Attitude, float, float, float, float, float, s
         pixel-length (float, Optional): The physical length of a pixel (meters). Defaults to 20e-6 meters.
         x-resolution (float, Optional): The x resolution of the camera (pixels). Defaults to 6000 pixels.
         y-resolution (float, Optional): The y resolution of the camera (pixels). Defaults to 6000 pixels.
-        filename (str, Optional): The filename (including path) of the output image. Defaults to a name that describes position and orientation, outputted directly into the repository (found) folder.
+        filename (str, Optional): The filename (including path) of the output image (.png). Defaults to a name that describes position and orientation, outputted directly into the repository (found) folder.
 
     Returns:
         Tuple[Vector, Attitude, float, float, float, float, float, str]: The arguments for this program

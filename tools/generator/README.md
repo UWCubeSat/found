@@ -6,7 +6,7 @@ Required Flags:
 1. `--position`: The position of the object, in meters (space seperated)
 2. `--orientation`: The orientation of the object, in DE, RA, ROLL (space seperated)
 Optional Flags
-1. `--filename`: The name of the output file
+1. `--filename`: The name of the output file (.png)
 2. For the rest, run `tools.generator --help`
 
 Example Usage (from `found` root):
