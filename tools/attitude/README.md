@@ -1,6 +1,6 @@
 # Attitude
 
-The `attitude` tool generates orientations to use for the calibration and distance modes of FOUND.
+The `attitude` tool generates orientations to use for the calibration and distance modes of FOUND. It also generates commands to use with FOUND and `tools.generator` for ease.
 
 Terms:
 1. Local Attitude: The attitude of FOUND (the camera associated with it)

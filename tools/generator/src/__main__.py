@@ -35,7 +35,9 @@ def parse_args() -> Tuple[Vector, Attitude, float, float, float, float, float, s
     Returns:
         Tuple[Vector, Attitude, float, float, float, float, float, str]: The arguments for this program
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Generates artificial images of Earth"
+    )
     parser.add_argument(
         "--position",
         nargs=3,

@@ -29,7 +29,9 @@ def parse_args() -> Tuple[DCM, DCM, int]:
         We convert the local_attitude into a DCM for convenience
     """
     
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Generates orientations to use with calibration and distance modes of FOUND and generates commands to use with the orientations"
+    )
 
     parser.add_argument(
         "--local-attitude",
