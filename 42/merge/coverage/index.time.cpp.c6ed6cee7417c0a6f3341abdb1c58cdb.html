@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: common/time/time.cpp</div>
-            <div>Date: 2025-10-07 16:37:00</div>
+            <div>Date: 2025-10-08 03:46:10</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,14 +59,14 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l97">found::getCurrentGreenwichMeanSiderealTime() (line 97)</a></td><td>called 2 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::getCurrentJulianDateTime() (line 67)</a></td><td>called 2 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l81">found::getGreenwichMeanSiderealTime(found::DateTime&amp;) (line 81)</a></td><td>called 6 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l107">found::getGreenwichMeanSiderealTime(long) (line 107)</a></td><td>called 2 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l49">found::getJulianDateTime(found::DateTime&amp;) (line 49)</a></td><td>called 18 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l77">found::getJulianDateTime(long) (line 77)</a></td><td>called 4 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l35">found::getUT1Time() (line 35)</a></td><td>called 30 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l20">found::getUTCTime() (line 20)</a></td><td>called 32 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l97">found::getCurrentGreenwichMeanSiderealTime() (line 97)</a></td><td>called 1 time</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::getCurrentJulianDateTime() (line 67)</a></td><td>called 1 time</td><td>100.0%</td></tr>
+    <tr><td><a href="#l81">found::getGreenwichMeanSiderealTime(found::DateTime&amp;) (line 81)</a></td><td>called 3 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l107">found::getGreenwichMeanSiderealTime(long) (line 107)</a></td><td>called 1 time</td><td>100.0%</td></tr>
+    <tr><td><a href="#l49">found::getJulianDateTime(found::DateTime&amp;) (line 49)</a></td><td>called 9 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l77">found::getJulianDateTime(long) (line 77)</a></td><td>called 2 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l35">found::getUT1Time() (line 35)</a></td><td>called 15 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l20">found::getUTCTime() (line 20)</a></td><td>called 16 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -221,21 +221,21 @@
                 <td class="text-right src linenos"><a class="normal" id="l20" href="#l20">20</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="n">DateTime</span><span class="w"> </span><span class="nf">getUTCTime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kt">time_t</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">time</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">tm</span><span class="o">*</span><span class="w"> </span><span class="n">utc_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">gmtime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">now</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -263,49 +263,49 @@
                 <td class="text-right src linenos"><a class="normal" id="l26" href="#l26">26</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_year</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1900</span><span class="p">),</span><span class="w">  </span><span class="c1">// tm_year is years since 1900</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l27" href="#l27">27</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_mon</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w">      </span><span class="c1">// tm_mon is months since January (0-11)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l28" href="#l28">28</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_mday</span><span class="p">),</span><span class="w">         </span><span class="c1">// tm_mday is day of the month (1-31)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l29" href="#l29">29</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_hour</span><span class="p">),</span><span class="w">         </span><span class="c1">// tm_hour is hours since midnight (0-23)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l30" href="#l30">30</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_min</span><span class="p">),</span><span class="w">          </span><span class="c1">// tm_min is minutes after the hour (0-59)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l31" href="#l31">31</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">utc_time</span><span class="o">-&gt;</span><span class="n">tm_sec</span><span class="p">)</span><span class="w">           </span><span class="c1">// tm_sec is seconds after the minute (0-60)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l32" href="#l32">32</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="p">};</span></td>
             </tr>
             <tr>
@@ -326,7 +326,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
                 <td class="src coveredLine"><span class="n">DateTime</span><span class="w"> </span><span class="nf">getUT1Time</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -382,28 +382,28 @@
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">DateTime</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUTCTime</span><span class="p">();</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">now</span><span class="p">.</span><span class="n">epochs</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">AVG_DELTA_UT1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Adjust for UT1, this is a rough approximation</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">now</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">AVG_DELTA_UT1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Adjust seconds accordingly</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">now</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -424,7 +424,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getJulianDateTime</span><span class="p">(</span><span class="n">DateTime</span><span class="w"> </span><span class="o">&amp;</span><span class="n">time</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -466,35 +466,35 @@
                 <td class="text-right src linenos"><a class="normal" id="l55" href="#l55">55</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">367</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">year</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">7</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">time</span><span class="p">.</span><span class="n">year</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">time</span><span class="p">.</span><span class="n">month</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">12</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l57" href="#l57">57</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">275</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">month</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">D</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">day</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1721013.5</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">julianDate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">D</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -508,14 +508,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">julianDate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">hour</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">24.0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">36</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="n">time</span><span class="p">.</span><span class="n">minute</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1440.0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">86400.0</span><span class="p">)</span><span class="w"> </span><span class="o">-</span></td>
             </tr>
             <tr>
@@ -524,19 +524,19 @@
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 0 taken 14 times.</div>
-                            <div class="color-taken-branch">&check; Branch 1 taken 4 times.</div>
+                            <div class="color-taken-branch">&check; Branch 0 taken 7 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 taken 2 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">year</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">time</span><span class="p">.</span><span class="n">month</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">190002.5</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -557,7 +557,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getCurrentJulianDateTime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -592,14 +592,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">DateTime</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUT1Time</span><span class="p">();</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l73" href="#l73">73</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">getJulianDateTime</span><span class="p">(</span><span class="n">time</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -627,14 +627,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getJulianDateTime</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">time_t</span><span class="w"> </span><span class="n">epochs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l78" href="#l78">78</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">epochs</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">86400.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">2440587.5</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -655,7 +655,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l81" href="#l81">81</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getGreenwichMeanSiderealTime</span><span class="p">(</span><span class="n">DateTime</span><span class="w"> </span><span class="o">&amp;</span><span class="n">time</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -697,21 +697,21 @@
                 <td class="text-right src linenos"><a class="normal" id="l87" href="#l87">87</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">JDT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getJulianDateTime</span><span class="p">(</span><span class="n">time</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l88" href="#l88">88</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JDT</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2451545.0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Julian date - J2000.0</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">36525.0</span><span class="p">);</span><span class="w">  </span><span class="c1">// Julian centuries since J2000.0</span></td>
             </tr>
             <tr>
@@ -725,28 +725,28 @@
                 <td class="text-right src linenos"><a class="normal" id="l91" href="#l91">91</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">280.46061837</span><span class="p">)</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">360.98564736629</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">D_tt</span><span class="w"> </span><span class="o">+</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.000387933</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">-</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
                 <td class="src coveredLine"><span class="w">           </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">38710000.0</span><span class="p">));</span></td>
             </tr>
             <tr>
@@ -767,7 +767,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getCurrentGreenwichMeanSiderealTime</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
@@ -802,14 +802,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="n">DateTime</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getUT1Time</span><span class="p">();</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">getGreenwichMeanSiderealTime</span><span class="p">(</span><span class="n">time</span><span class="p">);</span></td>
             </tr>
             <tr>
@@ -837,14 +837,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l107" href="#l107">107</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="n">decimal</span><span class="w"> </span><span class="nf">getGreenwichMeanSiderealTime</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">time_t</span><span class="w"> </span><span class="n">epochs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">18.697374558</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">24.06570982441908</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">getJulianDateTime</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2451545.0</span><span class="p">)));</span></td>
             </tr>
             <tr>
