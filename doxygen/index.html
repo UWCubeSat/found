@@ -166,7 +166,7 @@ Example Usage</h2>
 <div class="line">    --calibration-data example-df.found            \</div>
 <div class="line">    --camera-focal-length 85e-3                    \</div>
 <div class="line">    --camera-pixel-size 20e-6                      \</div>
-<div class="line">    --reference-orientation 190,0,0</div>
+<div class="line">    --reference-orientation 110,0,0</div>
 </div><!-- fragment --><p>For the distance flags:</p><ol type="1">
 <li>The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases</li>
 <li>We then specify our calibration data, which we generated from <code>tools.generator</code> (check out [our tools folder](tools) for more information)</li>
@@ -179,7 +179,7 @@ Example Usage</h2>
 <div class="line">[INFO 2025-06-11 20:58:06 PDT] Calculated Position: (1.0456e+07, -67903.8, -972.935) m</div>
 <div class="line">[INFO 2025-06-11 20:58:06 PDT] Distance from Earth: 1.04562e+07 m</div>
 </div><!-- fragment --><p>This is close to the actual position, which is <code>{10378137, 0, 0} m</code>. To be specific, the difference is 0.995379% in magnitude and 1339.65 arcsec in direction (this is especially good since we're using low quality edge detection).</p>
-<p>Another thing to point out is the reference orientation, which was <code>{190,0,0}</code>. The image specified in the command was taken at an attitude of <code>{140,0,0}</code>, which if you remember, <code>{190,0,0}-{30,0,0}={140,0,0}</code> (this doesn't general hold, since attitude "subtraction" doesn't actually look like this). This of course is important to specify, otherwise, you'll get the same magnitude, but wrong direction. Should you not want to use the calibration file to do this odd math, you can instead do the equivalent command:</p>
+<p>Another thing to point out is the reference orientation, which was <code>{110,0,0}</code>. The image specified in the command was taken at an attitude of <code>{140,0,0}</code>, which if you remember, <code>{110,0,0}+{30,0,0}={140,0,0}</code> (this doesn't general hold, since attitude "subtraction" doesn't actually look like this). This of course is important to specify, otherwise, you'll get the same magnitude, but wrong direction. Should you not want to use the calibration file to do this odd math, you can instead do the equivalent command:</p>
 <div class="fragment"><div class="line">./build/bin/found distance                           \</div>
 <div class="line">    --image &quot;test/common/assets/example_earth1.png&quot;  \</div>
 <div class="line">    --reference-as-orientation                       \</div>
@@ -195,7 +195,8 @@ Example Usage</h2>
 <div class="line">    --camera-pixel-size 20e-6                      \</div>
 <div class="line">    --reference-orientation 190,0,0                \</div>
 <div class="line">    --output-file other.found</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
+</div><!-- fragment --><p>In general, it is difficult to figure out arbitrary attitudes you should use. That's why <code>tools.attitude</code> (check out [our tools folder](tools) for more information) comes in handy. You can use it to come up with attitudes to plug into the calibration and distance stages, and it even shows you how to run commands for those stages, and for <code>tools.generator</code>.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Capabilities</h1>
 <p>FOUND currently has the following components/modules, which all function together produce an position estimates and orbital projections for a given satellite.</p>
 <h2><a class="anchor" id="autotoc_md9"></a>
