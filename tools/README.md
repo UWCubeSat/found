@@ -25,3 +25,9 @@ For more information, visit each tool's folder for its `README.md`.
 Generates artificial images of Earth from a given position and orientation
 - Tool Name: `generator`
 - Enviornment Name: `generator_env`
+
+## 2. Attitude
+
+Generates artificial attitudes for FOUND to use with the calibration and distance pipelines
+- Tool Name: `attitude`
+- Environment Name: `attitude_env`

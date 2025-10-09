@@ -105,6 +105,12 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
     ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
     ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
 
+
+///// Matchers for gmock /////
+
+// REGEX for a number
+#define NUMBER_REGEX "-?[0-9]*(\\.[0-9]*)?(e?(-+)?[0-9]+)?"
+
 ///// Definition of Assets /////
 
 /**
