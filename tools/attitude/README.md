@@ -20,7 +20,7 @@ Optional Flags:
 
 From `found` root:
 ```bash
->>> python3 -m tools.attitude --use-local --local-attitude 45 0 0 --num-attitude-pairs 3
+>>> python3 -m tools.attitude --local-attitude 45 0 0 --num-attitude-pairs 3
 
 ========== CALIBRATION ATTITUDES ========== 
 
