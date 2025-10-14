@@ -10,6 +10,10 @@ services:
     volumes:
       - ..:/workspace:cached
       - micromamba-data:/opt/micromamba
+      - workspace-build:/workspace/build
+      - workspace-cache:/workspace/.cache
     command: sleep infinity
 volumes:
   micromamba-data:
+  workspace-build:
+  workspace-cache:
