@@ -1,7 +1,11 @@
 #ifndef SRC_DATAFILE_ENCODING_HPP_
 #define SRC_DATAFILE_ENCODING_HPP_
 
-#include <endian.h>
+// endian.h is Linux-specific; on macOS, use compiler built-ins
+#if defined(__linux__)
+    #include <endian.h>
+#endif
+
 #include <stdint.h>
 
 #include "common/decimal.hpp"
@@ -22,7 +26,7 @@ namespace found {
  * 
  * @return The integer in network byte order.
  */
-inline uint16_t htons(uint16_t v) {
+inline uint16_t htons_found(uint16_t v) {
 #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
     return (v << 8) | (v >> 8);
 #else
@@ -37,7 +41,7 @@ inline uint16_t htons(uint16_t v) {
  * 
  * @return The integer in host byte order.
  */
-inline uint16_t ntohs(uint16_t v) {
+inline uint16_t ntohs_found(uint16_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         return (v << 8) | (v >> 8);
     #else
@@ -52,7 +56,7 @@ inline uint16_t ntohs(uint16_t v) {
  * 
  * @return The integer in network byte order.
  */
-inline uint32_t htonl(uint32_t v) {
+inline uint32_t htonl_found(uint32_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         return ((v & 0xFF000000) >> 24) |
                ((v & 0x00FF0000) >> 8) |
@@ -70,7 +74,7 @@ inline uint32_t htonl(uint32_t v) {
  * 
  * @return The integer in host byte order.
  */
-inline uint32_t ntohl(uint32_t v) {
+inline uint32_t ntohl_found(uint32_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         return ((v & 0xFF000000) >> 24) |
                ((v & 0x00FF0000) >> 8) |
@@ -88,7 +92,7 @@ inline uint32_t ntohl(uint32_t v) {
  * 
  * @return The integer in network byte order.
  */
-inline uint64_t htonl(uint64_t v) {
+inline uint64_t htonll_found(uint64_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         return ((v & 0xFF00000000000000ULL) >> 56) |
                ((v & 0x00FF000000000000ULL) >> 40) |
@@ -110,7 +114,7 @@ inline uint64_t htonl(uint64_t v) {
  * 
  * @return The integer in host byte order.
  */
-inline uint64_t ntohl(uint64_t v) {
+inline uint64_t ntohll_found(uint64_t v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         return ((v & 0xFF00000000000000ULL) >> 56) |
                ((v & 0x00FF000000000000ULL) >> 40) |
@@ -155,7 +159,7 @@ inline float htonf(float v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         _f_u_ t;
         t.f = v;
-        t.u = htonl(t.u);
+        t.u = htonl_found(t.u);
         return t.f;
     #else
         return v;
@@ -173,7 +177,7 @@ inline float ntohf(float v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         _f_u_ t;
         t.f = v;
-        t.u = ntohl(t.u);
+        t.u = ntohl_found(t.u);
         return t.f;
     #else
         return v;
@@ -191,7 +195,7 @@ inline double ntohd(double v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         _d_u_ t;
         t.d = v;
-        t.u = ntohl(t.u);
+        t.u = ntohll_found(t.u);
         return t.d;
     #else
         return v;
@@ -209,7 +213,7 @@ inline double htond(double v) {
     #if ENDIANESS == __ORDER_LITTLE_ENDIAN__
         _d_u_ t;
         t.d = v;
-        t.u = htonl(t.u);
+        t.u = htonll_found(t.u);
         return t.d;
     #else
         return v;
