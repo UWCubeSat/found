@@ -151,9 +151,9 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
  * 
  * @return true iff label is in adjacentLabels
  */
-inline bool LabelPresent(int label, int *adjacentLabels, int size) {
+inline bool LabelPresent(size_t label, size_t *adjacentLabels, size_t size) {
     if (size == 0) return false;
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < size; i++) {
         if (adjacentLabels[i] == label) {
             return true;
         }
@@ -194,56 +194,57 @@ inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
  * 
  * Updates components with the new pixel as appropriate
  */
-inline int NWayEquivalenceAdd(const Image &image,
+inline size_t NWayEquivalenceAdd(const Image &image,
                               uint64_t index,
-                              int &L,
-                              int adjacentLabels[4],
-                              int size,
-                              std::unordered_map<int, Component> &components,
-                              std::unordered_map<int, int> &equivalencies) {
+                              size_t &L,
+                              size_t adjacentLabels[4],
+                              size_t size,
+                              std::unique_ptr<Component[]> &components,
+                              std::unique_ptr<size_t[]> &equivalencies) {
     Vec2 pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
     if (size == 0) {
         // No adjacent labels
-        components.insert({++L, {{index}, pixel, pixel}});
+        components[++L - 1] = {{index}, pixel, pixel};
         return L;
     } else if (size == 1) {
         // One adjacent label
-        UpdateComponent(components[adjacentLabels[0]], index, pixel);
+        UpdateComponent(components[adjacentLabels[0] - 1], index, pixel);
         return adjacentLabels[0];
     } else if (size == 2) {  // Added for optimization
         if (adjacentLabels[0] < adjacentLabels[1]) {
             // Two adjacent labels, first is smaller
-            UpdateComponent(components[adjacentLabels[0]], index, pixel);
-            if (equivalencies.find(adjacentLabels[1]) == equivalencies.end()) {
-                equivalencies.try_emplace(adjacentLabels[1], adjacentLabels[0]);
+            UpdateComponent(components[adjacentLabels[0] - 1], index, pixel);
+            if (equivalencies[adjacentLabels[1] - 1] == 0) {
+                equivalencies[adjacentLabels[1] - 1] = adjacentLabels[0];
             } else {
-                equivalencies[adjacentLabels[1]] = std::min(equivalencies[adjacentLabels[1]], adjacentLabels[0]);
+                equivalencies[adjacentLabels[1] - 1] =
+                    std::min(equivalencies[adjacentLabels[1] - 1], adjacentLabels[0]);
             }
             return adjacentLabels[0];
         }
 
         // Two adjacent labels, second is smaller
-        UpdateComponent(components[adjacentLabels[1]], index, pixel);
-        if (equivalencies.find(adjacentLabels[0]) == equivalencies.end()) {
-            equivalencies.try_emplace(adjacentLabels[0], adjacentLabels[1]);
+        UpdateComponent(components[adjacentLabels[1] - 1], index, pixel);
+        if (equivalencies[adjacentLabels[0] - 1] == 0) {
+            equivalencies[adjacentLabels[0] - 1] = adjacentLabels[1];
         } else {
-            equivalencies[adjacentLabels[0]] = std::min(equivalencies[adjacentLabels[0]], adjacentLabels[1]);
+            equivalencies[adjacentLabels[0] - 1] = std::min(equivalencies[adjacentLabels[0] - 1], adjacentLabels[1]);
         }
         return adjacentLabels[1];
     }
-    int minLabel = adjacentLabels[0];
-    for (int i = 1; i < size; i++) {
+    size_t minLabel = adjacentLabels[0];
+    for (size_t i = 1; i < size; i++) {
         if (adjacentLabels[i] < minLabel) {
             minLabel = adjacentLabels[i];
         }
     }
-    UpdateComponent(components[minLabel], index, pixel);
-    for (int i = 0; i < size; i++) {
+    UpdateComponent(components[minLabel - 1], index, pixel);
+    for (size_t i = 0; i < size; i++) {
         if (adjacentLabels[i] != minLabel) {
-            if (equivalencies.find(adjacentLabels[i]) == equivalencies.end()) {
-                equivalencies.try_emplace(adjacentLabels[i], minLabel);
+            if (equivalencies[adjacentLabels[i] - 1] == 0) {
+                equivalencies[adjacentLabels[i] - 1] = minLabel;
             } else {
-                equivalencies[adjacentLabels[i]] = std::min(equivalencies[adjacentLabels[i]], minLabel);
+                equivalencies[adjacentLabels[i] - 1] = std::min(equivalencies[adjacentLabels[i] - 1], minLabel);
             }
         }
     }
@@ -251,78 +252,88 @@ inline int NWayEquivalenceAdd(const Image &image,
 }
 
 Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
-    // Step 0: Setup the Problem
-    std::unordered_map<int, Component> components;
-    std::unordered_map<int, int> equivalencies;
-    std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
+    // Step -1: Validation
+    if (image.width < 1 || image.height < 1 || image.channels < 1) {
+        return Components();
+    }
 
-    int L = 0;
-    int adjacentLabels[4];
-    int size = 0;
+    // Step 0: Setup the Problem
+    size_t max_components = DECIMAL_CEIL(DECIMAL(image.width) / 2) * DECIMAL_CEIL(DECIMAL(image.height) / 2);
+    size_t comparison_size = image.width * 2;
+    std::unique_ptr<Component[]> components(new Component[max_components]);
+    std::unique_ptr<size_t[]> equivalencies(new size_t[max_components]{});
+    std::unique_ptr<size_t[]> componentPoints(new size_t[comparison_size]);  // Faster than using a hashset
+
+    size_t L = 0;
+    size_t adjacentLabels[4];
+    size_t size = 0;
 
     // Step 1: Iterate through the image, forming primary groups of
     // components, taking note of equivalent components
 
     // Step 1a: Tackle the First Pixel
     if (Criteria(0, image)) {
-        components.insert({++L, {{0}, {0, 0}, {0, 0}}});
+        components[++L - 1] = {{0}, {0, 0}, {0, 0}};
         componentPoints[0] = L;
+    } else {
+        componentPoints[0] = 0;
     }
 
     uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
     for (uint64_t i = 1; i < imageSize; i++) {
         // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
+            componentPoints[i % comparison_size] = 0;
             continue;
         }
 
         // Step 1c: Figure out all adjacent labels
         if (i / image.width == 0) {
             // Top Row (1 other pixel)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
                 adjacentLabels[size++] = left;
             }
         } else if (i % image.width == 0) {
             // Left Column (2 other pixels)
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
                 adjacentLabels[size++] = top;
             }
-            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+            if (auto topRight = componentPoints[(i - image.width + 1) % comparison_size]; topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
             }
         } else if ((i + 1) % image.width == 0) {
             // Right Column (3 other pixels)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+            if (auto topLeft = componentPoints[(i - image.width - 1) % comparison_size]; topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
         } else {
             // All others pixels (4 other pixels)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+            if (auto topLeft = componentPoints[(i - image.width - 1) % comparison_size]; topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
-            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+            if (auto topRight = componentPoints[(i - image.width + 1) % comparison_size]; topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
@@ -330,38 +341,44 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         }
 
         // Step 1d: Add the pixel to the appropriate component and prepare for the next iteration
-        componentPoints[i] = NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies);
+        componentPoints[i % comparison_size] =
+            NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies);
         size = 0;
     }
 
     // Step 2: Now we need to merge the equivalent components. We merge the higher
     // label into the lower label, and update the lowest and highest points,
     // and then get rid of the higher label's component data. We iterate from highest to lowest
-    for (int i = L; i >= 0; i--) {
-        auto it = equivalencies.find(i);
-        if (it == equivalencies.end()) continue;
-
+    for (size_t i = L; i >= 1; i--) {
         // Guarenteed to be the lowest label
-        int lowestLabel = it->second;
+        size_t lowestLabel = equivalencies[i - 1];
+
+        if (lowestLabel == 0) continue;
 
         // Merge the components
-        auto compIt = components.find(i);
         // compIt is guarenteed to exist, so we do not perform a check here
-        auto &compToMerge = compIt->second;
-        auto &lowestComp = components[lowestLabel];
+        Component &compToMerge = components[i - 1];
+        Component &lowestComp = components[lowestLabel - 1];
         lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
         if (compToMerge.upperLeft.x < lowestComp.upperLeft.x) lowestComp.upperLeft.x = compToMerge.upperLeft.x;
         if (compToMerge.lowerRight.x > lowestComp.lowerRight.x) lowestComp.lowerRight.x = compToMerge.lowerRight.x;
         // We skip this statement, because its impossible (a higher component is level or lower than a lower component):
         // if (compToMerge.upperLeft.y < lowestComp.upperLeft.y) lowestComp.upperLeft.y = compToMerge.upperLeft.y;
         if (compToMerge.lowerRight.y > lowestComp.lowerRight.y) lowestComp.lowerRight.y = compToMerge.lowerRight.y;
-
-        components.erase(compIt);
     }
+
+    // L is the number of labels assigned (labels start at 1 and go up to L).
+    // Ensure we haven't allocated/used more components than the maximum capacity.
+    assert(static_cast<size_t>(L) <= max_components);
 
     // Step 3: Return the components
     Components result;
-    for (const auto &[label, component] : components) result.push_back(component);
+    for (size_t i = L; i >= 1; i--) {
+        // Only include components that are not marked as equivalent (i.e., root labels)
+        if (equivalencies[i - 1] == 0) {
+            result.push_back(components[i - 1]);
+        }
+    }
 
     return result;
 }
