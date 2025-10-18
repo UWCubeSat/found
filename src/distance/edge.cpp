@@ -259,10 +259,10 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
     // Step 0: Setup the Problem
     size_t max_components = DECIMAL_CEIL(DECIMAL(image.width) / 2) * DECIMAL_CEIL(DECIMAL(image.height) / 2);
-    size_t comparison_size = image.width * 2;
+    size_t comparison_size = image.width * image.height;
     std::unique_ptr<Component[]> components(new Component[max_components]);
     std::unique_ptr<size_t[]> equivalencies(new size_t[max_components]{});
-    std::unique_ptr<size_t[]> componentPoints(new size_t[comparison_size]);  // Faster than using a hashset
+    std::unique_ptr<size_t[]> componentPoints(new size_t[comparison_size]{});  // Faster than using a hashset
 
     size_t L = 0;
     size_t adjacentLabels[4];
@@ -275,65 +275,62 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     if (Criteria(0, image)) {
         components[++L - 1] = {{0}, {0, 0}, {0, 0}};
         componentPoints[0] = L;
-    } else {
-        componentPoints[0] = 0;
     }
 
     uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
     for (uint64_t i = 1; i < imageSize; i++) {
         // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
-            componentPoints[i % comparison_size] = 0;
             continue;
         }
 
         // Step 1c: Figure out all adjacent labels
         if (i / image.width == 0) {
             // Top Row (1 other pixel)
-            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
+            if (auto left = componentPoints[i - 1]; left != 0) {
                 adjacentLabels[size++] = left;
             }
         } else if (i % image.width == 0) {
             // Left Column (2 other pixels)
-            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
+            if (auto top = componentPoints[i - image.width]; top != 0) {
                 adjacentLabels[size++] = top;
             }
-            if (auto topRight = componentPoints[(i - image.width + 1) % comparison_size]; topRight != 0) {
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
             }
         } else if ((i + 1) % image.width == 0) {
             // Right Column (3 other pixels)
-            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
+            if (auto left = componentPoints[i - 1]; left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[(i - image.width - 1) % comparison_size]; topLeft != 0) {
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
+            if (auto top = componentPoints[i - image.width]; top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
         } else {
             // All others pixels (4 other pixels)
-            if (auto left = componentPoints[(i - 1) % comparison_size]; left != 0) {
+            if (auto left = componentPoints[i - 1]; left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[(i - image.width - 1) % comparison_size]; topLeft != 0) {
+            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[(i - image.width) % comparison_size]; top != 0) {
+            if (auto top = componentPoints[i - image.width]; top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
-            if (auto topRight = componentPoints[(i - image.width + 1) % comparison_size]; topRight != 0) {
+            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
@@ -341,7 +338,7 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         }
 
         // Step 1d: Add the pixel to the appropriate component and prepare for the next iteration
-        componentPoints[i % comparison_size] =
+        componentPoints[i] =
             NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies);
         size = 0;
     }
