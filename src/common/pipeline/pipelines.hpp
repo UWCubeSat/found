@@ -57,7 +57,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      * indicates whether storage is present or not for
      * the output.
      */
-    virtual Output Run(const Input &input) = 0;
+    Output Run(const Input &input) override = 0;
 
  protected:
     /// The stages of this

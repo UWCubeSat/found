@@ -17,10 +17,15 @@ std::function<bool(uint64_t, const Image &)> criteria = [](uint64_t index, const
     return image.image[index] > 0;
 };
 
+// Helper function to convert (x, y) coordinates to index
+inline uint64_t xyToIndex(int width, int x, int y) {
+    return y * width + x;
+}
+
 MATCHER_P(ComponentEqual, expected, "") {
     return expected.points == arg.points &&
-           vectorEqual(arg.upperLeft, expected.upperLeft) &&
-           vectorEqual(arg.lowerRight, expected.lowerRight);
+           arg.upperLeftIndex == expected.upperLeftIndex &&
+           arg.lowerRightIndex == expected.lowerRightIndex;
 }
 
 TEST(ConnectedComponentsTest, TestInvalidImage) {
@@ -75,8 +80,8 @@ TEST(ConnectedComponentsTest, TestOnePixelBase) {
     Components expected = {
         {
             {0},
-            {0, 0},
-            {0, 0}
+            0,  // upperLeftIndex: y=0, x=0 -> index = 0*2 + 0 = 0
+            0   // lowerRightIndex: y=0, x=0 -> index = 0*2 + 0 = 0
         }
     };
 
@@ -107,8 +112,8 @@ TEST(ConnectedComponentsTest, TestOnePixelCorner) {
     Components expected = {
         {
             {1},
-            {1, 0},
-            {1, 0}
+            1,  // upperLeftIndex: y=0, x=1 -> index = 0*2 + 1 = 1
+            1   // lowerRightIndex: y=0, x=1 -> index = 0*2 + 1 = 1
         }
     };
 
@@ -139,8 +144,8 @@ TEST(ConnectedComponentsTest, TestTwoPixels) {
     Components expected = {
         {
             {0, 1},
-            {0, 0},
-            {1, 0}
+            0,  // upperLeftIndex: y=0, x=0 -> index = 0*2 + 0 = 0
+            1   // lowerRightIndex: y=0, x=1 -> index = 0*2 + 1 = 1
         }
     };
 
@@ -170,8 +175,8 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalNormal) {
     Components expected = {
         {
             {0, 3},
-            {0, 0},
-            {1, 1}
+            xyToIndex(2, 0, 0),  // (0, 0)
+            xyToIndex(2, 1, 1)  // (1, 1)
         },
     };
 
@@ -201,8 +206,8 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalReverse) {
     Components expected = {
         {
             {1, 2},
-            {0, 0},
-            {1, 1}
+            xyToIndex(2, 0, 0),  // (0, 0)
+            xyToIndex(2, 1, 1)  // (1, 1)
         },
     };
 
@@ -233,8 +238,8 @@ TEST(ConnectedComponentsTest, TestDoubleDiagonal) {
     Components expected = {
         {
             {0, 2, 4, 6, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -265,8 +270,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalVertical) {
     Components expected = {
         {
             {0, 2, 3, 4, 6},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -297,8 +302,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal1) {
     Components expected = {
         {
             {0, 1, 2, 4, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -329,8 +334,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal2) {
     Components expected = {
         {
             {0, 4, 6, 7, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -363,8 +368,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines1) {
     Components expected = {
         {
             {9, 10, 11, 12, 13, 17, 18, 19, 23, 24},
-            {0, 1},
-            {4, 4}
+            xyToIndex(5, 0, 1),  // (0, 1)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -401,8 +406,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines2) {
     Components expected = {
         {
             {4, 5, 7, 9, 10, 12, 13, 15, 16, 17, 18},
-            {0, 0},
-            {4, 3}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -439,8 +444,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines3) {
     Components expected = {
         {
             {9, 10, 11, 12, 13, 15},
-            {0, 1},
-            {4, 3}
+            xyToIndex(5, 0, 1),  // (0, 1)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -477,8 +482,8 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines1) {
     Components expected = {
         {
             {0, 2, 4, 5, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
-            {0, 0},
-            {4, 4}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -515,8 +520,8 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines2) {
     Components expected = {
         {
             {4, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
-            {0, 0},
-            {4, 4}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -551,8 +556,8 @@ TEST(ConnectedComponentsTest, Test2AdjacentPixelsGeneral) {
     Components expected = {
         {
             {2, 3, 4},
-            {0, 0},
-            {2, 1}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 1)  // (2, 1)
         },
     };
 
@@ -584,8 +589,8 @@ TEST(ConnectedComponentsTest, TestConvergingBlob) {
     Components expected = {
         {
             {0, 4, 5, 7, 9, 11, 12, 13, 16, 17, 18},
-            {0, 0},
-            {4, 3}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -616,13 +621,13 @@ TEST(ConnectedComponentsTest, Test2BlobsSimple) {
     Components expected = {
         {
             {2},
-            {2, 0},
-            {2, 0}
+            xyToIndex(3, 2, 0),  // (2, 0)
+            xyToIndex(3, 2, 0)  // (2, 0)
         },
         {
             {6, 7},
-            {0, 2},
-            {1, 2}
+            xyToIndex(3, 0, 2),  // (0, 2)
+            xyToIndex(3, 1, 2)  // (1, 2)
         }
     };
 
@@ -655,13 +660,13 @@ TEST(ConnectedComponentsTest, Test2BlobsGeneral) {
     Components expected = {
         {
             {4, 8, 9, 14},
-            {3, 0},
-            {4, 2}
+            xyToIndex(5, 3, 0),  // (3, 0)
+            xyToIndex(5, 4, 2)  // (4, 2)
         },
         {
             {10, 15, 17, 20, 21, 22, 23, 24},
-            {0, 2},
-            {4, 4}
+            xyToIndex(5, 0, 2),  // (0, 2)
+            xyToIndex(5, 4, 4)  // (4, 4)
         }
     };
 
@@ -697,18 +702,18 @@ TEST(ConnectedComponentsTest, Test3BlobsGeneral) {
     Components expected = {
         {
             {2, 6, 7, 14, 15},
-            {0, 0},
-            {3, 2}
+            xyToIndex(6, 0, 0),  // (0, 0)
+            xyToIndex(6, 3, 2)  // (3, 2)
         },
         {
             {4, 5, 11},
-            {4, 0},
-            {5, 1}
+            xyToIndex(6, 4, 0),  // (4, 0)
+            xyToIndex(6, 5, 1)  // (5, 1)
         },
         {
             {23, 25, 27, 29, 31, 32, 33, 34, 35},
-            {1, 3},
-            {5, 5}
+            xyToIndex(6, 1, 3),  // (1, 3)
+            xyToIndex(6, 5, 5)  // (5, 5)
         },
     };
 
@@ -743,23 +748,23 @@ TEST(ConnectedComponentsTest, Test4BlobsGeneral) {
     Components expected = {
         {
             {2, 5, 6, 10},
-            {0, 0},
-            {2, 2}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 2, 2)  // (2, 2)
         },
         {
             {4, 9},
-            {4, 0},
-            {4, 1}
+            xyToIndex(5, 4, 0),  // (4, 0)
+            xyToIndex(5, 4, 1)  // (4, 1)
         },
         {
             {20},
-            {0, 4},
-            {0, 4}
+            xyToIndex(5, 0, 4),  // (0, 4)
+            xyToIndex(5, 0, 4)  // (0, 4)
         },
         {
             {17, 19, 23, 24},
-            {2, 3},
-            {4, 4}
+            xyToIndex(5, 2, 3),  // (2, 3)
+            xyToIndex(5, 4, 4)  // (4, 4)
         }
     };
 
