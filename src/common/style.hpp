@@ -181,7 +181,7 @@ typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPr
 
 /// Number of (maximum) stages for each pipeline
 constexpr size_t calibration_size = 1;
-constexpr size_t distance_size = 3;
+constexpr size_t distance_size = 4;
 constexpr size_t orbit_size = 2;
 
 /// Pipeline for Calibration

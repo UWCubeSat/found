@@ -2,19 +2,20 @@
 #define SRC_DISTANCE_EDGE_FILTERS_HPP_
 
 #include <memory>
+#include <optional>
 
+#include "command-line/parsing/options.hpp"  
 #include "common/pipeline/pipelines.hpp"
-// including to use Points
-#include "distance/edge.hpp" 
+#include "distance/edge.hpp"
 
 namespace found {
 
-// pipeline type alias for edge-filtering stages operating on Points
+
 using EdgeFilteringAlgorithms = ModifyingPipeline<Points>;
 
 /**
  * Abstract superclass for edge-filtering algorithms.
- * This modifies Points in-place (ModifyingStage<Points>).
+ * modifies Points in-place (ModifyingStage<Points>).
  */
 class EdgeFilteringAlgorithm : public ModifyingStage<Points> {
  public:
@@ -26,7 +27,6 @@ class EdgeFilteringAlgorithm : public ModifyingStage<Points> {
 /**
  * A trivial implementation to ensure linkage / prevent undefined references.
  * Does nothing to the Points (no-op filter).
- * Had to use this to avoid memory leaks. Not sure if this is proper implementation
  */
 class NoOpEdgeFilter : public EdgeFilteringAlgorithm {
  public:
@@ -40,18 +40,38 @@ class NoOpEdgeFilter : public EdgeFilteringAlgorithm {
 };
 
 /**
- * Provider that constructs an EdgeFilteringAlgorithms pipeline and
- * registers requested edge filters. For now it registers a single
- * NoOpEdgeFilter so builds succeed
+ * Convenience provider (no-arg). Returns a pipeline that contains a single
+ * NoOpEdgeFilter so callers that expect a ready pipeline can use this.
  */
 inline EdgeFilteringAlgorithms ProvideEdgeFilteringAlgorithm() {
     EdgeFilteringAlgorithms pipeline;
-    // Use a function-local static object so we don't allocate with new and leak
     static NoOpEdgeFilter noop;
     pipeline.Complete(noop);
     return pipeline;
 }
 
-}  
+/**
+ * Options-aware provider. Constructs a pipeline containing all filters
+ * that are enabled in options and returns it. If no filter is enabled,
+ * returns std::nullopt to indicate "no filters".
+ *
+ * Note: stages added are function-local static instances so the pipeline
+ * can safely store raw pointers to them.
+ */
+inline std::optional<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &options) {
+    EdgeFilteringAlgorithms pipeline;
+    bool added = false;
+
+    static NoOpEdgeFilter noop;  // safe persistent instance
+    if (options.enableNoOpEdgeFilter) {
+        pipeline.Complete(noop);
+        added = true;
+    }
+
+    if (!added) return std::nullopt;
+    return pipeline;
+}
+
+}  // namespace found
 
 #endif  // SRC_DISTANCE_EDGE_FILTERS_HPP_

@@ -64,6 +64,8 @@ FOUND_CLI_OPTION("isdda-discrim-ratio"     , decimal           , ISDDADiscimRati
 FOUND_CLI_OPTION("isdda-pdf-order"         , int               , ISDDAPdfOrd     , 2                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Probability Density Function Order for ISSDA (even int)"  ) \
 FOUND_CLI_OPTION("isdda-radius-loss-order" , int               , ISDDARadLossOrd , 4                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Radius Loss Order ISSDA (even int)"                       ) \
 FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
+FOUND_CLI_OPTION("enable-noop-edge-filter" , bool              , enableNoOpEdgeFilter, false                  , found::strtobool(optarg)   , true              , OPT_ASSIGN, "Enable the NoOp edge filter (test/demo only)"                 ) \
+
 
 
 // Orbit Flags

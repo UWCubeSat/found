@@ -40,7 +40,7 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
+std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -53,19 +53,14 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOp
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &&options) {
+std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
     if (options.distanceAlgo == SDDA) {
-        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                         Camera(options.focalLength,
-                                                                                options.pixelSize,
-                                                                                options.image.width,
-                                                                                options.image.height));
+        Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
+        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, std::move(cam));
     } else if (options.distanceAlgo == ISDDA) {
+        Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
         return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                                  Camera(options.focalLength,
-                                                                                         options.pixelSize,
-                                                                                         options.image.width,
-                                                                                         options.image.height),
+                                                                                  std::move(cam),
                                                                                   options.ISDDAMinIters,
                                                                                   options.ISDDADistRatio,
                                                                                   options.ISDDADiscimRatio,
@@ -84,7 +79,7 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
+std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");

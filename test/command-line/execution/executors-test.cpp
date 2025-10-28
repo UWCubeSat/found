@@ -83,26 +83,26 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 }
 
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
-    DistanceOptions options = {
-        strtoimage("test/common/assets/example_image.jpg"),
-        strtodf("test/common/assets/empty-df.found"),
-        false,
-        0.012,
-        20E-6,
-        {0, 0, 0},
-        {0, 0, 0},
-        DECIMAL_M_E,
-        25,
-        1,
-        0.0,
-        "hello",
-        92,
-        300,
-        2.0,
-        10,
-        12,
-        temp_df
-    };
+    DistanceOptions options;
+    options.image = strtoimage("test/common/assets/example_image.jpg");
+    options.calibrationData = strtodf("test/common/assets/empty-df.found");
+    options.refAsOrientation = false;
+    options.focalLength = 0.012;
+    options.pixelSize = 20E-6;
+    options.refOrientation = {0, 0, 0};
+    options.relOrientation = {0, 0, 0};
+    options.radius = DECIMAL_M_E;
+    options.SEDAThreshold = 25;
+    options.SEDABorderLen = 1;
+    options.SEDAOffset = 0.0;
+    options.distanceAlgo = "hello";
+    options.ISDDAMinIters = 92;
+    options.ISDDADistRatio = 300;
+    options.ISDDADiscimRatio = 2.0;
+    options.ISDDAPdfOrd = 10;
+    options.ISDDARadLossOrd = 12;
+    options.outputFile = temp_df;
+    options.enableNoOpEdgeFilter = false;
     Points points = {
         {0, 0},
         {1, 1},
@@ -177,26 +177,26 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
 // new test using the no-filter constructor
 TEST(ExecutorsTest, TestDistancePipelineExecutor_NoFilters) {
-    DistanceOptions options = {
-        strtoimage("test/common/assets/example_image.jpg"),
-        strtodf("test/common/assets/empty-df.found"),
-        false,
-        0.012,
-        20E-6,
-        {0, 0, 0},
-        {0, 0, 0},
-        DECIMAL_M_E,
-        25,
-        1,
-        0.0,
-        "hello",
-        92,
-        300,
-        2.0,
-        10,
-        12,
-        temp_df
-    };
+    DistanceOptions options;
+    options.image = strtoimage("test/common/assets/example_image.jpg");
+    options.calibrationData = strtodf("test/common/assets/empty-df.found");
+    options.refAsOrientation = false;
+    options.focalLength = 0.012;
+    options.pixelSize = 20E-6;
+    options.refOrientation = {0, 0, 0};
+    options.relOrientation = {0, 0, 0};
+    options.radius = DECIMAL_M_E;
+    options.SEDAThreshold = 25;
+    options.SEDABorderLen = 1;
+    options.SEDAOffset = 0.0;
+    options.distanceAlgo = "hello";
+    options.ISDDAMinIters = 92;
+    options.ISDDADistRatio = 300;
+    options.ISDDADiscimRatio = 2.0;
+    options.ISDDAPdfOrd = 10;
+    options.ISDDARadLossOrd = 12;
+    options.outputFile = temp_df;
+    options.enableNoOpEdgeFilter = false;
     Points points = {
         {0, 0},
         {1, 1},

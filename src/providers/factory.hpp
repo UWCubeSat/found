@@ -3,9 +3,11 @@
 
 #include <memory>
 #include <utility>
+#include <optional>
 
 #include "command-line/execution/executors.hpp"
 #include "providers/stage-providers.hpp"
+#include "distance/edge_filters.hpp"  // ProvideEdgeFilteringAlgorithm
 
 namespace found {
 
@@ -29,10 +31,32 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
  * @return A pointer to a DistancePipelineExecutor
  */
 inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
-    return std::make_unique<DistancePipelineExecutor>(std::forward<DistanceOptions>(options),
-                                    ProvideEdgeDetectionAlgorithm(std::forward<DistanceOptions>(options)),
-                                    ProvideDistanceDeterminationAlgorithm(std::forward<DistanceOptions>(options)),
-                                    ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
+    // Read enable flags before anything that might move resources.
+    bool enableNoop = options.enableNoOpEdgeFilter;
+
+    // Call providers with const reference to options (no copies).
+    auto edgeAlg = ProvideEdgeDetectionAlgorithm(options);
+    auto distAlg = ProvideDistanceDeterminationAlgorithm(options);
+    auto vecAlg = ProvideVectorGenerationAlgorithm(options);
+
+    // Options-aware filters provider: returns optional pipeline if any filters enabled
+    std::optional<EdgeFilteringAlgorithms> filtersOpt;
+    if (enableNoop) {
+        filtersOpt = ProvideEdgeFilteringAlgorithm(options);  // checks enableNoOpEdgeFilter
+    }
+
+    if (filtersOpt.has_value()) {
+        return std::make_unique<DistancePipelineExecutor>(std::move(options),
+                                    std::move(edgeAlg),
+                                    std::move(distAlg),
+                                    std::move(vecAlg),
+                                    std::move(filtersOpt.value()));
+    } else {
+        return std::make_unique<DistancePipelineExecutor>(std::move(options),
+                                    std::move(edgeAlg),
+                                    std::move(distAlg),
+                                    std::move(vecAlg));
+    }
 }
 
 // TODO: Uncomment when orbit stage is implemented

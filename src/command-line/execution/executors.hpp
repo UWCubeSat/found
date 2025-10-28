@@ -100,7 +100,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
     const DistanceOptions options_;
     /// The Distance pipeline being used
     // Increase capacity to 4 stages: edge detection -> filters -> distance -> vectorize
-    SequentialPipeline<Image, Vec3, 4> pipeline_;
+    DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
