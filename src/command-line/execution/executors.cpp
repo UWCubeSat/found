@@ -53,6 +53,27 @@ DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                    .Complete(*this->vectorizationAlgorithm);
 }
 
+/**
+ * New overload: accepts an edge-filtering pipeline (EdgeFilteringAlgorithms)
+ * which is moved into the executor and inserted between
+ * edge-detection and distance-determination stages.
+ */
+DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
+                                                   std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                                   std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                                   std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm,
+                                                   EdgeFilteringAlgorithms &&filters)
+                                                   : options_(std::move(options)), filters_(std::move(filters)) {
+    this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
+    this->distanceAlgorithm = std::move(distanceAlgorithm);
+    this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
+    // Build the pipeline: edge detection -> filters (modifying Points) -> distance -> vectorize
+    this->pipeline_.AddStage(*this->edgeDetectionAlgorithm)
+                   .AddStage(this->filters_)
+                   .AddStage(*this->distanceAlgorithm)
+                   .Complete(*this->vectorizationAlgorithm);
+}
+
 void DistancePipelineExecutor::ExecutePipeline() {
     // Results are stored within the pipeline, can also be accessed
     // via this function call

@@ -134,6 +134,101 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     std::unique_ptr<VectorGenerationAlgorithm>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
 
+    // using new edge-filtering pipeline integration.
+    // ProvideEdgeFilteringAlgorithm returns an EdgeFilteringAlgorithms (ModifyingPipeline<Points>)
+    // that currently contains a NoOpEdgeFilter so behavior is unchanged.
+    auto filters = found::ProvideEdgeFilteringAlgorithm();
+    DistancePipelineExecutor executor(std::move(options),
+                                      std::move(edgeDetectionAlgorithm),
+                                      std::move(distanceDeterminationAlgorithm),
+                                      std::move(vectorGenerationAlgorithm),
+                                      std::move(filters));
+
+    executor.ExecutePipeline();
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    executor.OutputResults();
+
+    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+
+    std::stringstream expectedOutput;
+    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
+                   << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
+
+    ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+
+    DataFile expected{
+        {{'F', 'O', 'U', 'N'}, 1U, 1},
+        {},
+        std::make_unique<LocationRecord[]>(1)
+    };
+    expected.positions[0] = {145295, {4, 5, 6}};
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+    ASSERT_DF_EQ(expected, actual, 1);
+
+    std::remove(temp_df);
+}
+
+// new test using the no-filter constructor
+TEST(ExecutorsTest, TestDistancePipelineExecutor_NoFilters) {
+    DistanceOptions options = {
+        strtoimage("test/common/assets/example_image.jpg"),
+        strtodf("test/common/assets/empty-df.found"),
+        false,
+        0.012,
+        20E-6,
+        {0, 0, 0},
+        {0, 0, 0},
+        DECIMAL_M_E,
+        25,
+        1,
+        0.0,
+        "hello",
+        92,
+        300,
+        2.0,
+        10,
+        12,
+        temp_df
+    };
+    Points points = {
+        {0, 0},
+        {1, 1},
+        {2, 2}
+    };
+    PositionVector positionVector1{1, 2, 3};
+    PositionVector positionVector2{4, 5, 6};
+
+    // Setup Mocks
+    std::unique_ptr<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithm =
+        std::make_unique<MockEdgeDetectionAlgorithm>();
+    EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
+        .WillOnce(testing::Return(points));
+
+    std::unique_ptr<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithm =
+        std::make_unique<MockDistanceDeterminationAlgorithm>();
+    EXPECT_CALL(*mockDistanceDeterminationAlgorithm, Run(PointsMatcher(points)))
+        .WillOnce(testing::Return(positionVector1));
+
+    std::unique_ptr<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithm =
+        std::make_unique<MockVectorGenerationAlgorithm>();
+    EXPECT_CALL(*mockVectorGenerationAlgorithm, Run(PositionVectorMatcher(positionVector1)))
+        .WillOnce(testing::Return(positionVector2));
+
+    std::unique_ptr<EdgeDetectionAlgorithm>
+        edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
+    std::unique_ptr<DistanceDeterminationAlgorithm>
+        distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
+    std::unique_ptr<VectorGenerationAlgorithm>
+        vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
+
+    // Use the original ctor (no filters)
     DistancePipelineExecutor executor(std::move(options),
                                       std::move(edgeDetectionAlgorithm),
                                       std::move(distanceDeterminationAlgorithm),
@@ -142,9 +237,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout
-
     executor.OutputResults();
-
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
 
     std::stringstream expectedOutput;

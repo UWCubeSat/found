@@ -12,6 +12,7 @@
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
+#include "distance/edge_filters.hpp"
 
 #include "orbit/orbit.hpp"
 
@@ -75,21 +76,21 @@ class DistancePipelineExecutor : public PipelineExecutor {
     ~DistancePipelineExecutor();
 
     /**
-     * Constructs a DistancePipelineExecutor
-     * 
-     * @param options The options to create the pipeline
-     * @param edgeDetectionAlgorithm The edge detection algorithm to use
-     * @param distanceAlgorithm The distance determination algorithm to use
-     * @param vectorizationAlgorithm The vectorization algorithm to use
-     * 
-     * @pre options.image.image must be point to heap allocated memory.
-     * This is guarenteed as long as strtoimage is used to create the image,
-     * and it throws an error if the image is not valid.
+     * Constructs a DistancePipelineExecutor (no edge-filters)
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                       std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+
+    /**
+     * Constructs a DistancePipelineExecutor with an edge-filtering pipeline
+     */
+    explicit DistancePipelineExecutor(DistanceOptions &&options,
+                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm,
+                                      EdgeFilteringAlgorithms &&filters);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -98,13 +99,16 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The DistanceOptions being used
     const DistanceOptions options_;
     /// The Distance pipeline being used
-    DistancePipeline pipeline_;
+    // Increase capacity to 4 stages: edge detection -> filters -> distance -> vectorize
+    SequentialPipeline<Image, Vec3, 4> pipeline_;
     /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
     std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
+    /// Optional edge-filtering pipeline (may be empty)
+    EdgeFilteringAlgorithms filters_;
 };
 
 /**
