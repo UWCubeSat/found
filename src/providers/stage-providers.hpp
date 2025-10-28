@@ -29,7 +29,7 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
+inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -40,7 +40,7 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -53,7 +53,7 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const Dist
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
     if (options.distanceAlgo == SDDA) {
         Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
         return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, std::move(cam));
@@ -79,7 +79,7 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");

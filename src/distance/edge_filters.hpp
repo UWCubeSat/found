@@ -4,7 +4,7 @@
 #include <memory>
 #include <optional>
 
-#include "command-line/parsing/options.hpp"  
+#include "command-line/parsing/options.hpp"
 #include "common/pipeline/pipelines.hpp"
 #include "distance/edge.hpp"
 
