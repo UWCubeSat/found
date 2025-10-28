@@ -65,33 +65,33 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
 
  protected:
     /**
-     *Returns the center of earth as a 3d Vector
+     * Returns the center of earth as a 3d Vector
      *
      * @param spats The normalized spatial coordinates used to find the center 
      * 
      * @return The center of earth as a 3d Vector
+     * 
+     * @pre spats.size() >= 3
     */
-    Vec3 getCenter(Vec3* spats);
+    Vec3 getCenter(const Vec3* spats);
 
     /**
-     * Returns the radius of the calculated "earth" (normalized)
+     * Returns the position of the planet relative to the camera
      * 
-     * @param spats The normalized spatial coordinates
-     * @param center The center of the earth as a 3d Vector
+     * @param p The points
      * 
-     * @return The radius of earth normalized
-    */
-    PreciseDecimal getRadius(Vec3* spats, Vec3 center);
-
-    /**
-     * Returns the scaled distance from earth
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
      * 
-     * @param r The normalized radius
-     * @param c The distance to the center of the small circle
+     * @pre p must refer to points taken by the camera that was passed to
+     * this
      * 
-     * @return The distance from earth as a Scalar
-    */
-    PreciseDecimal getDistance(PreciseDecimal r, PreciseDecimal c);
+     * @pre p.size() >= 3
+     * 
+     * @pre For all elements in p, each vector must be produced via
+     * this->cam_CameraToSpatial(originalPoint).Normalize()
+     */
+    PositionVector Run(const Vec3 *p);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken
@@ -102,6 +102,16 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
     */
     decimal radius_;
+
+    /**
+     * Calculated center vector
+     */
+    Vec3 center_;
+
+    /**
+     * Calculated radius
+     */
+    decimal r_;
 };
 
 /**
@@ -221,6 +231,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param size The size of indicies, or how many indicies
      * to generate
      * @param n The end of the range to generate indicies for
+     * @param source The source of Vec3 objects
      * @param indicies The array to write into
      * 
      * @pre Any precondition from this->Run
@@ -245,7 +256,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
+    void Shuffle(size_t size, size_t n, std::unique_ptr<Vec3[]> &source, std::unique_ptr<Vec3[]> &indicies);
 
     /**
      * Performs exponentiation for uint64_t

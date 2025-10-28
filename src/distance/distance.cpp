@@ -19,24 +19,28 @@ namespace found {
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
 
-    Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
+    const Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
                       cam_.CameraToSpatial(p[p.size() / 2]).Normalize(),
                       cam_.CameraToSpatial(p[p.size() - 1]).Normalize()};
 
-    // Obtain the center point of the projected circle
-    Vec3 center = getCenter(spats);
-
-    // Obtain the radius of the projected circle
-    PreciseDecimal r = getRadius(spats, center);
-
-    // Obtain the distance from earth
-    PreciseDecimal h = getDistance(r, center.Magnitude());
-
-    // You have to normalize the center vector here
-    return center.Normalize() * h;
+    return this->Run(spats);
 }
 
-Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
+PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Vec3 *p) {
+    // Obtain the center point of the projected circle
+    this->center_ = getCenter(p);
+
+    // Obtain the radius of the projected circle
+    this->r_ = Distance(p[0], this->center_);
+
+    // Obtain the distance from earth
+    decimal h = this->radius_/this->r_;
+
+    // You have to normalize the center vector here
+    return this->center_.Normalize() * h;
+}
+
+Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 *spats) {
     Vec3 diff1 = spats[1] - spats[0];
     Vec3 diff2 = spats[2] - spats[1];
 
@@ -76,15 +80,6 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(Vec3 spats[3]) {
     Vec3 center = matrix.Inverse() * y;
 
     return center;
-}
-
-PreciseDecimal SphericalDistanceDeterminationAlgorithm::getRadius(Vec3* spats,
-Vec3 center) {
-    return Distance(spats[0], center);
-}
-
-PreciseDecimal SphericalDistanceDeterminationAlgorithm::getDistance(PreciseDecimal r, PreciseDecimal c) {
-    return static_cast<PreciseDecimal>(radius_)*sqrt(r * r + c * c)/r;
 }
 
 ///// IterativeSphericalDistanceDeterminationAlgorithm /////
@@ -127,22 +122,23 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    std::unique_ptr<decimal[]> losses(new decimal[numIterations]{});
-    std::unique_ptr<PositionVector[]> positions(new PositionVector[numIterations]);
-    PositionVector result{0, 0, 0};
+    // The initial loss is 1.0 because all losses are normalized against initialLoss (below). Then,
+    // we run it through softmax (e^(-loss))
+    decimal totalLoss = DECIMAL_EXP(-1.0);
+    PositionVector totalPosition;
 
     size_t indicies_size = numIterations * 3;
-    std::unique_ptr<size_t[]> indicies(new size_t[indicies_size]);
+    std::unique_ptr<Vec3[]> indicies(new Vec3[indicies_size]);
 
     // Get the first estimate, and use it as the reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
     decimal targetRSq = (this->cam_.CameraToSpatial(p[0]).Normalize() - first.Normalize()).MagnitudeSq();
     decimal targetDistSq = first.MagnitudeSq();
-    losses[i] = this->GenerateLoss(first, targetDistSq, targetRSq, projectedPoints, pointsSize);
-    positions[i++] = first;
+    decimal initialLoss = this->GenerateLoss(first, targetDistSq, targetRSq, projectedPoints, pointsSize);
+    totalPosition = first * totalLoss;
 
     // Initial shuffle
-    this->Shuffle(indicies_size, pointsSize, indicies);
+    this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
 
     // Iterate through all points, shuffling them into triplets to feed into
     // SphericalDistanceDeterminationAlgorithm::Run
@@ -152,33 +148,27 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         if (j >= indicies_size) {
             indicies_size = 3 * (numIterations - i);
             j = 0;
-            this->Shuffle(indicies_size, pointsSize, indicies);
+            this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
         }
         // GCOVR_EXCL_STOP
         PositionVector position(
-            SphericalDistanceDeterminationAlgorithm::Run({p[indicies[j]], p[indicies[j + 1]], p[indicies[j + 2]]}));
+            SphericalDistanceDeterminationAlgorithm::Run(indicies.get() + j));
         if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE
             // Only recalculate targetRSq, we want to keep our targetDistSq from earlier
-            targetRSq = (this->cam_.CameraToSpatial(p[indicies[j]]).Normalize() - position.Normalize()).MagnitudeSq();
-            losses[i] = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / losses[0];
-            if (losses[i] <= this->discriminatorRatio_) positions[i++] = position;
+            targetRSq = this->r_ * this->r_;
+            decimal loss = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / initialLoss;
+            if (loss <= this->discriminatorRatio_) {
+                decimal factor = DECIMAL_EXP(-loss);
+                totalLoss += factor;
+                totalPosition += position * factor;
+                i++;
+            }
         }
 
         j += 3;
     }
 
-    // Normalize losses[0]
-    losses[0] = 1.0;
-
-    // Now, perform softmax, which is sum(value * e^(-loss)) / sum(e^(-loss_i))
-    decimal sum = 0;
-    for (i = 0; i < numIterations; i++) {
-        decimal factor = DECIMAL_EXP(-losses[i]);
-        result += positions[i] * factor;
-        sum += factor;
-    }
-
-    return result / sum;
+    return totalPosition / totalLoss;
 }
 
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
@@ -195,9 +185,8 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
         loss += distance_sq_loss_ratio * targetDistanceSq;
     }
     // Now, we obtain the radius error
-    PositionVector positionNorm(position.Normalize());
     for (size_t k = 0; k < size; k++) {
-        decimal radius_loss_k = targetRadiusSq - (positionNorm - projectedPoints[k]).MagnitudeSq();
+        decimal radius_loss_k = targetRadiusSq - (this->center_ - projectedPoints[k]).MagnitudeSq();
         loss += DECIMAL_POW(radius_loss_k, this->radiusLossOrder_);
     }
 
@@ -206,7 +195,8 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
 
 void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
                                                                size_t n,
-                                                               std::unique_ptr<size_t[]> &indicies) {
+                                                               std::unique_ptr<Vec3[]> &source,
+                                                               std::unique_ptr<Vec3[]> &indicies) {
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
     assert(size % 3 == 0);
@@ -216,17 +206,19 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
     size_t i = 0;
     while (i < size) {
         // Uniformly generate the first number
-        indicies[i++] = dist(gen);
+        size_t index1 = dist(gen);
+        indicies[i++] = source[index1];
         assert(dist.min() == 0);
         assert(dist.max() == static_cast<size_t>(n - 1));
 
         // Create logits for the second (even polynomial centered at indicies[i - 1])
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] = this->Pow(j - indicies[i - 1], this->pdfOrder_);
+            logits[j] = this->Pow(j - index1, this->pdfOrder_);
         }
         // Sample for the next number
         std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
-        indicies[i++] = dist1(gen);
+        size_t index2 = dist1(gen);
+        indicies[i++] = source[index2];
         assert(dist1.min() == 0);
         assert(dist1.max() == n - 1);
 
@@ -234,19 +226,14 @@ void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
         // centers at indicies[i - 1] and indicies[i - 2]). Note that
         // the function is zero at both our chosen indicies
         for (uint64_t j = 0; j < n; j++) {
-            logits[j] *= this->Pow(j - indicies[i - 1], this->pdfOrder_);
+            logits[j] *= this->Pow(j - index2, this->pdfOrder_);
         }
         // Sample for the last number
         std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
-        indicies[i++] = dist2(gen);
+        indicies[i++] = source[dist2(gen)];
         assert(dist2.min() == 0);
         assert(dist2.max() == n - 1);
     }
-    #ifndef NDEBUG
-        for (i = 0; i < size; i++) {
-            assert(indicies[i] < n);
-        }
-    #endif
 }
 
 }  // namespace found
