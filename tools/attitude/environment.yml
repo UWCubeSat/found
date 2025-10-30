@@ -1,0 +1,8 @@
+name: attitude_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.9
+  - scipy
+  - pytest

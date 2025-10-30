@@ -19,7 +19,7 @@ from curve.spherical import SphericalCurveProvider
 from image.printer import Printer
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args() -> Tuple[Vector, Attitude, float, float, float, float, float, str]:
     """Parses out the arguments for this program
 
     Args:
@@ -30,12 +30,14 @@ def parse_args() -> argparse.Namespace:
         pixel-length (float, Optional): The physical length of a pixel (meters). Defaults to 20e-6 meters.
         x-resolution (float, Optional): The x resolution of the camera (pixels). Defaults to 6000 pixels.
         y-resolution (float, Optional): The y resolution of the camera (pixels). Defaults to 6000 pixels.
-        filename (str, Optional): The filename (including path) of the output image. Defaults to a name that describes position and orientation, outputted directly into the repository (found) folder.
+        filename (str, Optional): The filename (including path) of the output image (.png). Defaults to a name that describes position and orientation, outputted directly into the repository (found) folder.
 
     Returns:
-        argparse.Namespace: The arguments for this program
+        Tuple[Vector, Attitude, float, float, float, float, float, str]: The arguments for this program
     """
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Generates artificial images of Earth"
+    )
     parser.add_argument(
         "--position",
         nargs=3,

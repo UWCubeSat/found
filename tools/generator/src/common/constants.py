@@ -1,6 +1,6 @@
 ## CAMERA PARAMETERS
-DEFAULT_FOCAL_LEN = 0.085  # Default focal length (m)
-DEFAULT_RESOLUTION = 6000  # Default resolution (pixels)
+DEFAULT_FOCAL_LEN = 0.085   # Default focal length (m)
+DEFAULT_RESOLUTION = 6000   # Default resolution (pixels)
 DEFAULT_PIXEL_SIZE = 20e-6  # Default pixel size (m)
 
 ## LEO THRESHOLD

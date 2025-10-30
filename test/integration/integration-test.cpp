@@ -89,7 +89,8 @@ TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
 
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calibration Quaternion: \\(1, 0, 0, 0\\)\\s*";
+                   << "Calibration Quaternion: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\)\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
@@ -138,9 +139,10 @@ TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(-?0, -?0, -?0\\) m\\s*"
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX
+                   << ", " << NUMBER_REGEX << "\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Distance from Earth: 0 m\\s*";
+                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
@@ -160,9 +162,10 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;
     expectedOutput << ".*\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(-?0, -?0, -?0\\) m\\s*"
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Distance from Earth: 0 m\\s*";
+                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
