@@ -107,13 +107,13 @@ IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDete
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
-    // Return zero if the number of points is less than 0
+    // Step -1: Return zero if the number of points is less than 0
     if (p.size() < 3) return {0, 0, 0};
 
-    // Determine the number of iterations
+    // Step 0: Determine the number of iterations
     size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
 
-    // Setup to iterate through all the calls
+    // Step 1a: Get all unit vector projections of each point
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
@@ -122,52 +122,47 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    // The initial loss is 1.0 because all losses are normalized against initialLoss (below). Then,
-    // we run it through softmax (e^(-loss))
-    decimal totalLoss = DECIMAL_EXP(-1.0);
-    PositionVector totalPosition;
-
+    // Step 1b: Setup random triplets to use for SDDA
     size_t indicies_size = numIterations * 3;
     std::unique_ptr<Vec3[]> indicies(new Vec3[indicies_size]);
+    this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
 
-    // Get the first estimate, and use it as the reference
+    // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
     decimal targetRSq = (this->cam_.CameraToSpatial(p[0]).Normalize() - first.Normalize()).MagnitudeSq();
     decimal targetDistSq = first.MagnitudeSq();
     decimal initialLoss = this->GenerateLoss(first, targetDistSq, targetRSq, projectedPoints, pointsSize);
+    // Step 2b: Setup the cumulative loss and position. We are using softmax, normalized on the reference
+    decimal totalLoss = DECIMAL_EXP(-1.0);
+    PositionVector totalPosition;
     totalPosition = first * totalLoss;
 
-    // Initial shuffle
-    this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
-
-    // Iterate through all points, shuffling them into triplets to feed into
-    // SphericalDistanceDeterminationAlgorithm::Run
+    // Step 3: Iterate through all triplets and run them through SDDA,
+    // generating a softmax statistic on each
     while (i != numIterations) {
-        // Shuffle when we've passed our last triplet
         // GCOVR_EXCL_START
+        // Step 3a: Shuffle when we've passed our last triplet
         if (j >= indicies_size) {
             indicies_size = 3 * (numIterations - i);
             j = 0;
             this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
         }
         // GCOVR_EXCL_STOP
-        PositionVector position(
-            SphericalDistanceDeterminationAlgorithm::Run(indicies.get() + j));
-        if (!std::isnan(position.MagnitudeSq())) {  // GCOVR_EXCL_LINE
-            // Only recalculate targetRSq, we want to keep our targetDistSq from earlier
-            targetRSq = this->r_ * this->r_;
-            decimal loss = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / initialLoss;
-            if (loss <= this->discriminatorRatio_) {
-                decimal factor = DECIMAL_EXP(-loss);
-                totalLoss += factor;
-                totalPosition += position * factor;
-                i++;
-            }
+        // Step 3b: Get the position from SDDA
+        PositionVector position(SphericalDistanceDeterminationAlgorithm::Run(indicies.get() + j));
+        targetRSq = this->r_ * this->r_;
+        decimal loss = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / initialLoss;
+        if (loss <= this->discriminatorRatio_) {
+            decimal factor = DECIMAL_EXP(-loss);
+            totalLoss += factor;
+            totalPosition += position * factor;
+            i++;
         }
 
         j += 3;
     }
 
+    // Step 4: Return the softmax of the composed algorithm via the random triplets
     return totalPosition / totalLoss;
 }
 
