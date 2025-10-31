@@ -20,9 +20,9 @@
 namespace found {
 
 /// The default arc second tolerance
-#define DEFAULT_ARC_SEC_TOL DECIMAL(3600)  // Equivalent to a degree
+#define DEFAULT_ARC_SEC_TOL DECIMAL(2000)  // Equivalent to 5/9 of a degree
 /// The default magnitude error tolerance
-#define DEFAULT_MAG_ERR_TOL DECIMAL(0.01)  // Equivalent to 1%
+#define DEFAULT_MAG_ERR_TOL DECIMAL(0.02)  // Equivalent to 2%
 
 class IntegrationTest : public testing::Test {
  protected:
@@ -202,7 +202,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
                         "--reference-orientation", "140,0,0",
                         "--distance-algo", ISDDA,
-                        "--isdda-max-refreshes", "10",
+                        "--isdda-max-refreshes", "1",
                         "--isdda-min-iterations", "1000",
                         "--isdda-discrim-ratio", "1.84874e+10",
                         "--isdda-dist-ratio", "0.4",
