@@ -665,8 +665,10 @@ class Mat4 {
      * Obtains the inverse of this Matrix
      * 
      * @return The inverse Matrix of this 
+     * THIS PROBABLY SHOULD NOT BE IMPLEMENTED;
+     * ALL MATRICES USED CAN BE INVERTED ANALYTICALLY
     */
-    Mat4 Inverse() const;
+    // Mat4 Inverse() const;
 };
 
 /// Identity Matrix

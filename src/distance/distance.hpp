@@ -105,12 +105,116 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
 };
 
 /**
+ * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
+ * algorithm calculates the distance from Earth based on the pixels of Earth's edge found in the image.
+ * 
+ * @note This class treats Earth as a spheroid (accurate for most bodies in our solar system)
+ * @note For any given set of points, this class will output TWO possible solutions
+*/
+class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
+ public:
+    /**
+     * Creates a SpheroidDistanceDeterminationAlgorithm, which deduces
+     * the position vector of a sattelite from Earth by modeling
+     * Earth as a spheroid
+     * 
+     * @param principleAxisDimensions The principle axes that define Earth's spheroid
+     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+     * @note input must obey a = b > c
+     * @param cam The camera used to capture the picture of Earth
+     */
+    SpheroidDistanceDeterminationAlgorithm(Vec3 principleAxisDimensions, Camera &&cam) : cam_(cam), principleAxisDimensions_(principleAxisDimensions) {}
+    ~SpheroidDistanceDeterminationAlgorithm() {}
+
+    /**
+     * Obtains the position of the planet relative to the camera
+     * 
+     * @param p The points on the edge of Earth (in the image taken
+     * by the camera given to this)
+     * 
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
+     * 
+     * @pre p must refer to points taken by the camera that was passed to
+     * this
+     * 
+     * @post If p.size() < 3, then the result is exactly the zero vector
+     * */
+    PositionVector Run(const Points &p) override;
+
+ protected:
+    /**
+     * Finds the cross section through the image plane of the cone has an apex at the camera
+     * and envelops the spheroid
+     *
+     * @param p The points on the edge of Earth (in the image taken
+     * by the camera given to this)
+     * 
+     * @return The conic section described by a Matrix
+     * [ A,   B/2,  D/2,
+     *  B/2,   C,   F/2,
+     *  D/2,  F/2,   G  ]
+     * that describes the conic equation Ax^2 + Bxy + Cy^2 + Dx + Fy + G = 0
+     * when multiplied by [x, y, 1]  (Transpose)
+    */
+    Mat3 getConicSection(Points& p);
+
+    /**
+     * Finds the eigenvalues of a 3x3 matrix
+     *
+     * @param mat Any 3x3 matrix
+     * 
+     * @return The eigenvalues of the matrix 
+     * in sorted order (THIS IS IMPORTANT FOR THE ALGORITHM)
+     *
+     * @note When using this in the context of the conic section matrix,
+     * make sure the input matrix has a negative determinant (negate it if it doesn't)
+     * so that the first two eigenvalues are positive and the third is negative
+    */
+    Vec3 get3Eigenvalues(Mat3 mat);
+
+    /**
+     * Finds the eigenvectors of a 3x3 matrix
+     *
+     * @param mat Any 3x3 matrix
+     * @param eigenvalues The eigenvalues of the 3x3 matrix IN SORTED ORDER
+     * 
+     * @return The eigenvectors of the matrix [v1, v2, v3]
+     * in sorted order by eigenvalue (THIS IS IMPORTANT FOR THE ALGORITHM)
+    */
+    Mat3 get3Eigenvectors(Mat3 mat, Vec3 eigenvalues);
+
+   /**
+     * Finds the 2 possible solutions for the vector to Earth's center
+     *
+     * @param principleAxes The principle axes that define Earth's spheroid
+     * @param conicEigenvalues The eigenvalues of the matrix that defines the conic section on the image plane
+     * 
+     * @return A 3x3 matrix where the first two columns are the possible solutions. The third column can be ignored.
+    */
+    Mat3 solveForPossiblePositions(Vec3 principleAxes, Vec3 conicEigenvalues);
+
+    /**
+     * cam_ field instance describes the camera settings used for the photo taken
+    */
+    Camera cam_;
+
+    /**
+     * principleAxisDimensions_ field instance describes the principle axes that define Earth's spheroid
+     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+    */
+    Vec3 principleAxisDimensions_;
+};
+
+/**
  * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
  * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
  * to use all the points given to it.
  * 
  * It uses
- * - selective randomization of Points, using a even polynomial
+ * - selective randomization of Points, using an even polynomial
  *   distributions to prioritize points farther from selected
  *   points within triplets
  * - loss criterion to evaluate each guess
