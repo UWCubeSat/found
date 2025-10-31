@@ -111,6 +111,68 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     };
 }
 
+
+decimal Vec4::Magnitude() const {
+    return sqrt(MagnitudeSq());
+}
+
+decimal Vec4::MagnitudeSq() const {
+    return w*w+x*x+y*y+z*z;
+}
+
+Vec4 Vec4::Normalize() const {
+    decimal mag = Magnitude();
+    return {
+        w/mag, x/mag, y/mag, z/mag,
+    };
+}
+
+Vec4 Vec4::operator-() const {
+    return { -w, -x, -y, -z };
+}
+
+Vec4 Vec4::operator-(const Vec4 &other) const {
+    return { w - other.w, x - other.x, y - other.y, z - other.z };
+}
+
+decimal Vec4::operator*(const Vec4 &other) const {
+    return w*other.w + x*other.x + y*other.y + z*other.z;
+}
+
+Vec4 Vec4::operator*(const decimal &scalar) const {
+    return { w*scalar, x*scalar, y*scalar, z*scalar };
+}
+
+Vec4 Vec4::operator/(const decimal &divisor) const {
+    return { w/divisor, x / divisor, y / divisor, z / divisor };
+}
+
+Vec4 &Vec4::operator+=(const Vec4 &other) {
+    this->w += other.w;
+    this->x += other.x;
+    this->y += other.y;
+    this->z += other.z;
+
+    return *this;
+}
+
+Vec4 Vec4::operator*(const Mat4 &other) const {
+    return {
+        w*other.At(0,0) + x*other.At(0,1) + y*other.At(0,2) + z*other.At(0,3),
+        w*other.At(1,0) + x*other.At(1,1) + y*other.At(1,2) + z*other.At(1,3),
+        w*other.At(2,0) + x*other.At(2,1) + y*other.At(2,2) + z*other.At(2,3),
+        w*other.At(3,0) + x*other.At(3,1) + y*other.At(3,2) + z*other.At(3,3),
+    };
+}
+
+Mat3 Vec4::OuterProduct(const Vec4 &other) const {
+    return {
+        w*other.w, w*other.x, w*other.y, w*other.z,
+        x*other.w, x*other.x, x*other.y, x*other.z,
+        y*other.w, y*other.x, y*other.y, y*other.z,
+        z*other.w, z*other.x, z*other.y, z*other.z
+    };
+}
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////

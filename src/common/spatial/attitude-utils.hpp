@@ -90,6 +90,7 @@ struct Vec2 {
 };
 
 class Mat3;  // define above so we can use in Vec3 class
+class Mat4;  // define above so we can use in Vec4 class
 
 /**
  * A Vec3 is a mutable object that represents a 3D Vector
@@ -228,6 +229,137 @@ class Vec3 {
     Mat3 OuterProduct(const Vec3 &) const;
 };
 
+/**
+ * A Vec4 is a mutable object that represents a 4D Vector
+ * 
+*/
+class Vec3 {
+ public:
+    /// The w coordinate
+    decimal w;
+    /// The x coordinate
+    decimal x;
+    /// The y coordinate
+    decimal y;
+    /// The z coordinate
+    decimal z;
+
+    /**
+     * Construction of vector with w, x, y, and z components
+     * 
+     * @param w The scalar value in the w direction of the vector to make
+     * @param x The scalar value in the x direction of the vector to make
+     * @param y The scalar value in the y direction of the vector to make
+     * @param z The scalar value in the z direction of the vector to make
+    */
+    constexpr Vec4(decimal w, decimal x, decimal y, decimal z) : w(w), x(x), y(y), z(z) {}
+
+    /**
+     * Default construction of the Vector
+    */
+    Vec4() = default;
+
+    // Magnitude
+
+    /**
+     * Provides the magnitude of this Vec3
+     * 
+     * @return The magnitude of this
+    */
+    decimal Magnitude() const;
+
+    /**
+     * Provides the square of the magnitude of this Vec3
+     * 
+     * @return The square of the magnitude of this
+    */
+    decimal MagnitudeSq() const;
+
+    // Unit Vector
+
+    /**
+     * Provides the magnitude of this Vec2
+     * 
+     * @return The magnitude of this
+    */
+    Vec4 Normalize() const;
+
+    // Operations
+
+    /**
+     * Vector Negation
+     * 
+     * @return -this
+     */
+    Vec4 operator-() const;
+
+    /**
+     * Vector Subtraction
+     * 
+     * @param other The other vector
+     * 
+     * @return this - other
+     */
+    Vec4 operator-(const Vec4 &) const;
+
+    /**
+     * Dot Product
+     * 
+     * @param other The other vector
+     * 
+     * @return The dot of this and other
+     */
+    decimal operator*(const Vec4 &) const;
+
+    /**
+     * Scalar Product
+     * 
+     * @param scalar The scalar
+     * 
+     * @return scalar * this
+     */
+    Vec4 operator*(const decimal &) const;
+
+    /**
+     * Scalar Division
+     * 
+     * @param divisor The divisor
+     * 
+     * @return this / divisor
+     */
+    Vec4 operator/(const decimal &) const;
+
+    /**
+     * Vector Addition (Modification)
+     * 
+     * @param other The other vector
+     * 
+     * @return this
+     * 
+     * @post this has been added by other
+     */
+    Vec4 &operator+=(const Vec4 &);
+
+    /**
+     * Computes the product of a 4x4 matrix and a 4x1 vector (this)
+     * 
+     * @param other The matrix to multiply this with
+     * 
+     * @return other @ this
+     * 
+    */
+    Vec4 operator*(const Mat4 &) const;
+
+    /**
+     * Computes the outer product between this and another vector
+     * 
+     * @param other The other vector in this operation
+     * 
+     * @return this ⊗ other
+    */
+    Mat4 OuterProduct(const Vec4 &) const;
+};
+
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////
@@ -306,7 +438,7 @@ decimal Angle(const Vec3 &, const Vec3 &);
 decimal AngleUnit(const Vec3 &, const Vec3 &);
 
 ///////////////////////////////////
-///////// MATRIX CLASS ////////////
+///////// MATRIX CLASSES ////////////
 ///////////////////////////////////
 
 /**
@@ -423,9 +555,123 @@ class Mat3 {
     Mat3 Inverse() const;
 };
 
+/**
+ * A Mat4 is a mutable object that represents a 4x4 Matrix
+ * 
+*/
+class Mat4 {
+ public:
+    /// The matrix entries
+    decimal x[16];
+
+    // Accessor
+
+    /**
+    * Obtains an entry in this Matrix
+    * 
+    * @param i The row of the entry
+    * @param j The column of the entry
+    * 
+    * @return The value of the entry in this at (i, j)
+    */
+    decimal At(int i, int j) const;
+
+    /**
+     * Obtains one of the column vectors in this Matrix
+     * 
+     * @param j The column of the vector
+     * 
+     * @return The vector at column j
+    */
+    Vec4 Column(int) const;
+
+    /**
+     * Obtains one of the row vectors in this Matrix
+     * 
+     * @param i The row of the vector
+     * 
+     * @return The vector at row i
+    */
+    Vec4 Row(int) const;
+
+    /**
+     * Obtains the trace of this Matrix
+     * 
+     * @return The trace of this
+    */
+    decimal Trace() const;
+
+    /**
+     * Obtains the determinant of this Matrix
+     * 
+     * @return The determinant of this
+    */
+    decimal Det() const;
+
+    // Operations
+
+    /**
+     * Matrix Addition (element-wise)
+     * 
+     * @param other
+     * 
+     * @return this + other
+     */
+    Mat4 operator+(const Mat4 &) const;
+
+    /**
+     * Matrix Multiplication
+     * 
+     * @param other The other matrix
+     * 
+     * @return this @ other
+     */
+    Mat4 operator*(const Mat4 &) const;
+
+    /**
+     * Matrix-Vector Multiplication
+     * 
+     * @param vec The vector to multiply
+     * 
+     * @return this @ other
+     * 
+     * @note Same as Vector::operator*(const Mat4 &),
+     * but with swapped parameters (duh?)
+     */
+    Vec4 operator*(const Vec4 &) const;
+
+    /**
+     * Matrix-Scalar Multiplication
+     * 
+     * @param scalar The scalar to multiply with
+     * 
+     * @return scalar * this
+     */
+    Mat4 operator*(const decimal &) const;
+
+    // Transformations
+
+    /**
+     * Obtains the transpose of this Matrix
+     * 
+     * @return The transpose Matrix of this
+     * 
+     * @note Use this over Inverse if your
+     * matrix is orthogonal (e.g. A DCM)
+    */
+    Mat4 Transpose() const;
+
+    /**
+     * Obtains the inverse of this Matrix
+     * 
+     * @return The inverse Matrix of this 
+    */
+    Mat4 Inverse() const;
+};
+
 /// Identity Matrix
 extern const Mat3 kIdentityMat3;
-
+extern const Mat4 kIdentityMat4;
 ///////////////////////////////////
 //////// EULER ANGLES CLASS ///////
 ///////////////////////////////////
