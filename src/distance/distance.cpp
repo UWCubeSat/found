@@ -119,7 +119,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         (this->maximumRefreshes_ < numIterations / 2 ? this->maximumRefreshes_ : numIterations / 2 - 1)
         + 1);
 
-    // Step 1a: Get all unit vector projections of each point
+    // Step 1a: Get all unit vector projections of each point and setup logits
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
@@ -128,6 +128,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
+    std::unique_ptr<uint64_t[]> logits(new uint64_t[pointsSize]);
 
     // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -141,7 +142,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // generating a softmax statistic on each
     while (i != numIterations) {
         // Step 3b: Get the position from SDDA
-        PositionVector position(this->ShuffledCall(projectedPoints, pointsSize));
+        PositionVector position(this->ShuffledCall(projectedPoints, pointsSize, logits));
         decimal loss = this->GenerateLoss(position, targetDistSq, projectedPoints, pointsSize) / referenceLoss;
         if (loss <= this->discriminatorRatio_) {
             decimal factor = DECIMAL_EXP(-loss);
@@ -187,12 +188,14 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     return loss;
 }
 
-PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n) {
+PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
+                                    std::unique_ptr<Vec3[]> &source,
+                                    size_t n,
+                                    std::unique_ptr<uint64_t[]> &logits) {
     // Step 0: Setup the random number generators
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
     // This is okay (being static) since we always override the values
-    static std::unique_ptr<uint64_t[]> logits(new uint64_t[n]);
 
     // Uniformly generate the first number
     std::uniform_int_distribution<size_t> dist(0, n - 1);

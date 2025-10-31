@@ -235,6 +235,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @param source The source of Vec3 objects
      * @param n The number of elements in source
+     * @param logits The logits array to use for randomization
      * 
      * @return The resulting PositionVector from the 3 randomized
      * points
@@ -260,7 +261,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n);
+    PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n, std::unique_ptr<uint64_t[]> &logits);
 
     /**
      * Performs exponentiation for uint64_t
