@@ -188,9 +188,9 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:aef20b769d3d26bc7a1c42033177dd1ea" id="r_aef20b769d3d26bc7a1c42033177dd1ea"><td class="memItemLeft" align="right" valign="top">decimal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aef20b769d3d26bc7a1c42033177dd1ea">GenerateLoss</a> (<a class="el" href="classfound_1_1Vec3.html">PositionVector</a> &amp;position, decimal targetDistanceSq, std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;projectedPoints, size_t size)</td></tr>
 <tr class="memdesc:aef20b769d3d26bc7a1c42033177dd1ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a loss on a position vector.  <br /></td></tr>
 <tr class="separator:aef20b769d3d26bc7a1c42033177dd1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab021cda361d8dd9a96d6a456881921b8" id="r_ab021cda361d8dd9a96d6a456881921b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#ab021cda361d8dd9a96d6a456881921b8">Shuffle</a> (size_t size, size_t n, std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;source, std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;indicies)</td></tr>
-<tr class="memdesc:ab021cda361d8dd9a96d6a456881921b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuffles the indexes into triplets, attempting to create triplets whose indicies are far from each other.  <br /></td></tr>
-<tr class="separator:ab021cda361d8dd9a96d6a456881921b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add3108f143db1f132163798f222d2aec" id="r_add3108f143db1f132163798f222d2aec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">PositionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#add3108f143db1f132163798f222d2aec">ShuffledCall</a> (std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;source, size_t n, std::unique_ptr&lt; uint64_t[]&gt; &amp;logits)</td></tr>
+<tr class="memdesc:add3108f143db1f132163798f222d2aec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#afa02790fb463ac3b7e2b33bbb3092905" title="Obtains the position of the planet relative to the camera.">SphericalDistanceDeterminationAlgorithm::Run</a> with randomized triplets of indicies from source.  <br /></td></tr>
+<tr class="separator:add3108f143db1f132163798f222d2aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c2b5b765b46ebda847ea706b015d623" id="r_a6c2b5b765b46ebda847ea706b015d623"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a6c2b5b765b46ebda847ea706b015d623">Pow</a> (uint64_t base, uint64_t power)</td></tr>
 <tr class="memdesc:a6c2b5b765b46ebda847ea706b015d623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs exponentiation for uint64_t.  <br /></td></tr>
 <tr class="separator:a6c2b5b765b46ebda847ea706b015d623"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -225,12 +225,12 @@ uint64_t&#160;</td><td class="memItemRight" valign="bottom"><b>radiusLossOrder_<
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html">found::SphericalDistanceDeterminationAlgorithm</a></td></tr>
-<tr class="memitem:a3a627b4fd1cfc52bb078726dfcf6b185 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a3a627b4fd1cfc52bb078726dfcf6b185"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a3a627b4fd1cfc52bb078726dfcf6b185">getCenter</a> (const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> *spats)</td></tr>
-<tr class="memdesc:a3a627b4fd1cfc52bb078726dfcf6b185 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the center of earth as a 3d Vector.  <br /></td></tr>
-<tr class="separator:a3a627b4fd1cfc52bb078726dfcf6b185 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40171576d9cb42f491c9d6bc6da16efd inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a40171576d9cb42f491c9d6bc6da16efd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">PositionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a40171576d9cb42f491c9d6bc6da16efd">Run</a> (const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> *p)</td></tr>
-<tr class="memdesc:a40171576d9cb42f491c9d6bc6da16efd inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position of the planet relative to the camera.  <br /></td></tr>
-<tr class="separator:a40171576d9cb42f491c9d6bc6da16efd inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab1f31fc950d28c0a9970becad8a107a inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_aab1f31fc950d28c0a9970becad8a107a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">Vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#aab1f31fc950d28c0a9970becad8a107a">getCenter</a> (const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;a, const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;b, const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;c)</td></tr>
+<tr class="memdesc:aab1f31fc950d28c0a9970becad8a107a inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the center of earth as a 3d Vector.  <br /></td></tr>
+<tr class="separator:aab1f31fc950d28c0a9970becad8a107a inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46143ca960897589442ca961a6bd8399 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a46143ca960897589442ca961a6bd8399"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfound_1_1Vec3.html">PositionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a46143ca960897589442ca961a6bd8399">Run</a> (const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;a, const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;b, const <a class="el" href="classfound_1_1Vec3.html">Vec3</a> &amp;c)</td></tr>
+<tr class="memdesc:a46143ca960897589442ca961a6bd8399 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the position of the planet relative to the camera.  <br /></td></tr>
+<tr class="separator:a46143ca960897589442ca961a6bd8399 inherit pro_methods_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html">found::SphericalDistanceDeterminationAlgorithm</a></td></tr>
 <tr class="memitem:a25f1873b671b9759d097734cb4cc6b12 inherit pro_attribs_classfound_1_1SphericalDistanceDeterminationAlgorithm" id="r_a25f1873b671b9759d097734cb4cc6b12"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="classfound_1_1Camera.html">Camera</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cam_</b></td></tr>
@@ -513,8 +513,8 @@ p is radially sorted, i.e. if we define the centroid of the points as P, for any
 
 </div>
 </div>
-<a id="ab021cda361d8dd9a96d6a456881921b8" name="ab021cda361d8dd9a96d6a456881921b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab021cda361d8dd9a96d6a456881921b8">&#9670;&#160;</a></span>Shuffle()</h2>
+<a id="add3108f143db1f132163798f222d2aec" name="add3108f143db1f132163798f222d2aec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add3108f143db1f132163798f222d2aec">&#9670;&#160;</a></span>ShuffledCall()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -523,10 +523,10 @@ p is radially sorted, i.e. if we define the centroid of the points as P, for any
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void found::IterativeSphericalDistanceDeterminationAlgorithm::Shuffle </td>
+          <td class="memname"><a class="el" href="classfound_1_1Vec3.html">PositionVector</a> found::IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>size</em>, </td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -537,14 +537,8 @@ p is radially sorted, i.e. if we define the centroid of the points as P, for any
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;&#160;</td>
-          <td class="paramname"><em>source</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfound_1_1Vec3.html">Vec3</a>[]&gt; &amp;&#160;</td>
-          <td class="paramname"><em>indicies</em>&#160;</td>
+          <td class="paramtype">std::unique_ptr&lt; uint64_t[]&gt; &amp;&#160;</td>
+          <td class="paramname"><em>logits</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -559,20 +553,21 @@ p is radially sorted, i.e. if we define the centroid of the points as P, for any
 </table>
 </div><div class="memdoc">
 
-<p>Shuffles the indexes into triplets, attempting to create triplets whose indicies are far from each other. </p>
+<p>Calls <a class="el" href="classfound_1_1SphericalDistanceDeterminationAlgorithm.html#afa02790fb463ac3b7e2b33bbb3092905" title="Obtains the position of the planet relative to the camera.">SphericalDistanceDeterminationAlgorithm::Run</a> with randomized triplets of indicies from source. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">size</td><td>The size of indicies, or how many indicies to generate </td></tr>
-    <tr><td class="paramname">n</td><td>The end of the range to generate indicies for </td></tr>
     <tr><td class="paramname">source</td><td>The source of <a class="el" href="classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector.">Vec3</a> objects </td></tr>
-    <tr><td class="paramname">indicies</td><td>The array to write into</td></tr>
+    <tr><td class="paramname">n</td><td>The number of elements in source </td></tr>
+    <tr><td class="paramname">logits</td><td>The logits array to use for randomization</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting PositionVector from the 3 randomized points</dd></dl>
 <dl class="section pre"><dt>Precondition</dt><dd>Any precondition from this-&gt;Run </dd>
 <dd>
-size &gt; 0 &amp;&amp; size % 3 == 0</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>for any i, 0 &lt;= indicies[i] &lt; n</dd></dl>
+source.size() &gt;= 3 </dd>
+<dd>
+source[i] is normalized for all i in [0, source.size())</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>This algorithm uses a even polynomial distribution to prioritize points far away from a given index. We like that because it helps deal with noise. To exaggerate the difference in probability between points, you can use a function that grows much faster by changing the macro PDF which is defined within. Make sure the distribution function though is zero where you need it to be (i.e. At points already generated within a triplet so that you do not draw those points again)</dd>
 <dd>
 The assumption of p from this-&gt;Run(p) being in polar order is quite important in this algorithm. Should that not be true, instead of using index differences in our polynomial distribution, we'd need to instead use the distance between the pixels corresponding to those indicies. This is not a terrible change in terms of code, but is more compuationally complex </dd></dl>

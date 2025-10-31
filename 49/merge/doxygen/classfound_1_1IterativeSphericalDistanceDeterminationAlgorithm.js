@@ -4,7 +4,7 @@ var classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm =
     [ "GenerateLoss", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aef20b769d3d26bc7a1c42033177dd1ea", null ],
     [ "Pow", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a6c2b5b765b46ebda847ea706b015d623", null ],
     [ "Run", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a149b99bb435a5f995f34100fe53ac414", null ],
-    [ "Shuffle", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#ab021cda361d8dd9a96d6a456881921b8", null ],
+    [ "ShuffledCall", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#add3108f143db1f132163798f222d2aec", null ],
     [ "discriminatorRatio_", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e", null ],
     [ "distanceRatioSq_", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338", null ],
     [ "maximumRefreshes_", "classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a2339269a4bd1a7929ab24aa228403af1", null ],
