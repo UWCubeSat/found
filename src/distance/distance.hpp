@@ -153,6 +153,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      * @param minimumIterations The minimum number of iterations to perform
+     * @param maximumRefreshes The maximum number of times to refresh the reference position
      * @param distanceRatio The maximum distance error between the evaluated and reference
      * positions to be considered "the same" distance 
      * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
@@ -172,6 +173,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
                                                      size_t minimumIterations,
+                                                     size_t maximumRefreshes,
                                                      decimal distanceRatio,
                                                      decimal discriminatorRatio,
                                                      int pdfOrder,
@@ -207,7 +209,6 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @param position The vector to evaluate
      * @param targetDistanceSq The target distance squared of the position
-     * @param targetRadiusSq The target "radius" squared
      * @param projectedPoints The projected points to evaluate against
      * @param size The size of the projected points
      * 
@@ -220,7 +221,6 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      */
     decimal GenerateLoss(PositionVector &position,
                          decimal targetDistanceSq,
-                         decimal targetRadiusSq,
                          std::unique_ptr<Vec3[]> &projectedPoints,
                          size_t size);
 
@@ -279,6 +279,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
 
     /// The minimum number of iterations to use
     size_t minimumIterations_;
+    /// The maximum number of times to refresh the reference position
+    size_t maximumRefreshes_;
     /// The maximum distance ratio to accept
     decimal distanceRatioSq_;
     /// The maximum loss ratio to accept

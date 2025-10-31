@@ -194,7 +194,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
 }
 
 TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
-    int argc = 21;
+    int argc = 23;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--reference-as-orientation",
@@ -202,6 +202,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
                         "--reference-orientation", "140,0,0",
                         "--distance-algo", ISDDA,
+                        "--isdda-max-refreshes", "10",
                         "--isdda-min-iterations", "1000",
                         "--isdda-discrim-ratio", "1.84874e+10",
                         "--isdda-dist-ratio", "0.4",

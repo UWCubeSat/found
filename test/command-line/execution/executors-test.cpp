@@ -99,6 +99,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         92,
         300,
         2.0,
+        0,
         10,
         12,
         temp_df

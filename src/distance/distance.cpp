@@ -87,16 +87,19 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 *spats) {
 IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                                                         Camera &&cam,
                                                                                         size_t minimumIterations,
+                                                                                        size_t maximumRefreshes,
                                                                                         decimal distanceRatio,
                                                                                         decimal discriminatorRatio,
                                                                                         int pdfOrder,
                                                                                         int radiusLossOrder)
       : SphericalDistanceDeterminationAlgorithm(radius, std::forward<Camera>(cam)),
         minimumIterations_(minimumIterations),
+        maximumRefreshes_(maximumRefreshes),
         distanceRatioSq_(distanceRatio * distanceRatio),
         discriminatorRatio_(discriminatorRatio) {
     if (pdfOrder < 2) pdfOrder = 2;
     if (radiusLossOrder < 2) radiusLossOrder = 2;
+    this->maximumRefreshes_ = maximumRefreshes;
     this->pdfOrder_ = static_cast<uint64_t>(pdfOrder + pdfOrder % 2);
     this->radiusLossOrder_ = static_cast<uint64_t>(radiusLossOrder + radiusLossOrder % 2);
 
@@ -112,6 +115,9 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
     // Step 0: Determine the number of iterations
     size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
+    size_t refreshFrequency = numIterations / (
+        (this->maximumRefreshes_ < numIterations / 2 ? this->maximumRefreshes_ : numIterations / 2 - 1)
+        + 1);
 
     // Step 1a: Get all unit vector projections of each point
     size_t i = 0;
@@ -129,13 +135,11 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
     // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
-    decimal targetRSq = (this->cam_.CameraToSpatial(p[0]).Normalize() - first.Normalize()).MagnitudeSq();
     decimal targetDistSq = first.MagnitudeSq();
-    decimal initialLoss = this->GenerateLoss(first, targetDistSq, targetRSq, projectedPoints, pointsSize);
+    decimal referenceLoss = this->GenerateLoss(first, targetDistSq, projectedPoints, pointsSize);
     // Step 2b: Setup the cumulative loss and position. We are using softmax, normalized on the reference
     decimal totalLoss = DECIMAL_EXP(-1.0);
-    PositionVector totalPosition;
-    totalPosition = first * totalLoss;
+    PositionVector totalPosition = first * totalLoss;
 
     // Step 3: Iterate through all triplets and run them through SDDA,
     // generating a softmax statistic on each
@@ -150,8 +154,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         // GCOVR_EXCL_STOP
         // Step 3b: Get the position from SDDA
         PositionVector position(SphericalDistanceDeterminationAlgorithm::Run(indicies.get() + j));
-        targetRSq = this->r_ * this->r_;
-        decimal loss = this->GenerateLoss(position, targetDistSq, targetRSq, projectedPoints, pointsSize) / initialLoss;
+        decimal loss = this->GenerateLoss(position, targetDistSq, projectedPoints, pointsSize) / referenceLoss;
         if (loss <= this->discriminatorRatio_) {
             decimal factor = DECIMAL_EXP(-loss);
             totalLoss += factor;
@@ -160,6 +163,14 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         }
 
         j += 3;
+
+        if (i % refreshFrequency == 0) {
+            totalPosition = totalPosition / totalLoss;
+            targetDistSq = totalPosition.MagnitudeSq();
+            referenceLoss = this->GenerateLoss(totalPosition, targetDistSq, projectedPoints, pointsSize);
+            totalLoss = DECIMAL_EXP(-1.0);
+            totalPosition = totalPosition * totalLoss;
+        }
     }
 
     // Step 4: Return the softmax of the composed algorithm via the random triplets
@@ -168,7 +179,6 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
-                                                                       decimal targetRadiusSq,
                                                                        std::unique_ptr<Vec3[]> &projectedPoints,
                                                                        size_t size) {
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
@@ -180,6 +190,7 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
         loss += distance_sq_loss_ratio * targetDistanceSq;
     }
     // Now, we obtain the radius error
+    decimal targetRadiusSq = this->r_ * this->r_;
     for (size_t k = 0; k < size; k++) {
         decimal radius_loss_k = targetRadiusSq - (this->center_ - projectedPoints[k]).MagnitudeSq();
         loss += DECIMAL_POW(radius_loss_k, this->radiusLossOrder_);
