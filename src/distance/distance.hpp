@@ -158,7 +158,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * that describes the conic equation Ax^2 + Bxy + Cy^2 + Dx + Fy + G = 0
      * when multiplied by [x, y, 1]  (Transpose)
     */
-    Mat3 getConicSection(Points& p);
+    Mat3 GetConicSection(Points& p);
 
     /**
      * Finds the eigenvalues of a 3x3 matrix
@@ -172,7 +172,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * make sure the input matrix has a negative determinant (negate it if it doesn't)
      * so that the first two eigenvalues are positive and the third is negative
     */
-    Vec3 get3Eigenvalues(Mat3 mat);
+    Vec3 Get3Eigenvalues(Mat3 mat);
 
     /**
      * Finds the eigenvectors of a 3x3 matrix
@@ -183,17 +183,18 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * @return The eigenvectors of the matrix [v1, v2, v3]
      * in sorted order by eigenvalue (THIS IS IMPORTANT FOR THE ALGORITHM)
     */
-    Mat3 get3Eigenvectors(Mat3 mat, Vec3 eigenvalues);
+    Mat3 Get3Eigenvectors(Mat3 mat, Vec3 eigenvalues);
 
    /**
      * Finds the 2 possible solutions for the vector to Earth's center
      *
      * @param principleAxes The principle axes that define Earth's spheroid
      * @param conicEigenvalues The eigenvalues of the matrix that defines the conic section on the image plane
+     * @param conicEigenvectors The eigenvectors of the matrix that defines the conic section on the image plane
      * 
      * @return A 3x3 matrix where the first two columns are the possible solutions. The third column can be ignored.
     */
-    Mat3 solveForPossiblePositions(Vec3 principleAxes, Vec3 conicEigenvalues);
+    Mat3 SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEigenvalues, Mat3 conicEigenvectors);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken

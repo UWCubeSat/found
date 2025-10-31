@@ -14,6 +14,57 @@
 
 namespace found {
 
+///// SpheroidDistanceDeterminationAlgorithm //////
+
+PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3) return {0, 0, 0};
+
+    Mat3 conicSection = GetConicSection(p);
+    Vec3 conicEigenvalues = Get3Eigenvalues(conicSection);
+    Mat3 conicEigenvectors = Get3Eigenvectors(conicSection, conicEigenvalues);
+    Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEigenvalues, conicEigenvectors);
+
+    // I guess just return the first one for now??? 
+    return possibleSolutions.Column(0);
+}
+
+Mat3 SpheroidDistanceDeterminationAlgorithm::SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEigenvalues, Mat3 conicEigenvectors){
+    decimal a = principleAxes.x;
+    decimal b = principleAxes.y;
+    decimal c = principleAxes.z;
+
+    // lambda1, lambda2, lambda3
+    decimal l1 = conicEigenvalues.x;
+    decimal l2 = conicEigenvalues.y;
+    decimal l3 = conicEigenvalues.z;
+
+    /**
+    *  2D vector that can be manipulated to extract 2 possible solutions
+    *  The solutions take the form of [eigenvector matrix] * (column vector)[0, +-sqrt(rho1), +-sqrt(rho2)]
+    *  This produces four results but 2 will produce an image with Earth behind the camera (z < 0) so we can toss them
+    *  The form is a bit esoteric but I don't think there's a way to intuitively understand it
+    *  See tutorial for more details
+    */
+    decimal scale = (a*a*l1)/(l2 - l3);
+    Vec2 rho = scale * Vec2(
+        -((c/a)*(c/a) - l2/l1)*(1 - l2/l1),
+        ((c/a)*(c/a) - l3/l1)*(1 - l3/l1)
+    );
+
+    Vec3 solution1 = conicEigenvectors * Vec3(0, sqrt(rho.x), sqrt(rho.y));  // there may be a way to compute these two operations faster?
+    Vec3 solution2 = conicEigenvectors * Vec3(0, -sqrt(rho.x), sqrt(rho.y)); // they are almost the exact same
+
+    // multiply by the sign of z to negate the vector if it places Earth behind the camera
+    solution1 = solution1 * (int)((0 > solution1.z) - (solution1.z > 0));
+    solution2 = solution2 * (int)((0 > solution2.z) - (solution2.z > 0));
+
+    return Mat3(
+        solution1.x, solution2.x, 0,
+        solution1.y, solution2.y, 0,
+        solution1.z, solution2.z, 0
+    );
+}
+
 ///// SphericalDistanceDeterminationAlgorithm /////
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {

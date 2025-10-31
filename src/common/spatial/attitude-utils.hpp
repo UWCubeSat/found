@@ -656,8 +656,6 @@ class Mat4 {
      * 
      * @return The transpose Matrix of this
      * 
-     * @note Use this over Inverse if your
-     * matrix is orthogonal (e.g. A DCM)
     */
     Mat4 Transpose() const;
 
@@ -666,7 +664,7 @@ class Mat4 {
      * 
      * @return The inverse Matrix of this 
      * THIS PROBABLY SHOULD NOT BE IMPLEMENTED;
-     * ALL MATRICES USED CAN BE INVERTED ANALYTICALLY
+     * ALL 4x4 MATRICES CURRENTLY CAN BE INVERTED ANALYTICALLY
     */
     // Mat4 Inverse() const;
 };
