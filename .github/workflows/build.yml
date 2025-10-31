@@ -101,20 +101,15 @@ jobs:
   documentation:
     runs-on: ubuntu-latest
     container: huskysat/found:latest
-    needs: [build, lint, coverage]
 
     steps:
     - uses: actions/checkout@v4
     
     - name: Generate Documentation
-      uses: nick-fields/retry@v3.0.2
-      with:
-        max_attempts: 3
-        timeout_minutes: 3
-        command: |
-          make clean_all
-          ./build.sh cmake "" --target coverage --parallel 16
-          ./build.sh cmake "" --target documentation --parallel 16
+      run: |
+        make clean_all
+        (./build.sh cmake "" --target coverage --parallel 16) || true
+        (./build.sh cmake "" --target documentation --parallel 16)
     
     - name: Install rsync (for JamesIves/github-pages-deploy-action@v4)
       run: apt install -y rsync
