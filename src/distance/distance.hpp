@@ -67,18 +67,24 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
     /**
      * Returns the center of earth as a 3d Vector
      *
-     * @param spats The normalized spatial coordinates used to find the center 
+     * @param a The first point on the edge of Earth
+     * @param b The second point on the edge of Earth
+     * @param c The third point on the edge of Earth
      * 
      * @return The center of earth as a 3d Vector
      * 
      * @pre spats.size() >= 3
+     * 
+     * @pre a, b and c are normalized, projected points from the camera
     */
-    Vec3 getCenter(const Vec3* spats);
+    Vec3 getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
     /**
      * Returns the position of the planet relative to the camera
      * 
-     * @param p The points
+     * @param a The first point on the edge of Earth
+     * @param b The second point on the edge of Earth
+     * @param c The third point on the edge of Earth
      * 
      * @return PositionVector The position vector of the Earth relative
      * to the camera
@@ -88,10 +94,9 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * 
      * @pre p.size() >= 3
      * 
-     * @pre For all elements in p, each vector must be produced via
-     * this->cam_CameraToSpatial(originalPoint).Normalize()
+     * @pre a, b and c are normalized, projected points from the camera
      */
-    PositionVector Run(const Vec3 *p);
+    PositionVector Run(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken
@@ -225,19 +230,18 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
                          size_t size);
 
     /**
-     * Shuffles the indexes into triplets, attempting to create
-     * triplets whose indicies are far from each other.
+     * Calls SphericalDistanceDeterminationAlgorithm::Run with
+     * randomized triplets of indicies from source
      * 
-     * @param size The size of indicies, or how many indicies
-     * to generate
-     * @param n The end of the range to generate indicies for
      * @param source The source of Vec3 objects
-     * @param indicies The array to write into
+     * @param n The number of elements in source
+     * 
+     * @return The resulting PositionVector from the 3 randomized
+     * points
      * 
      * @pre Any precondition from this->Run
-     * @pre size > 0 && size % 3 == 0
-     * 
-     * @post for any i, 0 <= indicies[i] < n
+     * @pre source.size() >= 3
+     * @pre source[i] is normalized for all i in [0, source.size())
      * 
      * @note This algorithm uses a even polynomial distribution to
      * prioritize points far away from a given index. We like that
@@ -256,7 +260,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    void Shuffle(size_t size, size_t n, std::unique_ptr<Vec3[]> &source, std::unique_ptr<Vec3[]> &indicies);
+    PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n);
 
     /**
      * Performs exponentiation for uint64_t

@@ -23,15 +23,15 @@ PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
                       cam_.CameraToSpatial(p[p.size() / 2]).Normalize(),
                       cam_.CameraToSpatial(p[p.size() - 1]).Normalize()};
 
-    return this->Run(spats);
+    return this->Run(spats[0], spats[1], spats[2]);
 }
 
-PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Vec3 *p) {
+PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Vec3 &a, const Vec3 &b, const Vec3 &c) {
     // Obtain the center point of the projected circle
-    this->center_ = getCenter(p);
+    this->center_ = getCenter(a, b, c);
 
     // Obtain the radius of the projected circle
-    this->r_ = Distance(p[0], this->center_);
+    this->r_ = Distance(a, this->center_);
 
     // Obtain the distance from earth
     decimal h = this->radius_/this->r_;
@@ -40,17 +40,17 @@ PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Vec3 *p) {
     return this->center_.Normalize() * h;
 }
 
-Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 *spats) {
-    Vec3 diff1 = spats[1] - spats[0];
-    Vec3 diff2 = spats[2] - spats[1];
+Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c) {
+    Vec3 diff1 = b - a;
+    Vec3 diff2 = c - b;
 
     // Cross product to find the normal vector for points on earth
     Vec3 circleN = diff1.CrossProduct(diff2);
-    Vec3 circlePt = spats[0];
+    Vec3 circlePt = a;
 
     // Mid point between 2 vectors
-    Vec3 mid1 = Midpoint(spats[0], spats[1]);
-    Vec3 mid2 = Midpoint(spats[1], spats[2]);
+    Vec3 mid1 = Midpoint(a, b);
+    Vec3 mid2 = Midpoint(b, c);
 
     Vec3 mid1N = diff1;
     Vec3 mid2N = diff2;
@@ -128,10 +128,6 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    // Step 1b: Setup random triplets to use for SDDA
-    size_t indicies_size = numIterations * 3;
-    std::unique_ptr<Vec3[]> indicies(new Vec3[indicies_size]);
-    this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
 
     // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -144,16 +140,8 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // Step 3: Iterate through all triplets and run them through SDDA,
     // generating a softmax statistic on each
     while (i != numIterations) {
-        // GCOVR_EXCL_START
-        // Step 3a: Shuffle when we've passed our last triplet
-        if (j >= indicies_size) {
-            indicies_size = 3 * (numIterations - i);
-            j = 0;
-            this->Shuffle(indicies_size, pointsSize, projectedPoints, indicies);
-        }
-        // GCOVR_EXCL_STOP
         // Step 3b: Get the position from SDDA
-        PositionVector position(SphericalDistanceDeterminationAlgorithm::Run(indicies.get() + j));
+        PositionVector position(this->ShuffledCall(projectedPoints, pointsSize));
         decimal loss = this->GenerateLoss(position, targetDistSq, projectedPoints, pointsSize) / referenceLoss;
         if (loss <= this->discriminatorRatio_) {
             decimal factor = DECIMAL_EXP(-loss);
@@ -199,47 +187,44 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     return loss;
 }
 
-void IterativeSphericalDistanceDeterminationAlgorithm::Shuffle(size_t size,
-                                                               size_t n,
-                                                               std::unique_ptr<Vec3[]> &source,
-                                                               std::unique_ptr<Vec3[]> &indicies) {
+PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n) {
+    // Step 0: Setup the random number generators
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
-    assert(size % 3 == 0);
+    // This is okay (being static) since we always override the values
+    static std::unique_ptr<uint64_t[]> logits(new uint64_t[n]);
+
+    // Uniformly generate the first number
     std::uniform_int_distribution<size_t> dist(0, n - 1);
-    // Operates under the asusmption you won't call Run more than once
-    std::unique_ptr<uint64_t[]> logits(new uint64_t[n]);
-    size_t i = 0;
-    while (i < size) {
-        // Uniformly generate the first number
-        size_t index1 = dist(gen);
-        indicies[i++] = source[index1];
-        assert(dist.min() == 0);
-        assert(dist.max() == static_cast<size_t>(n - 1));
+    size_t index1 = dist(gen);
+    Vec3 &a = source[index1];
+    assert(dist.min() == 0);
+    assert(dist.max() == static_cast<size_t>(n - 1));
 
-        // Create logits for the second (even polynomial centered at indicies[i - 1])
-        for (uint64_t j = 0; j < n; j++) {
-            logits[j] = this->Pow(j - index1, this->pdfOrder_);
-        }
-        // Sample for the next number
-        std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
-        size_t index2 = dist1(gen);
-        indicies[i++] = source[index2];
-        assert(dist1.min() == 0);
-        assert(dist1.max() == n - 1);
-
-        // Update the logits for the third number (bi-even polynomial with
-        // centers at indicies[i - 1] and indicies[i - 2]). Note that
-        // the function is zero at both our chosen indicies
-        for (uint64_t j = 0; j < n; j++) {
-            logits[j] *= this->Pow(j - index2, this->pdfOrder_);
-        }
-        // Sample for the last number
-        std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
-        indicies[i++] = source[dist2(gen)];
-        assert(dist2.min() == 0);
-        assert(dist2.max() == n - 1);
+    // Create logits for the second (even polynomial centered at indicies[i - 1])
+    for (uint64_t j = 0; j < n; j++) {
+        logits[j] = this->Pow(j - index1, this->pdfOrder_);
     }
+    // Sample for the next number
+    std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
+    size_t index2 = dist1(gen);
+    Vec3 &b = source[index2];
+    assert(dist1.min() == 0);
+    assert(dist1.max() == n - 1);
+
+    // Update the logits for the third number (bi-even polynomial with
+    // centers at indicies[i - 1] and indicies[i - 2]). Note that
+    // the function is zero at both our chosen indicies
+    for (uint64_t j = 0; j < n; j++) {
+        logits[j] *= this->Pow(j - index2, this->pdfOrder_);
+    }
+    // Sample for the last number
+    std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
+    Vec3 &c = source[dist2(gen)];
+    assert(dist2.min() == 0);
+    assert(dist2.max() == n - 1);
+
+    return this->SphericalDistanceDeterminationAlgorithm::Run(a, b, c);
 }
 
 }  // namespace found
