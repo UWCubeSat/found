@@ -277,6 +277,8 @@ Mat3 Mat3::Transpose() const {
 
 Mat3 Mat3::Inverse() const {
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
+    decimal determinant = Det();
+    if (determinant == 0) throw std::invalid_argument("Matrix is non-invertible");
     decimal scalar = 1 / Det();
 
     Mat3 res = {
@@ -288,10 +290,100 @@ Mat3 Mat3::Inverse() const {
     return res * scalar;
 }
 
+decimal Mat4::At(int i, int j) const {
+    return x[4*i+j];
+}
+
+Vec3 Mat4::Column(int j) const {
+    return {At(0,j), At(1,j), At(2,j), At(3,j)};
+}
+
+Vec3 Mat4::Row(int i) const {
+    return {At(i,0), At(i,1), At(i,2), At(i, 3)};
+}
+
+decimal Mat4::Trace() const {
+    return At(0,0) + At(1,1) + At(2,2) + At(3,3);
+}
+
+// ngl I got chatgpt to write this all out cause I could not be bothered
+// please test thoroughly
+decimal Mat4::Det() const {
+    return
+        (At(0,0) * ((At(1,1)*(At(2,2)*At(3,3) - At(3,2)*At(2,3)))
+             - (At(1,2)*(At(2,1)*At(3,3) - At(3,1)*At(2,3)))
+             + (At(1,3)*(At(2,1)*At(3,2) - At(3,1)*At(2,2))))) -
+
+        (At(0,1) * ((At(1,0)*(At(2,2)*At(3,3) - At(3,2)*At(2,3)))
+             - (At(1,2)*(At(2,0)*At(3,3) - At(3,0)*At(2,3)))
+             + (At(1,3)*(At(2,0)*At(3,2) - At(3,0)*At(2,2))))) +
+
+        (At(0,2) * ((At(1,0)*(At(2,1)*At(3,3) - At(3,1)*At(2,3)))
+             - (At(1,1)*(At(2,0)*At(3,3) - At(3,0)*At(2,3)))
+             + (At(1,3)*(At(2,0)*At(3,1) - At(3,0)*At(2,1))))) -
+
+        (At(0,3) * ((At(1,0)*(At(2,1)*At(3,2) - At(3,1)*At(2,2)))
+             - (At(1,1)*(At(2,0)*At(3,2) - At(3,0)*At(2,2)))
+             + (At(1,2)*(At(2,0)*At(3,1) - At(3,0)*At(2,1)))));
+}
+
+Mat4 Mat4::operator+(const Mat4 &other) const {
+    return {
+        At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2), At(0,3)+other.At(0,3),
+        At(1,0)+other.At(1,0), At(1,1)+other.At(1,1), At(1,2)+other.At(1,2), At(1,3)+other.At(1,3),
+        At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2), At(2,3)+other.At(2,3),
+        At(3,0)+other.At(3,0), At(3,1)+other.At(3,1), At(3,2)+other.At(3,2), At(3,3)+other.At(3,3)
+    };
+}
+
+Mat4 Mat4::operator*(const Mat4 &other) const {
+#define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col) + At(row,3)*other.At(3,col)
+    return {
+        _MATMUL_ENTRY(0,0), _MATMUL_ENTRY(0,1), _MATMUL_ENTRY(0,2), _MATMUL_ENTRY(0,3),
+        _MATMUL_ENTRY(1,0), _MATMUL_ENTRY(1,1), _MATMUL_ENTRY(1,2), _MATMUL_ENTRY(1,3),
+        _MATMUL_ENTRY(2,0), _MATMUL_ENTRY(2,1), _MATMUL_ENTRY(2,2), _MATMUL_ENTRY(2,3),
+        _MATMUL_ENTRY(3,0), _MATMUL_ENTRY(3,1), _MATMUL_ENTRY(3,2), _MATMUL_ENTRY(3,3)
+    };
+#undef _MATMUL_ENTRY
+}
+
+Vec4 Mat4::operator*(const Vec4 &vec) const {
+    return {
+        vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2) + vec.z*At(0,3),
+        vec.x*At(1,0) + vec.y*At(1,1) + vec.z*At(1,2) + vec.z*At(1,3),
+        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2) + vec.z*At(2,3),
+        vec.x*At(3,0) + vec.y*At(3,1) + vec.z*At(3,2) + vec.z*At(3,3)
+    };
+}
+
+Mat4 Mat4::operator*(const decimal &scalar) const {
+    return {
+        scalar*At(0,0) + scalar*At(0,1) + scalar*At(0,2) + scalar*At(0,3),
+        scalar*At(1,0) + scalar*At(1,1) + scalar*At(1,2) + scalar*At(1,3),
+        scalar*At(2,0) + scalar*At(2,1) + scalar*At(2,2) + scalar*At(2,3),
+        scalar*At(3,0) + scalar*At(3,1) + scalar*At(3,2) + scalar*At(3,3)
+    };
+}
+
+Mat4 Mat4::Transpose() const {
+    return {
+        At(0,0) + At(0,1) + At(0,2) + At(0,3),
+        At(1,0) + At(1,1) + At(1,2) + At(1,3),
+        At(2,0) + At(2,1) + At(2,2) + At(2,3),
+        At(3,0) + At(3,1) + At(3,2) + At(3,3)
+    };
+}
+
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
                             0,0,1};
+
+/// 4x4 identity matrix
+const Mat3 kIdentityMat3 = {1,0,0,0,
+                            0,1,0,0,
+                            0,0,1,0
+                            0,0,0,1};
 
 ///////////////////////////////////
 ///////// QUATERNION CLASS ////////
