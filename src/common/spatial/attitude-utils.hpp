@@ -553,6 +553,22 @@ class Mat3 {
      * @return The inverse Matrix of this 
     */
     Mat3 Inverse() const;
+
+    /**
+     * Obtains the cofactor of this Matrix
+     * 
+     * @return The cofactor matrix of this
+     * https://www.geeksforgeeks.org/maths/cofactor-matrix/
+    */
+    Mat3 Cofactor() const;
+
+    /**
+     * Obtains the adjugate (classical adjoint) of this Matrix
+     * 
+     * @return The adjugate matrix of this
+     * 
+    */
+    Mat3 Adjugate() const;
 };
 
 /**

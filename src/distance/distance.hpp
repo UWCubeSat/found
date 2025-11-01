@@ -121,7 +121,6 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * @param principleAxisDimensions The principle axes that define Earth's spheroid
      * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
      * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
-     * @note input must obey a = b > c
      * @param cam The camera used to capture the picture of Earth
      */
     SpheroidDistanceDeterminationAlgorithm(Vec3 principleAxisDimensions, Camera &&cam) : cam_(cam), principleAxisDimensions_(principleAxisDimensions) {}
@@ -189,12 +188,23 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * Finds the 2 possible solutions for the vector to Earth's center
      *
      * @param principleAxes The principle axes that define Earth's spheroid
-     * @param conicEigenvalues The eigenvalues of the matrix that defines the conic section on the image plane
-     * @param conicEigenvectors The eigenvectors of the matrix that defines the conic section on the image plane
+     * @param conicEnvelopeEigenvalues The eigenvalues of the matrix that defines the conic envelope on the image plane
+     * @param conicEnvelopeEigenvectors The eigenvectors of the matrix that defines the conic envelope on the image plane
      * 
      * @return A 3x3 matrix where the first two columns are the possible solutions. The third column can be ignored.
     */
-    Mat3 SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEigenvalues, Mat3 conicEigenvectors);
+    Mat3 SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEnvelopeEigenvalues, Mat3 conicEnvelopeEigenvectors);
+
+    /**
+     * Finds the correct solution out of the two possible solutions for the vector to Earth's center
+     *
+     * @param possibleSolutions The possible vectors that point to Earth's center
+     * @param principleAxisC The polar radius (axis c) of Earth's spheroid
+     * 
+     * @return The one that actually points to Earth's center, based on whether it agrees with Earth's axis of rotation
+     * @note This algorithm assumes the axis of rotation is cam.SpatialToCamera({0, 0, 1}), which I was told is correct; PLEASE VERIFY
+    */
+    Vec3 pickPosition(Mat3 possibleSolutions, decimal principleAxisC, Mat3 conicEnvelope);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken

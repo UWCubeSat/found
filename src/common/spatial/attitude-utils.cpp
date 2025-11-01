@@ -290,6 +290,28 @@ Mat3 Mat3::Inverse() const {
     return res * scalar;
 }
 
+Mat3 Mat3::Cofactor() const{
+    Mat3 C;
+    // Take the determinant of the minor, alternate multiplying by +-
+    C(0,0) =  (At(1,1) * At(2,2) - At(1,2) * At(2,1));
+    C(0,1) = -(At(1,0) * At(2,2) - At(1,2) * At(2,0));
+    C(0,2) =  (At(1,0) * At(2,1) - At(1,1) * At(2,0));
+
+    C(1,0) = -(At(0,1) * At(2,2) - At(0,2) * At(2,1));
+    C(1,1) =  (At(0,0) * At(2,2) - At(0,2) * At(2,0));
+    C(1,2) = -(At(0,0) * At(2,1) - At(0,1) * At(2,0));
+
+    C(2,0) =  (At(0,1) * At(1,2) - At(0,2) * At(1,1));
+    C(2,1) = -(At(0,0) * At(1,2) - At(0,2) * At(1,0));
+    C(2,2) =  (At(0,0) * At(1,1) - At(0,1) * At(1,0));
+
+    return C;
+}
+
+Mat3 Mat3::Adjugate() const{
+    Cofactor().Transpose();
+}
+
 decimal Mat4::At(int i, int j) const {
     return x[4*i+j];
 }
