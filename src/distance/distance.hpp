@@ -167,7 +167,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * @return The eigenvalues of the matrix 
      * in sorted order (THIS IS IMPORTANT FOR THE ALGORITHM)
      *
-     * @note When using this in the context of the conic section matrix,
+     * @note When using this in the context of the conic envelope matrix,
      * make sure the input matrix has a negative determinant (negate it if it doesn't)
      * so that the first two eigenvalues are positive and the third is negative
     */

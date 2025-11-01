@@ -23,13 +23,14 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     Mat3 conicSection = GetConicSection(p);
     // We use the adjugate of the matrix, which describes the conic envelope (set of lines that are tangent to the conic)
     Mat3 conicEnvelope = conicSection.Adjugate();
+    // Make sure the determinant is negative so that only one of the eigenvalues is negative
+    if (conicEnvelope.Det > ) conicEnvelope = -1 * conicEnvelope;
 
     Vec3 conicEnvelopeEigenvalues = Get3Eigenvalues(conicEnvelope);
     Mat3 conicEnvelopeEigenvectors = Get3Eigenvectors(conicEnvelope, conicEnvelopeEigenvalues);
 
     Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEnvelopeEigenvalues, conicEnvelopeEigenvectors);
 
-    // I guess just return the first one for now??? 
     return pickPosition(possibleSolutions, principleAxisDimensions_.z, conicEnvelope);
 }
 
@@ -90,6 +91,7 @@ Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions
     decimal sol1Error = (sol1EigenvectorCandidate*trueAxisOfRotation / trueEigenvalue) - 1;
     decimal sol2Error = (sol2EigenvectorCandidate*trueAxisOfRotation / trueEigenvalue) - 1;
     
+    // return the solution with less error; ideally it should not even be close
     return possibleSolution1 : possibleSolution2 ? DECIMAL_ABS(sol1Error) < DECIMAL_ABS(sol2Error);
 }
 
