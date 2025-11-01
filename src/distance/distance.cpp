@@ -75,7 +75,7 @@ Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions
     // Normalize to make calculations later easier
     Vec3 trueAxisOfRotation = cam.SpatialToCamera({0,0,1}).Normalize();
     // Renaming to make it clearer; If this causes performance issues just replace it
-    decimal trueEigenvalue = principleAxisC;
+    decimal trueEigenvalue = principleAxisC*principleAxisC;
 
     // If the solution is correct, the axis of rotation will be (nearly) an eigenvector of the matrix formed 
     // by adding the conicEnvelope and the outerproduct of the solution 
