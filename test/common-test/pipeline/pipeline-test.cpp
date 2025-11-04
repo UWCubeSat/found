@@ -6,11 +6,42 @@
 #include <memory>
 
 #include "src/common/pipeline/pipelines.hpp"
+#include "src/common/style.hpp"
+#include "src/distance/edge.hpp"
 
 #include "test/common/constants/pipeline-constants.hpp"
 #include "test/common/mocks/pipeline-mocks.hpp"
 
 namespace found {
+
+// Lightweight concrete stages for direct testing without mocks.
+class ImageToPointsStage : public FunctionStage<Image, Points> {
+ public:
+    Points Run(const Image &input) override {
+        (void)input;
+        return {{1, 2}, {3, 4}};
+    }
+};
+
+class PointsToVec3Stage : public FunctionStage<Points, Vec3> {
+ public:
+    Vec3 Run(const Points &input) override {
+        (void)input;
+        return {5, 6, 7};
+    }
+};
+
+class IdentityPointsStage : public FunctionStage<Points, Points> {
+ public:
+    Points Run(const Points &input) override {
+        Points output = input;
+        for (auto &pt : output) {
+            pt.x += DECIMAL(1.0);
+            pt.y += DECIMAL(2.0);
+        }
+        return output;
+    }
+};
 
 /////////////////////////////////////////////
 ///////// SEQUENTIAL PIPELINE TEST //////////
@@ -630,5 +661,91 @@ TEST(ModifyingPipelineTest, TestSequentialAndModifierPipelinesinSequentialPipeli
     ASSERT_EQ(doubles[test_set], actual);
     ASSERT_EQ(expectedResource, resource);
 }
+
+// Alias-based smoke test for DistancePipeline to ensure the typedef stays wired
+TEST(SequentialPipelineTest, RunDistancePipelineAlias) {
+    DistancePipeline pipeline;
+    ImageToPointsStage stage1;
+    PointsToVec3Stage stage2;
+
+    Image input{};
+    PositionVector result = pipeline.AddStage(stage1).Complete(stage2).Run(input);
+
+    ASSERT_EQ(result.x, 5);
+    ASSERT_EQ(result.y, 6);
+    ASSERT_EQ(result.z, 7);
+}
+
+TEST(SequentialPipelineTest, DoActionImageToVec3N10) {
+    SequentialPipeline<Image, Vec3, 10> pipeline;
+    ImageToPointsStage stage1;
+    PointsToVec3Stage stage2;
+
+    pipeline.AddStage(stage1).Complete(stage2);
+
+    Image input{};
+    Vec3 output{};
+    pipeline.GetResource() = input;
+    pipeline.GetProduct() = &output;
+
+    pipeline.DoAction(); // This directly calls the target function.
+
+    ASSERT_EQ(output.x, 5);
+    ASSERT_EQ(output.y, 6);
+    ASSERT_EQ(output.z, 7);
+}
+
+// Directly exercise FunctionStage<Points, Points>::DoAction
+TEST(FunctionStageTest, DoActionPointsIdentityStage) {
+    IdentityPointsStage stage;
+    Points input = {{DECIMAL(1.0), DECIMAL(2.0)}, {DECIMAL(3.0), DECIMAL(4.0)}};
+    Points product;
+
+    stage.GetResource() = input;
+    stage.GetProduct() = &product;
+
+    stage.DoAction();
+
+    ASSERT_EQ(product.size(), input.size());
+    for (size_t i = 0; i < product.size(); ++i) {
+        EXPECT_EQ(product[i].x, input[i].x + DECIMAL(1.0));
+        EXPECT_EQ(product[i].y, input[i].y + DECIMAL(2.0));
+    }
+}
+
+// Explicit coverage for SequentialPipeline<Image, Vec3, 4>::Run via a member pointer call
+TEST(SequentialPipelineTest, RunImageToVec3N4CoversRun) {
+    SequentialPipeline<Image, Vec3, 4> pipeline;
+    ImageToPointsStage stage1;
+    PointsToVec3Stage stage2;
+
+    pipeline.AddStage(stage1).Complete(stage2);
+
+    Image input{};
+    auto runPtr = &SequentialPipeline<Image, Vec3, 4>::Run;
+    Vec3 result = (pipeline.*runPtr)(input);
+
+    ASSERT_EQ(result.x, 5);
+    ASSERT_EQ(result.y, 6);
+    ASSERT_EQ(result.z, 7);
+}
+
+// Also verify the alias instantiation uses the same Run logic
+TEST(SequentialPipelineTest, RunDistancePipelineAliasViaPointer) {
+    DistancePipeline pipeline;
+    ImageToPointsStage stage1;
+    PointsToVec3Stage stage2;
+
+    pipeline.AddStage(stage1).Complete(stage2);
+
+    Image input{};
+    auto runPtr = &DistancePipeline::Run;
+    PositionVector result = (pipeline.*runPtr)(input);
+
+    ASSERT_EQ(result.x, 5);
+    ASSERT_EQ(result.y, 6);
+    ASSERT_EQ(result.z, 7);
+}
+
 
 }  // namespace found

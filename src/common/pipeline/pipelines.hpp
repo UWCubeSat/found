@@ -312,7 +312,9 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
         }
         *this->product = input;
         for (size_t i = 0; i < this->size; i++) {
-            dynamic_cast<ModifyingStage<T> *>(this->stages[i])->SetResource(*this->product);
+            auto *stage = static_cast<ModifyingStage<T> *>(this->stages[i]);
+            assert(stage != nullptr);
+            stage->SetResource(*this->product);
         }
         Pipeline<T, T, N>::DoActionHelper();
         return *this->product;

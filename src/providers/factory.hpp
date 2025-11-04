@@ -7,7 +7,7 @@
 
 #include "command-line/execution/executors.hpp"
 #include "providers/stage-providers.hpp"
-#include "distance/edge_filters.hpp"  // ProvideEdgeFilteringAlgorithm
+#include "distance/edge-filters.hpp"  // ProvideEdgeFilteringAlgorithm
 
 namespace found {
 

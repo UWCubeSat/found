@@ -39,14 +39,17 @@ class NoOpEdgeFilter : public EdgeFilteringAlgorithm {
     }
 };
 
+namespace detail {
+inline NoOpEdgeFilter kNoOpEdgeFilter{};
+}  // namespace detail
+
 /**
  * Convenience provider (no-arg). Returns a pipeline that contains a single
  * NoOpEdgeFilter so callers that expect a ready pipeline can use this.
  */
 inline EdgeFilteringAlgorithms ProvideEdgeFilteringAlgorithm() {
     EdgeFilteringAlgorithms pipeline;
-    static NoOpEdgeFilter noop;
-    pipeline.Complete(noop);
+    pipeline.Complete(detail::kNoOpEdgeFilter);
     return pipeline;
 }
 
@@ -62,9 +65,8 @@ inline std::optional<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(cons
     EdgeFilteringAlgorithms pipeline;
     bool added = false;
 
-    static NoOpEdgeFilter noop;  // safe persistent instance
     if (options.enableNoOpEdgeFilter) {
-        pipeline.Complete(noop);
+        pipeline.Complete(detail::kNoOpEdgeFilter);
         added = true;
     }
 

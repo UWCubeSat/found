@@ -12,7 +12,7 @@
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
-#include "distance/edge_filters.hpp"
+#include "distance/edge-filters.hpp"
 
 #include "orbit/orbit.hpp"
 
