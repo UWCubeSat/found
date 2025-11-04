@@ -13,11 +13,6 @@
 
 namespace found {
 
-MATCHER_P(Vec2Equal, expected, "") {
-    return abs(expected.x - arg.x) < DEFAULT_TOLERANCE &&
-           abs(expected.y - arg.y) < DEFAULT_TOLERANCE;
-}
-
 TEST(SimpleEdgeDetectionTest, TestNoEdgeAllSpace) {
     unsigned char imageData[25] = {0, 0, 0, 0, 0,
                                    0, 0, 0, 0, 0,
