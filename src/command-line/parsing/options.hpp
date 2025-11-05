@@ -45,6 +45,7 @@ FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        
 #define ISDDA "ISDDA"  // The IterativeSphericalDistanceDeterminationAlgorithm (ISDDA)
 
 /// Distance Flags
+// TODO: Remove enable-noop-edge-filter when the first edge filtering algorithm is implemented.                                                                                                                    
 #define DISTANCE \
 FOUND_CLI_OPTION("image"                   , found::Image      , image           , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN, "The image to process (JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC)") \
 FOUND_CLI_OPTION("calibration-data"        , found::DataFile   , calibrationData , {defaultDFHead}            , found::strtodf(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "The calibration data (*.found)"                               ) \

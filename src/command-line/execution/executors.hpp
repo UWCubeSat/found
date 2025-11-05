@@ -77,6 +77,11 @@ class DistancePipelineExecutor : public PipelineExecutor {
 
     /**
      * Constructs a DistancePipelineExecutor (no edge-filters)
+     *
+     * @param options The DistanceOptions to configure the pipeline (moved into the executor)
+     * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
+     * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
+     * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
@@ -85,12 +90,18 @@ class DistancePipelineExecutor : public PipelineExecutor {
 
     /**
      * Constructs a DistancePipelineExecutor with an edge-filtering pipeline
+     *
+     * @param options The DistanceOptions to configure the pipeline (moved into the executor)
+     * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
+     * @param filters A pipeline of edge filtering stages; ownership is transferred to the executor
+     * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
+     * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      std::unique_ptr<EdgeFilteringAlgorithms> filters,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm,
-                                      EdgeFilteringAlgorithms &&filters);
+                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -99,16 +110,15 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The DistanceOptions being used
     const DistanceOptions options_;
     /// The Distance pipeline being used
-    // Increase capacity to 4 stages: edge detection -> filters -> distance -> vectorize
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The edge-filtering pipeline (may be no operation)
+    std::unique_ptr<EdgeFilteringAlgorithms> filters_;
     /// The Distance Determination Algorithm being used
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
     std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
-    /// Optional edge-filtering pipeline (may be empty)
-    EdgeFilteringAlgorithms filters_;
 };
 
 /**

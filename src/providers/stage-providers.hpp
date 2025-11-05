@@ -2,6 +2,7 @@
 #define SRC_PROVIDERS_STAGE_PROVIDERS_HPP_
 
 #include <memory>
+#include <utility>
 
 #include "command-line/parsing/options.hpp"
 
@@ -29,7 +30,8 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
+inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
+    [[maybe_unused]] CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -53,14 +55,17 @@ inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(con
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
+    const DistanceOptions &options) {
     if (options.distanceAlgo == SDDA) {
-        Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
-        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, std::move(cam));
+        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, Camera(options.focalLength,
+            options.pixelSize, options.image.width, options.image.height));
     } else if (options.distanceAlgo == ISDDA) {
-        Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
         return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                                  std::move(cam),
+                                                                                  Camera(options.focalLength,
+                                                                                    options.pixelSize,
+                                                                                    options.image.width,
+                                                                                    options.image.height),
                                                                                   options.ISDDAMinIters,
                                                                                   options.ISDDADistRatio,
                                                                                   options.ISDDADiscimRatio,
@@ -94,6 +99,48 @@ inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorit
         return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
 }
+
+/**
+ * NoOpEdgeFilter
+ *
+ * A ModifyingStage implementation that performs no modifications
+ * to the Points. This exists to provide a valid stage instance that can be
+ * used by providers when a no-op filter is requested. This will not be needed
+ * once an EdgeFilteringAlgorithm is implemented.
+ */
+class NoOpEdgeFilter : public ModifyingStage<Points> {
+ public:
+    NoOpEdgeFilter() = default;
+    ~NoOpEdgeFilter() override = default;
+
+    /**
+     * Run
+     *
+     * No-op filter: intentionally does not modify the provided points. This
+     * documents the overridden member so documentation tools do not emit a warning.
+     *
+     * @param pts The Points to (not) modify.
+     */
+    void Run(Points &pts) override {
+        // intentionally no-op
+        (void)pts;
+    }
+};
+
+/**
+ * detail
+ *
+ * Internal provider instances and singletons used by the stage provider
+ * functions
+ */
+namespace detail {
+/**
+ * A single shared instance of the NoOpEdgeFilter used by providers when the
+ * no-op edge filter is requested. Documented to satisfy Doxygen checks.
+ */
+inline NoOpEdgeFilter kNoOpEdgeFilter{};
+}  // namespace detail
+
 
 // TODO: Uncomment when orbit stage is implemented
 /**

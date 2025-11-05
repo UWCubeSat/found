@@ -7,7 +7,7 @@
 
 #include "command-line/execution/executors.hpp"
 #include "providers/stage-providers.hpp"
-#include "distance/edge-filters.hpp"  // ProvideEdgeFilteringAlgorithm
+#include "distance/edge-filters.hpp"
 
 namespace found {
 
@@ -31,26 +31,17 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
  * @return A pointer to a DistancePipelineExecutor
  */
 inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
-    // Read enable flags before anything that might move resources.
-    bool enableNoop = options.enableNoOpEdgeFilter;
+    std::unique_ptr<EdgeDetectionAlgorithm> edgeAlg = ProvideEdgeDetectionAlgorithm(options);
+    std::unique_ptr<DistanceDeterminationAlgorithm> distAlg = ProvideDistanceDeterminationAlgorithm(options);
+    std::unique_ptr<VectorGenerationAlgorithm> vecAlg = ProvideVectorGenerationAlgorithm(options);
+    std::unique_ptr<EdgeFilteringAlgorithms> filtersOpt = ProvideEdgeFilteringAlgorithm(options);
 
-    // Call providers with const reference to options (no copies).
-    auto edgeAlg = ProvideEdgeDetectionAlgorithm(options);
-    auto distAlg = ProvideDistanceDeterminationAlgorithm(options);
-    auto vecAlg = ProvideVectorGenerationAlgorithm(options);
-
-    // Options-aware filters provider: returns optional pipeline if any filters enabled
-    std::optional<EdgeFilteringAlgorithms> filtersOpt;
-    if (enableNoop) {
-        filtersOpt = ProvideEdgeFilteringAlgorithm(options);  // checks enableNoOpEdgeFilter
-    }
-
-    if (filtersOpt.has_value()) {
+    if (filtersOpt) {
         return std::make_unique<DistancePipelineExecutor>(std::move(options),
                                     std::move(edgeAlg),
+                                    std::move(filtersOpt),
                                     std::move(distAlg),
-                                    std::move(vecAlg),
-                                    std::move(filtersOpt.value()));
+                                    std::move(vecAlg));
     } else {
         return std::make_unique<DistancePipelineExecutor>(std::move(options),
                                     std::move(edgeAlg),

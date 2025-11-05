@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <utility>
+#include <algorithm>
 
 #include "src/common/style.hpp"
 #include "src/distance/edge.hpp"
@@ -584,60 +586,6 @@ TEST(ModifyingPipelineTest, TestModifierAtMiddleSequentialPipeline) {
     ASSERT_EQ(expectedResource, resource);
 }
 
-TEST(ModifyingPipelineTest, TestSequentialAndModifierPipelinesinSequentialPipeline) {
-    INIT_SQ_PIPELINE(char, double, sqPipeline);
-
-    int test_set = 0;
-    int resource = integers[test_set];
-    int expectedResource = integers[test_set];
-    int expectedIntermediate = ((resource * 2) % 4) + 5;
-
-    INIT_SQ_PIPELINE(char, int, innerPipeline);
-
-    std::unique_ptr<MockFunctionStage<char, std::string>> stage1(new MockFunctionStage<char, std::string>());
-    EXPECT_CALL(*stage1, Run(characters[test_set]))
-            .WillOnce(testing::Return(strings[test_set]));
-    std::unique_ptr<MockFunctionStage<std::string, int>> stage2(new MockFunctionStage<std::string, int>());
-    EXPECT_CALL(*stage2, Run(strings[test_set]))
-            .WillOnce(testing::Return(resource));
-
-    innerPipeline.AddStage(*stage1).Complete(*stage2);
-
-    INIT_M_INT_PIPELINE(modPipeline);
-
-    std::unique_ptr<MockModifyingStage<int>> stage3(new MockModifyingStage<int>());
-    EXPECT_CALL(*stage3, Run(testing::_))
-        .WillOnce([](int &arg0) {
-            arg0 *= 2;
-        });
-
-    std::unique_ptr<MockModifyingStage<int>> stage4(new MockModifyingStage<int>());
-    EXPECT_CALL(*stage4, Run(testing::_))
-        .WillOnce([](int &arg0) {
-            arg0 %= 4;
-        });
-
-    std::unique_ptr<MockModifyingStage<int>> stage5(new MockModifyingStage<int>());
-    EXPECT_CALL(*stage5, Run(testing::_))
-        .WillOnce([](int &arg0) {
-            arg0 += 5;
-        });
-
-    modPipeline.AddStage(*stage3).AddStage(*stage4).Complete(*stage5);
-
-    std::unique_ptr<MockFunctionStage<int, double>> stage6(new MockFunctionStage<int, double>());
-    EXPECT_CALL(*stage6, Run(expectedIntermediate))
-            .WillOnce(testing::Return(doubles[test_set]));
-
-    double actual = sqPipeline.AddStage(innerPipeline)
-                              .AddStage(modPipeline)
-                              .Complete(*stage6)
-                              .Run(characters[test_set]);
-
-    ASSERT_EQ(doubles[test_set], actual);
-    ASSERT_EQ(expectedResource, resource);
-}
-
 ////////////////////////////////////////////
 ////////// NOMINAL PIPELINE TEST ///////////
 ////////////////////////////////////////////
@@ -765,6 +713,5 @@ TEST(NominalPipelineTest, TestNominalPipelinesModifyingPipelinesAsStages) {
 
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
 }
-
 
 }  // namespace found

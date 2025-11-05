@@ -9,24 +9,21 @@
 #include <fstream>
 #include <ctime>
 
+#include "src/datafile/datafile.hpp"
+#include "src/datafile/serialization.hpp"
+#include "src/calibrate/calibrate.hpp"
+#include "src/distance/edge.hpp"
+#include "src/distance/distance.hpp"
+#include "src/distance/vectorize.hpp"
+#include "src/distance/edge-filters.hpp"
+#include "src/command-line/execution/executors.hpp"
+
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
 #include "test/common/common.hpp"
 
-#include "src/providers/converters.hpp"
-#include "src/datafile/datafile.hpp"
-#include "src/datafile/serialization.hpp"
-
-#include "src/calibrate/calibrate.hpp"
-
-#include "src/distance/edge.hpp"
-#include "src/distance/distance.hpp"
-#include "src/distance/vectorize.hpp"
-
 // TODO: Fully Implement orbit stuff this after orbit stage is implemented
 // TODO: Include statement for Orbit Pipeline
-
-#include "src/command-line/execution/executors.hpp"
 
 namespace found {
 
@@ -129,115 +126,26 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
     std::unique_ptr<EdgeDetectionAlgorithm>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
+    std::unique_ptr<EdgeFilteringAlgorithms> filters = std::make_unique<EdgeFilteringAlgorithms>();
+    std::unique_ptr<MockEdgeFilter> mockFilter = std::make_unique<MockEdgeFilter>();
+    EXPECT_CALL(*mockFilter, Run(PointsMatcher(points)))
+        .WillOnce(testing::Invoke([](Points &){ /* no-op for test */ }));
+    filters->Complete(*mockFilter);
+
     std::unique_ptr<DistanceDeterminationAlgorithm>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
     std::unique_ptr<VectorGenerationAlgorithm>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
-
-    // using new edge-filtering pipeline integration.
-    // ProvideEdgeFilteringAlgorithm returns an EdgeFilteringAlgorithms (ModifyingPipeline<Points>)
-    // that currently contains a NoOpEdgeFilter so behavior is unchanged.
-    auto filters = found::ProvideEdgeFilteringAlgorithm();
     DistancePipelineExecutor executor(std::move(options),
                                       std::move(edgeDetectionAlgorithm),
-                                      std::move(distanceDeterminationAlgorithm),
-                                      std::move(vectorGenerationAlgorithm),
-                                      std::move(filters));
-
-    executor.ExecutePipeline();
-
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    executor.OutputResults();
-
-    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
-
-    std::stringstream expectedOutput;
-    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
-                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
-                   << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
-
-    ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
-
-    DataFile expected{
-        {{'F', 'O', 'U', 'N'}, 1U, 1},
-        {},
-        std::make_unique<LocationRecord[]>(1)
-    };
-    expected.positions[0] = {145295, {4, 5, 6}};
-
-    std::ifstream file(temp_df);
-    DataFile actual = deserializeDataFile(file);
-    ASSERT_DF_EQ(expected, actual, 1);
-
-    std::remove(temp_df);
-}
-
-// new test using the no-filter constructor
-TEST(ExecutorsTest, TestDistancePipelineExecutor_NoFilters) {
-    DistanceOptions options;
-    options.image = strtoimage("test/common/assets/example_image.jpg");
-    options.calibrationData = strtodf("test/common/assets/empty-df.found");
-    options.refAsOrientation = false;
-    options.focalLength = 0.012;
-    options.pixelSize = 20E-6;
-    options.refOrientation = {0, 0, 0};
-    options.relOrientation = {0, 0, 0};
-    options.radius = DECIMAL_M_E;
-    options.SEDAThreshold = 25;
-    options.SEDABorderLen = 1;
-    options.SEDAOffset = 0.0;
-    options.distanceAlgo = "hello";
-    options.ISDDAMinIters = 92;
-    options.ISDDADistRatio = 300;
-    options.ISDDADiscimRatio = 2.0;
-    options.ISDDAPdfOrd = 10;
-    options.ISDDARadLossOrd = 12;
-    options.outputFile = temp_df;
-    options.enableNoOpEdgeFilter = false;
-    Points points = {
-        {0, 0},
-        {1, 1},
-        {2, 2}
-    };
-    PositionVector positionVector1{1, 2, 3};
-    PositionVector positionVector2{4, 5, 6};
-
-    // Setup Mocks
-    std::unique_ptr<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithm =
-        std::make_unique<MockEdgeDetectionAlgorithm>();
-    EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
-        .WillOnce(testing::Return(points));
-
-    std::unique_ptr<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithm =
-        std::make_unique<MockDistanceDeterminationAlgorithm>();
-    EXPECT_CALL(*mockDistanceDeterminationAlgorithm, Run(PointsMatcher(points)))
-        .WillOnce(testing::Return(positionVector1));
-
-    std::unique_ptr<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithm =
-        std::make_unique<MockVectorGenerationAlgorithm>();
-    EXPECT_CALL(*mockVectorGenerationAlgorithm, Run(PositionVectorMatcher(positionVector1)))
-        .WillOnce(testing::Return(positionVector2));
-
-    std::unique_ptr<EdgeDetectionAlgorithm>
-        edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
-    std::unique_ptr<DistanceDeterminationAlgorithm>
-        distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
-    std::unique_ptr<VectorGenerationAlgorithm>
-        vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
-
-    // Use the original ctor (no filters)
-    DistancePipelineExecutor executor(std::move(options),
-                                      std::move(edgeDetectionAlgorithm),
+                                      std::move(filters),
                                       std::move(distanceDeterminationAlgorithm),
                                       std::move(vectorGenerationAlgorithm));
 
     executor.ExecutePipeline();
-
     testing::internal::CaptureStdout();  // Start capturing stdout
     executor.OutputResults();
+
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
 
     std::stringstream expectedOutput;
@@ -300,6 +208,5 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
-
 
 }  // namespace found

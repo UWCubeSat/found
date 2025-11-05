@@ -3,15 +3,17 @@
 
 #include <memory>
 #include <optional>
+#include <utility>
 
 #include "command-line/parsing/options.hpp"
 #include "common/pipeline/pipelines.hpp"
 #include "distance/edge.hpp"
+#include "providers/stage-providers.hpp"
 
 namespace found {
 
 
-using EdgeFilteringAlgorithms = ModifyingPipeline<Points>;
+typedef ModifyingPipeline<Points> EdgeFilteringAlgorithms;
 
 /**
  * Abstract superclass for edge-filtering algorithms.
@@ -24,53 +26,22 @@ class EdgeFilteringAlgorithm : public ModifyingStage<Points> {
     // Implementations override void Run(Points &)
 };
 
-/**
- * A trivial implementation to ensure linkage / prevent undefined references.
- * Does nothing to the Points (no-op filter).
- */
-class NoOpEdgeFilter : public EdgeFilteringAlgorithm {
- public:
-    NoOpEdgeFilter() = default;
-    ~NoOpEdgeFilter() override = default;
-
-    void Run(Points &pts) override {
-        // intentionally no-op
-        (void)pts;
-    }
-};
-
-namespace detail {
-inline NoOpEdgeFilter kNoOpEdgeFilter{};
-}  // namespace detail
-
-/**
- * Convenience provider (no-arg). Returns a pipeline that contains a single
- * NoOpEdgeFilter so callers that expect a ready pipeline can use this.
- */
-inline EdgeFilteringAlgorithms ProvideEdgeFilteringAlgorithm() {
-    EdgeFilteringAlgorithms pipeline;
-    pipeline.Complete(detail::kNoOpEdgeFilter);
-    return pipeline;
-}
 
 /**
  * Options-aware provider. Constructs a pipeline containing all filters
  * that are enabled in options and returns it. If no filter is enabled,
- * returns std::nullopt to indicate "no filters".
- *
- * Note: stages added are function-local static instances so the pipeline
- * can safely store raw pointers to them.
+ * returns nullptr to indicate "no filters".
  */
-inline std::optional<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &options) {
-    EdgeFilteringAlgorithms pipeline;
+inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &options) {
+    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
     bool added = false;
 
     if (options.enableNoOpEdgeFilter) {
-        pipeline.Complete(detail::kNoOpEdgeFilter);
+        pipeline->Complete(detail::kNoOpEdgeFilter);
         added = true;
     }
 
-    if (!added) return std::nullopt;
+    if (!added) return nullptr;
     return pipeline;
 }
 
