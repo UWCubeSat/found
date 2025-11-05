@@ -144,83 +144,62 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Convolutional Edge Detection Algorithm //////
 
-Points ConvolutionEdgeDetectionAlgorithm::Run(const Image &image) {
-    // Step 0: Define Common Variables
-    int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
-    // Step 1: Convolve the image with the mask
-    Tensor tensor = ConvolveWithMask(image);
-    // Step 2: Identify the edge using the criterion
-    Points result;
-    for (int64_t k = 0; k < image_size; k += image.channels) {
-        if (ApplyCriterion(k, tensor, image)) {
-            result.push_back({DECIMAL(k / image.channels % image.width),
-                              DECIMAL(k / image.channels / image.width)});
-        }
+bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tensor &tensor, const Image &image) {
+    if (DECIMAL_ABS(tensor.tensor[index]) > threshold_) {
+        return BoxBasedOutlierCriterion(index, tensor, image);
+    } else {
+        return false;
     }
-    // Step 3: ensure polar ordering
-    PolarSort(result, Vec2{DECIMAL(planetIndex_ / image.channels % image.width),
-                           DECIMAL(planetIndex_ / image.channels / image.width)});
-    // Step 4: Return the points
-    return result;
 }
 
-Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWithMask(const Image &image) {
-    // Step -1: check if image and mask channels match
-    if (image.channels > 1 && mask_.channels > 1 && image.channels != mask_.channels) {
-        throw std::invalid_argument("Invalid channel dimension pair for image and mask");
-    }
+Tensor ConvolutionEdgeDetectionAlgorithm::ConvolveWith2DMask(const Image &image, const Mask &mask, int channel) {
     // Step 0: setup basic constants
-    int max_channels = std::max(image.channels, mask_.channels);
-    auto result = std::make_unique<decimal[]>(image.width * image.height * max_channels);
-    int64_t center = (static_cast<int64_t>(mask_.centerHeight) * mask_.width + mask_.centerWidth);
-    int64_t image_size = static_cast<int64_t>(image.width) * image.height * max_channels;
+    auto result = std::make_unique<decimal[]>(image.width * image.height);
+    int64_t center = (static_cast<int64_t>(mask.centerHeight) * mask.width + mask.centerWidth);
+    int64_t image_size = static_cast<int64_t>(image.width) * image.height * image.channels;
 
     // Step 2: perform the convolution
-    // Step 2a: loop through the image channels
-    for (int channel = 0; channel < max_channels; ++channel) {
-        // Step 2b: loop through the image pixels
-        for (int64_t k = channel; k < image_size; k += max_channels) {
-            // use double for precision then cast back to float once kernel addition is done TODO: switch to decimal
-            decimal c = 0;
-            // Step 2c: apply the mask to the image
-            for (int i = -mask_.centerHeight; i <= mask_.height - mask_.centerHeight - 1; ++i) {
-                int row = (k / max_channels) / image.width - i;
+    for (int64_t k = channel; k < image_size; k += image.channels) {
+        decimal c = 0;
+        // Step 2c: apply the mask to the image
+        for (int i = -mask.centerHeight; i <= mask.height - mask.centerHeight - 1; ++i) {
+            int row = (k / image.channels) / image.width - i;
+            // "valid" padding (ignores pixels outside the image)
+            if (row < 0 || row > image.height - 1) {
+                continue;
+            }
+            for (int j = -mask.centerWidth; j <= mask.width - mask.centerWidth - 1; ++j) {
+                int col = ((k / image.channels) % image.width) - j;
                 // "valid" padding (ignores pixels outside the image)
-                if (row < 0 || row > image.height - 1) {
+                if (col < 0 || col > image.width - 1) {
                     continue;
                 }
-                for (int j = -mask_.centerWidth; j <= mask_.width - mask_.centerWidth - 1; ++j) {
-                    int col = ((k / max_channels) % image.width) - j;
-                    // "valid" padding (ignores pixels outside the image)
-                    if (col < 0 || col > image.width - 1) {
-                        continue;
-                    }
-                    c += static_cast<decimal>(mask_.data[(channel < mask_.channels) ?
-                            (center + i * mask_.width + j) * mask_.channels +channel :
-                            (center + i * mask_.width + j)]) *
-                         static_cast<decimal>(image.image[(channel < image.channels) ?
-                            (static_cast<int64_t>(row) * image.width + col) * max_channels + channel :
-                            (static_cast<int64_t>(row) * image.width + col)]);
-                }
+                c += static_cast<decimal>(mask.data[center + i * mask.width + j]) *
+                        static_cast<decimal>(image.image[(static_cast<int64_t>(row) * image.width + col) * 
+                                                        image.channels + channel]);
             }
-            result[k] = static_cast<float>(c);
         }
+        result[k] = static_cast<float>(c);
     }
     // Apply the mask to the image
-    return Tensor(image.width, image.height, max_channels, std::move(result));
+    return Tensor(image.width, image.height, std::move(result));
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::ApplyCriterion(int64_t index, const Tensor &tensor, const Image &image) {
-    std::vector<bool> channelIsEdge(tensor.channels, false);
-    // Apply the box based outlier criterion to each channel
-    for (int i = 0; i < tensor.channels; i++) {
-        if (DECIMAL_ABS(tensor.tensor[index]) > threshold_) {
-            channelIsEdge[i] = BoxBasedOutlierCriterion(index + i, tensor, image);
-        } else {
-            channelIsEdge[i] = false;
+Tensor ConvolutionEdgeDetectionAlgorithm::ComputeGradientMagnitude(const Tensor partials[], int num) {
+    int64_t image_size = static_cast<int64_t>(partials[0].width) * partials[0].height;
+    auto result = std::make_unique<decimal[]>(image_size);
+    
+
+    for (int64_t k = 0; k < image_size; k++) {
+        decimal g_tot = 0;
+        for(int i = 0; i < num; i++) {
+            decimal g = partials[i].tensor[k];
+            g_tot += g * g;
         }
+        result[k] = DECIMAL_SQRT(g_tot);
     }
-    return CombineChannelCriterion(channelIsEdge);
+
+    return Tensor(partials[0].width, partials[0].height, std::move(result));
 }
 
 bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
@@ -233,8 +212,8 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
     // Step 2a: Setup constants
     decimal radius = DECIMAL(boxBasedMaskSize_ - 1) / 2 /
                      std::max(std::abs(edgeDirection.x), std::abs(edgeDirection.y));
-    int row = (index / tensor.channels) / tensor.width;
-    int col = ((index / tensor.channels) % tensor.width);
+    int row = (index) / tensor.width;
+    int col = ((index) % tensor.width);
 
     // Step 2b: Test gradient ratio at the ends of the edge direction
     int xCoordBox = DECIMAL_CEIL(edgeDirection.x * radius);
@@ -245,9 +224,9 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         0 <= col + xCoordBox && col + xCoordBox < tensor.width) {
         // gradient at the two ends of the edge direction
         decimal edgeGradient1 = std::abs(tensor.tensor[(static_cast<int64_t>(row + yCoordBox) *
-                                tensor.width + col + xCoordBox) * tensor.channels]);
+                                tensor.width + col + xCoordBox)]);
         decimal edgeGradient2 = std::abs(tensor.tensor[(static_cast<int64_t>(row - yCoordBox) *
-                                tensor.width + col - xCoordBox) * tensor.channels]);
+                                tensor.width + col - xCoordBox)]);
 
         if (std::min(edgeGradient1, edgeGradient2) /
             std::max(edgeGradient1, edgeGradient2) < edgeGradientRatio_) return false;
@@ -267,9 +246,9 @@ bool ConvolutionEdgeDetectionAlgorithm::BoxBasedOutlierCriterion(int64_t index,
         decimal grayTone2 = DECIMAL(image.image[(static_cast<int64_t>(row - yCoordBoxOrtho) *
                             image.width + col - xCoordBoxOrtho) * image.channels]);
         decimal edgeGradient1 = std::abs(tensor.tensor[(static_cast<int64_t>(row + yCoordBoxOrtho) *
-                                tensor.width + col + xCoordBoxOrtho) * tensor.channels]);
+                                tensor.width + col + xCoordBoxOrtho)]);
         decimal edgeGradient2 = std::abs(tensor.tensor[(static_cast<int64_t>(row - yCoordBoxOrtho) *
-                                tensor.width + col - xCoordBoxOrtho) * tensor.channels]);
+                                tensor.width + col - xCoordBoxOrtho)]);
 
         if (grayTone1 == grayTone2 ||
             std::min(grayTone1, grayTone2) / std::max(grayTone1, grayTone2) > spacePlanetGraytoneRatio_ ||
@@ -298,23 +277,20 @@ Vec2 ConvolutionEdgeDetectionAlgorithm::FindEdgeDirection(int64_t index, const T
     int boxCenter = boxBasedMaskSize_ / 2;
     // Step 1: find the inertia tensor of the box around index
     for (int i = -boxCenter; i <= boxBasedMaskSize_ - boxCenter - 1; ++i) {
-        int row = (index / tensor.channels) / tensor.width + i;
+        int row = (index) / tensor.width + i;
         // "valid" padding (ignores pixels outside the image)
         if (row < 0 || row > tensor.height - 1) {
             continue;
         }
         for (int j = -boxCenter; j <= boxBasedMaskSize_ - boxCenter - 1; ++j) {
-            int col = ((index / tensor.channels) % tensor.width) + j;
+            int col = ((index) % tensor.width) + j;
             // "valid" padding (ignores pixels outside the image)
             if (col < 0 || col > tensor.width - 1) {
                 continue;
             }
-            inertiaTensor[0] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
-                                                    tensor.channels] * (i * i);
-            inertiaTensor[1] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
-                                                    tensor.channels] * (j * j);
-            inertiaTensor[2] -= tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col) *
-                                                    tensor.channels] * (i * j);
+            inertiaTensor[0] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col)] * (i * i);
+            inertiaTensor[1] += tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col)] * (j * j);
+            inertiaTensor[2] -= tensor.tensor[(static_cast<int64_t>(row) * tensor.width + col)] * (i * j);
         }
     }
 
@@ -335,14 +311,40 @@ Vec2 ConvolutionEdgeDetectionAlgorithm::FindEdgeDirection(int64_t index, const T
     }
 }
 
-bool ConvolutionEdgeDetectionAlgorithm::CombineChannelCriterion(const std::vector<bool> &channelIsEdge) {
-    // Step 1: Count the number of channels that are edges
-    size_t edgeCount = 0;
-    for (bool isEdge : channelIsEdge) {
-        if (isEdge) edgeCount++;
+////// Richardson Edge Detection //////
+
+
+Points RichardsonEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 0: Define Common Variables
+    int64_t image_size = static_cast<int64_t>(image.width) * image.height;
+    Mask mask_x = {
+        9,1,4,0,
+        &mask_[0]
+    };
+    Mask mask_y = {
+        1,9,0,4,
+        &mask_[0]
+    };
+    // Step 1: Find the x and y partials of the image
+    Tensor partials[2] = {
+        ConvolveWith2DMask(image, mask_x, 1), 
+        ConvolveWith2DMask(image, mask_y, 1)
+    };
+    // Step 2: Combine the partials to find the gradient of the image
+    Tensor gradient = ComputeGradientMagnitude(&partials[0], 2);
+    // Step 2: Identify the edge using the criterion
+    Points result;
+    for (int64_t k = 0; k < image_size; k ++) {
+        if (ApplyCriterion(k, gradient, image)) {
+            result.push_back({DECIMAL(k % image.width),
+                              DECIMAL(k / image.width)});
+        }
     }
-    // Step 2: Determine if the pixel is an edge based on the ratio
-    return edgeCount >= channelCriterionRatio_ * channelIsEdge.size();
+    // Step 3: ensure polar ordering
+    PolarSort(result, Vec2{DECIMAL(planetIndex_ % image.width),
+                           DECIMAL(planetIndex_ / image.width)});
+    // Step 4: Return the points
+    return result;
 }
 
 ////// Polar Sort Algorithm //////

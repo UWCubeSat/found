@@ -76,13 +76,12 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @note Mask should outlive this class
      */
-    ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, Mask&&  mask, decimal channelCriterionRatio = 1.f,
-     decimal eigenValueRatio = .3f, decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f,
-     decimal spacePlanetGradientThreshold = .3f, decimal threshold = 1.f) :
-        boxBasedMaskSize_(boxBasedMaskSize), mask_(std::move(mask)), channelCriterionRatio_(channelCriterionRatio),
-        eigenValueRatio_(eigenValueRatio), edgeGradientRatio_(edgeGradientRatio),
-        spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio),
-        spacePlanetGradientThreshold_(spacePlanetGradientThreshold),threshold_(threshold) {}
+    ConvolutionEdgeDetectionAlgorithm(int boxBasedMaskSize, decimal eigenValueRatio,
+     decimal edgeGradientRatio, decimal spacePlanetGraytoneRatio, decimal spacePlanetGradientThreshold, 
+     decimal threshold) :
+      boxBasedMaskSize_(boxBasedMaskSize), eigenValueRatio_(eigenValueRatio),
+      edgeGradientRatio_(edgeGradientRatio), spacePlanetGraytoneRatio_(spacePlanetGraytoneRatio),
+      spacePlanetGradientThreshold_(spacePlanetGradientThreshold), threshold_(threshold) {}
 
     /// @brief Destroys the algorithm
     virtual ~ConvolutionEdgeDetectionAlgorithm() {}
@@ -100,7 +99,7 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * three consecutive points A B and C, angle APB is less than
      * angle APC
      */
-    Points Run(const Image &image) override;
+    virtual Points Run(const Image &image) = 0;
 
  protected:
     /**
@@ -122,18 +121,31 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * Convolves the image with the mask
      * 
      * @param image The image to convolve
+     * @param channel The image channel to convolve
      * 
      * @return The Tensor of the image with the mask
      * this can include decimals and negative numbers hence the new struct
      * This function clamps the edges to zero.
      * The Tensor will have the same dimensions as the image (including channels)
      *
-     * @throw If performing a multi channel convole the numbe of image channels and
-     * the number of mask channels must be the same or either the image or the mask is a 
-     * single channel. Example (image.channels = 1 and mask.channels = 4 is valid while
-     * image.channels = 2 and mask.channels = 4 is invalid)
+     * @pre The mask has one channel
      */
-    Tensor ConvolveWithMask(const Image &image);
+    Tensor ConvolveWith2DMask(const Image &image, const Mask &mask, int channel);
+
+    /**
+     * Finds the magnitude of the gradient from the partials using a Euclidean norm
+     * 
+     * @param partials The partials to compute the gradient magnitude from
+     * @param num The number of partials
+     * 
+     * @return The gradient magnitude Tensor
+     * 
+     * @pre Assumes all partials have the same width and height and that num > 0
+     */
+    Tensor ComputeGradientMagnitude(const Tensor partials[], int num);
+
+    /// The index of a planet pixel
+    int64_t planetIndex_;
 
  private:
      /**
@@ -167,44 +179,78 @@ class ConvolutionEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      */
     Vec2 FindEdgeDirection(int64_t index, const Tensor &tensor);
 
-    /**
-     * For multi channel images, combines the results of each channel's
-     * edge detection criterion into a single result using the channelCriterionRatio_
-     * 
-     * @param channelIsEdge A vector of booleans, one for each channel,
-     * indicating whether that channel met the edge detection criterion
-     * 
-     * @return true if the pixel meets the combined criterion (is an edge), false otherwise (noise)
-     */
-    bool CombineChannelCriterion(const std::vector<bool> &channelIsEdge);
-
     /// The size of the box to use for box based outlier identification edge should appear straight in this box
     int boxBasedMaskSize_;
-    /// The mask to convolve with
-    Mask mask_;
-    /// ratio of channels that must meet the criterion to consider the pixel an edge.
-    decimal channelCriterionRatio_;
     /// The ratio of the eigenvalues must be lower than this value to indicate a direction for the edge.
     decimal eigenValueRatio_;
+
     /** 
      * The ratio (g_min/g_max) of the gradient of the pixels along the edge direction must be higher than this value
      * as they both supposedly belong to an edge and should share similar gradient values.
      */ 
     decimal edgeGradientRatio_;
+
     /** 
      * The ratio (g_min/g_max) of the graytone values orthogonal to the edge must be less than this value indicating
      * a large difference in graytone values between space and the planet. 
      */ 
     decimal spacePlanetGraytoneRatio_;
+
     /**
      * The gradient of the supposed space and planet pixels must be lower than this threshold. They can not also be a possible
      * edge candidate.
      */
     decimal spacePlanetGradientThreshold_;
+
     /// The threshold the gradient must exceed to be considered as a possible edge
     decimal threshold_;
-    /// The index of a planet pixel
-    int64_t planetIndex_;
+};
+
+/**
+ * The RichardsonEdgeDetection Algorithm class houses an implementation of the Edge 
+ * Detection Algorithm. This algorithm uses a 4 point central difference with a single
+ * Richardson extrapolation to compute the image gradient. It then applies thresholding and 
+ * box based outlier identification to return potential edge points. 
+ */
+class RichardsonEdgeDetectionAlgorithm : public ConvolutionEdgeDetectionAlgorithm {
+ public:
+    /**
+     * @brief Constructs a new ConvolutionEdgeDetectionAlgorithm
+     * 
+     * @param mask The mask to convolve with
+     * @param threshold The threshold to use for detecting edges
+     * 
+     * @note Mask should outlive this class
+     */
+    RichardsonEdgeDetectionAlgorithm(int boxBasedMaskSize, decimal eigenValueRatio = .3f,
+     decimal edgeGradientRatio = .6f, decimal spacePlanetGraytoneRatio = .3f,
+     decimal spacePlanetGradientThreshold = .3f, decimal threshold = 1.f) :
+      ConvolutionEdgeDetectionAlgorithm(boxBasedMaskSize, eigenValueRatio,
+      edgeGradientRatio, spacePlanetGraytoneRatio, spacePlanetGradientThreshold, threshold) {}
+
+    /// @brief Destroys the algorithm
+    virtual ~RichardsonEdgeDetectionAlgorithm() {}
+
+    /**
+     * Provides an estimate of the edge points of Earth using
+     * convolution and box-based outlier identification
+     * 
+     * @param image The image of Earth
+     * 
+     * @return The points on Earth's edge in image
+     * 
+     * @pre Assumes the image has a single channel
+     * 
+     * @post The edge points returned are in polar order, i.e.
+     * if we define the centroid of the points as P, for any
+     * three consecutive points A B and C, angle APB is less than
+     * angle APC
+     */
+    Points Run(const Image &image) override;
+
+ private:
+    //The four point central difference with a single Richardson extrapolation
+    decimal mask_[9]= { 1.f/360.f, 0, 11.f/180.f, -32.f/45.f, 0, 32.f/45.f, -11.f/180.f, 0, -1.f/360.f };
 };
 
 /**

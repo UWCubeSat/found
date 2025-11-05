@@ -77,8 +77,6 @@ struct Mask {
     int width;
     /// The Mask height
     int height;
-    /// The Mask channels
-    int channels;
     /// The Mask center width
     int centerWidth;
     /// The Mask center height
@@ -86,10 +84,8 @@ struct Mask {
     /**
      * The Mask contents
      * 
-     * @note For each weight, the channels are collated, meaning that
-     * for any weight at index, the value of that weight in channel n
-     * (for 0 <= index < width * height and 0 <= n < channels) is
-     * image[channels * index + n]
+     * @note To access the value at position (i, j) in the mask,
+     * use the following formula: mask.data[mask.width * j + i]
      */
     decimal *data;
 };
@@ -105,14 +101,11 @@ struct Tensor {
     int width;
     /// The Tensor height
     int height;
-    /// The Tensor channels
-    int channels;
     /**
      * The Tensor contents
      * 
-     * @note For each pixel, the channels are collated, meaning that
-     * for any pixel at index, the value of that pixel in channel n
-     * (for 0 <= index < width * height and 0 <= n < channels) is
+     * @note To access the value at position (i, j) in the mask,
+     * use the following formula: mask.data[mask.width * j + i]
      * tensor[channels * index + n]
      */
     std::unique_ptr<decimal[]> tensor;
@@ -121,12 +114,11 @@ struct Tensor {
      *
      * @param w The width of the output
      * @param h The height of the output
-     * @param c The number of channels in the output
      * @param data The raw image data
      * 
      */
-    Tensor(int w, int h, int c, std::unique_ptr<decimal[]> data) :
-        width(w), height(h), channels(c), tensor(std::move(data)) {}
+    Tensor(int w, int h, std::unique_ptr<decimal[]> data) :
+        width(w), height(h), tensor(std::move(data)) {}
 };
 
 /**
