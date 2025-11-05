@@ -116,8 +116,7 @@ class NoOpEdgeFilter : public ModifyingStage<Points> {
     /**
      * Run
      *
-     * No-op filter: intentionally does not modify the provided points. This
-     * documents the overridden member so documentation tools do not emit a warning.
+     * No-op filter: intentionally does not modify the provided points.
      *
      * @param pts The Points to (not) modify.
      */

@@ -308,6 +308,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
 
 //     ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
 // }
+// TODO: Remove/replace when noop-edge-filter is not needed.
 TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterEnabled) {
     int argc = 14;
     const char *argv[] = {"found", "distance",
@@ -334,6 +335,7 @@ TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterEnabled) {
     std::remove(temp_df);
 }
 
+// TODO: Remove/replace when noop-edge-filter is not needed.
 TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterDisabled) {
     int argc = 13;
     const char *argv[] = {"found", "distance",
