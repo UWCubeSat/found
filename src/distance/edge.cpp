@@ -34,7 +34,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
         uint64_t upperLeftY = component.upperLeftIndex / image.width;
         uint64_t lowerRightX = component.lowerRightIndex % image.width;
         uint64_t lowerRightY = component.lowerRightIndex / image.width;
-        
+
         if ((upperLeftX < static_cast<uint64_t>(this->borderLength_) ||
             upperLeftY < static_cast<uint64_t>(this->borderLength_) ||
             lowerRightX >= static_cast<uint64_t>(image.width - this->borderLength_) ||
@@ -45,7 +45,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     }
     if (space == nullptr || space->points.size() == imageSize) return Points();
     std::unordered_set<uint64_t> &points = space->points;
-    
+
     // Extract x, y coordinates from indices
     uint64_t spaceUpperLeftX = space->upperLeftIndex % image.width;
     uint64_t spaceUpperLeftY = space->upperLeftIndex / image.width;
@@ -182,30 +182,30 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
  */
 inline void UpdateComponent(Component &component, uint64_t index, int imageWidth) {
     component.points.insert(index);
-    
+
     // Get x, y coordinates from index
     uint64_t x = index % imageWidth;
     uint64_t y = index / imageWidth;
-    
+
     // Get current bounding box coordinates
     uint64_t upperLeftIdx = component.upperLeftIndex;
     uint64_t lowerRightIdx = component.lowerRightIndex;
-    
+
     uint64_t upperLeftX = upperLeftIdx % imageWidth;
     uint64_t upperLeftY = upperLeftIdx / imageWidth;
-    
+
     uint64_t lowerRightX = lowerRightIdx % imageWidth;
     uint64_t lowerRightY = lowerRightIdx / imageWidth;
-    
+
     // Update bounding box - track min and max independently
     bool needUpdate = false;
-    
+
     // Update minX
     if (x < upperLeftX) {
         upperLeftX = x;
         needUpdate = true;
     }
-    // Update minY  
+    // Update minY
     if (y < upperLeftY) {
         upperLeftY = y;
         needUpdate = true;
@@ -213,7 +213,7 @@ inline void UpdateComponent(Component &component, uint64_t index, int imageWidth
     if (needUpdate) {
         component.upperLeftIndex = upperLeftY * imageWidth + upperLeftX;
     }
-    
+
     // Update maxX and maxY for lowerRight
     needUpdate = false;
     if (x > lowerRightX) {
@@ -398,7 +398,8 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         }
 
         // Step 1d: Add the pixel to the appropriate component and prepare for the next iteration
-        componentPoints[i] = NWayEquivalenceAdd(image, i, L, adjacentLabels, size, components, equivalencies, componentExists);
+        componentPoints[i] = NWayEquivalenceAdd(image, i, L, adjacentLabels, size,
+                                                 components, equivalencies, componentExists);
         size = 0;
     }
 
@@ -416,33 +417,33 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         auto &compToMerge = components[i];
         auto &lowestComp = components[lowestLabel];
         lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
-        
+
         // Update bounds by taking min/max independently
         uint64_t mergeULIdx = compToMerge.upperLeftIndex;
         uint64_t lowestULIdx = lowestComp.upperLeftIndex;
-        
+
         uint64_t mergeULX = mergeULIdx % image.width;
         uint64_t mergeULY = mergeULIdx / image.width;
-        
+
         uint64_t lowestULX = lowestULIdx % image.width;
         uint64_t lowestULY = lowestULIdx / image.width;
-        
+
         // Update minX and minY
         uint64_t newMinX = std::min(mergeULX, lowestULX);
         uint64_t newMinY = std::min(mergeULY, lowestULY);
         if (newMinX != lowestULX || newMinY != lowestULY) {
             lowestComp.upperLeftIndex = newMinY * image.width + newMinX;
         }
-        
+
         uint64_t mergeLRIdx = compToMerge.lowerRightIndex;
         uint64_t lowestLRIdx = lowestComp.lowerRightIndex;
-        
+
         uint64_t mergeLRX = mergeLRIdx % image.width;
         uint64_t mergeLRY = mergeLRIdx / image.width;
-        
+
         uint64_t lowestLRX = lowestLRIdx % image.width;
         uint64_t lowestLRY = lowestLRIdx / image.width;
-        
+
         // Update maxX and maxY
         uint64_t newMaxX = std::max(mergeLRX, lowestLRX);
         uint64_t newMaxY = std::max(mergeLRY, lowestLRY);
