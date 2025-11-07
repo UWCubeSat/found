@@ -1004,4 +1004,58 @@ TEST(ConnectedComponentsTest, TestBoundsUpdateMinXWhenMerging) {
     ASSERT_EQ(3u, lowerRightX);
     ASSERT_EQ(2u, lowerRightY);
 }
+
+TEST(ConnectedComponentsTest, TestMergeBoundsMinXSmaller) {
+    // Test case where merged component's minX is smaller than lowest component's minX
+    // This covers the std::min branch at line 432 where mergeULX < lowestULX
+    // Pattern: Component at (4,0) created first (label 1, minX=4), then component at (0,2) created (label 2, minX=0)
+    // They connect via a continuous bridge, causing label 2 to merge into label 1
+    // When merging, mergeULX=0 < lowestULX=4, triggering the branch
+    unsigned char imageData[20] = {0, 0, 0, 0, 1,
+                                   0, 0, 1, 1, 1,
+                                   1, 1, 1, 0, 0,
+                                   0, 0, 0, 0, 0};
+
+    Image image = {
+        5,
+        4,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (all pixels connect via continuous bridge)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Bounds should cover from (0,0) to (4,2) - minX comes from merged component
+    ASSERT_EQ(xyToIndex(5, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(5, 4, 2), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestMergeBoundsMaxXLarger) {
+    // Test case where merged component's maxX is larger than lowest component's maxX
+    // This covers the std::max branch at line 448 where mergeLRX > lowestLRX
+    // Pattern: Component at (0,0) created first (label 1, maxX=0), then component at (4,2) created (label 2, maxX=4)
+    // They connect via a continuous bridge, causing label 2 to merge into label 1
+    // When merging, mergeLRX=4 > lowestLRX=0, triggering the branch
+    unsigned char imageData[20] = {1, 1, 1, 0, 0,
+                                   0, 1, 1, 1, 0,
+                                   0, 0, 0, 0, 1,
+                                   0, 0, 0, 0, 0};
+
+    Image image = {
+        5,
+        4,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (all pixels connect via continuous bridge)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Bounds should cover from (0,0) to (4,2) - maxX comes from merged component
+    ASSERT_EQ(xyToIndex(5, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(5, 4, 2), actual[0].lowerRightIndex);
+}
 }  // namespace found
