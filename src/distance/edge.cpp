@@ -198,18 +198,18 @@ inline void UpdateComponent(Component &component, uint64_t index, int imageWidth
     uint64_t lowerRightY = lowerRightIdx / imageWidth;
 
     // Update bounding box - track min and max independently
+    // Note: Since pixels are processed sequentially top-to-bottom, left-to-right,
+    // we can only expand bounds rightward and downward, not leftward or upward.
+    // Therefore, y < upperLeftY will never be true during sequential processing.
+    // The x < upperLeftX case can occur when adding a pixel to the left in a lower row.
     bool needUpdate = false;
 
-    // Update minX
+    // Update minX (only reachable when merging components)
     if (x < upperLeftX) {
         upperLeftX = x;
         needUpdate = true;
     }
-    // Update minY
-    if (y < upperLeftY) {
-        upperLeftY = y;
-        needUpdate = true;
-    }
+
     if (needUpdate) {
         component.upperLeftIndex = upperLeftY * imageWidth + upperLeftX;
     }

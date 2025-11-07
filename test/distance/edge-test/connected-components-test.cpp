@@ -863,7 +863,7 @@ TEST(ConnectedComponentsTest, TestBoundsNoUpdateWhenPixelInside) {
     };
 
     Components actual = ConnectedComponentsAlgorithm(image, criteria);
-    
+
     // Should have 1 component with all 8 pixels
     ASSERT_EQ(static_cast<size_t>(1), actual.size());
     ASSERT_EQ(static_cast<size_t>(8), actual[0].points.size());
@@ -891,7 +891,7 @@ TEST(ConnectedComponentsTest, TestMergeBoundsNoChange) {
     };
 
     Components actual = ConnectedComponentsAlgorithm(image, criteria);
-    
+
     // Should have 1 component (all pixels connect)
     ASSERT_EQ(static_cast<size_t>(1), actual.size());
     // Bounds should cover entire area
@@ -913,7 +913,7 @@ TEST(ConnectedComponentsTest, TestBoundsUpdateOnlyX) {
     };
 
     Components actual = ConnectedComponentsAlgorithm(image, criteria);
-    
+
     ASSERT_EQ(static_cast<size_t>(1), actual.size());
     ASSERT_EQ(static_cast<size_t>(3), actual[0].points.size());
     // Bounds should be from (0,0) to (2,0)
@@ -949,7 +949,7 @@ TEST(ConnectedComponentsTest, TestBoundsUpdateMinYWhenMerging) {
     // a component's upperLeftY gets set incorrectly, or if we manually
     // construct a scenario. However, with sequential processing, this
     // branch may be unreachable in practice.
-    // 
+
     // This test creates a pattern where pixels connect in a way that
     // might trigger the branch, though it may not be reachable.
     unsigned char imageData[12] = {1, 0, 0, 0,
@@ -1004,5 +1004,4 @@ TEST(ConnectedComponentsTest, TestBoundsUpdateMinXWhenMerging) {
     ASSERT_EQ(3u, lowerRightX);
     ASSERT_EQ(2u, lowerRightY);
 }
-
 }  // namespace found
