@@ -54,7 +54,7 @@ class ExampleTest : public testing::Test {
      * test cases, and can be used to destroy any heap objects.
      * Here, we delete our mock.
      */
-    virtual void TearDown() {
+    void TearDown() override {
         delete eda;
     }
 };

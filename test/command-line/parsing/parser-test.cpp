@@ -143,8 +143,9 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
         "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
-    EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
-    EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
+    // These variables are declared but not currently used in assertions
+    // EulerAngles expectedRefOrientation(1.1, 1.2, 1.3);
+    // EulerAngles expectedRelOrientation(1.4, 1.5, 1.6);
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);

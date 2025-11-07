@@ -1,10 +1,30 @@
 #ifndef SRC_DATAFILE_ENCODING_HPP_
 #define SRC_DATAFILE_ENCODING_HPP_
 
-#include <endian.h>
 #include <stdint.h>
+#ifdef __APPLE__
+    #include <machine/endian.h>
+#else
+    #include <endian.h>
+#endif
 
 #include "common/decimal.hpp"
+
+// On macOS, undefine the system macros before defining our functions
+#ifdef __APPLE__
+#ifdef htonl
+#undef htonl
+#endif
+#ifdef ntohl
+#undef ntohl
+#endif
+#ifdef htons
+#undef htons
+#endif
+#ifdef ntohs
+#undef ntohs
+#endif
+#endif
 
 #ifdef __BYTE_ORDER__
     #define ENDIANESS __BYTE_ORDER__

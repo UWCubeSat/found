@@ -17,10 +17,15 @@ std::function<bool(uint64_t, const Image &)> criteria = [](uint64_t index, const
     return image.image[index] > 0;
 };
 
+// Helper function to convert (x, y) coordinates to index
+inline uint64_t xyToIndex(int width, int x, int y) {
+    return y * width + x;
+}
+
 MATCHER_P(ComponentEqual, expected, "") {
     return expected.points == arg.points &&
-           vectorEqual(arg.upperLeft, expected.upperLeft) &&
-           vectorEqual(arg.lowerRight, expected.lowerRight);
+           arg.upperLeftIndex == expected.upperLeftIndex &&
+           arg.lowerRightIndex == expected.lowerRightIndex;
 }
 
 TEST(ConnectedComponentsTest, TestInvalidImage) {
@@ -30,7 +35,21 @@ TEST(ConnectedComponentsTest, TestInvalidImage) {
 
     Image image = {
         1,
-        -1,
+        -1,  // Negative height
+        0,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image, criteria));
+}
+
+TEST(ConnectedComponentsTest, TestInvalidImageNegativeWidth) {
+    // Test negative width case
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        -1,  // Negative width
+        1,
         0,
         imageData,
     };
@@ -60,6 +79,59 @@ TEST(ConnectedComponentsTest, TestEmptyImage) {
     ASSERT_EQ(static_cast<size_t>(0), actual.size());
 }
 
+TEST(ConnectedComponentsTest, TestEmptyImageWidth) {
+    // Test edge case where width is 0 but height is not
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        0,
+        10,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
+}
+
+TEST(ConnectedComponentsTest, TestEmptyImageHeight) {
+    // Test edge case where height is 0 but width is not
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        10,
+        0,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
+}
+
+TEST(ConnectedComponentsTest, TestImageTooLarge) {
+    // Test the maximum dimension check
+    unsigned char imageData[1] = {0};
+
+    Image image = {
+        100001,  // Exceeds maximum width
+        100,
+        1,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image, criteria));
+
+    Image image2 = {
+        100,
+        100001,  // Exceeds maximum height
+        1,
+        imageData,
+    };
+
+    ASSERT_ANY_THROW(ConnectedComponentsAlgorithm(image2, criteria));
+}
+
 TEST(ConnectedComponentsTest, TestOnePixelBase) {
     // Setup Dependencies
     unsigned char imageData[4] = {1, 0,
@@ -75,8 +147,8 @@ TEST(ConnectedComponentsTest, TestOnePixelBase) {
     Components expected = {
         {
             {0},
-            {0, 0},
-            {0, 0}
+            0,  // upperLeftIndex: y=0, x=0 -> index = 0*2 + 0 = 0
+            0   // lowerRightIndex: y=0, x=0 -> index = 0*2 + 0 = 0
         }
     };
 
@@ -107,8 +179,8 @@ TEST(ConnectedComponentsTest, TestOnePixelCorner) {
     Components expected = {
         {
             {1},
-            {1, 0},
-            {1, 0}
+            1,  // upperLeftIndex: y=0, x=1 -> index = 0*2 + 1 = 1
+            1   // lowerRightIndex: y=0, x=1 -> index = 0*2 + 1 = 1
         }
     };
 
@@ -139,8 +211,8 @@ TEST(ConnectedComponentsTest, TestTwoPixels) {
     Components expected = {
         {
             {0, 1},
-            {0, 0},
-            {1, 0}
+            0,  // upperLeftIndex: y=0, x=0 -> index = 0*2 + 0 = 0
+            1   // lowerRightIndex: y=0, x=1 -> index = 0*2 + 1 = 1
         }
     };
 
@@ -170,8 +242,8 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalNormal) {
     Components expected = {
         {
             {0, 3},
-            {0, 0},
-            {1, 1}
+            xyToIndex(2, 0, 0),  // (0, 0)
+            xyToIndex(2, 1, 1)  // (1, 1)
         },
     };
 
@@ -201,8 +273,8 @@ TEST(ConnectedComponentsTest, TestTwoPixelsDiagonalReverse) {
     Components expected = {
         {
             {1, 2},
-            {0, 0},
-            {1, 1}
+            xyToIndex(2, 0, 0),  // (0, 0)
+            xyToIndex(2, 1, 1)  // (1, 1)
         },
     };
 
@@ -233,8 +305,8 @@ TEST(ConnectedComponentsTest, TestDoubleDiagonal) {
     Components expected = {
         {
             {0, 2, 4, 6, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -265,8 +337,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalVertical) {
     Components expected = {
         {
             {0, 2, 3, 4, 6},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -297,8 +369,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal1) {
     Components expected = {
         {
             {0, 1, 2, 4, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -329,8 +401,8 @@ TEST(ConnectedComponentsTest, TestLineDiagonalHorizontal2) {
     Components expected = {
         {
             {0, 4, 6, 7, 8},
-            {0, 0},
-            {2, 2}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 2)  // (2, 2)
         },
     };
 
@@ -363,8 +435,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines1) {
     Components expected = {
         {
             {9, 10, 11, 12, 13, 17, 18, 19, 23, 24},
-            {0, 1},
-            {4, 4}
+            xyToIndex(5, 0, 1),  // (0, 1)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -401,8 +473,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines2) {
     Components expected = {
         {
             {4, 5, 7, 9, 10, 12, 13, 15, 16, 17, 18},
-            {0, 0},
-            {4, 3}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -439,8 +511,8 @@ TEST(ConnectedComponentsTest, Test2ConvergingLines3) {
     Components expected = {
         {
             {9, 10, 11, 12, 13, 15},
-            {0, 1},
-            {4, 3}
+            xyToIndex(5, 0, 1),  // (0, 1)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -477,8 +549,8 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines1) {
     Components expected = {
         {
             {0, 2, 4, 5, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
-            {0, 0},
-            {4, 4}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -515,8 +587,8 @@ TEST(ConnectedComponentsTest, Test3ConvergingLines2) {
     Components expected = {
         {
             {4, 7, 9, 10, 12, 14, 15, 17, 19, 20, 21, 22, 23, 24},
-            {0, 0},
-            {4, 4}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 4)  // (4, 4)
         },
     };
 
@@ -551,8 +623,8 @@ TEST(ConnectedComponentsTest, Test2AdjacentPixelsGeneral) {
     Components expected = {
         {
             {2, 3, 4},
-            {0, 0},
-            {2, 1}
+            xyToIndex(3, 0, 0),  // (0, 0)
+            xyToIndex(3, 2, 1)  // (2, 1)
         },
     };
 
@@ -584,8 +656,8 @@ TEST(ConnectedComponentsTest, TestConvergingBlob) {
     Components expected = {
         {
             {0, 4, 5, 7, 9, 11, 12, 13, 16, 17, 18},
-            {0, 0},
-            {4, 3}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 4, 3)  // (4, 3)
         },
     };
 
@@ -616,13 +688,13 @@ TEST(ConnectedComponentsTest, Test2BlobsSimple) {
     Components expected = {
         {
             {2},
-            {2, 0},
-            {2, 0}
+            xyToIndex(3, 2, 0),  // (2, 0)
+            xyToIndex(3, 2, 0)  // (2, 0)
         },
         {
             {6, 7},
-            {0, 2},
-            {1, 2}
+            xyToIndex(3, 0, 2),  // (0, 2)
+            xyToIndex(3, 1, 2)  // (1, 2)
         }
     };
 
@@ -655,13 +727,13 @@ TEST(ConnectedComponentsTest, Test2BlobsGeneral) {
     Components expected = {
         {
             {4, 8, 9, 14},
-            {3, 0},
-            {4, 2}
+            xyToIndex(5, 3, 0),  // (3, 0)
+            xyToIndex(5, 4, 2)  // (4, 2)
         },
         {
             {10, 15, 17, 20, 21, 22, 23, 24},
-            {0, 2},
-            {4, 4}
+            xyToIndex(5, 0, 2),  // (0, 2)
+            xyToIndex(5, 4, 4)  // (4, 4)
         }
     };
 
@@ -697,18 +769,18 @@ TEST(ConnectedComponentsTest, Test3BlobsGeneral) {
     Components expected = {
         {
             {2, 6, 7, 14, 15},
-            {0, 0},
-            {3, 2}
+            xyToIndex(6, 0, 0),  // (0, 0)
+            xyToIndex(6, 3, 2)  // (3, 2)
         },
         {
             {4, 5, 11},
-            {4, 0},
-            {5, 1}
+            xyToIndex(6, 4, 0),  // (4, 0)
+            xyToIndex(6, 5, 1)  // (5, 1)
         },
         {
             {23, 25, 27, 29, 31, 32, 33, 34, 35},
-            {1, 3},
-            {5, 5}
+            xyToIndex(6, 1, 3),  // (1, 3)
+            xyToIndex(6, 5, 5)  // (5, 5)
         },
     };
 
@@ -743,23 +815,23 @@ TEST(ConnectedComponentsTest, Test4BlobsGeneral) {
     Components expected = {
         {
             {2, 5, 6, 10},
-            {0, 0},
-            {2, 2}
+            xyToIndex(5, 0, 0),  // (0, 0)
+            xyToIndex(5, 2, 2)  // (2, 2)
         },
         {
             {4, 9},
-            {4, 0},
-            {4, 1}
+            xyToIndex(5, 4, 0),  // (4, 0)
+            xyToIndex(5, 4, 1)  // (4, 1)
         },
         {
             {20},
-            {0, 4},
-            {0, 4}
+            xyToIndex(5, 0, 4),  // (0, 4)
+            xyToIndex(5, 0, 4)  // (0, 4)
         },
         {
             {17, 19, 23, 24},
-            {2, 3},
-            {4, 4}
+            xyToIndex(5, 2, 3),  // (2, 3)
+            xyToIndex(5, 4, 4)  // (4, 4)
         }
     };
 
@@ -776,4 +848,214 @@ TEST(ConnectedComponentsTest, Test4BlobsGeneral) {
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
 }
 
+TEST(ConnectedComponentsTest, TestBoundsNoUpdateWhenPixelInside) {
+    // Test case where adding a pixel doesn't change bounds (pixel is inside bounding box)
+    // This covers the needUpdate = false branches in UpdateComponent
+    unsigned char imageData[9] = {1, 1, 1,
+                                  1, 0, 1,
+                                  1, 1, 1};
+
+    Image image = {
+        3,
+        3,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component with all 8 pixels
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    ASSERT_EQ(static_cast<size_t>(8), actual[0].points.size());
+    // Bounds should be from (0,0) to (2,2) - covering the entire 3x3 area
+    ASSERT_EQ(xyToIndex(3, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(3, 2, 2), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestMergeBoundsNoChange) {
+    // Test case where merging components doesn't change bounds
+    // This covers the branches where newMinX == lowestULX && newMinY == lowestULY
+    // and newMaxX == lowestLRX && newMaxY == lowestLRY
+    // Create a pattern where components merge but one's bounds are contained in the other
+    unsigned char imageData[25] = {1, 0, 0, 0, 1,
+                                   0, 1, 1, 1, 0,
+                                   0, 1, 0, 1, 0,
+                                   0, 1, 1, 1, 0,
+                                   1, 0, 0, 0, 1};
+
+    Image image = {
+        5,
+        5,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (all pixels connect)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Bounds should cover entire area
+    ASSERT_EQ(xyToIndex(5, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(5, 4, 4), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestBoundsUpdateOnlyX) {
+    // Test case where only X coordinate changes (not Y)
+    // Pixels are connected horizontally
+    unsigned char imageData[6] = {1, 1, 1,
+                                  0, 0, 0};
+
+    Image image = {
+        3,
+        2,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    ASSERT_EQ(static_cast<size_t>(3), actual[0].points.size());
+    // Bounds should be from (0,0) to (2,0)
+    ASSERT_EQ(xyToIndex(3, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(3, 2, 0), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestBoundsUpdateOnlyY) {
+    // Test case where only Y coordinate changes (not X)
+    // Pixels are connected vertically
+    unsigned char imageData[6] = {1, 0, 0,
+                                  1, 0, 0};
+
+    Image image = {
+        3,
+        2,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    ASSERT_EQ(static_cast<size_t>(2), actual[0].points.size());
+    // Bounds should be from (0,0) to (0,1)
+    ASSERT_EQ(xyToIndex(3, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(3, 0, 1), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestBoundsUpdateMinYWhenMerging) {
+    // Test case to cover y < upperLeftY branch in UpdateComponent
+    // Since we process top-to-bottom, this branch is only reachable if
+    // a component's upperLeftY gets set incorrectly, or if we manually
+    // construct a scenario. However, with sequential processing, this
+    // branch may be unreachable in practice.
+
+    // This test creates a pattern where pixels connect in a way that
+    // might trigger the branch, though it may not be reachable.
+    unsigned char imageData[12] = {1, 0, 0, 0,
+                                    0, 1, 0, 0,
+                                    0, 0, 1, 0};
+
+    Image image = {
+        4,
+        3,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (diagonal connection)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    ASSERT_EQ(xyToIndex(4, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(4, 2, 2), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestBoundsUpdateMinXWhenMerging) {
+    // Test case to cover x < upperLeftX branch in UpdateComponent
+    // Similar to TestBoundsUpdateMinYWhenMerging, this may be unreachable
+    // with sequential processing, but we test it anyway.
+    // Note: With 4-connectivity, diagonal pixels don't connect, so we need
+    // a pattern where pixels connect horizontally/vertically.
+    unsigned char imageData[12] = {0, 0, 1, 1,
+                                    0, 1, 1, 0,
+                                    1, 1, 0, 0};
+
+    Image image = {
+        4,
+        3,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (connected via horizontal/vertical)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Verify it has all 6 pixels
+    ASSERT_EQ(static_cast<size_t>(6), actual[0].points.size());
+    // Bounds should cover all pixels - verify they're correct
+    uint64_t upperLeftX = actual[0].upperLeftIndex % 4;
+    uint64_t upperLeftY = actual[0].upperLeftIndex / 4;
+    uint64_t lowerRightX = actual[0].lowerRightIndex % 4;
+    uint64_t lowerRightY = actual[0].lowerRightIndex / 4;
+    ASSERT_EQ(0u, upperLeftX);
+    ASSERT_EQ(0u, upperLeftY);
+    ASSERT_EQ(3u, lowerRightX);
+    ASSERT_EQ(2u, lowerRightY);
+}
+
+TEST(ConnectedComponentsTest, TestMergeBoundsMinXSmaller) {
+    // Test case where merged component's minX is smaller than lowest component's minX
+    // This covers the std::min branch at line 432 where mergeULX < lowestULX
+    // Pattern: Component at (4,0) created first (label 1, minX=4), then component at (0,2) created (label 2, minX=0)
+    // They connect via a continuous bridge, causing label 2 to merge into label 1
+    // When merging, mergeULX=0 < lowestULX=4, triggering the branch
+    unsigned char imageData[20] = {0, 0, 0, 0, 1,
+                                   0, 0, 1, 1, 1,
+                                   1, 1, 1, 0, 0,
+                                   0, 0, 0, 0, 0};
+
+    Image image = {
+        5,
+        4,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (all pixels connect via continuous bridge)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Bounds should cover from (0,0) to (4,2) - minX comes from merged component
+    ASSERT_EQ(xyToIndex(5, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(5, 4, 2), actual[0].lowerRightIndex);
+}
+
+TEST(ConnectedComponentsTest, TestMergeBoundsMaxXLarger) {
+    // Test case where merged component's maxX is larger than lowest component's maxX
+    // This covers the std::max branch at line 448 where mergeLRX > lowestLRX
+    // Pattern: Component at (0,0) created first (label 1, maxX=0), then component at (4,2) created (label 2, maxX=4)
+    // They connect via a continuous bridge, causing label 2 to merge into label 1
+    // When merging, mergeLRX=4 > lowestLRX=0, triggering the branch
+    unsigned char imageData[20] = {1, 1, 1, 0, 0,
+                                   0, 1, 1, 1, 0,
+                                   0, 0, 0, 0, 1,
+                                   0, 0, 0, 0, 0};
+
+    Image image = {
+        5,
+        4,
+        1,
+        imageData,
+    };
+
+    Components actual = ConnectedComponentsAlgorithm(image, criteria);
+
+    // Should have 1 component (all pixels connect via continuous bridge)
+    ASSERT_EQ(static_cast<size_t>(1), actual.size());
+    // Bounds should cover from (0,0) to (4,2) - maxX comes from merged component
+    ASSERT_EQ(xyToIndex(5, 0, 0), actual[0].upperLeftIndex);
+    ASSERT_EQ(xyToIndex(5, 4, 2), actual[0].lowerRightIndex);
+}
 }  // namespace found

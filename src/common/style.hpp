@@ -14,7 +14,12 @@
 namespace found {
 
 /// Alias for very precise floating point numbers.
-typedef __float128 PreciseDecimal;
+#if defined(__aarch64__) || defined(__arm64__)
+    // ARM/Apple Silicon doesn't support __float128
+    typedef long double PreciseDecimal;
+#else
+    typedef __float128 PreciseDecimal;
+#endif
 
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 /// to a vector of 2D points on the image, according to image coordinate systems
@@ -76,10 +81,10 @@ typedef std::vector<Edge> Edges;
 struct Component {
     /// The points in this component
     std::unordered_set<uint64_t> points;
-    /// The lowest point (left upper edge)
-    Vec2 upperLeft;
-    /// The highest point (right lower edge)
-    Vec2 lowerRight;
+    /// The pixel index of the upper left bound
+    uint64_t upperLeftIndex;
+    /// The pixel index of the lower right bound
+    uint64_t lowerRightIndex;
 };
 
 /// A collection of Image Pixels
