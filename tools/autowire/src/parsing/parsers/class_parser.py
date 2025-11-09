@@ -2,7 +2,7 @@
 
 from .base_parser import CPPParser
 from ..constructs import Class, Constructor, Destructor, Parameter, AccessSection
-from ..context import ParseContext
+from ..utils.context import ParseContext
 from ..constructs import Enum, Variable, Type, Value
 
 

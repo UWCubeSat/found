@@ -12,7 +12,10 @@ class FileDiscovery:
         """Initialize with project root path.
         
         Args:
-            root_path: Root directory path to scan for C++ files
+            root_path (str): Root directory path to scan for C++ files
+            
+        Preconditions:
+            root_path must be a valid directory path
         """
         self.root_path = root_path
         self.scanner = AnnotationScanner([root_path])
@@ -21,8 +24,13 @@ class FileDiscovery:
         """Scan for C++ files and build project cache.
         
         Returns:
-            ProjectFileCache: Cache containing all discovered files with annotation info,
-            plus lists of files with AUTOWIRE and PROVIDER annotations
+            ProjectFileCache: Cache containing all discovered files with annotation metadata
+            
+        Raises:
+            OSError: If files cannot be read during content loading
+            
+        Preconditions:
+            root_path must contain readable C++ files
         """
         scan_results = self.scanner.scan()
         

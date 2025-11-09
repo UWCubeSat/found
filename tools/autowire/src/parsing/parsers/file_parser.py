@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import List, Tuple
 from ..constructs import Construct, Class, Function, Constructor, Variable, Include, Macro, Typedef, Using, Destructor, Enum, Namespace, Comment
-from ..context import ParseContext
+from ..utils.context import ParseContext
 from .base_parser import CPPParser
 
 

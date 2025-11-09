@@ -2,7 +2,7 @@
 
 from .base_parser import CPPParser
 from ..constructs import Statement, SimpleStatement, IfStatement, ForLoop, WhileLoop, SwitchStatement
-from ..context import ParseContext
+from ..utils.context import ParseContext
 
 
 class StatementParser(CPPParser[Statement]):

@@ -11,26 +11,33 @@ class AnnotationScanner:
     """Fast annotation detection using various strategies."""
     
     def __init__(self, filepaths: List[str]):
+        """Initialize scanner with file paths to scan.
+        
+        Args:
+            filepaths (List[str]): List of file or directory paths to scan
+        """
         self.filepaths = filepaths
         self._has_grep = shutil.which('grep') is not None
     
     def scan(self) -> Dict[str, tuple[str, bool, bool]]:
-        """Scan documents for annotations
+        """Scan documents for annotations.
 
         Returns:
-            Dict[str, tuple[str, bool, bool]]: All files, with their content
-            and notes if they have AUTOWIRE or PROVIDER annotations
+            Dict[str, tuple[str, bool, bool]]: Mapping of file paths to (content, has_autowire, has_provider)
+            Content is None when using grep strategy for performance
         """
         if self._has_grep:
             return self._grep_scan()
         return self._slow_scan()
     
     def _grep_scan(self) -> Dict[str, tuple[str, bool, bool]]:
-        """Helper: Scan documents with grep
+        """Helper: Scan documents with grep for performance.
 
         Returns:
-            Dict[str, tuple[str, bool, bool]]: All files with content (None for grep),
-            has AUTOWIRE, has PROVIDER annotations
+            Dict[str, tuple[str, bool, bool]]: Files with annotations, content is None for performance
+            
+        Preconditions:
+            grep command must be available in system PATH
         """
         result = {}
             
@@ -44,11 +51,13 @@ class AnnotationScanner:
         return result
     
     def _slow_scan(self) -> Dict[str, tuple[str, bool, bool]]:
-        """Helper: Scan documents by opening all of them
+        """Helper: Scan documents by reading file contents directly.
 
         Returns:
-            Dict[str, tuple[str, bool, bool]]: All files with content,
-            has AUTOWIRE, has PROVIDER annotations
+            Dict[str, tuple[str, bool, bool]]: All C++ files with full content and annotation flags
+            
+        Preconditions:
+            All file paths must be readable
         """
         result = {}
         for path in self.filepaths:
@@ -66,10 +75,14 @@ class AnnotationScanner:
         """Helper: Run grep for a specific annotation and return absolute file paths.
         
         Args:
-            annotation: The annotation string to search for
+            annotation (str): Regex pattern for the annotation to search for
             
         Returns:
             set[str]: Set of absolute file paths containing the annotation
+            
+        Preconditions:
+            annotation must be a valid regex pattern
+            grep command must be available
         """
         cmd = ['grep', '-rlE', f'--include=*{HPP_EXT}', f'--include=*{CPP_EXT}', annotation] + self.filepaths
         result = subprocess.run(cmd, capture_output=True, text=True)
@@ -80,10 +93,14 @@ class AnnotationScanner:
         """Helper: Scan a single file for annotations.
         
         Args:
-            filepath: Path to the file to scan
+            filepath (str): Path to the file to scan
             
         Returns:
-            tuple[str, bool, bool]: File content, has AUTOWIRE, has PROVIDER
+            tuple[str, bool, bool]: (file_content, has_autowire, has_provider)
+            Returns (None, False, False) for non-C++ files or read errors
+            
+        Preconditions:
+            filepath should point to a readable file
         """
         if not filepath.endswith(CPP_EXTENSIONS):
             return (None, False, False)
