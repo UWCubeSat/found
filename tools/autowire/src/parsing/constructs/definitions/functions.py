@@ -1,7 +1,7 @@
 """Function and Parameter constructs."""
 
 from typing import List, Optional
-from ..core.base import Construct
+from ..core.base import Construct, Definition
 from ..types.types import Type, Value
 from ..statements.statements import Statement
 from .misc import Comment
@@ -12,26 +12,25 @@ from ....common.annotations import equals_hash
 class Parameter(Construct):
     """Function/constructor parameters with type, name, and default values."""
     
-    def __init__(self, parent: Construct, name: str, param_type: Type, default_value: Optional[Value] = None):
+    def __init__(self, name: str, param_type: Type, default_value: Optional[Value] = None):
         """Initialize parameter.
         
         Args:
-            parent (Construct): Parent construct (typically a Function)
             name (str): Parameter name
             param_type (Type): Parameter type
             default_value (Value, optional): Default value for parameter
         """
-        super().__init__(parent)
+        super().__init__()
         self.name = name
         self.type = param_type
         self.default_value = default_value
 
 
 @equals_hash
-class Function(Construct):
+class Function(Definition):
     """Standalone functions and class methods with template parameters."""
     
-    def __init__(self, parent: Construct, name: str, return_type: Type, parameters: List[Parameter] = None,
+    def __init__(self, name: str, return_type: Type, parameters: List[Parameter] = None,
                  body: List[Statement] = None, template_parameters: List[str] = None,
                  is_virtual: bool = False, is_static: bool = False, is_const: bool = False,
                  is_pure_virtual: bool = False, comment: Optional[Comment] = None, 
@@ -39,7 +38,6 @@ class Function(Construct):
         """Initialize function.
         
         Args:
-            parent (Construct): Parent construct (typically a Class or File)
             name (str): Function name
             return_type (Type): Function return type
             parameters (List[Parameter], optional): Function parameters
@@ -52,8 +50,7 @@ class Function(Construct):
             comment (Comment, optional): Associated comment block
             namespace (str, optional): Namespace containing this function
         """
-        super().__init__(parent)
-        self.name = name
+        super().__init__(name)
         self.return_type = return_type
         self.parameters = parameters or []
         self.body = body or []

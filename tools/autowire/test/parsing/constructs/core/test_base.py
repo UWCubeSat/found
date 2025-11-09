@@ -7,7 +7,6 @@ This module tests the Construct base class functionality including:
 """
 
 import unittest
-from src.parsing.constructs.core.base import Construct
 from src.parsing.constructs.core.file import File
 from src.parsing.constructs.definitions.functions import Function
 from src.parsing.constructs.types.types import Type
@@ -40,8 +39,10 @@ class TestConstruct(unittest.TestCase):
         Returns:
             Function: Test function construct
         """
-        return_type = Type(None, INT_TYPE)
-        return Function(parent, FUNCTION_NAME, return_type)
+        return_type = Type(INT_TYPE)
+        func = Function(FUNCTION_NAME, return_type)
+        func.parent = parent
+        return func
     
     def test_construct_initialization(self):
         """Test that construct properly stores its parent reference."""
@@ -64,15 +65,6 @@ class TestConstruct(unittest.TestCase):
         result = construct.get_root_file()
         
         self.assertEqual(result, self.file)
-    
-    def test_get_root_file_no_hierarchy(self):
-        """Test root file discovery returns None for orphaned constructs."""
-        orphan_construct = self.create_test_construct(None)
-        
-        result = orphan_construct.get_root_file()
-        
-        self.assertEqual(result, None)
-
 
 if __name__ == '__main__':
     unittest.main()

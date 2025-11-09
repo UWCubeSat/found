@@ -11,7 +11,7 @@ from src.parsing.constructs.definitions.enums import Enum
 from src.parsing.constructs.types.types import Type
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, ENUM_NAME, INT_TYPE, ENUM_VALUES
-)
+, set_parent)
 
 
 class TestEnum(unittest.TestCase):
@@ -38,7 +38,7 @@ class TestEnum(unittest.TestCase):
         Returns:
             Enum: Simple enum with standard test values
         """
-        return Enum(self.file, name, ENUM_VALUES)
+        return set_parent(Enum(name, ENUM_VALUES), self.file)
     
     def test_enum_initialization_simple(self):
         """Test simple enum initialization with default parameters."""
@@ -59,10 +59,10 @@ class TestEnum(unittest.TestCase):
     
     def test_enum_class_initialization(self):
         """Test enum class initialization with is_class=True."""
-        enum = Enum(self.file, ENUM_NAME, ENUM_VALUES, is_class=True)
+        enum = Enum(ENUM_NAME, ENUM_VALUES, is_class=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': ENUM_NAME,
             'values': ENUM_VALUES,
@@ -76,11 +76,11 @@ class TestEnum(unittest.TestCase):
     
     def test_enum_with_underlying_type(self):
         """Test enum with specified underlying type."""
-        underlying_type = Type(self.file, INT_TYPE)
-        enum = Enum(self.file, ENUM_NAME, ENUM_VALUES, underlying_type=underlying_type)
+        underlying_type = set_parent(Type(INT_TYPE), self.file)
+        enum = Enum(ENUM_NAME, ENUM_VALUES, underlying_type=underlying_type)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': ENUM_NAME,
             'values': ENUM_VALUES,

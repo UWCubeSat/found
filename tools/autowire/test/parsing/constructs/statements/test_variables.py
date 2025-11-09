@@ -12,7 +12,7 @@ from src.parsing.constructs.types.types import Type, Value
 from src.parsing.constructs.definitions.misc import Comment
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, VARIABLE_NAME, INT_TYPE, SIMPLE_EXPRESSION, SINGLE_LINE_COMMENT
-)
+, set_parent)
 
 
 class TestVariable(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestVariable(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.var_type = Type(self.file, INT_TYPE)
+        self.var_type = set_parent(Type(INT_TYPE), self.file)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -40,7 +40,7 @@ class TestVariable(unittest.TestCase):
         Returns:
             Variable: Simple variable with int type
         """
-        return Variable(self.file, name, self.var_type)
+        return set_parent(Variable(name, self.var_type), self.file)
     
     def test_variable_initialization_simple(self):
         """Test simple variable initialization with default parameters."""
@@ -62,11 +62,11 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_with_initial_value(self):
         """Test variable with specified initial value."""
-        initial_val = Value(self.file, SIMPLE_EXPRESSION)
-        var = Variable(self.file, VARIABLE_NAME, self.var_type, initial_value=initial_val)
+        initial_val = set_parent(Value(SIMPLE_EXPRESSION), self.file)
+        var = Variable(VARIABLE_NAME, self.var_type, initial_value=initial_val)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': initial_val,
@@ -81,10 +81,10 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_static(self):
         """Test static variable with is_static=True."""
-        var = Variable(self.file, VARIABLE_NAME, self.var_type, is_static=True)
+        var = Variable(VARIABLE_NAME, self.var_type, is_static=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': None,
@@ -99,10 +99,10 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_const(self):
         """Test const variable with is_const=True."""
-        var = Variable(self.file, VARIABLE_NAME, self.var_type, is_const=True)
+        var = Variable(VARIABLE_NAME, self.var_type, is_const=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': None,
@@ -117,10 +117,10 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_mutable(self):
         """Test mutable variable with is_mutable=True."""
-        var = Variable(self.file, VARIABLE_NAME, self.var_type, is_mutable=True)
+        var = Variable(VARIABLE_NAME, self.var_type, is_mutable=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': None,
@@ -135,12 +135,12 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_with_comment(self):
         """Test variable with associated comment using setter."""
-        comment = Comment(self.file, SINGLE_LINE_COMMENT)
-        var = Variable(self.file, VARIABLE_NAME, self.var_type)
+        comment = set_parent(Comment(SINGLE_LINE_COMMENT), self.file)
+        var = Variable(VARIABLE_NAME, self.var_type)
         var.add_comment(comment)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': None,
@@ -155,18 +155,18 @@ class TestVariable(unittest.TestCase):
     
     def test_variable_all_modifiers(self):
         """Test variable with all modifiers and associated comment."""
-        initial_val = Value(self.file, SIMPLE_EXPRESSION)
-        comment = Comment(self.file, SINGLE_LINE_COMMENT)
+        initial_val = set_parent(Value(SIMPLE_EXPRESSION), self.file)
+        comment = set_parent(Comment(SINGLE_LINE_COMMENT), self.file)
         
         var = Variable(
-            self.file, VARIABLE_NAME, self.var_type,
+            VARIABLE_NAME, self.var_type,
             initial_value=initial_val, is_static=True, is_const=True,
             is_mutable=True
         )
         var.add_comment(comment)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'name': VARIABLE_NAME,
             'type': self.var_type,
             'initial_value': initial_val,

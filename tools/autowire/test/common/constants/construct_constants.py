@@ -1,5 +1,7 @@
 """Test constants for construct testing."""
 
+from src.parsing.constructs.core.base import Definition, Construct
+
 # =============================================================================
 # FILE PATHS
 # =============================================================================
@@ -23,10 +25,10 @@ MACRO_NAME = "MAX_SIZE"
 # =============================================================================
 # TYPE NAMES
 # =============================================================================
-INT_TYPE = "int"
-STRING_TYPE = "std::string"
-VECTOR_TYPE = "std::vector"
-UNIQUE_PTR_TYPE = "std::unique_ptr"
+INT_TYPE = Definition("int")
+STRING_TYPE = Definition("std::string")
+VECTOR_TYPE = Definition("std::vector")
+UNIQUE_PTR_TYPE = Definition("std::unique_ptr")
 
 # =============================================================================
 # ACCESS LEVELS
@@ -99,3 +101,10 @@ EXPECTED_COUNT_3 = 3
 # =============================================================================
 EXPECTED_TRUE = True
 EXPECTED_FALSE = False
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+def set_parent(construct: Construct, parent: Construct):
+        construct.set_parent(parent)
+        return construct

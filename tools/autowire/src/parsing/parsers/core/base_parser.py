@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic
-from ..constructs.base import Construct
+from ...constructs.core.base import Construct
 from ..utils.context import ParseContext
 
 T = TypeVar('T', bound=Construct)
@@ -12,21 +12,28 @@ class CPPParser(ABC, Generic[T]):
     """Abstract base class for all C++ parsers."""
     
     @abstractmethod
-    def parse(self, statement: str, context: ParseContext) -> T:
-        """Parse C++ code string into construct object.
+    def parse(self, context: ParseContext) -> T:
+        """Parse C++ construct from current position in context.
         
         Args:
-            statement (str): C++ code string to parse
-            context (ParseContext): Parsing context with type information
+            context (ParseContext): Parsing context with file content, position, and utilities
             
         Returns:
-            T: Parsed construct object
+            T: Parsed construct object or None if pattern doesn't match
             
         Raises:
-            ParseError: If statement cannot be parsed
+            ParseError: If malformed syntax encountered during parsing
             
         Preconditions:
-            statement must be valid C++ syntax for this parser type
+            - context.pos must point to valid position in context.content
+            - Implementation must ONLY use ParseContext utility methods
+            - Implementation must NEVER directly manipulate context fields (pos, content, symbol tables)
+            
+        Postconditions:
+            - On success: context.pos advanced to end of parsed construct
+            - On failure (None return): context.pos unchanged from entry
+            - On ParseError: context.pos may be modified (dispatcher will handle backtracking)
+            - Focus purely on parsing logic, position management handled by ParseContext methods
         """
         pass
     
@@ -72,3 +79,8 @@ class CPPParser(ABC, Generic[T]):
             construct must be suitable for implementation
         """
         return self.to_cpp(construct)
+
+
+class ParseError(Exception):
+    """Exception raised when parser encounters malformed syntax during parsing."""
+    pass

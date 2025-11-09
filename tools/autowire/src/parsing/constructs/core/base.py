@@ -1,26 +1,16 @@
 """Base construct class."""
 
 from ....common.annotations import equals_hash
-from typing import Optional, List, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..definitions.misc import Comment
+from typing import List
 
 
 @equals_hash
 class Construct:
     """Base class for all C++ constructs."""
     
-    def __init__(self, parent: 'Construct'):
-        """Initialize construct with required parent.
-        
-        Args:
-            parent (Construct): Parent construct in the hierarchy
-            
-        Preconditions:
-            parent must be a valid Construct instance (except for File which overrides this)
-        """
-        self.parent = parent
+    def __init__(self):
+        """Initialize construct"""
+        self.parent = None
         self.comments = []  # List of Comment objects associated with this construct
     
     def get_file_path(self) -> str:
@@ -36,13 +26,13 @@ class Construct:
         while current.parent is not None:
             current = current.parent
         # Root should be File which has file_path
-        return getattr(current, 'file_path', '')
+        return getattr(current, 'name', '')
     
-    def get_root_file(self) -> Optional['File']:
+    def get_root_file(self) -> 'File':
         """Get the root File containing this construct.
         
         Returns:
-            File: Root File construct, or None if not in a valid hierarchy
+            File: Root File construct
             
         Preconditions:
             Construct should be part of a valid hierarchy with File as root
@@ -50,7 +40,7 @@ class Construct:
         current = self
         while current.parent is not None:
             current = current.parent
-        return current if hasattr(current, 'file_path') else None
+        return current
     
     def add_comment(self, comment: 'Comment') -> None:
         """Add a comment to this construct.
@@ -67,3 +57,25 @@ class Construct:
             comments (List[Comment]): Comments to associate with this construct
         """
         self.comments.extend(comments)
+    
+    def set_parent(self, parent: 'Definition'):
+        self.parent = parent
+
+class Definition(Construct):
+    """ A Definition is a definition in a language """
+    
+    def __init__(self, name: str):
+        """Initialize construct with required parent."""
+        super().__init__()
+        self.name = name
+    
+    def get_qualified_name(self) -> str:
+        """Gets the qualified name of this definition
+
+        Returns:
+            str: The qualified name of this
+        """
+        if self.parent is None:
+            return self.name
+        else:
+            return self.parent.get_qualified_name() + "::" + self.name

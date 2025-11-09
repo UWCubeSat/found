@@ -8,12 +8,12 @@ features and preprocessor directives.
 import unittest
 from src.parsing.constructs.core.file import File
 from src.parsing.constructs.definitions.misc import Namespace, Typedef, Using, Include, Macro, Comment
-from src.parsing.constructs.types.types import Type
+from src.parsing.constructs.core.base import Definition
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, NAMESPACE_NAME, TYPEDEF_NAME, MACRO_NAME, STRING_TYPE,
     SINGLE_LINE_COMMENT, MULTI_LINE_COMMENT, MACRO_DEFINITION, MACRO_WITH_PARAMS,
     USING_NAMESPACE, USING_TYPE, HEADER_FILE_PATH
-)
+, set_parent)
 
 
 class TestNamespace(unittest.TestCase):
@@ -32,7 +32,7 @@ class TestNamespace(unittest.TestCase):
     
     def test_namespace_initialization(self):
         """Test namespace initialization with name and parent."""
-        namespace = Namespace(self.file, NAMESPACE_NAME)
+        namespace = set_parent(Namespace(NAMESPACE_NAME), self.file)
         
         expected = {
             'parent': self.file,
@@ -59,13 +59,13 @@ class TestTypedef(unittest.TestCase):
     
     def test_typedef_initialization(self):
         """Test typedef initialization with alias name and original type."""
-        original_type = Type(self.file, STRING_TYPE)
-        typedef = Typedef(self.file, TYPEDEF_NAME, original_type)
+        original_type = set_parent(Definition(STRING_TYPE), self.file)
+        typedef = Typedef(TYPEDEF_NAME, original_type)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
-            'alias_name': TYPEDEF_NAME,
+            'name': TYPEDEF_NAME,
             'original_type': original_type
         }
         
@@ -89,10 +89,10 @@ class TestUsing(unittest.TestCase):
     
     def test_using_declaration(self):
         """Test using declaration initialization with is_directive=False."""
-        using = Using(self.file, USING_TYPE, is_directive=False)
+        using = Using(USING_TYPE, is_directive=False)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'target': USING_TYPE,
             'is_directive': False
@@ -102,10 +102,10 @@ class TestUsing(unittest.TestCase):
     
     def test_using_directive(self):
         """Test using directive initialization with is_directive=True."""
-        using = Using(self.file, USING_NAMESPACE, is_directive=True)
+        using = Using(USING_NAMESPACE, is_directive=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'target': USING_NAMESPACE,
             'is_directive': True
@@ -131,10 +131,10 @@ class TestInclude(unittest.TestCase):
     
     def test_include_initialization_local(self):
         """Test local include initialization with is_system=False."""
-        include = Include(self.file, self.header_file, is_system=False)
+        include = Include(self.header_file, is_system=False)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'path': self.header_file,
             'is_system': False
@@ -144,10 +144,10 @@ class TestInclude(unittest.TestCase):
     
     def test_include_initialization_system(self):
         """Test system include initialization with is_system=True."""
-        include = Include(self.file, self.header_file, is_system=True)
+        include = Include(self.header_file, is_system=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'path': self.header_file,
             'is_system': True
@@ -173,10 +173,10 @@ class TestMacro(unittest.TestCase):
     
     def test_macro_simple(self):
         """Test simple macro initialization without parameters."""
-        macro = Macro(self.file, MACRO_NAME, MACRO_DEFINITION)
+        macro = Macro(MACRO_NAME, MACRO_DEFINITION)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': MACRO_NAME,
             'definition': MACRO_DEFINITION,
@@ -187,10 +187,10 @@ class TestMacro(unittest.TestCase):
     
     def test_macro_with_parameters(self):
         """Test macro with parameter list initialization."""
-        macro = Macro(self.file, MACRO_NAME, MACRO_DEFINITION, MACRO_WITH_PARAMS)
+        macro = Macro(MACRO_NAME, MACRO_DEFINITION, MACRO_WITH_PARAMS)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': MACRO_NAME,
             'definition': MACRO_DEFINITION,
@@ -201,10 +201,10 @@ class TestMacro(unittest.TestCase):
     
     def test_macro_no_definition(self):
         """Test macro without definition string."""
-        macro = Macro(self.file, MACRO_NAME)
+        macro = Macro(MACRO_NAME)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': MACRO_NAME,
             'definition': "",
@@ -230,7 +230,7 @@ class TestComment(unittest.TestCase):
     
     def test_comment_single_line(self):
         """Test single line comment initialization with default multiline=False."""
-        comment = Comment(self.file, SINGLE_LINE_COMMENT)
+        comment = set_parent(Comment(SINGLE_LINE_COMMENT), self.file)
         
         expected = {
             'parent': self.file,
@@ -243,10 +243,10 @@ class TestComment(unittest.TestCase):
     
     def test_comment_multi_line(self):
         """Test multi line comment initialization with is_multiline=True."""
-        comment = Comment(self.file, MULTI_LINE_COMMENT, is_multiline=True)
+        comment = Comment(MULTI_LINE_COMMENT, is_multiline=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'text': MULTI_LINE_COMMENT,
             'is_multiline': True

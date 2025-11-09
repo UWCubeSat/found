@@ -40,7 +40,7 @@ class TestFile(unittest.TestCase):
         Returns:
             Class: Test class with standard name
         """
-        return Class(self.file, CLASS_NAME)
+        return Class(CLASS_NAME)
     
     def create_test_function(self):
         """Create a test function construct.
@@ -48,8 +48,8 @@ class TestFile(unittest.TestCase):
         Returns:
             Function: Test function with int return type
         """
-        return_type = Type(None, INT_TYPE)
-        return Function(self.file, FUNCTION_NAME, return_type)
+        return_type = Type(INT_TYPE)
+        return Function(FUNCTION_NAME, return_type)
     
     def test_file_initialization(self):
         """Test file initialization stores path and creates empty collections."""
@@ -57,7 +57,7 @@ class TestFile(unittest.TestCase):
         
         expected = {
             'parent': None,
-            'file_path': SAMPLE_FILE_PATH,
+            'name': SAMPLE_FILE_PATH,
             'comments': [],
             'constructs': [],
             'classes': [],

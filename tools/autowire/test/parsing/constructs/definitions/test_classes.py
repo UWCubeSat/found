@@ -17,7 +17,7 @@ from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, CLASS_NAME, BASE_CLASS_NAME, DERIVED_CLASS_NAME, FUNCTION_NAME, INT_TYPE, PARAMETER_NAME,
     PUBLIC_ACCESS, PRIVATE_ACCESS, PROTECTED_ACCESS, TEMPLATE_PARAM_T,
     EXPECTED_COUNT_0, EXPECTED_COUNT_1, EXPECTED_COUNT_2, EXPECTED_COUNT_3, EXPECTED_TRUE, EXPECTED_FALSE
-)
+, set_parent)
 
 
 class TestClass(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestClass(unittest.TestCase):
         Returns:
             Class: Simple class construct
         """
-        return Class(self.file, name)
+        return Class(name)
     
     def create_base_class(self, name=BASE_CLASS_NAME):
         """Create a base class for inheritance testing.
@@ -56,7 +56,7 @@ class TestClass(unittest.TestCase):
         Returns:
             Class: Base class construct
         """
-        return Class(self.file, name)
+        return Class(name)
     
     def create_derived_class(self, name, base_classes):
         """Create a derived class with specified inheritance.
@@ -68,7 +68,7 @@ class TestClass(unittest.TestCase):
         Returns:
             Class: Derived class construct
         """
-        return Class(self.file, name, base_classes=base_classes)
+        return Class(name, base_classes=base_classes)
     
     def test_class_initialization_simple(self):
         """Test simple class initialization sets all properties and creates access sections."""
@@ -98,7 +98,7 @@ class TestClass(unittest.TestCase):
         """Test struct initialization."""
         expected_is_struct = True
         
-        cls = Class(self.file, CLASS_NAME, is_struct=True)
+        cls = Class(CLASS_NAME, is_struct=True)
         
         self.assertEqual(cls.is_struct, expected_is_struct)
     
@@ -198,18 +198,18 @@ class TestClass(unittest.TestCase):
         cls = self.create_simple_class("Person")
         
         # Add private fields
-        private_field1 = Variable(self.file, "id", Type(self.file, "int"))
-        private_field2 = Variable(self.file, "ssn", Type(self.file, "string"))
+        private_field1 = set_parent(Variable("id", set_parent(Type("int"), self.file)), self.file)
+        private_field2 = set_parent(Variable("ssn", set_parent(Type("string"), self.file)), self.file)
         cls.private.members = [private_field1, private_field2]
         
         # Add public fields
-        public_field1 = Variable(self.file, "name", Type(self.file, "string"))
-        public_field2 = Variable(self.file, "age", Type(self.file, "int"))
-        public_field3 = Variable(self.file, "active", Type(self.file, "bool"))
+        public_field1 = set_parent(Variable("name", set_parent(Type("string"), self.file)), self.file)
+        public_field2 = set_parent(Variable("age", set_parent(Type("int"), self.file)), self.file)
+        public_field3 = set_parent(Variable("active", set_parent(Type("bool"), self.file)), self.file)
         cls.public.members = [public_field1, public_field2, public_field3]
         
         # Add protected field
-        protected_field = Variable(self.file, "internal_state", Type(self.file, "int"))
+        protected_field = set_parent(Variable("internal_state", set_parent(Type("int"), self.file)), self.file)
         cls.protected.members = [protected_field]
         
         expected = {
@@ -238,7 +238,7 @@ class TestConstructor(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.parent_class = Class(self.file, CLASS_NAME)
+        self.parent_class = Class(CLASS_NAME)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -246,17 +246,27 @@ class TestConstructor(unittest.TestCase):
     
     def create_parameter(self, name="param"):
         """Helper to create a parameter."""
-        param_type = Type(self.file, INT_TYPE)
-        return Parameter(self.file, name, param_type)
+        param_type = Type(INT_TYPE)
+        return Parameter(name, param_type)
     
     def test_constructor_initialization_simple(self):
         """Test simple constructor initialization."""
-        constructor = Constructor(self.parent_class)
+        constructor = Constructor(self.parent_class.name)
         
         expected = {
-            'parent': self.parent_class,
+            'parent': None,
             'comments': [],
-            'parameters': []
+            'name': self.parent_class.name,
+            'return_type': None,
+            'parameters': [],
+            'is_virtual': False,
+            'is_static': False,
+            'is_const': False,
+            'is_pure_virtual': False,
+            'template_parameters': [],
+            'body': [],
+            'comment': None,
+            'namespace': None
         }
         
         self.assertEqual(expected, constructor.__dict__)
@@ -265,12 +275,22 @@ class TestConstructor(unittest.TestCase):
         """Test constructor with parameters."""
         param = self.create_parameter()
         parameters = [param]
-        constructor = Constructor(self.parent_class, parameters=parameters)
+        constructor = Constructor(self.parent_class.name, parameters=parameters)
         
         expected = {
-            'parent': self.parent_class,
+            'parent': None,
             'comments': [],
-            'parameters': parameters
+            'name': self.parent_class.name,
+            'return_type': None,
+            'parameters': parameters,
+            'is_virtual': False,
+            'is_static': False,
+            'is_const': False,
+            'is_pure_virtual': False,
+            'template_parameters': [],
+            'body': [],
+            'comment': None,
+            'namespace': None
         }
         
         self.assertEqual(expected, constructor.__dict__)
@@ -278,10 +298,10 @@ class TestConstructor(unittest.TestCase):
     def test_constructor_with_multiple_parameters(self):
         """Test constructor with multiple parameters."""
         param1 = self.create_parameter("id")
-        param2 = Parameter(self.file, "name", Type(self.file, "string"))
-        param3 = Parameter(self.file, "age", Type(self.file, "int"))
+        param2 = Parameter("name", set_parent(Type("string"), self.file))
+        param3 = Parameter("age", set_parent(Type("int"), self.file))
         parameters = [param1, param2, param3]
-        constructor = Constructor(self.parent_class, parameters=parameters)
+        constructor = Constructor(self.parent_class.name, parameters=parameters)
         
         expected = {
             'parameters_count': 3,
@@ -305,7 +325,7 @@ class TestDestructor(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.parent_class = Class(self.file, CLASS_NAME)
+        self.parent_class = Class(CLASS_NAME)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -313,24 +333,44 @@ class TestDestructor(unittest.TestCase):
     
     def test_destructor_initialization_simple(self):
         """Test simple destructor initialization."""
-        destructor = Destructor(self.parent_class)
+        destructor = Destructor("~" + self.parent_class.name)
         
         expected = {
-            'parent': self.parent_class,
+            'parent': None,
             'comments': [],
-            'is_virtual': False
+            'name': "~" + self.parent_class.name,
+            'return_type': None,
+            'parameters': [],
+            'is_virtual': False,
+            'is_static': False,
+            'is_const': False,
+            'is_pure_virtual': False,
+            'template_parameters': [],
+            'body': [],
+            'comment': None,
+            'namespace': None
         }
         
         self.assertEqual(expected, destructor.__dict__)
     
     def test_destructor_virtual(self):
         """Test virtual destructor initialization."""
-        destructor = Destructor(self.parent_class, is_virtual=True)
+        destructor = Destructor("~" + self.parent_class.name, is_virtual=True)
         
         expected = {
-            'parent': self.parent_class,
+            'parent': None,
             'comments': [],
-            'is_virtual': True
+            'name': "~" + self.parent_class.name,
+            'return_type': None,
+            'parameters': [],
+            'is_virtual': True,
+            'is_static': False,
+            'is_const': False,
+            'is_pure_virtual': False,
+            'template_parameters': [],
+            'body': [],
+            'comment': None,
+            'namespace': None
         }
         
         self.assertEqual(expected, destructor.__dict__)
@@ -342,7 +382,7 @@ class TestAccessSection(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.parent_class = Class(self.file, CLASS_NAME)
+        self.parent_class = Class(CLASS_NAME)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -350,12 +390,13 @@ class TestAccessSection(unittest.TestCase):
     
     def test_access_section_initialization(self):
         """Test access section initialization."""
-        access_section = AccessSection(self.parent_class)
+        access_section = AccessSection()
         
         expected = {
-            'parent': self.parent_class,
+            'parent': None,
             'comments': [],
             'constructors': [],
+            'destructors': [],
             'methods': [],
             'members': []
         }
@@ -367,12 +408,12 @@ class TestAccessSection(unittest.TestCase):
         from src.parsing.constructs.statements.variables import Variable
         
         # Create multiple member variables
-        member1 = Variable(self.file, "id", Type(self.file, "int"))
-        member2 = Variable(self.file, "name", Type(self.file, "string"))
-        member3 = Variable(self.file, "active", Type(self.file, "bool"))
+        member1 = set_parent(Variable("id", set_parent(Type("int"), self.file)), self.file)
+        member2 = set_parent(Variable("name", set_parent(Type("string"), self.file)), self.file)
+        member3 = set_parent(Variable("active", set_parent(Type("bool"), self.file)), self.file)
         members = [member1, member2, member3]
         
-        access_section = AccessSection(self.parent_class)
+        access_section = AccessSection()
         access_section.members = members
         
         expected = {
@@ -393,13 +434,13 @@ class TestAccessSection(unittest.TestCase):
     def test_access_section_with_multiple_methods(self):
         """Test access section with multiple methods."""
         # Create multiple methods
-        return_type = Type(self.file, "void")
-        method1 = Function(self.file, "initialize", return_type)
-        method2 = Function(self.file, "process", return_type)
-        method3 = Function(self.file, "cleanup", return_type)
+        return_type = set_parent(Type("void"), self.file)
+        method1 = set_parent(Function("initialize", return_type), self.file)
+        method2 = set_parent(Function("process", return_type), self.file)
+        method3 = set_parent(Function("cleanup", return_type), self.file)
         methods = [(None, method1), (None, method2), (None, method3)]
         
-        access_section = AccessSection(self.parent_class)
+        access_section = AccessSection()
         access_section.methods = methods
         
         expected = {

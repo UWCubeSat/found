@@ -1,23 +1,21 @@
 """Variable constructs."""
 
-from typing import List, Optional
-from ..core.base import Construct
+from typing import Optional
+from ..core.base import Definition
 from ..types.types import Type, Value
-from ..definitions.misc import Comment
 from ....common.annotations import equals_hash
 
 
 @equals_hash
-class Variable(Construct):
+class Variable(Definition):
     """Member variables and global variables."""
     
-    def __init__(self, parent: Construct, name: str, var_type: Type, initial_value: Optional[Value] = None,
+    def __init__(self, name: str, var_type: Type, initial_value: Optional[Value] = None,
                  is_static: bool = False, is_const: bool = False, is_mutable: bool = False,
                  namespace: Optional[str] = None):
         """Initialize variable.
         
         Args:
-            parent (Construct): Parent construct (typically Class, AccessSection, or File)
             name (str): Variable name
             var_type (Type): Variable type
             initial_value (Value, optional): Initial value assignment
@@ -26,8 +24,7 @@ class Variable(Construct):
             is_mutable (bool): True if variable is mutable (can be modified in const contexts)
             namespace (str, optional): Namespace containing this variable
         """
-        super().__init__(parent)
-        self.name = name
+        super().__init__(name)
         self.type = var_type
         self.initial_value = initial_value
         self.is_static = is_static

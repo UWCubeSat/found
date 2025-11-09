@@ -1,8 +1,5 @@
 """Custom annotation for automatic equals and hash method generation."""
 
-
-
-
 def equals_hash(cls):
     """Class decorator that automatically generates __eq__ and __hash__ methods.
     

@@ -11,18 +11,14 @@ import unittest
 from src.parsing.constructs.types.types import Type, Value
 from src.parsing.constructs.core.file import File
 from test.common.constants.construct_constants import (
-    SAMPLE_FILE_PATH, INT_TYPE, STRING_TYPE, VECTOR_TYPE, UNIQUE_PTR_TYPE,
+    SAMPLE_FILE_PATH, INT_TYPE, VECTOR_TYPE, UNIQUE_PTR_TYPE,
     SIMPLE_EXPRESSION, FUNCTION_CALL_EXPRESSION, POINTER_LEVEL_1, POINTER_LEVEL_2, POINTER_LEVEL_3,
-    EXPECTED_COUNT_0, EXPECTED_COUNT_1, EXPECTED_TRUE, EXPECTED_FALSE
+    EXPECTED_COUNT_0, EXPECTED_COUNT_1, EXPECTED_TRUE, EXPECTED_FALSE, set_parent
 )
 
 
 class TestType(unittest.TestCase):
-    """Test cases for Type construct functionality.
-    
-    Tests type representation including raw pointers, smart pointers,
-    template arguments, and type property queries.
-    """
+    """Test cases for Type construct functionality."""
     
     def setUp(self):
         """Set up test fixtures with file context."""
@@ -33,53 +29,30 @@ class TestType(unittest.TestCase):
         pass
     
     def create_simple_type(self, type_name=INT_TYPE):
-        """Create a simple non-pointer type.
-        
-        Args:
-            type_name: Name of the type to create
-            
-        Returns:
-            Type: Simple type construct
-        """
-        return Type(self.file, type_name)
+        """Create a simple non-pointer type."""
+        return Type(type_name)
     
     def create_pointer_type(self, type_name=INT_TYPE, level=POINTER_LEVEL_1):
-        """Create a raw pointer type with specified indirection level.
-        
-        Args:
-            type_name: Base type name
-            level: Number of pointer indirection levels
-            
-        Returns:
-            Type: Pointer type construct
-        """
-        return Type(self.file, type_name, raw_pointer_level=level)
+        """Create a raw pointer type with specified indirection level."""
+        return Type(type_name, raw_pointer_level=level)
     
     def create_template_type(self, type_name=VECTOR_TYPE, arg_type=INT_TYPE):
-        """Create a template type with single type argument.
-        
-        Args:
-            type_name: Template type name
-            arg_type: Template argument type name
-            
-        Returns:
-            Type: Template type construct
-        """
-        template_arg = Type(self.file, arg_type)
-        return Type(self.file, type_name, template_args=[template_arg])
+        """Create a template type with single type argument."""
+        template_arg = Type(arg_type)
+        return Type(type_name, template_args=[template_arg])
     
     def test_type_initialization_simple(self):
         """Test simple type initialization sets all properties correctly."""
         type_obj = self.create_simple_type()
         expected_properties = {
-            'qualified_name': INT_TYPE,
+            'base_type': INT_TYPE,
             'raw_pointer_level': EXPECTED_COUNT_0,
             'is_reference': EXPECTED_FALSE,
             'is_const': EXPECTED_FALSE,
             'template_args_count': EXPECTED_COUNT_0
         }
         actual_properties = {
-            'qualified_name': type_obj.qualified_name,
+            'base_type': type_obj.base_type,
             'raw_pointer_level': type_obj.raw_pointer_level,
             'is_reference': type_obj.is_reference,
             'is_const': type_obj.is_const,
@@ -92,12 +65,12 @@ class TestType(unittest.TestCase):
         """Test pointer type initialization sets pointer properties correctly."""
         type_obj = self.create_pointer_type(level=POINTER_LEVEL_2)
         expected_properties = {
-            'qualified_name': INT_TYPE,
+            'base_type': INT_TYPE,
             'raw_pointer_level': POINTER_LEVEL_2,
             'is_pointer': EXPECTED_TRUE
         }
         actual_properties = {
-            'qualified_name': type_obj.qualified_name,
+            'base_type': type_obj.base_type,
             'raw_pointer_level': type_obj.raw_pointer_level,
             'is_pointer': type_obj.is_pointer
         }
@@ -130,12 +103,12 @@ class TestType(unittest.TestCase):
         
         result = type_obj.get_base_type()
         expected_base_properties = {
-            'qualified_name': INT_TYPE,
+            'base_type': INT_TYPE,
             'raw_pointer_level': EXPECTED_COUNT_0,
             'is_pointer': EXPECTED_FALSE
         }
         actual_base_properties = {
-            'qualified_name': result.qualified_name,
+            'base_type': result.base_type,
             'raw_pointer_level': result.raw_pointer_level,
             'is_pointer': result.is_pointer
         }
@@ -144,19 +117,19 @@ class TestType(unittest.TestCase):
     
     def test_smart_pointer_usage(self):
         """Test smart pointer representation uses template args not raw pointer level."""
-        inner_type = Type(self.file, INT_TYPE)
-        smart_ptr = Type(self.file, UNIQUE_PTR_TYPE, template_args=[inner_type])
+        inner_type = Type(INT_TYPE)
+        smart_ptr = Type(UNIQUE_PTR_TYPE, template_args=[inner_type])
         
         expected_smart_ptr_properties = {
-            'qualified_name': UNIQUE_PTR_TYPE,
+            'base_type': UNIQUE_PTR_TYPE,
             'template_args_count': EXPECTED_COUNT_1,
             'inner_type_name': INT_TYPE,
-            'is_pointer': EXPECTED_FALSE  # Smart pointers are not raw pointers
+            'is_pointer': EXPECTED_FALSE
         }
         actual_smart_ptr_properties = {
-            'qualified_name': smart_ptr.qualified_name,
+            'base_type': smart_ptr.base_type,
             'template_args_count': len(smart_ptr.template_args),
-            'inner_type_name': smart_ptr.template_args[0].qualified_name,
+            'inner_type_name': smart_ptr.template_args[0].base_type,
             'is_pointer': smart_ptr.is_pointer
         }
         
@@ -164,11 +137,7 @@ class TestType(unittest.TestCase):
 
 
 class TestValue(unittest.TestCase):
-    """Test cases for Value construct functionality.
-    
-    Tests value expression storage for literals, function calls,
-    and other C++ expressions.
-    """
+    """Test cases for Value construct functionality."""
     
     def setUp(self):
         """Set up test fixtures with file context."""
@@ -179,22 +148,15 @@ class TestValue(unittest.TestCase):
         pass
     
     def create_simple_value(self, expression=SIMPLE_EXPRESSION):
-        """Create a value with specified expression.
-        
-        Args:
-            expression: Expression string to store
-            
-        Returns:
-            Value: Value construct with expression
-        """
-        return Value(self.file, expression)
+        """Create a value with specified expression."""
+        return Value(expression)
     
     def test_value_initialization_literal(self):
         """Test value initialization stores expression and parent correctly."""
         value = self.create_simple_value()
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'expression': SIMPLE_EXPRESSION
         }
@@ -203,10 +165,10 @@ class TestValue(unittest.TestCase):
     
     def test_value_initialization_function_call(self):
         """Test value initialization with function call expression."""
-        value = Value(self.file, FUNCTION_CALL_EXPRESSION)
+        value = Value(FUNCTION_CALL_EXPRESSION)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'expression': FUNCTION_CALL_EXPRESSION
         }

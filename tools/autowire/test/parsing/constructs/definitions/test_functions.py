@@ -11,7 +11,7 @@ from src.parsing.constructs.definitions.functions import Function, Parameter
 from src.parsing.constructs.types.types import Type, Value
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, FUNCTION_NAME, INT_TYPE, SIMPLE_EXPRESSION, TEMPLATE_PARAM_T
-)
+, set_parent)
 
 
 class TestFunction(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestFunction(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.return_type = Type(self.file, INT_TYPE)
+        self.return_type = set_parent(Type(INT_TYPE), self.file)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -39,7 +39,7 @@ class TestFunction(unittest.TestCase):
         Returns:
             Function: Simple function with int return type
         """
-        return Function(self.file, name, self.return_type)
+        return set_parent(Function(name, self.return_type), self.file)
     
     def create_parameter(self, name="param", type_name=INT_TYPE):
         """Helper to create a parameter with specified type.
@@ -51,8 +51,8 @@ class TestFunction(unittest.TestCase):
         Returns:
             Parameter: Parameter with specified name and type
         """
-        param_type = Type(self.file, type_name)
-        return Parameter(self.file, name, param_type)
+        param_type = set_parent(Type(type_name), self.file)
+        return set_parent(Parameter(name, param_type), self.file)
     
     def test_function_initialization_simple(self):
         """Test simple function initialization with default parameters."""
@@ -78,10 +78,10 @@ class TestFunction(unittest.TestCase):
     
     def test_function_initialization_virtual(self):
         """Test virtual function initialization with is_virtual=True."""
-        func = Function(self.file, FUNCTION_NAME, self.return_type, is_virtual=True)
+        func = Function(FUNCTION_NAME, self.return_type, is_virtual=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': FUNCTION_NAME,
             'return_type': self.return_type,
@@ -100,10 +100,10 @@ class TestFunction(unittest.TestCase):
     
     def test_function_initialization_pure_virtual(self):
         """Test pure virtual function initialization with is_pure_virtual=True."""
-        func = Function(self.file, FUNCTION_NAME, self.return_type, is_pure_virtual=True)
+        func = Function(FUNCTION_NAME, self.return_type, is_pure_virtual=True)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': FUNCTION_NAME,
             'return_type': self.return_type,
@@ -124,10 +124,10 @@ class TestFunction(unittest.TestCase):
         """Test function with parameter list."""
         param = self.create_parameter()
         parameters = [param]
-        func = Function(self.file, FUNCTION_NAME, self.return_type, parameters=parameters)
+        func = Function(FUNCTION_NAME, self.return_type, parameters=parameters)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': FUNCTION_NAME,
             'return_type': self.return_type,
@@ -150,10 +150,10 @@ class TestFunction(unittest.TestCase):
         param2 = self.create_parameter("y", "double")
         param3 = self.create_parameter("name", "string")
         parameters = [param1, param2, param3]
-        func = Function(self.file, FUNCTION_NAME, self.return_type, parameters=parameters)
+        func = Function(FUNCTION_NAME, self.return_type, parameters=parameters)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': FUNCTION_NAME,
             'return_type': self.return_type,
@@ -173,10 +173,10 @@ class TestFunction(unittest.TestCase):
     def test_function_template(self):
         """Test template function with template parameters."""
         template_params = [TEMPLATE_PARAM_T]
-        func = Function(self.file, FUNCTION_NAME, self.return_type, template_parameters=template_params)
+        func = Function(FUNCTION_NAME, self.return_type, template_parameters=template_params)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': FUNCTION_NAME,
             'return_type': self.return_type,
@@ -204,7 +204,7 @@ class TestParameter(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.file = File(SAMPLE_FILE_PATH)
-        self.param_type = Type(self.file, INT_TYPE)
+        self.param_type = Type(INT_TYPE)
     
     def tearDown(self):
         """Clean up test fixtures."""
@@ -219,14 +219,14 @@ class TestParameter(unittest.TestCase):
         Returns:
             Parameter: Simple parameter with int type
         """
-        return Parameter(self.file, name, self.param_type)
+        return Parameter(name, self.param_type)
     
     def test_parameter_initialization_simple(self):
         """Test simple parameter initialization with default values."""
         param = self.create_simple_parameter()
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': "param",
             'type': self.param_type,
@@ -237,11 +237,11 @@ class TestParameter(unittest.TestCase):
     
     def test_parameter_with_default_value(self):
         """Test parameter with specified default value."""
-        default_val = Value(self.file, SIMPLE_EXPRESSION)
-        param = Parameter(self.file, "param", self.param_type, default_value=default_val)
+        default_val = set_parent(Value(SIMPLE_EXPRESSION), self.file)
+        param = Parameter("param", self.param_type, default_value=default_val)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'name': "param",
             'type': self.param_type,

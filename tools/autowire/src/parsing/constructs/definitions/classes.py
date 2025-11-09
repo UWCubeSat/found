@@ -1,7 +1,7 @@
 """Class-related constructs."""
 
 from typing import List, Optional, Tuple
-from ..core.base import Construct
+from ..core.base import Construct, Definition
 from .functions import Function, Parameter
 from ..statements.variables import Variable
 from .misc import Comment
@@ -9,32 +9,35 @@ from ....common.annotations import equals_hash
 
 
 @equals_hash
-class Constructor(Construct):
+class Constructor(Function):
     """Class constructors with parameter lists."""
     
-    def __init__(self, parent: Construct, parameters: List[Parameter] = None):
+    def __init__(self, name: str, parameters: List[Parameter] = None):
         """Initialize constructor.
         
         Args:
-            parent (Construct): Parent construct (typically a Class)
+            name (str): The name of the constructor
             parameters (List[Parameter], optional): List of constructor parameters, defaults to empty list
         """
-        super().__init__(parent)
+        super().__init__(name, None, parameters=parameters)
         self.parameters = parameters or []
 
 
 @equals_hash
-class Destructor(Construct):
+class Destructor(Function):
     """Class destructors (parsed but not used for dependency injection)."""
     
-    def __init__(self, parent: Construct, is_virtual: bool = False):
+    def __init__(self, name: str, is_virtual: bool = False):
         """Initialize destructor.
         
         Args:
-            parent (Construct): Parent construct (typically a Class)
+            name (str): The name of the destructor
             is_virtual (bool): Whether destructor is virtual
         """
-        super().__init__(parent)
+        if not name[0] == '~':
+            raise ValueError(f"Destructor {name} must have ~ in front")
+        
+        super().__init__(name, None)
         self.is_virtual = is_virtual
 
 
@@ -42,27 +45,41 @@ class Destructor(Construct):
 class AccessSection(Construct):
     """Container for class members with specific access level."""
     
-    def __init__(self, parent: Construct):
-        """Initialize access section.
+    def __init__(self,
+                 constructors: List[Constructor] = None,
+                 destructors: List[Destructor] = None,
+                 methods: List[Tuple[Optional['Class'], Function]] = None,
+                 members: List[Variable] = None):
+        """Initialize access section."""
+        super().__init__()
+        self.constructors: List[Constructor] = constructors or []
+        self.destructors: List[Destructor] = destructors or []
+        self.methods: List[Tuple[Optional[Class], Function]] = methods or []  # (inherited_from_class, function)
+        self.members: List[Variable] = members or []            
         
-        Args:
-            parent (Construct): Parent construct (typically a Class)
-        """
-        super().__init__(parent)
-        self.constructors: List[Constructor] = []
-        self.methods: List[Tuple[Optional[Class], Function]] = []  # (inherited_from_class, function)
-        self.members: List[Variable] = []
+        for constructor in self.constructors:
+            if constructor.parent != self.parent:
+                raise ValueError("All constructors must have their class as the parent")
+        for destructor in self.destructors:
+            if destructor.parent != self.parent:
+                raise ValueError("All destructors must have their class as the parent")
+        for _, method in self.methods:
+            if method.parent != self.parent:
+                raise ValueError("All methods must have their class as the parent")
+        for member in self.members:
+            if member.parent != self.parent:
+                raise ValueError("All members must have their class as the parent")
 
 
 @equals_hash
-class Class(Construct):
+class Class(Definition):
     """Class and struct definitions with inheritance, constructors, methods, access specifiers.
     
     Note: Access sections passed to the constructor should contain only methods defined directly
     in this class. Inherited methods are automatically added by the class during construction.
     """
     
-    def __init__(self, parent: Construct, name: str, is_struct: bool = False, base_classes: List[Tuple[str, 'Class']] = None,
+    def __init__(self, name: str, is_struct: bool = False, base_classes: List[Tuple[str, 'Class']] = None,
                  template_parameters: List[str] = None, can_brace_initialize: bool = False,
                  brace_init_members: List[Variable] = None, comment: Optional[Comment] = None,
                  namespace: Optional[str] = None,
@@ -71,7 +88,6 @@ class Class(Construct):
         """Initialize class construct.
         
         Args:
-            parent (Construct): Parent construct (typically File)
             name (str): Class name
             is_struct (bool): True if this is a struct, False for class
             base_classes (List[Tuple[str, Class]], optional): List of (access_level, Class) tuples for inheritance
@@ -90,8 +106,7 @@ class Class(Construct):
             Access sections should contain only directly defined methods
             All base classes must be fully constructed
         """
-        super().__init__(parent)
-        self.name = name
+        super().__init__(name)
         self.is_struct = is_struct
         self.base_classes: List[Tuple[str, Class]] = base_classes or []  # List of (access_level, Class) tuples
         self.template_parameters = template_parameters or []
@@ -102,9 +117,9 @@ class Class(Construct):
         self.subclasses: List[Class] = []  # List of Class references that inherit from this class
         
         # Access level buckets - inject or create, then set parent
-        self.public = public or AccessSection(self)
-        self.private = private or AccessSection(self)
-        self.protected = protected or AccessSection(self)
+        self.public = public or AccessSection()
+        self.private = private or AccessSection()
+        self.protected = protected or AccessSection()
         
         # Set this class as parent for all access sections
         self.public.parent = self
@@ -188,7 +203,6 @@ class Class(Construct):
                 if method.name not in existing_method_names:
                     # Create inherited method copy
                     inherited_method = Function(
-                        parent=self,
                         name=method.name,
                         return_type=method.return_type,
                         parameters=method.parameters,
@@ -200,6 +214,7 @@ class Class(Construct):
                         comment=method.comment,
                         namespace=method.namespace
                     )
+                    inherited_method.parent = self
                     
                     # Determine final access level based on inheritance access and original access
                     final_access = self._determine_inherited_access(inheritance_access, method, base_class)

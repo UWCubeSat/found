@@ -301,18 +301,21 @@ string filename;  // → resolves to same std::string Type via alias_table
 5. **Using Resolution** - map unqualified names to std:: types via alias_table
 6. **Constructor Validation** - during dependency analysis, verify std:: types can be constructed as needed
 
-## FileParser - Orchestrating Parser
+## FileParser - Recursive Descent Parser
 
-**Parsing Helper Functions:**
-- `normalize_statements(content: str) -> List[str]` - breaks content into parseable statement strings (must handle access sections like `public:`, `private:`, `protected:` and switch sections like `case VALUE:`, `default:`)
-- `find_statement_boundary(content: str, start: int) -> int` - finds end of statement
-- `extract_first_level_list(content: str, start: int) -> List[str]` - extracts comma-separated elements within delimiters (parentheses, braces, brackets)
+**Enhanced ParseContext with Parsing Utilities:**
+- `match_regex(pattern: str) -> Optional[str]` - match regex at current position and advance
+- `parse_identifier() -> Optional[str]` - parse C++ identifier at current position
+- `skip_whitespace()` - skip whitespace and comments
+- `peek(offset: int = 0) -> str` - look ahead without advancing position
+- `save_position() -> int` / `restore_position(pos: int)` - backtracking support
+- `find_matching_brace() -> int` - find matching closing brace
+- `extract_braced_content() -> Optional[str]` - extract content between matching braces
 
-**FileParser class:**
-- `__init__(file_content: str, file_path: str)` - initialize with file content and path
-- `parse() -> ParsedFile` - orchestrates all specialized parsers to build complete file representation
-- `get_constructs() -> List[Construct]` - returns all parsed constructs in file order
-- `get_constructs_by_type(construct_type) -> List[Construct]` - filter constructs by type
+**FileParser functions:**
+- `parse_file(content: str, file_path: str) -> ParsedFile` - main parsing entry point using recursive descent
+- `parse_next_construct(context: ParseContext) -> Optional[Construct]` - try each specialized parser with backtracking
+- `try_parsers(context: ParseContext, parsers: List[Callable]) -> Optional[Construct]` - dispatch to specialized parsers
 
 **ParsedFile dataclass:**
 - `file_path: str` - absolute path to source file
@@ -342,7 +345,9 @@ string filename;  // → resolves to same std::string Type via alias_table
 - **Comment Absorption**: Comments immediately preceding other constructs are absorbed into those constructs
 - **Standalone Comments**: Comments not associated with following constructs remain as separate Comment constructs
 
-**ParseContext dataclass:**
+**Enhanced ParseContext dataclass:**
+- `content: str` - complete file content for parsing
+- `pos: int` - current parsing position in content
 - `current_comment: Optional[Comment]` - comment block preceding current construct
 - `current_namespace: Optional[Namespace]` - active namespace construct
 - `macro_table: Dict[str, Macro]` - macro name to Macro construct mapping
@@ -351,37 +356,39 @@ string filename;  // → resolves to same std::string Type via alias_table
 - `function_definitions: Dict[str, Function]` - function name to Function construct mapping
 - `global_variables: Dict[str, Variable]` - global variable name to Variable construct mapping
 - `static_variables: Dict[str, Variable]` - static variable name to Variable construct mapping
+- Plus parsing utility methods listed above
 
 
-**Statement Normalization Process:**
-1. **Extract Declarations** - find class, function, variable, typedef declarations
-2. **Handle Braced Definitions** - extract complete class/namespace definitions with their contents
-3. **Preserve Comments** - keep comment blocks that precede declarations
-4. **Track Scope** - maintain brace nesting level for proper statement boundaries
+**Recursive Descent Parsing Process:**
+1. **Initialize Context** - create ParseContext with file content, position=0, and command-line macros from `-D` flags
+2. **Parse Loop** - while not at end of file:
+   - Skip whitespace and comments
+   - Try each specialized parser function in sequence
+   - First successful parser returns construct and advances position
+   - Failed parsers backtrack to saved position
+3. **Parser Functions** - each specialized parser receives ParseContext and:
+   - Uses context utilities (match_regex, parse_identifier, etc.)
+   - Updates symbol tables (macro_table, type_definitions, etc.)
+   - Handles brace matching with extract_braced_content()
+   - Returns parsed construct or None if no match
+4. **Backtracking** - failed parsers restore position using save_position()/restore_position()
+5. **Process Conditionals** - resolve `#if`/`#ifdef`/`#ifndef` blocks using macro context during parsing
+6. **Return ParsedFile** - complete representation with constructs containing embedded context
 
-**FileParser Process:**
-1. **Initialize Macros** - populate macro_table with command-line defined macros from `-D` flags
-2. **Normalize Statements** - use parsing helper functions to break file content into statement strings
-3. **Build Context** - create ParseContext with symbol tables and track namespace/comment state
-3. **Try Each Parser** - for each statement string, attempt parsing with each specialized parser in sequence
-4. **Parser Returns** - each parser returns parsed construct or None if statement doesn't match its pattern
-5. **Update Context** - successful parser updates context (namespace changes, consume comments)
-6. **Process Conditionals** - resolve `#if`/`#ifdef`/`#ifndef` blocks using macro context
-7. **Validate** - check for unresolvable conditional compilation and error if found
-7. **Return ParsedFile** - complete representation with constructs containing embedded context
+**Parser Function Contract:**
+- Each specialized parser receives `(context: ParseContext)`
+- Uses context.match_regex(), context.parse_identifier(), etc. for parsing
+- Returns `Optional[Construct]` - parsed construct or None if no match
+- Must update context symbol tables if parsing succeeds (consume comments, update namespace)
+- Uses context.save_position()/restore_position() for backtracking
+- Main parser tries functions until one returns non-None result
 
-**Parser Interface Contract:**
-- Each specialized parser receives `(statement: str, context: ParseContext)`
-- Returns `Optional[Construct]` - parsed construct or None if statement doesn't match
-- Must update context if parsing succeeds (consume comments, update namespace)
-- FileParser tries parsers until one returns non-None result
-
-**Context Usage in Specialized Parsers:**
-- **ClassParser** receives context, attaches `context.current_comment` and `context.current_namespace` to Class, analyzes brace initialization eligibility
-- **FunctionParser** receives context, attaches comment/namespace to Function, consumes comment
-- **NamespaceParser** updates `context.current_namespace` for subsequent constructs
-- **CommentParser** updates `context.current_comment` for next construct to consume, or creates standalone Comment construct if not absorbed
-- **NamespaceParser** creates Namespace construct AND updates `context.current_namespace` for enclosed constructs
+**Context Usage in Specialized Parser Functions:**
+- **parse_class()** uses context utilities, attaches `context.current_comment` and `context.current_namespace` to Class, analyzes brace initialization eligibility
+- **parse_function()** uses context utilities, attaches comment/namespace to Function, consumes comment
+- **parse_namespace()** updates `context.current_namespace` for subsequent constructs
+- **parse_comment()** updates `context.current_comment` for next construct to consume, or creates standalone Comment construct if not absorbed
+- All parsers use `context.extract_braced_content()` for handling class bodies, function bodies, etc.
 
 **ClassParser Brace Initialization Analysis:**
 - **Aggregate Detection** - determines if class qualifies for brace initialization during parsing:
@@ -409,10 +416,12 @@ private:
 };
 ```
 
-**Statement Extraction Benefits:**
-- **Simplified Parsing** - each specialized parser receives clean, isolated statements
-- **Scope Awareness** - statements include their brace-delimited content for classes/namespaces
-- **Position Tracking** - statements retain original file positions for error reporting
+**Recursive Descent Benefits:**
+- **Robust Brace Handling** - extract_braced_content() properly matches braces in all contexts
+- **Backtracking** - failed parsers don't corrupt parsing state
+- **Context Awareness** - parsers understand semantic context (variable vs function vs class)
+- **Position Tracking** - ParseContext maintains exact file positions for error reporting
+- **Expandable** - add new parser functions by registering them in dispatch list
 
 # Dependency Analysis Phase
 

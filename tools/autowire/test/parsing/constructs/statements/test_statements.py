@@ -12,7 +12,7 @@ from src.parsing.constructs.statements.statements import (
 )
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, CONDITION_EXPRESSION, LOOP_INIT, LOOP_CONDITION, LOOP_INCREMENT
-)
+, set_parent)
 
 
 class TestStatement(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestStatement(unittest.TestCase):
         Returns:
             Statement: Basic statement with file as parent
         """
-        return Statement(self.file)
+        stmt = Statement(); stmt.parent = self.file; return stmt
     
     def test_statement_initialization(self):
         """Test statement initialization with parent file."""
@@ -72,7 +72,7 @@ class TestSimpleStatement(unittest.TestCase):
         Returns:
             SimpleStatement: Statement with specified code
         """
-        return SimpleStatement(self.file, code)
+        stmt = SimpleStatement(code); stmt.parent = self.file; return stmt
     
     def test_simple_statement_initialization(self):
         """Test simple statement initialization with code and parent."""
@@ -90,10 +90,10 @@ class TestSimpleStatement(unittest.TestCase):
     def test_simple_statement_assignment(self):
         """Test simple assignment statement with increment code."""
         code = "counter += 1;"
-        stmt = SimpleStatement(self.file, code)
+        stmt = SimpleStatement(code)
         
         expected = {
-            'parent': self.file,
+            'parent': None,
             'comments': [],
             'code': code
         }
@@ -122,7 +122,7 @@ class TestIfStatement(unittest.TestCase):
         Returns:
             List[SimpleStatement]: List containing return true statement
         """
-        return [SimpleStatement(self.file, "return true;")]
+        return [set_parent(SimpleStatement("return true;"), self.file)]
     
     def create_else_body(self):
         """Helper to create else body statements.
@@ -130,12 +130,12 @@ class TestIfStatement(unittest.TestCase):
         Returns:
             List[SimpleStatement]: List containing return false statement
         """
-        return [SimpleStatement(self.file, "return false;")]
+        return [set_parent(SimpleStatement("return false;"), self.file)]
     
     def test_if_statement_simple(self):
         """Test simple if statement without else clause."""
         then_body = self.create_then_body()
-        if_stmt = IfStatement(self.file, CONDITION_EXPRESSION, then_body)
+        if_stmt = IfStatement(CONDITION_EXPRESSION, then_body)
         
         expected = {
             'condition': CONDITION_EXPRESSION,
@@ -156,7 +156,7 @@ class TestIfStatement(unittest.TestCase):
         """Test if statement with else clause."""
         then_body = self.create_then_body()
         else_body = self.create_else_body()
-        if_stmt = IfStatement(self.file, CONDITION_EXPRESSION, then_body, else_body=else_body)
+        if_stmt = IfStatement(CONDITION_EXPRESSION, then_body, else_body=else_body)
         
         self.assertEqual(else_body, if_stmt.else_body)
 
@@ -182,12 +182,12 @@ class TestForLoop(unittest.TestCase):
         Returns:
             List[SimpleStatement]: List containing process call statement
         """
-        return [SimpleStatement(self.file, "process(i);")]
+        return [set_parent(SimpleStatement("process(i);"), self.file)]
     
     def test_for_loop_initialization(self):
         """Test for loop initialization with all components."""
         body = self.create_loop_body()
-        for_loop = ForLoop(self.file, LOOP_INIT, LOOP_CONDITION, LOOP_INCREMENT, body)
+        for_loop = ForLoop(LOOP_INIT, LOOP_CONDITION, LOOP_INCREMENT, body)
         
         expected = {
             'initialization': LOOP_INIT,
@@ -225,12 +225,12 @@ class TestWhileLoop(unittest.TestCase):
         Returns:
             List[SimpleStatement]: List containing process call statement
         """
-        return [SimpleStatement(self.file, "process();")]
+        return [set_parent(SimpleStatement("process();"), self.file)]
     
     def test_while_loop_initialization(self):
         """Test while loop initialization with condition and body."""
         body = self.create_loop_body()
-        while_loop = WhileLoop(self.file, CONDITION_EXPRESSION, body)
+        while_loop = WhileLoop(CONDITION_EXPRESSION, body)
         
         expected = {
             'condition': CONDITION_EXPRESSION,
@@ -268,14 +268,14 @@ class TestSwitchStatement(unittest.TestCase):
         Returns:
             List[SimpleStatement]: List containing action statement
         """
-        return [SimpleStatement(self.file, action)]
+        return [SimpleStatement(action)]
     
     def test_switch_statement_simple(self):
         """Test simple switch statement with multiple cases."""
         case1_body = self.create_case_body("return 1;")
         case2_body = self.create_case_body("return 2;")
         cases = [("1", case1_body), ("2", case2_body)]
-        switch_stmt = SwitchStatement(self.file, "value", cases)
+        switch_stmt = SwitchStatement("value", cases)
         
         expected = {
             'expression': "value",
