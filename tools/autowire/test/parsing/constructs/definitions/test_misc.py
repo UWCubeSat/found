@@ -7,7 +7,7 @@ features and preprocessor directives.
 
 import unittest
 from src.parsing.constructs.core.file import File
-from src.parsing.constructs.definitions.misc import Namespace, Typedef, Using, Include, Macro, Comment
+from src.parsing.constructs.definitions.misc import Namespace, Typedef, Using, Include, Comment
 from src.parsing.constructs.core.base import Definition
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, NAMESPACE_NAME, TYPEDEF_NAME, MACRO_NAME, STRING_TYPE,
@@ -155,65 +155,6 @@ class TestInclude(unittest.TestCase):
         
         self.assertEqual(expected, include.__dict__)
 
-
-class TestMacro(unittest.TestCase):
-    """Test cases for Macro construct.
-    
-    Tests macro definition initialization with various parameter configurations
-    and definition strings.
-    """
-    
-    def setUp(self):
-        """Set up test fixtures."""
-        self.file = File(SAMPLE_FILE_PATH)
-    
-    def tearDown(self):
-        """Clean up test fixtures."""
-        pass
-    
-    def test_macro_simple(self):
-        """Test simple macro initialization without parameters."""
-        macro = Macro(MACRO_NAME, MACRO_DEFINITION)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': MACRO_NAME,
-            'definition': MACRO_DEFINITION,
-            'parameters': []
-        }
-        
-        self.assertEqual(expected, macro.__dict__)
-    
-    def test_macro_with_parameters(self):
-        """Test macro with parameter list initialization."""
-        macro = Macro(MACRO_NAME, MACRO_DEFINITION, MACRO_WITH_PARAMS)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': MACRO_NAME,
-            'definition': MACRO_DEFINITION,
-            'parameters': MACRO_WITH_PARAMS
-        }
-        
-        self.assertEqual(expected, macro.__dict__)
-    
-    def test_macro_no_definition(self):
-        """Test macro without definition string."""
-        macro = Macro(MACRO_NAME)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': MACRO_NAME,
-            'definition': "",
-            'parameters': []
-        }
-        
-        self.assertEqual(expected, macro.__dict__)
-
-
 class TestComment(unittest.TestCase):
     """Test cases for Comment construct.
     
@@ -253,7 +194,3 @@ class TestComment(unittest.TestCase):
         }
         
         self.assertEqual(expected, comment.__dict__)
-
-
-if __name__ == '__main__':
-    unittest.main()

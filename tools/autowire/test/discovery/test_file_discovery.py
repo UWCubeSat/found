@@ -57,6 +57,7 @@ class TestFileDiscovery(unittest.TestCase):
                 self.files['plain']: FileInfo(self.files['plain'], EXPECTED_BASIC_MOCK_RESULTS['plain'][0], False, False)
             }
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=[self.files['autowire'], self.files['both']],
                 provider_files=[self.files['provider'], self.files['both']]
@@ -80,6 +81,7 @@ class TestFileDiscovery(unittest.TestCase):
                 self.files['provider']: FileInfo(self.files['provider'], PROVIDER_CONTENT, False, True)
             }
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=[self.files['autowire']],
                 provider_files=[self.files['provider']]
@@ -106,7 +108,7 @@ class TestFileDiscovery(unittest.TestCase):
         with patch.object(discovery.scanner, 'scan', return_value={}):
             actual = discovery.get_annotated_files()
             
-            expected = ProjectFileCache(**EMPTY_CACHE_ARGS)
+            expected = ProjectFileCache(self.temp_dir, **EMPTY_CACHE_ARGS)
             
             self.assertEqual(expected, actual)
     
@@ -127,6 +129,7 @@ class TestFileDiscovery(unittest.TestCase):
                 self.files['plain']: FileInfo(self.files['plain'], EXPECTED_MIXED_MOCK_RESULTS['plain'][0], False, False)
             }
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=[self.files['autowire']],
                 provider_files=[self.files['provider']]
@@ -147,6 +150,7 @@ class TestFileDiscovery(unittest.TestCase):
                 self.files['autowire']: FileInfo(self.files['autowire'], "content", True, False)
             }
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=[self.files['autowire']],
                 provider_files=[]
@@ -175,6 +179,7 @@ class TestFileDiscovery(unittest.TestCase):
                 self.files['plain']: FileInfo(self.files['plain'], "content", False, False)
             }
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=[self.files['autowire'], self.files['both']],
                 provider_files=[self.files['provider'], self.files['both']]
@@ -208,6 +213,7 @@ class TestFileDiscovery(unittest.TestCase):
             expected_provider = [multi_files[key] for key in MULTI_FILE_PROVIDER_KEYS]
             
             expected = ProjectFileCache(
+                root_path=self.temp_dir,
                 all_files=expected_files,
                 autowire_files=expected_autowire,
                 provider_files=expected_provider

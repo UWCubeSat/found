@@ -65,6 +65,3 @@ class TestConstruct(unittest.TestCase):
         result = construct.get_root_file()
         
         self.assertEqual(result, self.file)
-
-if __name__ == '__main__':
-    unittest.main()

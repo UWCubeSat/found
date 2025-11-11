@@ -62,18 +62,29 @@ class Construct:
         self.parent = parent
 
 class Definition(Construct):
-    """ A Definition is a definition in a language """
+    """Base class for named C++ language constructs (classes, functions, variables, etc.).
+    
+    Represents any C++ construct that has a name and can be referenced.
+    Provides qualified name resolution through the parent hierarchy.
+    """
     
     def __init__(self, name: str):
-        """Initialize construct with required parent."""
+        """Initialize definition with a name.
+        
+        Args:
+            name (str): The name of this definition
+        """
         super().__init__()
         self.name = name
     
     def get_qualified_name(self) -> str:
-        """Gets the qualified name of this definition
+        """Get the fully qualified name including namespace hierarchy.
 
         Returns:
-            str: The qualified name of this
+            str: Qualified name like "namespace::class::member" or just "name" for top-level
+            
+        Note:
+            Traverses up the parent hierarchy to build the complete qualified name.
         """
         if self.parent is None:
             return self.name

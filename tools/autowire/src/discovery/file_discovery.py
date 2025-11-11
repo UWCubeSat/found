@@ -40,15 +40,14 @@ class FileDiscovery:
         
         for filepath, (content, has_autowire, has_provider) in scan_results.items():
             if content is None:
-                with open(filepath, 'r') as f:
-                    content = f.read()
-            
-            file_info = FileInfo(
-                file_path=filepath,
-                file_content=content,
-                has_autowire=has_autowire,
-                has_provider=has_provider
-            )
+                file_info = FileInfo.get_file(filepath, has_autowire, has_provider)
+            else:
+                file_info = FileInfo(
+                    file_path=filepath,
+                    file_content=content,
+                    has_autowire=has_autowire,
+                    has_provider=has_provider
+                )
             
             all_files[filepath] = file_info
             
@@ -57,4 +56,4 @@ class FileDiscovery:
             if has_provider:
                 provider_files.append(filepath)
         
-        return ProjectFileCache(all_files, autowire_files, provider_files)
+        return ProjectFileCache(self.root_path, all_files, autowire_files, provider_files)

@@ -199,6 +199,59 @@ python autowire.py [--root <path>] [-D<MACRO>[=<VALUE>]] ...
 
 No additional headers required - works with existing documentation and doesn't affect compilation.
 
+## C++ Preprocessing Architecture
+
+**Preprocessor Implementation:**
+- **Preprocessor class** - handles macro expansion, conditional compilation, and include resolution
+- **ParameterizedFile class** - represents preprocessed files with macro context and dependencies
+- **ParameterizedFileCache class** - caches preprocessed files with different macro contexts
+- **DefineDirective class** - represents #define macros with expansion capabilities
+- **ConditionalDirective class** - handles #if/#ifdef/#ifndef conditional compilation
+- **IncludeDirective class** - represents #include dependencies
+- **MacroExpression class** - evaluates preprocessor expressions for conditionals
+
+**Preprocessing Features:**
+- **Macro Expansion** - supports object-like and function-like macros with parameters
+- **Token Manipulation** - stringification (#) and token pasting (##) operators
+- **Conditional Compilation** - full support for #if, #ifdef, #ifndef, #else, #elif, #endif
+- **Include Processing** - handles both dependency tracking and selective inline expansion
+- **Line Continuation** - processes backslash line continuations
+- **Macro Undefinition** - supports #undef directive
+- **Circular Include Detection** - prevents infinite recursion in include chains
+
+**Advanced Include Handling:**
+- **Beginning Includes** - tracked as dependencies via IncludeDirective objects
+- **Inline Includes** - content inlined directly with preserved indentation (only for includes inside code blocks)
+- **Multi-Directory Support** - recursive include path discovery
+- **External Header Recognition** - distinguishes between local and system headers (`<>` vs `""`)
+- **System Header Ignoring** - external headers (`#include <system.h>`) are ignored and logged
+- **Metaprogramming Support** - enables template code generation via inline includes
+
+**Preprocessor Directive Handling:**
+- **Supported Directives** - #define, #undef, #if, #ifdef, #ifndef, #else, #elif, #endif, #include
+- **Ignored Directives** - #pragma and other non-standard directives are ignored with logging
+- **Selective Processing** - only processes directives that affect code structure and macro expansion
+
+**Macro Context Management:**
+- **Context-Aware Caching** - same file cached with different macro contexts
+- **Macro Reduction** - removes unused macros for optimization
+- **Recursive Expansion** - handles nested macro invocations
+- **Expression Evaluation** - evaluates complex preprocessor expressions
+- **Command-Line Macros** - supports -D flag macro definitions
+
+**ParameterizedFile Structure:**
+- `file_path: str` - absolute path to source file
+- `raw_content: str` - preprocessed content with macros expanded
+- `defined_macros: Dict[str, DefineDirective]` - macros defined in this file
+- `included_files: List[ParameterizedFile]` - dependency files (beginning includes only)
+
+**Preprocessing Pipeline:**
+1. **File Discovery** - scan project for C++ files and build ProjectFileCache
+2. **Include Resolution** - recursively discover all include paths
+3. **Macro Processing** - expand macros and evaluate conditional compilation
+4. **Dependency Tracking** - build include dependency graph
+5. **Content Generation** - produce clean, expanded C++ code for parsing
+
 ## C++ Parser Architecture
 
 **C++ Construct Objects:**

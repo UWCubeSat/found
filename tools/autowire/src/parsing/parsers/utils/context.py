@@ -45,7 +45,7 @@ class ParseContext:
         NOTE: This method MUST advance self.pos to match.end() on successful match.
         Parser functions rely on automatic position advancement for clean parsing logic.
         """
-        from .parser_regex import match_pattern
+        from ....common.constants.parser_regex import match_pattern
         match = match_pattern(pattern_name, self.content, self.pos)
         if match:
             self.pos = match.end()  # CRITICAL: Advance position on success
@@ -54,7 +54,7 @@ class ParseContext:
     
     def extract_captures(self, pattern_name: str, match: re.Match) -> Dict[str, Optional[str]]:
         """Extract named capture groups from match using predefined indices."""
-        from .parser_regex import CAPTURE_GROUPS
+        from ....common.constants.parser_regex import CAPTURE_GROUPS
         captures = {}
         group_map = CAPTURE_GROUPS.get(pattern_name, {})
         
@@ -72,7 +72,7 @@ class ParseContext:
     
     def skip_whitespace(self):
         """Skip whitespace and comments at current position."""
-        from .parser_regex import WS
+        from ....common.constants.parser_regex import WS
         self.match_regex(WS)
     
     def peek(self, offset: int = 0) -> str:
@@ -130,10 +130,19 @@ class ParseContext:
         self.pos = end_pos + 1
         return content
     
-    def add_context(self, other: 'ParseContext'):
+    def add_context(self, other: 'ParseContext') -> None:
+        """Merge symbol tables from another parsing context.
+        
+        Args:
+            other (ParseContext): Context to merge symbols from
+            
+        Note:
+            Updates all symbol tables with definitions from the other context.
+            Used when processing included files or merging translation units.
+        """
         self.macro_table.update(other.macro_table)
         self.alias_table.update(other.alias_table)
         self.type_definitions.update(other.type_definitions)
-        self.function_definitions.update(other.type_definitions)
+        self.function_definitions.update(other.function_definitions)
         self.global_variables.update(other.global_variables)
-        self.static_variables.update(other.static_variables)  # Should question whether this line should be here
+        self.static_variables.update(other.static_variables)

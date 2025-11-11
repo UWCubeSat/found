@@ -13,7 +13,7 @@ import re
 WS = r'(?:\s|//[^\n]*\n|)*'  # Whitespace
 
 # Basic C++ tokens with whitespace handling
-IDENTIFIER = r'[a-zA-Z_]\w*'  # TODO: Include numbers
+IDENTIFIER = r'[a-zA-Z_]\w*'
 QUALIFIED_NAME = rf'{IDENTIFIER}(?:{WS}::{WS}{IDENTIFIER})*'  # std::string, my::namespace::Class
 
 # Class/struct patterns - captures: template_params, class_type, name, inheritance

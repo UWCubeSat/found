@@ -57,6 +57,7 @@ class TestProjectFileCache(unittest.TestCase):
         self.sample_files = create_sample_file_info_dict()
         
         self.cache = ProjectFileCache(
+            root_path="",
             all_files=self.sample_files,
             autowire_files=[MOCK_AUTOWIRE_PATH, MOCK_BOTH_PATH],
             provider_files=[MOCK_PROVIDER_PATH, MOCK_BOTH_PATH]

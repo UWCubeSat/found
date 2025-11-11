@@ -27,13 +27,21 @@ class FileInfo:
     def __post_init__(self):
         if not os.path.isabs(self.file_path):
             raise ValueError(f"file_path must be absolute, got: {self.file_path}")
+    
+    @classmethod
+    def get_file(cls, file_path: str, has_autowire: bool = False, has_provider: bool = False) -> 'FileInfo':
+        with open(file_path, 'r') as f:
+            return FileInfo(file_path, f.read(), has_autowire, has_provider)
+                
 
 
 @equals_hash
 class ProjectFileCache:
     """Cache containing all project files with pre-filtering."""
     
-    def __init__(self, all_files: Dict[str, FileInfo], 
+    def __init__(self,
+                 root_path: str,
+                 all_files: Dict[str, FileInfo], 
                  autowire_files: List[str],
                  provider_files: List[str]):
         """Initialize cache with pre-filtered file collections.
@@ -47,6 +55,7 @@ class ProjectFileCache:
             All file paths must be absolute paths
             autowire_files and provider_files must be subsets of all_files keys
         """
+        self._root_path = root_path
         self._all_files = all_files
         self._autowire_files = sorted(autowire_files)
         self._provider_files = sorted(provider_files)

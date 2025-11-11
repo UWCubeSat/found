@@ -178,7 +178,3 @@ class TestVariable(unittest.TestCase):
         }
         
         self.assertEqual(expected, var.__dict__)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -138,7 +138,3 @@ class TestFile(unittest.TestCase):
         }
         
         self.assertEqual(actual_results, expected_results)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -6,7 +6,8 @@ from ..definitions.classes import Class, Constructor, Destructor
 from ..definitions.enums import Enum
 from ..definitions.functions import Function
 from ..statements.variables import Variable
-from ..definitions.misc import Namespace, Typedef, Using, Include, Macro, Comment
+from ..definitions.misc import Namespace, Typedef, Using, Include, Comment
+from ....preprocess.constructs.macros import DefineDirective
 from ....common.annotations import equals_hash
 
 
@@ -41,7 +42,7 @@ class File(Definition):
         self.typedefs: List[Tuple[Typedef, int]] = []
         self.using_declarations: List[Tuple[Using, int]] = []
         self.includes: List[Tuple[Include, int]] = []
-        self.macros: List[Tuple[Macro, int]] = []
+        self.macros: List[Tuple[DefineDirective, int]] = []
         self.all_comments: List[Tuple[Comment, int]] = []  # All comments with position numbers
         
         # Comment location mapping for associating comments with constructs
@@ -84,7 +85,7 @@ class File(Definition):
             self.using_declarations.append((construct, position))
         elif isinstance(construct, Include):
             self.includes.append((construct, position))
-        elif isinstance(construct, Macro):
+        elif isinstance(construct, DefineDirective):
             self.macros.append((construct, position))
         elif isinstance(construct, Comment):
             self.all_comments.append((construct, position))

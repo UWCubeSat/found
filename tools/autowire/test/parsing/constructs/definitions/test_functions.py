@@ -249,7 +249,3 @@ class TestParameter(unittest.TestCase):
         }
         
         self.assertEqual(expected, param.__dict__)
-
-
-if __name__ == '__main__':
-    unittest.main()

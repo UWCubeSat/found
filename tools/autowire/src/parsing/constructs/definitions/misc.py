@@ -1,4 +1,3 @@
-"""Miscellaneous constructs (Namespace, Typedef, Using, Include, Macro, Comment)."""
 
 from typing import List
 from ..core.base import Construct, Definition
@@ -64,24 +63,6 @@ class Include(Construct):
         super().__init__()
         self.path = path
         self.is_system = is_system
-
-
-@equals_hash
-class Macro(Construct):
-    """Basic macro definitions (no conditional compilation)."""
-    
-    def __init__(self, name: str, definition: str = "", parameters: List[str] = None):
-        """Initialize macro definition.
-        
-        Args:
-            name (str): Macro name
-            definition (str): Macro definition/replacement text
-            parameters (List[str], optional): Macro parameter names for function-like macros
-        """
-        super().__init__()
-        self.name = name
-        self.definition = definition
-        self.parameters = parameters or []
 
 
 @equals_hash
