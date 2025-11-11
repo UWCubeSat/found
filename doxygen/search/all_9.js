@@ -10,5 +10,5 @@ var searchData=
   ['integration_7',['CMake Integration',['../index.html#autotoc_md16',1,'']]],
   ['inverse_8',['Inverse',['../classfound_1_1Mat3.html#aee2ad12694bb3267ae9db48070fc56e3',1,'found::Mat3']]],
   ['isunit_9',['IsUnit',['../classfound_1_1Quaternion.html#a1a51d83a4545c557238ac1a088d6bc29',1,'found::Quaternion']]],
-  ['iterativesphericaldistancedeterminationalgorithm_10',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a9e3adfab31b529b0a3e78d0b89577092',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
+  ['iterativesphericaldistancedeterminationalgorithm_10',['iterativesphericaldistancedeterminationalgorithm',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html',1,'found::IterativeSphericalDistanceDeterminationAlgorithm'],['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#ae0405ec1d8d6bf53881b7f13a0e02e9a',1,'found::IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDeterminationAlgorithm()']]]
 ];

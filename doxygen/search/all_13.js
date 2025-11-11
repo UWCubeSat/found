@@ -12,7 +12,7 @@ var searchData=
   ['setup_20via_20docker_9',['Setup via Docker',['../index.html#autotoc_md3',1,'']]],
   ['setup_20via_20install_20script_10',['Setup via Install Script',['../index.html#autotoc_md2',1,'']]],
   ['setvector_11',['SetVector',['../classfound_1_1Quaternion.html#af94cca484c9c4f7c8b814855e4fc91b8',1,'found::Quaternion']]],
-  ['shuffle_12',['Shuffle',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#aa7162b5c435bc926644f129e92a8ccea',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['shuffledcall_12',['ShuffledCall',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#add3108f143db1f132163798f222d2aec',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
   ['simpleedgedetectionalgorithm_13',['simpleedgedetectionalgorithm',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html',1,'found::SimpleEdgeDetectionAlgorithm'],['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a60861160e18079f4035cef885826e55a',1,'found::SimpleEdgeDetectionAlgorithm::SimpleEdgeDetectionAlgorithm()']]],
   ['size_14',['size',['../classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4',1,'found::Pipeline']]],
   ['source_20universal_20navigation_20determiner_15',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],

@@ -146,45 +146,46 @@ $(document).ready(function(){initNavTree('stage-providers_8hpp_source.html','');
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                                                                                         options.image.width,</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                                                                                         options.image.height),</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                                                                                  options.ISDDAMinIters,</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                                                                                  options.ISDDADistRatio,</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                                                                                  options.ISDDADiscimRatio,</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                                                                                  options.ISDDAPdfOrd,</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                                                                                  options.ISDDARadLossOrd);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        LOG_ERROR(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> &lt;&lt; options.distanceAlgo);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> + options.distanceAlgo);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>std::unique_ptr&lt;VectorGenerationAlgorithm&gt; ProvideVectorGenerationAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keywordflow">if</span> (options.calibrationData.header.version != emptyDFVer) {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        LOG_INFO(<span class="stringliteral">&quot;Using DataFile for calibration information&quot;</span>);</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(options.calibrationData.relative_attitude,</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                                                               referenceOrientation);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        <span class="keywordflow">if</span> (options.refAsOrientation) {</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            LOG_INFO(<span class="stringliteral">&quot;Using provided reference orientation for calibration information&quot;</span>);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(referenceOrientation);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        }</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(relativeOrientation, referenceOrientation);</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    }</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>}</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment">// TODO: Uncomment when orbit stage is implemented</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="comment">// std::unique_ptr&lt;OrbitPropagationAlgorithm&gt; ProvideOrbitPropagationAlgorithm(OrbitOptions &amp;&amp;options) {</span></div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="comment">//     return std::make_unique&lt;ApproximateOrbitPropagationAlgorithm&gt;(options.totalTime,</span></div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment">//                                                                   options.dt,</span></div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">//                                                                   options.radius,</span></div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment">//                                                                   options.mu);</span></div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment">// }</span></div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>}  <span class="comment">// namespace found</span></div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_PROVIDERS_STAGE_PROVIDERS_HPP_</span></div>
-<div class="ttc" id="aclassCalibrationOptions_html"><div class="ttname"><a href="classCalibrationOptions.html">CalibrationOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:81</div></div>
-<div class="ttc" id="aclassDistanceOptions_html"><div class="ttname"><a href="classDistanceOptions.html">DistanceOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:89</div></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                                                                                  options.ISDDAMaxRefresh,</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                                                                                  options.ISDDADistRatio,</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                                                                                  options.ISDDADiscimRatio,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                                                                                  options.ISDDAPdfOrd,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>                                                                                  options.ISDDARadLossOrd);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        LOG_ERROR(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> &lt;&lt; options.distanceAlgo);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> + options.distanceAlgo);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    }</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>}</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>std::unique_ptr&lt;VectorGenerationAlgorithm&gt; ProvideVectorGenerationAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">if</span> (options.calibrationData.header.version != emptyDFVer) {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        LOG_INFO(<span class="stringliteral">&quot;Using DataFile for calibration information&quot;</span>);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(options.calibrationData.relative_attitude,</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                                                               referenceOrientation);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">if</span> (options.refAsOrientation) {</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            LOG_INFO(<span class="stringliteral">&quot;Using provided reference orientation for calibration information&quot;</span>);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(referenceOrientation);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        }</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(relativeOrientation, referenceOrientation);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    }</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment">// TODO: Uncomment when orbit stage is implemented</span></div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="comment">// std::unique_ptr&lt;OrbitPropagationAlgorithm&gt; ProvideOrbitPropagationAlgorithm(OrbitOptions &amp;&amp;options) {</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment">//     return std::make_unique&lt;ApproximateOrbitPropagationAlgorithm&gt;(options.totalTime,</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">//                                                                   options.dt,</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment">//                                                                   options.radius,</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment">//                                                                   options.mu);</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment">// }</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>}  <span class="comment">// namespace found</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">#endif  </span><span class="comment">// SRC_PROVIDERS_STAGE_PROVIDERS_HPP_</span></div>
+<div class="ttc" id="aclassCalibrationOptions_html"><div class="ttname"><a href="classCalibrationOptions.html">CalibrationOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:82</div></div>
+<div class="ttc" id="aclassDistanceOptions_html"><div class="ttname"><a href="classDistanceOptions.html">DistanceOptions</a></div><div class="ttdef"><b>Definition</b> options.hpp:90</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
