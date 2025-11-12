@@ -312,6 +312,139 @@ Mat3 Mat3::Adjugate() const{
     Cofactor().Transpose();
 }
 
+// Given a pair (u, v), solves (cos, sin) * (-v, u) = 0 for cos and sin
+// Check the eigenvalue paper (Eq. 3) for derivation
+void GetCosSin(decimal u, decimal v, decimal& cos, decimal& sin){
+    decimal length = sqrt(u*u + v*v);
+    if (length 0){
+        cos = u/length;
+        sin = v/length;
+        if (cos > 0){
+            cos = -cos;
+            sin = -sin;
+        }
+    }
+    else{
+        cos = -1;
+        sin = 0;
+    }
+}
+
+// Checks if the result of the iteration has converged to an acceptable degree
+bool Converged(decimal diag1, decimal diag2, decimal superdiag){
+    decimal sum = DECIMAL_ABS(diag1) + DECIMAL_ABS(diag2);
+    return sum + superdiag == sum;
+}
+
+// Sorry, this function is gonna be long while I work on it (I'll clean it up later) - Senuka
+// The paper writes all the matrix multiplication out explicitly; while this might be technically faster since it lets us 
+// skip computing a couple positions, I think readability is more important here
+Vec3 Mat3::EigenvaluesSymmetric() const{
+    decimal half = static_cast<decimal>(0.5);
+
+    // First compute Householder reflection to set b02 to 0
+    // Eq. 2
+    decimal c, s;
+    GetCosSin(a12, -a02, c, s);
+    Mat3 HouseholderRefl = {c,  s, 0, 
+                            s, -c, 0,
+                            0,  0, 1};
+    Mat3 B = HouseholderRefl * this * HouseholderRefl; //technically should be transpose on the left but it's the same matrix
+    // Matrix B is now a tridiagonal matrix
+
+    // This matrix will be the product of all the reflections, and will eventually turn into our list of eigenvectors
+    Mat3 ReflProduct = {c,s,0,
+                        s,-c,0,
+                        0,0,1};
+    
+    // The smallest number we can represent is 2^-alpha          
+    int alpha = 0; // TODO Figure out what this is for decimal
+    int i = 0, imax = 0, power = 0;
+    decimal c2, s2;
+
+    if (DECIMAL_ABS(b12) <= DECIMAL_ABS(b01)){
+        // Eq. 12
+        // finds alpha in b12 = x * 2^alpha
+        std::frexp(b12, &power);
+        imax = 2 * (power + alpha + 1);
+        for (i = 0; i < imax; ++i){
+            // Compute Givens reflection of B in Eq. 4
+            GetCosSin(half * (b00 - b11), b01, c2, s2); // For some reason the math says to do b11 - b00?? I'm gonna go with the code for now but I'll do the math myself later to make sure - Senuka
+            s = DECIMAL_SQRT(half * (1 - c2));
+            c = s2 / (2 * s);
+            Mat3 GivensReflection = {c, 0, -s,
+                                     s, 0, c,
+                                     0, 1, 0};
+
+            // Update B
+            B = GivensReflection.Transpose() * B * GivensReflection;
+            // Update ReflProduct
+            ReflProduct = ReflProduct * GivensReflection;
+
+            if (Converged(B.At(0,0), B.At(1,1), B.At(0,1))){
+                GetCosSin(half * (b00 - b11), b01, c2, s2);
+                s = DECIMAL_SQRT(half * (1 - cc2));
+                c = half * s2 / s;
+                HouseholderRefl = { c,  s, 0, 
+                                    s, -c, 0,
+                                    0,  0, 1};
+
+                // This matrix is now the diagonal estimate
+                B = HouseholderRefl * this * HouseholderRefl;
+                // This matrix is now the eigenvector matrix estimate
+                ReflProduct = ReflProduct * HouseholderRefl;
+                break;
+            }
+        }
+    }
+    else{
+        // Eq. 12
+        // finds alpha in b01 = x * 2^alpha
+        std::frexp(b01, &power);
+        imax = 2 * (power + alpha + 1);
+        for (i = 0; i < imax; ++i){
+            // Compute Givens reflection of B in Eq. 4
+            GetCosSin(half * (b11 - b22), b12, c2, s2); // Same issue as above
+            s = DECIMAL_SQRT(half * (1 - c2));
+            c = s2 / (2 * s);
+            Mat3 GivensReflection = {0, 1, 0,
+                                     c, 0, -s,
+                                     s, 0, c};
+
+            // Update B
+            B = GivensReflection.Transpose() * B * GivensReflection;
+            // Update ReflProduct
+            ReflProduct = ReflProduct * GivensReflection;
+
+            if (Converged(B.At(1,1), B.At(2,2), B.At(1,2))){
+                GetCosSin(half * (b00 - b11), b01, c2, s2);
+                s = DECIMAL_SQRT(half * (1 - cc2));
+                c = half * s2 / s;
+                HouseholderRefl = { c,  s, 0, 
+                                    s, -c, 0,
+                                    0,  0, 1};
+
+                // This matrix is now the diagonal estimate
+                B = HouseholderRefl * this * HouseholderRefl;
+                // This matrix is now the eigenvector matrix estimate
+                ReflProduct = ReflProduct * HouseholderRefl;
+                break;
+            }
+        }
+    }
+
+    _eigenvectors = ReflProduct;
+    _eigenvectorsAlreadyCalculated = true;
+    Vec3 eigenvalues = {B.At(0,0), B.At(1,1), B.At(2,2)};
+    return eigenvalues;
+}
+
+Mat3 Mat3::EigenvectorsSymmetric(Vec3 eigenvalues) const{
+    if (_eigenvectorsAlreadyCalculated) return _eigenvectors;
+    EigenvaluesSymmetric();
+    return _eigenvectors;
+}
+
 decimal Mat4::At(int i, int j) const {
     return x[4*i+j];
 }
@@ -402,7 +535,7 @@ const Mat3 kIdentityMat3 = {1,0,0,
                             0,0,1};
 
 /// 4x4 identity matrix
-const Mat3 kIdentityMat3 = {1,0,0,0,
+const Mat4 kIdentityMat4 = {1,0,0,0,
                             0,1,0,0,
                             0,0,1,0
                             0,0,0,1};

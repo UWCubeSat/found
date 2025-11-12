@@ -20,14 +20,16 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
 
     // A matrix that describes the conic section that we see on the image
+    // This matrix is symmetric
     Mat3 conicSection = GetConicSection(p);
     // We use the adjugate of the matrix, which describes the conic envelope (set of lines that are tangent to the conic)
+    // This matrix is symmetric
     Mat3 conicEnvelope = conicSection.Adjugate();
     // Make sure the determinant is negative so that only one of the eigenvalues is negative
     if (conicEnvelope.Det > ) conicEnvelope = -1 * conicEnvelope;
 
-    Vec3 conicEnvelopeEigenvalues = Get3Eigenvalues(conicEnvelope);
-    Mat3 conicEnvelopeEigenvectors = Get3Eigenvectors(conicEnvelope, conicEnvelopeEigenvalues);
+    Vec3 conicEnvelopeEigenvalues = conicEnvelope.EigenvaluesSymmetric();
+    Mat3 conicEnvelopeEigenvectors = conicEnvelope.Eigenvectors(conicEnvelopeEigenvalues);
 
     Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEnvelopeEigenvalues, conicEnvelopeEigenvectors);
 

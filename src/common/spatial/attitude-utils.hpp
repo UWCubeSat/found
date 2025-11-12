@@ -450,6 +450,10 @@ class Mat3 {
     /// The matrix entries
     decimal x[9];
 
+    // The eigenvectors in descending order of eigenvalue; The symmetric eigenvalue function automatically generates this and it would be a waste to recalculate
+    Mat3 _eigenvectors;
+    bool _eigenvectorsAlreadyCalculated;
+
     // Accessor
 
     /**
@@ -566,9 +570,26 @@ class Mat3 {
      * Obtains the adjugate (classical adjoint) of this Matrix
      * 
      * @return The adjugate matrix of this
-     * 
     */
     Mat3 Adjugate() const;
+
+    /**
+    * Finds the eigenvalues of a symmetric matrix
+    * https://www.geometrictools.com/Documentation/RobustEigenSymmetric3x3.pdf 
+    *
+    * @return The eigenvalues of this, sorted from greatest to least
+    * I'm probably going to move this to its own file at some point
+    */
+    Vec3 EigenvaluesSymmetric() const;
+
+    /**
+    * Finds the eigenvectors of a symmetric matrix
+    *
+    * @return The eigenvectors of this, sorted from greatest eigenvalue to least
+    * 
+    * @note Always call EigenvalueSymmetric first if you also need the eigenvalues, otherwise EigenvaluesSymmetric will be run twice
+    */
+    Mat3 EigenvectorsSymmetric() const;
 };
 
 /**

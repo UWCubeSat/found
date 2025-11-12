@@ -159,31 +159,6 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     */
     Mat3 GetConicSection(Points& p);
 
-    /**
-     * Finds the eigenvalues of a 3x3 matrix
-     *
-     * @param mat Any 3x3 matrix
-     * 
-     * @return The eigenvalues of the matrix 
-     * in sorted order (THIS IS IMPORTANT FOR THE ALGORITHM)
-     *
-     * @note When using this in the context of the conic envelope matrix,
-     * make sure the input matrix has a negative determinant (negate it if it doesn't)
-     * so that the first two eigenvalues are positive and the third is negative
-    */
-    Vec3 Get3Eigenvalues(Mat3 mat);
-
-    /**
-     * Finds the eigenvectors of a 3x3 matrix
-     *
-     * @param mat Any 3x3 matrix
-     * @param eigenvalues The eigenvalues of the 3x3 matrix IN SORTED ORDER
-     * 
-     * @return The eigenvectors of the matrix [v1, v2, v3]
-     * in sorted order by eigenvalue (THIS IS IMPORTANT FOR THE ALGORITHM)
-    */
-    Mat3 Get3Eigenvectors(Mat3 mat, Vec3 eigenvalues);
-
    /**
      * Finds the 2 possible solutions for the vector to Earth's center
      *
