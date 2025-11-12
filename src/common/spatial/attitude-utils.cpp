@@ -336,9 +336,12 @@ bool Converged(decimal diag1, decimal diag2, decimal superdiag){
     return sum + superdiag == sum;
 }
 
-// Sorry, this function is gonna be long while I work on it (I'll clean it up later) - Senuka
-// The paper writes all the matrix multiplication out explicitly; while this might be technically faster since it lets us 
-// skip computing a couple positions, I think readability is more important here
+/* Sorry, this function is gonna be long while I work on it (I'll clean it up later) - Senuka
+*  The paper writes all the matrix multiplication out explicitly; while this might be technically faster since it lets us 
+*  skip computing a couple positions, I think readability is more important here
+* 
+*  Also i'm not 100% sure these are sorted, I need to check
+*/
 Vec3 Mat3::EigenvaluesSymmetric() const{
     decimal half = static_cast<decimal>(0.5);
 
