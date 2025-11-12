@@ -80,7 +80,7 @@ void DistancePipelineExecutor::OutputResults() {
         outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
-    outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
+    outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(options_.imageTime.epochs), *positionVector};
     if (this->options_.outputFile != "") {
         std::ofstream outputFile(this->options_.outputFile);
         serializeDataFile(outputDF, outputFile);

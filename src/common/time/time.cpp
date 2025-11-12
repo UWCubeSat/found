@@ -1,7 +1,7 @@
 #include "common/time/time.hpp"
-
+#include <random> 
 #include <ctime>
-
+#include <stdexcept>
 #include "common/decimal.hpp"
 
 // NOTE: We use a .cpp file instead of just putting these into
@@ -108,4 +108,21 @@ decimal getGreenwichMeanSiderealTime(std::time_t epochs) {
     return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) * (getJulianDateTime(epochs) - DECIMAL(2451545.0)));
 }
 
-}  // namespace found
+const char* randomDateTime() {
+    static char buf[20]; // "YYYY-MM-DD HH:MM:SS" + '\0' fits in 20 bytes
+    static std::mt19937_64 gen(static_cast<unsigned long long>(std::time(nullptr)));
+    const std::time_t start = 1577836800;   // 2020-01-01 00:00:00
+    const std::time_t end   = 1924991999;   // 2030-12-31 23:59:59
+
+    std::uniform_int_distribution<long long> dist(static_cast<long long>(start),
+                                                  static_cast<long long>(end));
+
+    std::time_t epochs = static_cast<std::time_t>(dist(gen)); // seconds since epoch
+    std::tm *tm = std::gmtime(&epochs); // broken down time
+
+    // Format into buffer
+    std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm);
+    return buf;
+}
+
+}

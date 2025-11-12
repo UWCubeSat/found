@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
-
 #include <stb_image/stb_image.h>
-
 #include "test/common/common.hpp"
-
+#include "common/time/time.hpp"
 #include "command-line/parsing/parser.hpp"
 
 namespace found {
@@ -87,6 +85,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     int argc = 40;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
+        "--image-time", randomDateTime(),
         "--calibration-data", "test/common/assets/empty-df.found",
         "--reference-as-orientation", "false",
         "--camera-focal-length", "1.5",
@@ -141,6 +140,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     int argc = 7;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
+        "--image-time", randomDateTime(),
         "--reference-as-orientation",
         "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));

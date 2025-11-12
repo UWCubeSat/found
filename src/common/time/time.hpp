@@ -111,6 +111,16 @@ decimal getGreenwichMeanSiderealTime(DateTime &time);
  */
 decimal getCurrentGreenwichMeanSiderealTime();
 
+/**
+ * Generates a random time between
+ * 2020-01-01 00:00:00 UTC -> 2030-12-31 23:59:59 UTC
+ * and return it as a string
+ * 
+ * @return a pointer to the first character
+ * in the string
+ */
+const char* randomDateTime();
+
 }  // namespace found
 
 #endif  // SRC_COMMON_TIME_TIME_HPP_

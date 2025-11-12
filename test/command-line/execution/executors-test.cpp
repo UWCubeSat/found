@@ -85,6 +85,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     DistanceOptions options = {
         strtoimage("test/common/assets/example_image.jpg"),
+        strtodatetime(randomDateTime()),
         strtodf("test/common/assets/empty-df.found"),
         false,
         0.012,

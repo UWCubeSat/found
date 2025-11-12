@@ -9,7 +9,7 @@
 #include <sstream>
 
 #include "common/logging.hpp"
-
+#include "common/time/time.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -119,6 +119,35 @@ inline Image strtoimage(const std::string &str) {
         throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());
     }
     return image;
+}
+
+/**
+ * Converts a string to time
+ * 
+ * @param str The string to convert
+ * 
+ * @return The time from epoch that the string represents
+ */
+inline DateTime strtodatetime(const std::string &str) {
+    std::tm tm = {};
+    std::istringstream ss(str);
+
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+    if (ss.fail()) {
+        throw std::invalid_argument("Invalid datetime format: " + str);
+    }
+
+    std::time_t t = std::mktime(&tm); // assumes input is in utc-1
+
+    return {
+        t,
+        tm.tm_year + 1900,
+        tm.tm_mon + 1,
+        tm.tm_mday,
+        tm.tm_hour,
+        tm.tm_min,
+        tm.tm_sec
+    };
 }
 
 /**
