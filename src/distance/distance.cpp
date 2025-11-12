@@ -29,7 +29,7 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (conicEnvelope.Det > ) conicEnvelope = -1 * conicEnvelope;
 
     Vec3 conicEnvelopeEigenvalues = conicEnvelope.EigenvaluesSymmetric();
-    Mat3 conicEnvelopeEigenvectors = conicEnvelope.Eigenvectors(conicEnvelopeEigenvalues);
+    Mat3 conicEnvelopeEigenvectors = conicEnvelope.EigenvectorsSymmetric(conicEnvelopeEigenvalues);
 
     Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEnvelopeEigenvalues, conicEnvelopeEigenvectors);
 
