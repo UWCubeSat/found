@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <stb_image/stb_image.h>
 #include "test/common/common.hpp"
-#include "common/time/time.hpp"
 #include "command-line/parsing/parser.hpp"
 
 namespace found {
@@ -85,7 +84,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     int argc = 40;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", randomDateTime(),
+        "--image-time", "2025-11-11 19:30:00",
         "--calibration-data", "test/common/assets/empty-df.found",
         "--reference-as-orientation", "false",
         "--camera-focal-length", "1.5",
@@ -122,6 +121,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1964.4), options.radius);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
+    ASSERT_EQ(1762889400, options.imageTime.epochs);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(9.2), options.SEDAOffset);
     ASSERT_EQ("algo", options.distanceAlgo);
     ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
@@ -140,7 +140,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     int argc = 7;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", randomDateTime(),
+        "--image-time", "2025-11-11 19:30:00",
         "--reference-as-orientation",
         "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
@@ -150,7 +150,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
-
+    ASSERT_EQ(1762889400, options.imageTime.epochs);
     ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_TRUE(options.refAsOrientation);
 

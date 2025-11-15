@@ -137,7 +137,7 @@ inline DateTime strtodatetime(const std::string &str) {
         throw std::invalid_argument("Invalid datetime format: " + str);
     }
 
-    std::time_t t = std::mktime(&tm); // assumes input is in utc-1
+    std::time_t t = std::mktime(&tm);  // input is in utc-1
 
     return {
         t,

@@ -1,5 +1,6 @@
 #include "common/time/time.hpp"
-#include <random> 
+#include <random>
+#include <cstdint>
 #include <ctime>
 #include <stdexcept>
 #include "common/decimal.hpp"
@@ -109,20 +110,19 @@ decimal getGreenwichMeanSiderealTime(std::time_t epochs) {
 }
 
 const char* randomDateTime() {
-    static char buf[20]; // "YYYY-MM-DD HH:MM:SS" + '\0' fits in 20 bytes
-    static std::mt19937_64 gen(static_cast<unsigned long long>(std::time(nullptr)));
-    const std::time_t start = 1577836800;   // 2020-01-01 00:00:00
-    const std::time_t end   = 1924991999;   // 2030-12-31 23:59:59
+    static char buf[20];  // "YYYY-MM-DD HH:MM:SS" + '\0' fits in 20 bytes
+    static std::mt19937_64 gen(static_cast<std::uint64_t>(std::time(nullptr)));
+    const std::int64_t start = 1577836800LL;  // 2020-01-01 00:00:00
+    const std::int64_t end   = 1924991999LL;  // 2030-12-31 23:59:59
 
-    std::uniform_int_distribution<long long> dist(static_cast<long long>(start),
-                                                  static_cast<long long>(end));
+    std::uniform_int_distribution<std::int64_t> dist(start, end);
 
-    std::time_t epochs = static_cast<std::time_t>(dist(gen)); // seconds since epoch
-    std::tm *tm = std::gmtime(&epochs); // broken down time
+    std::time_t epochs = static_cast<std::time_t>(dist(gen));  // seconds since epoch
+    std::tm *tm = std::gmtime(&epochs);  // broken down time
 
     // Format into buffer
     std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm);
     return buf;
 }
 
-}
+}  // namespace found
