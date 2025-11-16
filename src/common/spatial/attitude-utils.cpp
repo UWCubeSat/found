@@ -267,6 +267,16 @@ Mat3 Mat3::operator*(const decimal &scalar) const {
     };
 }
 
+Mat3 Mat3::operator==(const Mat3 &other) const{
+    for (int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if (other.At(i, j) != this.At(i, j)) return false;
+        }
+    }
+    return true;
+}
+
+
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),

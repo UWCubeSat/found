@@ -17,14 +17,14 @@ namespace found {
 ///// SpheroidDistanceDeterminationAlgorithm //////
 
 PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
-    if (p.size() < 3) return {0, 0, 0};
+    if (conicSection_ == new Mat3(0,0,0,0,0,0,0,0,0)){ // check if conicSection_ was not initialized on construction
+        if (p.size() < 3) return {0, 0, 0};
+        conicSection_ = GetConicSection(p);
+    }
 
-    // A matrix that describes the conic section that we see on the image
-    // This matrix is symmetric
-    Mat3 conicSection = GetConicSection(p);
     // We use the adjugate of the matrix, which describes the conic envelope (set of lines that are tangent to the conic)
     // This matrix is symmetric
-    Mat3 conicEnvelope = conicSection.Adjugate();
+    Mat3 conicEnvelope = conicSection_.Adjugate();
     // Make sure the determinant is negative so that only one of the eigenvalues is negative
     if (conicEnvelope.Det > ) conicEnvelope = -1 * conicEnvelope;
 

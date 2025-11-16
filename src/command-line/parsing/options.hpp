@@ -41,8 +41,9 @@ FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        
 
 /// Distance Algorithms
 #define SEDA "SEDA"  // The SimpleEdgeDetectionAlgorithm (SEDA)
-#define SDDA "SDDA"  // The SphericalDistance DeterminationAlgorithm (SDDA)
+#define SDDA "SDDA"  // The SphericalDistanceDeterminationAlgorithm (SDDA)
 #define ISDDA "ISDDA"  // The IterativeSphericalDistanceDeterminationAlgorithm (ISDDA)
+#define CR5 "CR5"  // The SpheroidDistanceDeterminationAlgorithm aka Christian-Robinson Algorithm 5 (CR5)
 
 /// Distance Flags
 #define DISTANCE \

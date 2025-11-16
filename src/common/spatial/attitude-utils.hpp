@@ -539,6 +539,15 @@ class Mat3 {
      */
     Mat3 operator*(const decimal &) const;
 
+    /**
+     * Matrix Equality
+     * 
+     * @param other The other matrix to check equality with
+     * 
+     * @return true if all entries are equal, false if not
+     */
+    Mat3 operator==(const Mat3 &) const;
+
     // Transformations
 
     /**
