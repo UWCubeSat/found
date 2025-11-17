@@ -123,13 +123,12 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
     ASSERT_DF_EQ(expected, actual, 1);
 }
 
-TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
-    int argc = 6;
+TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
+    int argc = 5;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--image-time", randomDateTime(),
-        "--reference-orientation", "1.1 1.2 1.3",
-        "--relative-orientation", "1.4 1.5 1.6"};
+        "--reference-as-orientation"};
 
     testing::internal::CaptureStdout();  // Start capturing stdout
 
@@ -139,9 +138,9 @@ TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;
-    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX
-                   << ", " << NUMBER_REGEX << "\\) m\\s*"
+    expectedOutput << ".*\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
+                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
                    << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
                    << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
 
