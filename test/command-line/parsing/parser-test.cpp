@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
+
 #include <stb_image/stb_image.h>
+
 #include "test/common/common.hpp"
+
 #include "command-line/parsing/parser.hpp"
 
 namespace found {
@@ -112,6 +115,17 @@ TEST_F(ParserTest, DistanceParserGeneral) {
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
+    // Test Time
+    DateTime expectedImageTime{1762889400, 2025, 11, 11, 19, 30, 0};
+    ASSERT_EQ(expectedImageTime.epochs, options.imageTime.epochs);
+    ASSERT_EQ(expectedImageTime.year, options.imageTime.year);
+    ASSERT_EQ(expectedImageTime.month, options.imageTime.month);
+    ASSERT_EQ(expectedImageTime.day, options.imageTime.day);
+    ASSERT_EQ(expectedImageTime.hour, options.imageTime.hour);
+    ASSERT_EQ(expectedImageTime.minute, options.imageTime.minute);
+    ASSERT_EQ(expectedImageTime.second, options.imageTime.second);
+
+    // Test other options
     ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1.5), options.focalLength);
@@ -121,7 +135,6 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1964.4), options.radius);
     ASSERT_EQ(62, options.SEDAThreshold);
     ASSERT_EQ(10, options.SEDABorderLen);
-    ASSERT_EQ(1762889400, options.imageTime.epochs);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(9.2), options.SEDAOffset);
     ASSERT_EQ("algo", options.distanceAlgo);
     ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
@@ -150,7 +163,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     DataFile expectedDataFile = strtodf("test/common/assets/empty-df.found");
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
-    ASSERT_EQ(1762889400, options.imageTime.epochs);
+
     ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_TRUE(options.refAsOrientation);
 

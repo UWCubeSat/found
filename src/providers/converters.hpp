@@ -9,11 +9,9 @@
 #include <sstream>
 #include <iomanip>
 #include <ctime>
-#include <cstdlib>
-#include <cstring>
 
 #include "common/logging.hpp"
-#include "common/time/time.hpp"
+
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -118,25 +116,10 @@ inline bool strtobool(const std::string &str) {
  */
 inline Image strtoimage(const std::string &str) {
     Image image;
-    unsigned char *buf = stbi_load(str.c_str(), &image.width, &image.height, &image.channels, 0);
-    if (!buf) {
+    image.image = stbi_load(str.c_str(), &image.width, &image.height, &image.channels, 0);
+    if (!image.image) {
         throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());
     }
-
-    // Copy the image into a malloc'd buffer and free the stb buffer immediately.
-    // This keeps ownership semantics compatible with callers that call
-    // `stbi_image_free` (which simply calls `free`). Copying avoids leaking if
-    // intermediate exceptions occur elsewhere while still returning a buffer the
-    // caller can free normally.
-    size_t size = static_cast<size_t>(image.width) * static_cast<size_t>(image.height) * static_cast<size_t>(image.channels);
-    unsigned char *dest = static_cast<unsigned char *>(std::malloc(size));
-    if (!dest) {
-        stbi_image_free(buf);
-        throw std::runtime_error("Out of memory while loading image " + str);
-    }
-    std::memcpy(dest, buf, size);
-    stbi_image_free(buf);
-    image.image = dest;
     return image;
 }
 

@@ -63,8 +63,6 @@ namespace found {
 const char kNoDefaultArgument = 0;
 
 CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
-    // Ensure getopt starts scanning at the correct argv index for each call.
-    optind = 2;
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {
@@ -115,8 +113,6 @@ CalibrationOptions ParseCalibrationOptions(int argc, char **argv) {
 }
 
 DistanceOptions ParseDistanceOptions(int argc, char **argv) {
-    // Ensure getopt starts scanning at the correct argv index for each call.
-    optind = 2;
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {
@@ -148,37 +144,25 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv) {
     // what data to assign to which field in options. Note that the
     // FOUND_CLI_OPTION defines the conversion already between any
     // particular parameter (as a string) to its actual type
-    try {
-        while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
-            switch (option) {
-                #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
-                        case static_cast<int>(ClientOption::prop):                                    \
-                            ASSIGN(options, prop, converter, defaultArg)                              \
-                            break;
-                DISTANCE
-                #undef FOUND_CLI_OPTION
-                default:
-                    LOG_ERROR("Illegal flag detected. " << HELP_MSG);
-                    exit(EXIT_FAILURE);
-                    break;
-            }
+    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+        switch (option) {
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                    case static_cast<int>(ClientOption::prop):                                    \
+                        ASSIGN(options, prop, converter, defaultArg)                              \
+                        break;
+            DISTANCE
+            #undef FOUND_CLI_OPTION
+            default:
+                LOG_ERROR("Illegal flag detected. " << HELP_MSG);
+                exit(EXIT_FAILURE);
+                break;
         }
-    } catch (...) {
-        // If a converter threw (e.g. invalid datetime), ensure we free any
-        // image buffer that may have been allocated earlier to avoid leaks.
-        if (options.image.image != nullptr) {
-            stbi_image_free(options.image.image);
-            options.image.image = nullptr;
-        }
-        throw;
     }
 
     return options;
 }
 
 OrbitOptions ParseOrbitOptions(int argc, char **argv) {
-    // Ensure getopt starts scanning at the correct argv index for each call.
-    optind = 2;
     // Define an enum for each valid flag (command-line entry), which maps it from the name
     // to an integer
     enum class ClientOption {

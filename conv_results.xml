@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites tests="1" failures="0" disabled="0" errors="0" time="0.026" timestamp="2025-11-17T05:38:11.939" name="AllTests">
-  <testsuite name="ConvertersTest" tests="1" failures="0" disabled="0" skipped="0" errors="0" time="0.026" timestamp="2025-11-17T05:38:11.939">
-    <testcase name="TestImageNormalImage" file="test/providers/converters-test.cpp" line="71" status="run" result="completed" time="0.026" timestamp="2025-11-17T05:38:11.939" classname="ConvertersTest" />
-  </testsuite>
-</testsuites>

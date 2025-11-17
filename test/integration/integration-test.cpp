@@ -127,8 +127,8 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     int argc = 5;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", randomDateTime(),
-        "--reference-as-orientation"};
+        "--image-time", "2025-11-11 19:30:00",
+        "--reference-as-orientation=true"};
 
     testing::internal::CaptureStdout();  // Start capturing stdout
 
@@ -151,7 +151,7 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     int argc = 5;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", randomDateTime(),
+        "--image-time", "2025-11-11 19:30:00",
         "--reference-as-orientation"};
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -175,7 +175,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
     int argc = 13;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", randomDateTime(),
+                        "--image-time", "2025-11-11 19:30:00",
                         "--reference-as-orientation",
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -199,7 +199,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
     int argc = 23;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", randomDateTime(),
+                        "--image-time", "2025-11-11 19:30:00",
                         "--reference-as-orientation",
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -238,7 +238,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     int argc2 = 12;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", randomDateTime(),
+                        "--image-time", "2025-11-11 19:30:00",
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -277,7 +277,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     int argc2 = 14;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", randomDateTime(),
+                        "--image-time", "2025-11-11 19:30:00",
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
