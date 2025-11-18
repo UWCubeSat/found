@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 40;
+    int argc = 42;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--image-time", "2025-11-11 19:30:00",
@@ -150,7 +150,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
 }
 
 TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
-    int argc = 7;
+    int argc = 9;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--image-time", "2025-11-11 19:30:00",

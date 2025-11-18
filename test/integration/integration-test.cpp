@@ -124,7 +124,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 }
 
 TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
-    int argc = 5;
+    int argc = 7;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--image-time", "2025-11-11 19:30:00",
@@ -148,7 +148,7 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
 }
 
 TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
-    int argc = 13;
+    int argc = 15;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--image-time", "2025-11-11 19:30:00",
@@ -172,7 +172,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
 }
 
 TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
-    int argc = 23;
+    int argc = 25;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--image-time", "2025-11-11 19:30:00",
@@ -211,7 +211,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
 
     optind = 2;
 
-    int argc2 = 12;
+    int argc2 = 14;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--image-time", "2025-11-11 19:30:00",
@@ -250,7 +250,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
 
     const char *other_path = "test/common/assets/other.found";
 
-    int argc2 = 14;
+    int argc2 = 16;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
                         "--image-time", "2025-11-11 19:30:00",
