@@ -128,30 +128,6 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--image-time", "2025-11-11 19:30:00",
-        "--reference-as-orientation=true"};
-
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
-
-    // Current output is just nothing, it outputs the {0, 0, 0} m vector
-    std::stringstream expectedOutput;
-    expectedOutput << ".*\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Calculated Position: \\(" << NUMBER_REGEX << ", "
-                   << NUMBER_REGEX << ", " << NUMBER_REGEX << "\\) m\\s*"
-                   << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
-                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
-
-    ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
-}
-
-TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
-    int argc = 5;
-    const char *argv[] = {"found", "distance",
-        "--image", "test/common/assets/example_image.jpg",
-        "--image-time", "2025-11-11 19:30:00",
         "--reference-as-orientation"};
 
     testing::internal::CaptureStdout();  // Start capturing stdout
