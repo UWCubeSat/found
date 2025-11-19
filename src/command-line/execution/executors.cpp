@@ -42,13 +42,16 @@ DistancePipelineExecutor::~DistancePipelineExecutor() {
 
 DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                                                    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                                   std::unique_ptr<DistortionCorrectionAlgorithm> distortionCorrectionAlgorithm,
                                                    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                                    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
                                                    : options_(std::move(options)) {
     this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
+    this->distortionCorrectionAlgorithm = std::move(distortionCorrectionAlgorithm);
     this->distanceAlgorithm = std::move(distanceAlgorithm);
     this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
     this->pipeline_.AddStage(*this->edgeDetectionAlgorithm)
+                   .AddStage(*this->distortionCorrectionAlgorithm)
                    .AddStage(*this->distanceAlgorithm)
                    .Complete(*this->vectorizationAlgorithm);
 }

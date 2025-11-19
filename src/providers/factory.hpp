@@ -31,6 +31,7 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
 inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
     return std::make_unique<DistancePipelineExecutor>(std::forward<DistanceOptions>(options),
                                     ProvideEdgeDetectionAlgorithm(std::forward<DistanceOptions>(options)),
+                                    ProvideDistortionCorrectionAlgorithm(std::forward<DistanceOptions>(options)),
                                     ProvideDistanceDeterminationAlgorithm(std::forward<DistanceOptions>(options)),
                                     ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }

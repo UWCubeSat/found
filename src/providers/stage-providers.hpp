@@ -10,6 +10,7 @@
 #include "calibrate/calibrate.hpp"
 
 #include "distance/edge.hpp"
+#include "distance/distortion.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
@@ -44,6 +45,22 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOp
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
+}
+
+/**
+ * Provides a DistortionCorrectionAlgorithm
+ * 
+ * @param options The options to derive the distortion correction algorithm from
+ * 
+ * @return std::unqiue_ptr<DistortionCorrectionAlgorithm> The distortion correction algorithm
+ */
+std::unique_ptr<DistortionCorrectionAlgorithm> ProvideDistortionCorrectionAlgorithm(DistanceOptions &&options) {
+    return std::make_unique<TsaiDistortionAlgorithm>(options.TDCAK1, options.TDCAK2, options.TDCAK3,
+                                                     options.TDCAP1, options.TDCAP2
+                                                     Camera(options.focalLength,
+                                                            options.pixelSize,
+                                                            options.image.width,
+                                                            options.image.height));
 }
 
 /**

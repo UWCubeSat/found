@@ -39,6 +39,9 @@ FOUND_CLI_OPTION("reference-orientation", found::EulerAngles, refOrientation    
 FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        , ""                         , optarg                  , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"      )
 
 
+/// Distortion Correction Algorithms
+#define TDCA "TDCA"  // The TsaiDistortionCorrectionALgorithm (TDCA)
+
 /// Distance Algorithms
 #define SEDA "SEDA"  // The SimpleEdgeDetectionAlgorithm (SEDA)
 #define SDDA "SDDA"  // The SphericalDistance DeterminationAlgorithm (SDDA)
@@ -51,6 +54,11 @@ FOUND_CLI_OPTION("calibration-data"        , found::DataFile   , calibrationData
 FOUND_CLI_OPTION("reference-as-orientation", bool              , refAsOrientation, false                      , found::strtobool(optarg)   , true              , OPT_ASSIGN, "Use reference-orientation as the orientation of the camera"   ) \
 FOUND_CLI_OPTION("camera-focal-length"     , decimal           , focalLength     , 0.012                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The camera focal length (m)"                                  ) \
 FOUND_CLI_OPTION("camera-pixel-size"       , decimal           , pixelSize       , 20E-6                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The camera pixel size (m)"                                    ) \
+FOUND_CLI_OPTION("tdca-k1"                 , decimal           , TDCAK1          , 0                          , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The first radial distortion coefficient for TDCA"             ) \
+FOUND_CLI_OPTION("tdca-k2"                 , decimal           , TDCAK2          , 0                          , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The second radial distortion coefficient for TDCA"            ) \
+FOUND_CLI_OPTION("tdca-k3"                 , decimal           , TDCAK3          , 0                          , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The third radial distortion coefficient for TDCA"             ) \
+FOUND_CLI_OPTION("tdca-p1"                 , decimal           , TDCAP1          , 0                          , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The first tangential distortion coefficient for TDCA "        ) \
+FOUND_CLI_OPTION("tdca-p2"                 , decimal           , TDCAP2          , 0                          , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The second radial distortion coefficient for TDCA"            ) \
 FOUND_CLI_OPTION("reference-orientation"   , found::EulerAngles, refOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "The reference orientation (deg)"                              ) \
 FOUND_CLI_OPTION("relative-orientation"    , found::EulerAngles, relOrientation  , found::EulerAngles(0, 0, 0), found::strtoea(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "The relative orientation to use (if no calibration) (deg)"    ) \
 FOUND_CLI_OPTION("planetary-radius"        , decimal           , radius          , DECIMAL_M_R_E              , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The planetary radius to use (m)"                              ) \

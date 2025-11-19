@@ -10,6 +10,7 @@
 #include "calibrate/calibrate.hpp"
 
 #include "distance/edge.hpp"
+#include "distance/distortion.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
 
@@ -79,6 +80,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * 
      * @param options The options to create the pipeline
      * @param edgeDetectionAlgorithm The edge detection algorithm to use
+     * @param distortionCorrectionAlgorithm The distortion correction algorithm to use
      * @param distanceAlgorithm The distance determination algorithm to use
      * @param vectorizationAlgorithm The vectorization algorithm to use
      * 
@@ -88,6 +90,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      std::unique_ptr<DistortionCorrectionAlgorithm> distortionCorrectionAlgorithm,
                                       std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                       std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
@@ -101,6 +104,8 @@ class DistancePipelineExecutor : public PipelineExecutor {
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
     std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The Distortion Correction Algorithm used
+    std::unique_ptr<DistortionCorrectionAlgorithm> distortionCorrectionAlgorithm;
     /// The Distance Determination Algorithm being used
     std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
