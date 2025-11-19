@@ -104,13 +104,76 @@ void OrbitPipelineExecutor::ExecutePipeline() {
 }
 
 void OrbitPipelineExecutor::OutputResults() {
-    // TODO: Output this somewhere
-    [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
-    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
-                                             << futurePosition.position.y << ", "
-                                             << futurePosition.position.z << ") m"
-                                             << " at time "
-                                             << futurePosition.timestamp << " s");
+    // Output the results of the orbit propagation
+    LocationRecords *&locationRecords = this->pipeline_.GetProduct();
+    if (locationRecords && !locationRecords->empty()) {
+        const auto& record = locationRecords->back();
+        LOG_INFO("Calculated Future Position: (" << record.position.x << ", " << record.position.y << ", " << record.position.z << ") m at time " << record.timestamp << " s");
+    }
+    // TODO: Output to file
 }
+
+#ifdef TEST
+
+TestEdgePipelineExecutor::TestEdgePipelineExecutor(DistanceOptions &&options,
+                                                   std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm)
+                                                   : options_(std::move(options)) {
+    this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
+}
+
+void TestEdgePipelineExecutor::ExecutePipeline() {
+    this->points = this->edgeDetectionAlgorithm->Run(this->options_.image);
+}
+
+void TestEdgePipelineExecutor::OutputResults() {
+    std::ostream* out = &std::cout;
+    std::ofstream fout;
+    if (!this->options_.outputFile.empty()) {
+        fout.open(this->options_.outputFile);
+        out = &fout;
+    }
+
+    for (const auto& point : this->points) {
+        *out << point.x << " " << point.y << "\n";
+    }
+}
+
+TestDistancePipelineExecutor::TestDistancePipelineExecutor(DistanceOptions &&options,
+                                                           std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm)
+                                                           : options_(std::move(options)) {
+    this->distanceAlgorithm = std::move(distanceAlgorithm);
+}
+
+void TestDistancePipelineExecutor::ExecutePipeline() {
+    Points inputPoints;
+    if (this->options_.pointsFile.empty()) {
+        throw std::runtime_error("Points file must be specified for TestDistancePipelineExecutor");
+    }
+
+    std::ifstream fin(this->options_.pointsFile);
+    if (!fin.is_open()) {
+        throw std::runtime_error("Could not open points file: " + this->options_.pointsFile);
+    }
+
+    decimal x, y;
+    while (fin >> x >> y) {
+        inputPoints.push_back({x, y});
+    }
+
+    this->position = this->distanceAlgorithm->Run(inputPoints);
+}
+
+void TestDistancePipelineExecutor::OutputResults() {
+    std::ostream* out = &std::cout;
+    std::ofstream fout;
+    if (!this->options_.outputFile.empty()) {
+        fout.open(this->options_.outputFile);
+        out = &fout;
+    }
+
+    *out << this->position.x << " " << this->position.y << " " << this->position.z << "\n";
+}
+
+#endif
 
 }  // namespace found

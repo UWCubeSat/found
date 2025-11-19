@@ -35,6 +35,34 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
                                     ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }
 
+#ifdef TEST
+
+/**
+ * Creates a TestEdgePipelineExecutor
+ * 
+ * @param options The options to create the pipeline executor from
+ * 
+ * @return A pointer to a TestEdgePipelineExecutor
+ */
+inline std::unique_ptr<TestEdgePipelineExecutor> CreateTestEdgePipelineExecutor(DistanceOptions &&options) {
+    return std::make_unique<TestEdgePipelineExecutor>(std::forward<DistanceOptions>(options),
+                                    ProvideEdgeDetectionAlgorithm(std::forward<DistanceOptions>(options)));
+}
+
+/**
+ * Creates a TestDistancePipelineExecutor
+ * 
+ * @param options The options to create the pipeline executor from
+ * 
+ * @return A pointer to a TestDistancePipelineExecutor
+ */
+inline std::unique_ptr<TestDistancePipelineExecutor> CreateTestDistancePipelineExecutor(DistanceOptions &&options) {
+    return std::make_unique<TestDistancePipelineExecutor>(std::forward<DistanceOptions>(options),
+                                    ProvideDistanceDeterminationAlgorithm(std::forward<DistanceOptions>(options)));
+}
+
+#endif
+
 // TODO: Uncomment when orbit stage is implemented
 /**
  * Creates an OrbitPipelineExecutor

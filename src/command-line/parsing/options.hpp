@@ -44,6 +44,13 @@ FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        
 #define SDDA "SDDA"  // The SphericalDistance DeterminationAlgorithm (SDDA)
 #define ISDDA "ISDDA"  // The IterativeSphericalDistanceDeterminationAlgorithm (ISDDA)
 
+#ifdef TEST
+#define DISTANCE_TEST_FLAGS \
+FOUND_CLI_OPTION("points-file"             , std::string       , pointsFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The points file to process"                                   )
+#else
+#define DISTANCE_TEST_FLAGS
+#endif
+
 /// Distance Flags
 #define DISTANCE \
 FOUND_CLI_OPTION("image"                   , found::Image      , image           , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN, "The image to process (JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC)") \
@@ -65,6 +72,7 @@ FOUND_CLI_OPTION("isdda-discrim-ratio"     , decimal           , ISDDADiscimRati
 FOUND_CLI_OPTION("isdda-pdf-order"         , int               , ISDDAPdfOrd     , 2                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Probability Density Function Order for ISSDA (even int)"  ) \
 FOUND_CLI_OPTION("isdda-radius-loss-order" , int               , ISDDARadLossOrd , 4                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Radius Loss Order ISSDA (even int)"                       ) \
 FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
+DISTANCE_TEST_FLAGS
 
 
 // Orbit Flags

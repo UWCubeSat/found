@@ -91,6 +91,11 @@ if(FLOAT_MODE)
     add_compile_definitions(FOUND_FLOAT_MODE)
 endif()
 
+option(TEST "Enable test mode" OFF)
+if(TEST)
+    add_compile_definitions(TEST)
+endif()
+
 # Debug config
 set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -fno-omit-frame-pointer")
 

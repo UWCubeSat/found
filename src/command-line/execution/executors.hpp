@@ -134,6 +134,64 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
+#ifdef TEST
+
+/**
+ * TestEdgePipelineExecutor is the pipeline
+ * executor for the edge detection pipeline.
+ */
+class TestEdgePipelineExecutor : public PipelineExecutor {
+ public:
+    /**
+     * Constructs a TestEdgePipelineExecutor
+     * 
+     * @param options The options to create the pipeline
+     * @param edgeDetectionAlgorithm The edge detection algorithm to use
+     */
+    explicit TestEdgePipelineExecutor(DistanceOptions &&options,
+                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm);
+
+    void ExecutePipeline() override;
+    void OutputResults() override;
+
+ private:
+    /// The DistanceOptions being used
+    const DistanceOptions options_;
+    /// The Edge Detection Algorithm used
+    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The result points
+    Points points;
+};
+
+/**
+ * TestDistancePipelineExecutor is the pipeline
+ * executor for the distance determination pipeline.
+ */
+class TestDistancePipelineExecutor : public PipelineExecutor {
+ public:
+    /**
+     * Constructs a TestDistancePipelineExecutor
+     * 
+     * @param options The options to create the pipeline
+     * @param distanceAlgorithm The distance determination algorithm to use
+     */
+    explicit TestDistancePipelineExecutor(DistanceOptions &&options,
+                                          std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm);
+
+    void ExecutePipeline() override;
+    void OutputResults() override;
+
+ private:
+    /// The DistanceOptions being used
+    const DistanceOptions options_;
+    /// The Distance Determination Algorithm being used
+    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    /// The result position
+    PositionVector position;
+};
+
+#endif
+
 }  // namespace found
 
 #endif  // SRC_COMMAND_LINE_EXECUTION_EXECUTORS_HPP_

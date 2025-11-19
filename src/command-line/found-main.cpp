@@ -26,6 +26,12 @@ int main(int argc, char **argv) {
         executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
     } else if (command == "distance") {
         executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
+#ifdef TEST
+    } else if (command == "test-edge") {
+        executor = CreateTestEdgePipelineExecutor(ParseDistanceOptions(argc, argv));
+    } else if (command == "test-distance") {
+        executor = CreateTestDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
+#endif
     // TODO: Uncomment when orbit stage is implemented
     // } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
