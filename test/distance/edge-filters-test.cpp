@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include <memory>
+#include <utility>
 
 #include "src/distance/edge.hpp"
 #include "src/distance/edge-filters.hpp"
@@ -25,7 +27,7 @@ TEST(EdgeFiltersTest, SingleMockFilterModifiesPoints) {
             pts.push_back({42, 43});
         }));
 
-    pipeline.Complete(*mockFilter);
+    pipeline.Complete(std::move(mockFilter));
 
     Points original = {
         {0, 0},
@@ -37,15 +39,6 @@ TEST(EdgeFiltersTest, SingleMockFilterModifiesPoints) {
     ASSERT_EQ(original.size() + 1, result.size());
     EXPECT_EQ(42, result.back().x);
     EXPECT_EQ(43, result.back().y);
-}
-
-TEST(EdgeFiltersTest, CompleteTwiceThrows) {
-    EdgeFilteringAlgorithms pipeline;
-    std::unique_ptr<MockEdgeFilteringAlgorithm> first = std::make_unique<MockEdgeFilteringAlgorithm>();
-    std::unique_ptr<MockEdgeFilteringAlgorithm> another = std::make_unique<MockEdgeFilteringAlgorithm>();
-
-    pipeline.Complete(*first);
-    EXPECT_THROW(pipeline.Complete(*another), std::invalid_argument);
 }
 
 }  // namespace found

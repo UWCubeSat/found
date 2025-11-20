@@ -60,8 +60,6 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     const CalibrationOptions options_;
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
-    /// The Calibration Algorithm used
-    std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
 
 /**
@@ -82,6 +80,10 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
      * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
      * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
+     *
+     * @pre edgeDetectionAlgorithm, distanceAlgorithm, and vectorizationAlgorithm are non-null and already
+     *      configured to operate on (Image -> Points -> PositionVector) in that order.
+     * @pre Each provided stage is already "ready" (e.g., pipelines passed in were Completed) before transfer.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
@@ -96,6 +98,10 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @param filters A pipeline of edge filtering stages; ownership is transferred to the executor
      * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
      * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
+     *
+     * @pre edgeDetectionAlgorithm, filters, distanceAlgorithm, and vectorizationAlgorithm are non-null.
+     * @pre filters has been completed (ready) prior to being passed in so it can run as a stage.
+     * @pre Stage input/output types align with the Distance pipeline: Image -> Points -> Points -> PositionVector.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
@@ -111,14 +117,6 @@ class DistancePipelineExecutor : public PipelineExecutor {
     const DistanceOptions options_;
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
-    /// The Edge Detection Algorithm used
-    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
-    /// The edge-filtering pipeline (may be no operation)
-    std::unique_ptr<EdgeFilteringAlgorithms> filters_;
-    /// The Distance Determination Algorithm being used
-    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
-    /// The Vectorization/Rotation Algorithm being used
-    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
 
 /**
@@ -144,8 +142,6 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     const OrbitOptions options_;
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
-    /// The Orbit Propagation Algorithm being used
-    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
 }  // namespace found

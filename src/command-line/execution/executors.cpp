@@ -12,8 +12,7 @@ namespace found {
 CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &&options,
                                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm)
                                                          : options_(std::move(options)) {
-    this->calibrationAlgorithm = std::move(calibrationAlgorithm);
-    this->pipeline_.Complete(*this->calibrationAlgorithm);
+    this->pipeline_.Complete(std::move(calibrationAlgorithm));
 }
 
 void CalibrationPipelineExecutor::ExecutePipeline() {
@@ -45,12 +44,9 @@ DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                                                    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                                    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
                                                    : options_(std::move(options)) {
-    this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
-    this->distanceAlgorithm = std::move(distanceAlgorithm);
-    this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
-    this->pipeline_.AddStage(*this->edgeDetectionAlgorithm)
-                   .AddStage(*this->distanceAlgorithm)
-                   .Complete(*this->vectorizationAlgorithm);
+    this->pipeline_.AddStage(std::move(edgeDetectionAlgorithm))
+                   .AddStage(std::move(distanceAlgorithm))
+                   .Complete(std::move(vectorizationAlgorithm));
 }
 
 
@@ -59,15 +55,11 @@ DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                                                    std::unique_ptr<EdgeFilteringAlgorithms> filters,
                                                    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                                    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
-                                                   : options_(std::move(options)), filters_(std::move(filters)) {
-    this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
-    this->distanceAlgorithm = std::move(distanceAlgorithm);
-    this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
-    // Build the pipeline: edge detection -> filters (modifying Points) -> distance -> vectorize
-    this->pipeline_.AddStage(*this->edgeDetectionAlgorithm)
-                   .AddStage(*this->filters_)
-                   .AddStage(*this->distanceAlgorithm)
-                   .Complete(*this->vectorizationAlgorithm);
+                                                   : options_(std::move(options)) {
+    this->pipeline_.AddStage(std::move(edgeDetectionAlgorithm))
+                   .AddStage(std::move(filters))
+                   .AddStage(std::move(distanceAlgorithm))
+                   .Complete(std::move(vectorizationAlgorithm));
 }
 
 void DistancePipelineExecutor::ExecutePipeline() {
@@ -110,8 +102,7 @@ void DistancePipelineExecutor::OutputResults() {
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
                                              std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm)
                                              : options_(std::move(options)) {
-    this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);
-    this->pipeline_.Complete(*this->orbitPropagationAlgorithm);
+    this->pipeline_.Complete(std::move(orbitPropagationAlgorithm));
 }
 
 void OrbitPipelineExecutor::ExecutePipeline() {

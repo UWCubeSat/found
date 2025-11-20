@@ -21,6 +21,7 @@
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
 #include "test/common/common.hpp"
+#include "test/common/mocks/pipeline-mocks.hpp"
 
 // TODO: Fully Implement orbit stuff this after orbit stage is implemented
 // TODO: Include statement for Orbit Pipeline
@@ -127,10 +128,10 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     std::unique_ptr<EdgeDetectionAlgorithm>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
     std::unique_ptr<EdgeFilteringAlgorithms> filters = std::make_unique<EdgeFilteringAlgorithms>();
-    std::unique_ptr<MockEdgeFilter> mockFilter = std::make_unique<MockEdgeFilter>();
+    std::unique_ptr<MockModifyingStage<Points>> mockFilter = std::make_unique<MockModifyingStage<Points>>();
     EXPECT_CALL(*mockFilter, Run(PointsMatcher(points)))
         .WillOnce(testing::Invoke([](Points &){ /* no-op for test */ }));
-    filters->Complete(*mockFilter);
+    filters->Complete(std::move(mockFilter));
 
     std::unique_ptr<DistanceDeterminationAlgorithm>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));

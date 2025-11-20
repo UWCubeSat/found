@@ -24,13 +24,6 @@ class MockVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     MOCK_METHOD(PositionVector, Run, (const PositionVector& points), (override));
 };
 
-class MockEdgeFilter : public ModifyingStage<Points> {
- public:
-    MockEdgeFilter() = default;
-    ~MockEdgeFilter() override = default;
-    MOCK_METHOD(void, Run, (Points& pts), (override));
-};
-
 class MockEdgeFilteringAlgorithm : public EdgeFilteringAlgorithm {
  public:
     MockEdgeFilteringAlgorithm() = default;

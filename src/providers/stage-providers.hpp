@@ -100,47 +100,6 @@ inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorit
     }
 }
 
-/**
- * NoOpEdgeFilter
- *
- * A ModifyingStage implementation that performs no modifications
- * to the Points. This exists to provide a valid stage instance that can be
- * used by providers when a no-op filter is requested. This will not be needed
- * once an EdgeFilteringAlgorithm is implemented.
- */
-class NoOpEdgeFilter : public ModifyingStage<Points> {
- public:
-    NoOpEdgeFilter() = default;
-    ~NoOpEdgeFilter() override = default;
-
-    /**
-     * Run
-     *
-     * No-op filter: intentionally does not modify the provided points.
-     *
-     * @param pts The Points to (not) modify.
-     */
-    void Run(Points &pts) override {
-        // intentionally no-op
-        (void)pts;
-    }
-};
-
-/**
- * detail
- *
- * Internal provider instances and singletons used by the stage provider
- * functions
- */
-namespace detail {
-/**
- * A single shared instance of the NoOpEdgeFilter used by providers when the
- * no-op edge filter is requested. Documented to satisfy Doxygen checks.
- */
-inline NoOpEdgeFilter kNoOpEdgeFilter{};
-}  // namespace detail
-
-
 // TODO: Uncomment when orbit stage is implemented
 /**
  * Provides an OrbitPropagationAlgorithm

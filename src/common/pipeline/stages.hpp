@@ -16,6 +16,7 @@ using raw_type = std::remove_cv_t<std::remove_reference_t<T>>;
  */
 class Action {
  public:
+    virtual ~Action() = default;
     /**
      * Performs some action
      */
@@ -55,6 +56,15 @@ class Stage : public Action {
 template<typename Input, typename Output>
 class FunctionStage : public Stage<const raw_type<Input> &, raw_type<Output>> {
  public:
+   /**
+    * Canonical, non-reference input type for this stage.
+    */
+    using InputType = raw_type<Input>;
+   /**
+    * Canonical, non-reference output type for this stage.
+    */
+    using OutputType = raw_type<Output>;
+
     /**
      * Constructs a new Stage
      */
