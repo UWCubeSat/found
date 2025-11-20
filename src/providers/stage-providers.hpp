@@ -67,6 +67,7 @@ inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminat
                                                                                     options.image.width,
                                                                                     options.image.height),
                                                                                   options.ISDDAMinIters,
+                                                                                  options.ISDDAMaxRefresh,
                                                                                   options.ISDDADistRatio,
                                                                                   options.ISDDADiscimRatio,
                                                                                   options.ISDDAPdfOrd,

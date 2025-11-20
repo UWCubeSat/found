@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 38;
+    int argc = 40;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "test/common/assets/empty-df.found",
@@ -99,6 +99,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--seda-offset", "9.2",
         "--distance-algo", "algo",
         "--isdda-min-iterations", "30",
+        "--isdda-max-refreshes", "10",
         "--isdda-dist-ratio", "40.4",
         "--isdda-discrim-ratio", "50.5",
         "--isdda-pdf-order", "9",
@@ -125,6 +126,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(9.2), options.SEDAOffset);
     ASSERT_EQ("algo", options.distanceAlgo);
     ASSERT_EQ(static_cast<size_t>(30), options.ISDDAMinIters);
+    ASSERT_EQ(static_cast<size_t>(10), options.ISDDAMaxRefresh);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(40.4), options.ISDDADistRatio);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(50.5), options.ISDDADiscimRatio);
     ASSERT_EQ(9, options.ISDDAPdfOrd);
