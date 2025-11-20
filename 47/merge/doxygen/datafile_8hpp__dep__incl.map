@@ -1,0 +1,26 @@
+<map id="src/datafile/datafile.hpp" name="src/datafile/datafile.hpp">
+<area shape="rect" id="Node000001" title="Declares data structures for serialized spatial data files, including headers, location records,..." alt="" coords="149,5,324,31"/>
+<area shape="rect" id="Node000002" href="$options_8hpp_source.html" title=" " alt="" coords="96,225,286,265"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,38,147,55,123,80,115,99,114,118,118,138,126,158,149,194,174,224,170,227,145,198,121,160,113,139,109,118,110,97,118,77,143,51,175,33"/>
+<area shape="rect" id="Node000008" href="$serialization_8hpp_source.html" title=" " alt="" coords="133,79,340,104"/>
+<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="239,44,239,79,234,79,234,44"/>
+<area shape="rect" id="Node000009" href="$converters_8hpp_source.html" title=" " alt="" coords="229,152,436,177"/>
+<area shape="poly" id="edge15_Node000001_Node000009" title=" " alt="" coords="297,33,329,51,355,77,361,97,358,118,343,153,338,150,353,117,355,98,350,80,326,55,295,38"/>
+<area shape="rect" id="Node000003" href="$executors_8hpp_source.html" title=" " alt="" coords="42,475,249,515"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="84,268,47,287,19,315,9,337,10,359,18,381,33,402,74,442,116,472,113,477,70,446,29,406,14,383,5,360,4,336,14,312,44,282,82,263"/>
+<area shape="rect" id="Node000005" href="$parser_8hpp_source.html" title=" " alt="" coords="29,313,220,353"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="170,278,141,315,137,311,166,275"/>
+<area shape="rect" id="Node000006" href="$edge-filters_8hpp_source.html" title=" " alt="" coords="138,401,345,427"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="216,276,235,312,244,361,245,401,240,401,239,362,230,314,211,278"/>
+<area shape="rect" id="Node000007" href="$stage-providers_8hpp_source.html" title=" " alt="" coords="295,313,442,353"/>
+<area shape="poly" id="edge8_Node000002_Node000007" title=" " alt="" coords="243,269,331,311,328,316,241,274"/>
+<area shape="rect" id="Node000004" href="$factory_8hpp_source.html" title=" " alt="" coords="196,563,378,588"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="193,519,267,560,265,565,190,524"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="219,437,171,477,167,472,215,433"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="253,439,264,474,287,562,282,563,259,475,248,440"/>
+<area shape="poly" id="edge10_Node000007_Node000004" title=" " alt="" coords="370,368,360,427,346,468,328,507,297,564,292,561,323,504,341,466,355,426,365,367"/>
+<area shape="poly" id="edge9_Node000007_Node000006" title=" " alt="" coords="327,363,262,403,259,399,324,359"/>
+<area shape="poly" id="edge12_Node000008_Node000002" title=" " alt="" coords="231,118,220,153,199,226,194,225,215,151,226,116"/>
+<area shape="poly" id="edge13_Node000008_Node000009" title=" " alt="" coords="264,110,318,150,315,154,261,114"/>
+<area shape="poly" id="edge14_Node000009_Node000002" title=" " alt="" coords="301,187,226,228,224,223,298,182"/>
+</map>
