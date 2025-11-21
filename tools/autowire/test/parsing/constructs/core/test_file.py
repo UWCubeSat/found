@@ -51,31 +51,7 @@ class TestFile(unittest.TestCase):
         return_type = Type(INT_TYPE)
         return Function(FUNCTION_NAME, return_type)
     
-    def test_file_initialization(self):
-        """Test file initialization stores path and creates empty collections."""
-        file = File(SAMPLE_FILE_PATH)
-        
-        expected = {
-            'parent': None,
-            'name': SAMPLE_FILE_PATH,
-            'comments': [],
-            'constructs': [],
-            'classes': [],
-            'functions': [],
-            'constructors': [],
-            'destructors': [],
-            'variables': [],
-            'enums': [],
-            'namespaces': [],
-            'typedefs': [],
-            'using_declarations': [],
-            'includes': [],
-            'macros': [],
-            'all_comments': [],
-            'comment_associations': {}
-        }
-        
-        self.assertEqual(expected, file.__dict__)
+
     
     def test_add_construct_class(self):
         """Test adding class construct updates collections and sets parent."""

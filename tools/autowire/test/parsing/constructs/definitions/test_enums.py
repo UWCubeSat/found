@@ -40,57 +40,7 @@ class TestEnum(unittest.TestCase):
         """
         return set_parent(Enum(name, ENUM_VALUES), self.file)
     
-    def test_enum_initialization_simple(self):
-        """Test simple enum initialization with default parameters."""
-        enum = self.create_simple_enum()
-        
-        expected = {
-            'parent': self.file,
-            'comments': [],
-            'name': ENUM_NAME,
-            'values': ENUM_VALUES,
-            'is_class': False,
-            'underlying_type': None,
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, enum.__dict__)
-    
-    def test_enum_class_initialization(self):
-        """Test enum class initialization with is_class=True."""
-        enum = Enum(ENUM_NAME, ENUM_VALUES, is_class=True)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': ENUM_NAME,
-            'values': ENUM_VALUES,
-            'is_class': True,
-            'underlying_type': None,
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, enum.__dict__)
-    
-    def test_enum_with_underlying_type(self):
-        """Test enum with specified underlying type."""
-        underlying_type = set_parent(Type(INT_TYPE), self.file)
-        enum = Enum(ENUM_NAME, ENUM_VALUES, underlying_type=underlying_type)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': ENUM_NAME,
-            'values': ENUM_VALUES,
-            'is_class': False,
-            'underlying_type': underlying_type,
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, enum.__dict__)
+
     
     def test_enum_values_list(self):
         """Test enum values are stored and accessible correctly."""

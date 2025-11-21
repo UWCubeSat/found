@@ -7,7 +7,7 @@ from typing import Dict, Optional, Union
 from ...constructs.definitions.classes import Class
 from ...constructs.definitions.functions import Function
 from ...constructs.definitions.misc import Namespace, Macro, Typedef, Using, Comment
-from ...constructs.definitions.enums import Enum
+from ...constructs.definitions.enums import Enum, EnumValue
 from ...constructs.statements.variables import Variable
 
 
@@ -28,6 +28,7 @@ class ParseContext:
     function_definitions: Dict[str, Function] = field(default_factory=dict)
     global_variables: Dict[str, Variable] = field(default_factory=dict)
     static_variables: Dict[str, Variable] = field(default_factory=dict)
+    enum_constants: Dict[str, EnumValue] = field(default_factory=dict)
     
     # Parsing utilities
     def match_regex(self, pattern: str) -> Optional[str]:
@@ -146,3 +147,4 @@ class ParseContext:
         self.function_definitions.update(other.function_definitions)
         self.global_variables.update(other.global_variables)
         self.static_variables.update(other.static_variables)
+        self.enum_constants.update(other.enum_constants)

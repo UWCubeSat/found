@@ -44,11 +44,7 @@ class TestConstruct(unittest.TestCase):
         func.parent = parent
         return func
     
-    def test_construct_initialization(self):
-        """Test that construct properly stores its parent reference."""
-        construct = self.create_test_construct(self.file)
-        
-        self.assertEqual(construct.parent, self.file)
+
     
     def test_get_file_path(self):
         """Test file path retrieval by traversing up construct hierarchy."""

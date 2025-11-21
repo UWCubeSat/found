@@ -1,11 +1,11 @@
 """Type and Value constructs."""
 
+from dataclasses import dataclass, field
 from typing import List
 from ..core.base import Construct, Definition
-from ....common.annotations import equals_hash
 
 
-@equals_hash
+@dataclass
 class Type(Construct):
     """Fully qualified type information with template args, qualifiers, and source construct reference.
     This is different than a definition because it is defined whenever a type is being used, not defined
@@ -16,25 +16,14 @@ class Type(Construct):
             double** -> base_type=double, raw_pointer_level=2
         Smart pointers:
             std::unique_ptr<int> -> base_type='std::unique_ptr', template_args=[Type(base_type='int')]
+        Auto types:
+            auto x = getValue(); -> Type.AUTO
     """
-    
-    def __init__(self, base_type: Definition, template_args: List['Type'] = None,
-                 raw_pointer_level: int = 0, is_reference: bool = False, is_const: bool = False):
-        """Initialize type.
-        
-        Args:
-            base_type (Definition): Namespace-qualified type name ('MyClass', 'std::unique_ptr', 'ns::MyClass')
-            template_args (List[Type], optional): Template arguments for generic types
-            raw_pointer_level (int): Number of raw pointer levels (0 for T, 1 for T*, 2 for T**)
-            is_reference (bool): True if this is a reference type
-            is_const (bool): True if this type is const-qualified
-        """
-        super().__init__()
-        self.base_type = base_type
-        self.template_args = template_args or []
-        self.raw_pointer_level = raw_pointer_level
-        self.is_reference = is_reference
-        self.is_const = is_const
+    base_type: Definition
+    template_args: List['Type'] = field(default_factory=list)
+    raw_pointer_level: int = 0
+    is_reference: bool = False
+    is_const: bool = False
     
     @property
     def is_pointer(self) -> bool:
@@ -69,15 +58,9 @@ class Type(Construct):
             )
         return self
 
-@equals_hash
+Type.AUTO = Type(Definition('auto'))
+
+@dataclass
 class Value(Construct):
     """Literal values, expressions, initializers (strings, numbers, function calls, initializer lists)."""
-    
-    def __init__(self, expression: Construct):
-        """Initialize value.
-        
-        Args:
-            expression (str): Value expression (literal, function call, etc.)
-        """
-        super().__init__()
-        self.expression = expression
+    expression: Construct

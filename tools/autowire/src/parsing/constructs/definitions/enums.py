@@ -1,32 +1,25 @@
 """Enum constructs."""
 
+from dataclasses import dataclass, field
 from typing import List, Optional
 from ..core.base import Definition
-from ..types.types import Type
+from ..types.types import Type, Value
 from .misc import Comment
-from ....common.annotations import equals_hash
 
 
-@equals_hash
+@dataclass
+class EnumValue:
+    """Individual enum value with optional explicit assignment."""
+    name: str
+    value: Optional[Value] = None  # None means auto-assigned
+
+
+@dataclass
 class Enum(Definition):
     """Enum and enum class definitions with values."""
-    
-    def __init__(self, name: str, values: List[str], is_class: bool = False,
-                 underlying_type: Optional[Type] = None, comment: Optional[Comment] = None,
-                 namespace: Optional[str] = None):
-        """Initialize enum.
-        
-        Args:
-            name (str): Enum name
-            values (List[str]): Enum value names
-            is_class (bool): True for 'enum class', False for 'enum'
-            underlying_type (Type, optional): Underlying type for typed enums
-            comment (Comment, optional): Associated comment block
-            namespace (str, optional): Namespace containing this enum
-        """
-        super().__init__(name)
-        self.values = values
-        self.is_class = is_class
-        self.underlying_type = underlying_type
-        self.comment = comment
-        self.namespace = namespace
+    name: str
+    values: List[EnumValue] = field(default_factory=list)
+    is_class: bool = False
+    underlying_type: Optional[Type] = None
+    comment: Optional[Comment] = None
+    namespace: Optional[str] = None

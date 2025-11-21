@@ -10,8 +10,9 @@ This module tests Class-related construct functionality including:
 
 import unittest
 from src.parsing.constructs.core.file import File
-from src.parsing.constructs.definitions.classes import Class, Constructor, Destructor, AccessSection
+from src.parsing.constructs.definitions.classes import Class, Constructor, Destructor, AccessSection, Method, FriendDeclaration
 from src.parsing.constructs.definitions.functions import Function, Parameter
+from src.parsing.constructs.statements.variables import Variable
 from src.parsing.constructs.types.types import Type
 from test.common.constants.construct_constants import (
     SAMPLE_FILE_PATH, CLASS_NAME, BASE_CLASS_NAME, DERIVED_CLASS_NAME, FUNCTION_NAME, INT_TYPE, PARAMETER_NAME,
@@ -68,39 +69,12 @@ class TestClass(unittest.TestCase):
         Returns:
             Class: Derived class construct
         """
-        return Class(name, base_classes=base_classes)
+        cls = Class(name)
+        for access, base_class in base_classes:
+            cls.add_base_class(access, base_class)
+        return cls
     
-    def test_class_initialization_simple(self):
-        """Test simple class initialization sets all properties and creates access sections."""
-        cls = self.create_simple_class()
-        expected_properties = {
-            'name': CLASS_NAME,
-            'is_struct': EXPECTED_FALSE,
-            'base_classes_count': EXPECTED_COUNT_0,
-            'template_params_count': EXPECTED_COUNT_0,
-            'has_public': True,
-            'has_private': True,
-            'has_protected': True
-        }
-        actual_properties = {
-            'name': cls.name,
-            'is_struct': cls.is_struct,
-            'base_classes_count': len(cls.base_classes),
-            'template_params_count': len(cls.template_parameters),
-            'has_public': cls.public is not None,
-            'has_private': cls.private is not None,
-            'has_protected': cls.protected is not None
-        }
-        
-        self.assertEqual(actual_properties, expected_properties)
-    
-    def test_class_initialization_struct(self):
-        """Test struct initialization."""
-        expected_is_struct = True
-        
-        cls = Class(CLASS_NAME, is_struct=True)
-        
-        self.assertEqual(cls.is_struct, expected_is_struct)
+
     
     def test_class_inheritance_single(self):
         """Test single inheritance."""
@@ -193,8 +167,6 @@ class TestClass(unittest.TestCase):
     
     def test_class_with_multiple_fields(self):
         """Test class with multiple fields across different access sections."""
-        from src.parsing.constructs.statements.variables import Variable
-        
         cls = self.create_simple_class("Person")
         
         # Add private fields
@@ -230,6 +202,187 @@ class TestClass(unittest.TestCase):
         }
         
         self.assertEqual(expected, actual)
+    
+    def test_add_base_class_single(self):
+        """Test adding a single base class updates relationships."""
+        base_class = self.create_base_class("Base")
+        derived_class = Class("Derived")
+        
+        derived_class.add_base_class("public", base_class)
+        
+        self.assertEqual(len(derived_class.base_classes), 1)
+        self.assertEqual(derived_class.base_classes[0], ("public", base_class))
+        self.assertIn(derived_class, base_class.subclasses)
+    
+    def test_add_base_class_multiple(self):
+        """Test adding multiple base classes."""
+        base1 = self.create_base_class("Base1")
+        base2 = self.create_base_class("Base2")
+        derived_class = Class("Derived")
+        
+        derived_class.add_base_class("public", base1)
+        derived_class.add_base_class("private", base2)
+        
+        expected_bases = [("public", base1), ("private", base2)]
+        self.assertEqual(derived_class.base_classes, expected_bases)
+        self.assertIn(derived_class, base1.subclasses)
+        self.assertIn(derived_class, base2.subclasses)
+    
+    def test_add_base_class_inherits_methods(self):
+        """Test that adding base class inherits methods."""
+        base_class = Class("Base")
+        method = Method("test_method", set_parent(Type("void"), self.file))
+        base_class.public.methods.append((None, method))
+        
+        derived_class = Class("Derived")
+        derived_class.add_base_class("public", base_class)
+        
+        # Should inherit the method
+        self.assertEqual(len(derived_class.public.methods), 1)
+        self.assertEqual(derived_class.public.methods[0][1].name, "test_method")
+    
+    def test_add_access_section_public(self):
+        """Test adding public access section sets parent correctly."""
+        cls = Class("TestClass")
+        new_section = AccessSection()
+        
+        cls.add_access_section("public", new_section)
+        
+        self.assertEqual(cls.public, new_section)
+        self.assertEqual(new_section.parent, cls)
+    
+    def test_add_access_section_private(self):
+        """Test adding private access section sets parent correctly."""
+        cls = Class("TestClass")
+        new_section = AccessSection()
+        
+        cls.add_access_section("private", new_section)
+        
+        self.assertEqual(cls.private, new_section)
+        self.assertEqual(new_section.parent, cls)
+    
+    def test_add_access_section_protected(self):
+        """Test adding protected access section sets parent correctly."""
+        cls = Class("TestClass")
+        new_section = AccessSection()
+        
+        cls.add_access_section("protected", new_section)
+        
+        self.assertEqual(cls.protected, new_section)
+        self.assertEqual(new_section.parent, cls)
+    
+    def test_add_access_section_invalid_level(self):
+        """Test adding access section with invalid level raises error."""
+        cls = Class("TestClass")
+        new_section = AccessSection()
+        
+        with self.assertRaises(ValueError) as context:
+            cls.add_access_section("invalid", new_section)
+        
+        self.assertIn("Invalid access level: invalid", str(context.exception))
+    
+    def test_add_nested_class(self):
+        """Test adding nested class to access section."""
+        outer_class = Class("OuterClass")
+        nested_class = Class("NestedClass")
+        
+        outer_class.public.add_nested_class(nested_class)
+        
+        self.assertEqual(len(outer_class.public.nested_classes), 1)
+        self.assertEqual(outer_class.public.nested_classes[0], nested_class)
+        self.assertEqual(nested_class.parent, outer_class)
+
+
+class TestMethod(unittest.TestCase):
+    """Test cases for Method construct."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.file = File(SAMPLE_FILE_PATH)
+    
+    def test_method_with_virtual_flags(self):
+        """Test method with virtual, static, const, and pure virtual flags."""
+        return_type = set_parent(Type("void"), self.file)
+        method = Method("test_method", return_type, is_virtual=True, is_const=True, is_pure_virtual=True, is_static=True)
+        
+        self.assertEqual(method.name, "test_method")
+        self.assertEqual(method.return_type, return_type)
+        self.assertTrue(method.is_virtual)
+        self.assertTrue(method.is_const)
+        self.assertTrue(method.is_pure_virtual)
+        self.assertTrue(method.is_static)
+    
+    def test_method_with_parameters(self):
+        """Test method with multiple parameters."""
+        return_type = set_parent(Type("int"), self.file)
+        param1 = Parameter("x", set_parent(Type("int"), self.file))
+        param2 = Parameter("y", set_parent(Type("double"), self.file))
+        method = Method("calculate", return_type, parameters=[param1, param2])
+        
+        self.assertEqual(method.name, "calculate")
+        self.assertEqual(len(method.parameters), 2)
+        self.assertEqual(method.parameters[0].name, "x")
+        self.assertEqual(method.parameters[1].name, "y")
+    
+    def test_method_inheritance_behavior(self):
+        """Test method behavior in inheritance context."""
+        base_class = Class("Base")
+        derived_class = Class("Derived")
+        
+        # Add virtual method to base class
+        return_type = set_parent(Type("void"), self.file)
+        virtual_method = Method("process", return_type, is_virtual=True)
+        base_class.public.methods.append((None, virtual_method))
+        
+        # Add base class to derived
+        derived_class.add_base_class("public", base_class)
+        
+        # Should inherit the virtual method
+        self.assertEqual(len(derived_class.public.methods), 1)
+        inherited_method = derived_class.public.methods[0][1]
+        self.assertEqual(inherited_method.name, "process")
+        self.assertTrue(inherited_method.is_virtual)
+    
+    def test_pure_virtual_method_makes_class_abstract(self):
+        """Test that pure virtual methods make class abstract."""
+        cls = Class("AbstractClass")
+        return_type = set_parent(Type("void"), self.file)
+        pure_virtual_method = Method("abstract_method", return_type, is_pure_virtual=True)
+        cls.public.methods.append((None, pure_virtual_method))
+        
+        self.assertTrue(cls.has_pure_virtual_methods())
+        self.assertTrue(cls.is_abstract())
+        self.assertFalse(cls.can_be_instantiated())
+    
+    def test_method_access_levels(self):
+        """Test methods in different access levels."""
+        cls = Class("TestClass")
+        return_type = set_parent(Type("void"), self.file)
+        
+        # Add methods to different access levels
+        public_method = Method("public_method", return_type)
+        private_method = Method("private_method", return_type)
+        protected_method = Method("protected_method", return_type)
+        
+        cls.public.methods.append((None, public_method))
+        cls.private.methods.append((None, private_method))
+        cls.protected.methods.append((None, protected_method))
+        
+        self.assertEqual(len(cls.public.methods), 1)
+        self.assertEqual(len(cls.private.methods), 1)
+        self.assertEqual(len(cls.protected.methods), 1)
+        self.assertEqual(cls.public.methods[0][1].name, "public_method")
+        self.assertEqual(cls.private.methods[0][1].name, "private_method")
+        self.assertEqual(cls.protected.methods[0][1].name, "protected_method")
+    
+    def test_static_method(self):
+        """Test static method properties."""
+        return_type = set_parent(Type("int"), self.file)
+        static_method = Method("get_count", return_type, is_static=True)
+        
+        self.assertTrue(static_method.is_static)
+        self.assertFalse(static_method.is_virtual)  # Static methods can't be virtual
+        self.assertFalse(static_method.is_const)    # Static methods can't be const
 
 
 class TestConstructor(unittest.TestCase):
@@ -249,59 +402,13 @@ class TestConstructor(unittest.TestCase):
         param_type = Type(INT_TYPE)
         return Parameter(name, param_type)
     
-    def test_constructor_initialization_simple(self):
-        """Test simple constructor initialization."""
-        constructor = Constructor(self.parent_class.name)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': self.parent_class.name,
-            'return_type': None,
-            'parameters': [],
-            'is_virtual': False,
-            'is_static': False,
-            'is_const': False,
-            'is_pure_virtual': False,
-            'template_parameters': [],
-            'body': [],
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, constructor.__dict__)
-    
-    def test_constructor_with_parameters(self):
-        """Test constructor with parameters."""
-        param = self.create_parameter()
-        parameters = [param]
-        constructor = Constructor(self.parent_class.name, parameters=parameters)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': self.parent_class.name,
-            'return_type': None,
-            'parameters': parameters,
-            'is_virtual': False,
-            'is_static': False,
-            'is_const': False,
-            'is_pure_virtual': False,
-            'template_parameters': [],
-            'body': [],
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, constructor.__dict__)
-    
     def test_constructor_with_multiple_parameters(self):
         """Test constructor with multiple parameters."""
         param1 = self.create_parameter("id")
         param2 = Parameter("name", set_parent(Type("string"), self.file))
         param3 = Parameter("age", set_parent(Type("int"), self.file))
         parameters = [param1, param2, param3]
-        constructor = Constructor(self.parent_class.name, parameters=parameters)
+        constructor = Constructor(self.parent_class.name, None, parameters=parameters)
         
         expected = {
             'parameters_count': 3,
@@ -317,63 +424,19 @@ class TestConstructor(unittest.TestCase):
         }
         
         self.assertEqual(expected, actual)
-
-
-class TestDestructor(unittest.TestCase):
-    """Test cases for Destructor construct."""
     
-    def setUp(self):
-        """Set up test fixtures."""
-        self.file = File(SAMPLE_FILE_PATH)
-        self.parent_class = Class(CLASS_NAME)
+    def test_destructor_validation(self):
+        """Test destructor name validation."""
+        # Valid destructor
+        destructor = Destructor("~TestClass", None)
+        self.assertEqual(destructor.name, "~TestClass")
+        
+        # Invalid destructor should raise error
+        with self.assertRaises(ValueError) as context:
+            Destructor("InvalidName", None)
+        
+        self.assertIn("must have ~ in front", str(context.exception))
     
-    def tearDown(self):
-        """Clean up test fixtures."""
-        pass
-    
-    def test_destructor_initialization_simple(self):
-        """Test simple destructor initialization."""
-        destructor = Destructor("~" + self.parent_class.name)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': "~" + self.parent_class.name,
-            'return_type': None,
-            'parameters': [],
-            'is_virtual': False,
-            'is_static': False,
-            'is_const': False,
-            'is_pure_virtual': False,
-            'template_parameters': [],
-            'body': [],
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, destructor.__dict__)
-    
-    def test_destructor_virtual(self):
-        """Test virtual destructor initialization."""
-        destructor = Destructor("~" + self.parent_class.name, is_virtual=True)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'name': "~" + self.parent_class.name,
-            'return_type': None,
-            'parameters': [],
-            'is_virtual': True,
-            'is_static': False,
-            'is_const': False,
-            'is_pure_virtual': False,
-            'template_parameters': [],
-            'body': [],
-            'comment': None,
-            'namespace': None
-        }
-        
-        self.assertEqual(expected, destructor.__dict__)
 
 
 class TestAccessSection(unittest.TestCase):
@@ -388,20 +451,13 @@ class TestAccessSection(unittest.TestCase):
         """Clean up test fixtures."""
         pass
     
-    def test_access_section_initialization(self):
-        """Test access section initialization."""
-        access_section = AccessSection()
+    def test_access_section_parent_set(self):
+        """Test that access sections have correct parent."""
+        cls = Class("TestClass")
         
-        expected = {
-            'parent': None,
-            'comments': [],
-            'constructors': [],
-            'destructors': [],
-            'methods': [],
-            'members': []
-        }
-        
-        self.assertEqual(expected, access_section.__dict__)
+        self.assertEqual(cls.public.parent, cls)
+        self.assertEqual(cls.private.parent, cls)
+        self.assertEqual(cls.protected.parent, cls)
     
     def test_access_section_with_multiple_members(self):
         """Test access section with multiple member variables."""
@@ -435,9 +491,9 @@ class TestAccessSection(unittest.TestCase):
         """Test access section with multiple methods."""
         # Create multiple methods
         return_type = set_parent(Type("void"), self.file)
-        method1 = set_parent(Function("initialize", return_type), self.file)
-        method2 = set_parent(Function("process", return_type), self.file)
-        method3 = set_parent(Function("cleanup", return_type), self.file)
+        method1 = set_parent(Method("initialize", return_type), self.file)
+        method2 = set_parent(Method("process", return_type), self.file)
+        method3 = set_parent(Method("cleanup", return_type), self.file)
         methods = [(None, method1), (None, method2), (None, method3)]
         
         access_section = AccessSection()
@@ -457,3 +513,27 @@ class TestAccessSection(unittest.TestCase):
         }
         
         self.assertEqual(expected, actual)
+    
+    def test_add_friend_declaration(self):
+        """Test adding friend declaration to access section."""
+        cls = Class("TestClass")
+        friend_class = Class("FriendClass")
+        friend_decl = FriendDeclaration(target=friend_class)
+        
+        cls.public.add_friend_declaration(friend_decl)
+        
+        self.assertEqual(len(cls.public.friend_declarations), 1)
+        self.assertEqual(cls.public.friend_declarations[0], friend_decl)
+        self.assertEqual(friend_decl.parent, cls)
+    
+    def test_friend_function_declaration(self):
+        """Test friend function declaration."""
+        cls = Class("TestClass")
+        friend_function = Function("debug_print", set_parent(Type("void"), self.file))
+        friend_decl = FriendDeclaration(target=friend_function)
+        
+        cls.private.add_friend_declaration(friend_decl)
+        
+        self.assertEqual(len(cls.private.friend_declarations), 1)
+        self.assertEqual(cls.private.friend_declarations[0].target, friend_function)
+        self.assertEqual(friend_decl.parent, cls)

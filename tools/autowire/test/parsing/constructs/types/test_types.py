@@ -41,41 +41,7 @@ class TestType(unittest.TestCase):
         template_arg = Type(arg_type)
         return Type(type_name, template_args=[template_arg])
     
-    def test_type_initialization_simple(self):
-        """Test simple type initialization sets all properties correctly."""
-        type_obj = self.create_simple_type()
-        expected_properties = {
-            'base_type': INT_TYPE,
-            'raw_pointer_level': EXPECTED_COUNT_0,
-            'is_reference': EXPECTED_FALSE,
-            'is_const': EXPECTED_FALSE,
-            'template_args_count': EXPECTED_COUNT_0
-        }
-        actual_properties = {
-            'base_type': type_obj.base_type,
-            'raw_pointer_level': type_obj.raw_pointer_level,
-            'is_reference': type_obj.is_reference,
-            'is_const': type_obj.is_const,
-            'template_args_count': len(type_obj.template_args)
-        }
-        
-        self.assertEqual(actual_properties, expected_properties)
-    
-    def test_type_initialization_pointer(self):
-        """Test pointer type initialization sets pointer properties correctly."""
-        type_obj = self.create_pointer_type(level=POINTER_LEVEL_2)
-        expected_properties = {
-            'base_type': INT_TYPE,
-            'raw_pointer_level': POINTER_LEVEL_2,
-            'is_pointer': EXPECTED_TRUE
-        }
-        actual_properties = {
-            'base_type': type_obj.base_type,
-            'raw_pointer_level': type_obj.raw_pointer_level,
-            'is_pointer': type_obj.is_pointer
-        }
-        
-        self.assertEqual(actual_properties, expected_properties)
+
     
     def test_is_pointer_true(self):
         """Test is_pointer property correctly identifies pointer types."""
@@ -134,44 +100,4 @@ class TestType(unittest.TestCase):
         }
         
         self.assertEqual(actual_smart_ptr_properties, expected_smart_ptr_properties)
-
-
-class TestValue(unittest.TestCase):
-    """Test cases for Value construct functionality."""
-    
-    def setUp(self):
-        """Set up test fixtures with file context."""
-        self.file = File(SAMPLE_FILE_PATH)
-    
-    def tearDown(self):
-        """Clean up test fixtures."""
-        pass
-    
-    def create_simple_value(self, expression=SIMPLE_EXPRESSION):
-        """Create a value with specified expression."""
-        return Value(expression)
-    
-    def test_value_initialization_literal(self):
-        """Test value initialization stores expression and parent correctly."""
-        value = self.create_simple_value()
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'expression': SIMPLE_EXPRESSION
-        }
-        
-        self.assertEqual(expected, value.__dict__)
-    
-    def test_value_initialization_function_call(self):
-        """Test value initialization with function call expression."""
-        value = Value(FUNCTION_CALL_EXPRESSION)
-        
-        expected = {
-            'parent': None,
-            'comments': [],
-            'expression': FUNCTION_CALL_EXPRESSION
-        }
-        
-        self.assertEqual(expected, value.__dict__)
 

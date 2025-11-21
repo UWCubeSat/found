@@ -1,44 +1,43 @@
 """Class-related constructs."""
 
-from typing import List, Optional, Tuple
+from dataclasses import dataclass
+from typing import List, Optional, Tuple, Union
 from ..core.base import Construct, Definition
 from .functions import Function, Parameter
 from ..statements.variables import Variable
+from ..types.types import Type
 from .misc import Comment
 from ....common.annotations import equals_hash
 
 
-@equals_hash
-class Constructor(Function):
+@dataclass
+class FriendDeclaration(Construct):
+    """Friend class or function declaration."""
+    target: Union['Class', Function]
+
+
+@dataclass
+class Method(Function):
+    """Class methods with method-specific attributes."""
+    is_virtual: bool = False
+    is_const: bool = False
+    is_pure_virtual: bool = False
+
+
+@dataclass
+class Constructor(Method):
     """Class constructors with parameter lists."""
-    
-    def __init__(self, name: str, parameters: List[Parameter] = None):
-        """Initialize constructor.
-        
-        Args:
-            name (str): The name of the constructor
-            parameters (List[Parameter], optional): List of constructor parameters, defaults to empty list
-        """
-        super().__init__(name, None, parameters=parameters)
-        self.parameters = parameters or []
+    pass
 
 
-@equals_hash
-class Destructor(Function):
+@dataclass
+class Destructor(Method):
     """Class destructors (parsed but not used for dependency injection)."""
     
-    def __init__(self, name: str, is_virtual: bool = False):
-        """Initialize destructor.
-        
-        Args:
-            name (str): The name of the destructor
-            is_virtual (bool): Whether destructor is virtual
-        """
-        if not name[0] == '~':
-            raise ValueError(f"Destructor {name} must have ~ in front")
-        
-        super().__init__(name, None)
-        self.is_virtual = is_virtual
+    def __post_init__(self):
+        """Validate destructor name after initialization."""
+        if not self.name.startswith('~'):
+            raise ValueError(f"Destructor {self.name} must have ~ in front")
 
 
 @equals_hash
@@ -48,14 +47,18 @@ class AccessSection(Construct):
     def __init__(self,
                  constructors: List[Constructor] = None,
                  destructors: List[Destructor] = None,
-                 methods: List[Tuple[Optional['Class'], Function]] = None,
-                 members: List[Variable] = None):
+                 methods: List[Tuple[Optional['Class'], Method]] = None,
+                 members: List[Variable] = None,
+                 nested_classes: List['Class'] = None,
+                 friend_declarations: List[FriendDeclaration] = None):
         """Initialize access section."""
         super().__init__()
         self.constructors: List[Constructor] = constructors or []
         self.destructors: List[Destructor] = destructors or []
-        self.methods: List[Tuple[Optional[Class], Function]] = methods or []  # (inherited_from_class, function)
-        self.members: List[Variable] = members or []            
+        self.methods: List[Tuple[Optional[Class], Method]] = methods or []  # (inherited_from_class, method)
+        self.members: List[Variable] = members or []
+        self.nested_classes: List[Class] = nested_classes or []
+        self.friend_declarations: List[FriendDeclaration] = friend_declarations or []            
         
         for constructor in self.constructors:
             if constructor.parent != self.parent:
@@ -69,78 +72,79 @@ class AccessSection(Construct):
         for member in self.members:
             if member.parent != self.parent:
                 raise ValueError("All members must have their class as the parent")
+        for nested_class in self.nested_classes:
+            if nested_class.parent != self.parent:
+                raise ValueError("All nested classes must have their class as the parent")
+        for friend_decl in self.friend_declarations:
+            if friend_decl.parent != self.parent:
+                raise ValueError("All friend declarations must have their class as the parent")
+    
+    def add_nested_class(self, nested_class: 'Class') -> None:
+        """Add a nested class to this access section.
+        
+        Args:
+            nested_class (Class): Nested class to add
+        """
+        nested_class.set_parent(self.parent)
+        self.nested_classes.append(nested_class)
+    
+    def add_friend_declaration(self, friend_decl: FriendDeclaration) -> None:
+        """Add a friend declaration to this access section.
+        
+        Args:
+            friend_decl (FriendDeclaration): Friend declaration to add
+        """
+        friend_decl.set_parent(self.parent)
+        self.friend_declarations.append(friend_decl)
 
 
 @equals_hash
 class Class(Definition):
-    """Class and struct definitions with inheritance, constructors, methods, access specifiers.
+    """Class and struct definitions with inheritance, constructors, methods, access specifiers."""
     
-    Note: Access sections passed to the constructor should contain only methods defined directly
-    in this class. Inherited methods are automatically added by the class during construction.
-    """
-    
-    def __init__(self, name: str, is_struct: bool = False, base_classes: List[Tuple[str, 'Class']] = None,
-                 template_parameters: List[str] = None, can_brace_initialize: bool = False,
-                 brace_init_members: List[Variable] = None, comment: Optional[Comment] = None,
-                 namespace: Optional[str] = None,
-                 public: Optional[AccessSection] = None, private: Optional[AccessSection] = None,
-                 protected: Optional[AccessSection] = None):
-        """Initialize class construct.
+    def __init__(self, name: str, is_struct: bool = False):
+        """Initialize class construct with minimal information.
         
         Args:
             name (str): Class name
             is_struct (bool): True if this is a struct, False for class
-            base_classes (List[Tuple[str, Class]], optional): List of (access_level, Class) tuples for inheritance
-            template_parameters (List[str], optional): List of template parameter names
-            can_brace_initialize (bool): True if class supports brace initialization
-            brace_init_members (List[Variable], optional): List of members for brace initialization
-            comment (Comment, optional): Associated comment block
-            namespace (str, optional): Namespace containing this class
-            public (AccessSection, optional): Public access section with directly defined members
-            private (AccessSection, optional): Private access section with directly defined members
-            protected (AccessSection, optional): Protected access section with directly defined members
-            
-        Preconditions:
-            name must be non-empty string
-            base_classes access levels must be 'public', 'private', or 'protected'
-            Access sections should contain only directly defined methods
-            All base classes must be fully constructed
         """
         super().__init__(name)
         self.is_struct = is_struct
-        self.base_classes: List[Tuple[str, Class]] = base_classes or []  # List of (access_level, Class) tuples
-        self.template_parameters = template_parameters or []
-        self.can_brace_initialize = can_brace_initialize
-        self.brace_init_members = brace_init_members or []
-        self.comment = comment
-        self.namespace = namespace
-        self.subclasses: List[Class] = []  # List of Class references that inherit from this class
+        self.base_classes: List[Tuple[str, Class]] = []
+        self.template_parameters: List[str] = []
+        self.can_brace_initialize = False
+        self.brace_init_members: List[Variable] = []
+        self.comment: Optional[Comment] = None
+        self.namespace: Optional[str] = None
+        self.subclasses: List[Class] = []
         
-        # Access level buckets - inject or create, then set parent
-        self.public = public or AccessSection()
-        self.private = private or AccessSection()
-        self.protected = protected or AccessSection()
+        # Create access sections with this class as parent
+        self.public = AccessSection()
+        self.private = AccessSection()
+        self.protected = AccessSection()
+        self.public.set_parent(self)
+        self.private.set_parent(self)
+        self.protected.set_parent(self)
+    
+    def add_base_class(self, access: str, base_class: 'Class') -> None:
+        """Add a base class and update inheritance relationships.
         
-        # Set this class as parent for all access sections
-        self.public.parent = self
-        self.private.parent = self
-        self.protected.parent = self
-        
-        # Inherit methods from base classes (in inheritance order)
-        self._inherit_methods_from_bases()
+        Args:
+            access (str): Inheritance access level ('public', 'private', 'protected')
+            base_class (Class): Base class to inherit from
+        """
+        self.base_classes.append((access, base_class))
+        base_class.subclasses.append(self)
+        self._inherit_methods_from_base(access, base_class)
     
     def add_subclass(self, subclass: 'Class') -> None:
         """Add a direct subclass to this class's subclass list.
         
         Args:
             subclass (Class): Class that inherits from this class
-            
-        Preconditions:
-            This class must be a direct base class of the subclass
         """
-        # Only add if this class is a direct base class of the subclass
-        base_classes = [base_class for _, base_class in subclass.base_classes]
-        if self in base_classes and subclass not in self.subclasses:
+        if subclass not in self.subclasses:
             self.subclasses.append(subclass)
     
     def get_direct_subclasses(self) -> List['Class']:
@@ -187,50 +191,46 @@ class Class(Definition):
         """
         return [cls for cls in self.get_all_subclasses() if cls.can_be_instantiated()]
     
-    def _inherit_methods_from_bases(self) -> None:
-        """Inherit methods from base classes in inheritance order.
+    def _inherit_methods_from_base(self, inheritance_access: str, base_class: 'Class') -> None:
+        """Inherit methods from a single base class.
         
-        Preconditions:
-            All base classes must be fully constructed
-            Access sections must contain only directly defined methods
-            Base classes must not contain circular inheritance
+        Args:
+            inheritance_access (str): Access level of inheritance
+            base_class (Class): Base class to inherit from
         """
         existing_method_names = {func.name for _, func in self.public.methods + self.protected.methods + self.private.methods}
-        for inheritance_access, base_class in self.base_classes:
-            # Only inherit public and protected methods (private methods in base are never inherited)
-            for inherited_from, method in base_class.public.methods + base_class.protected.methods:
-                # Check if method is already overridden in this class                
-                if method.name not in existing_method_names:
-                    # Create inherited method copy
-                    inherited_method = Function(
-                        name=method.name,
-                        return_type=method.return_type,
-                        parameters=method.parameters,
-                        template_parameters=method.template_parameters,
-                        is_virtual=method.is_virtual,
-                        is_static=method.is_static,
-                        is_const=method.is_const,
-                        is_pure_virtual=method.is_pure_virtual,
-                        comment=method.comment,
-                        namespace=method.namespace
-                    )
-                    inherited_method.parent = self
-                    
-                    # Determine final access level based on inheritance access and original access
-                    final_access = self._determine_inherited_access(inheritance_access, method, base_class)
-                    
-                    # Track original source class (if method was already inherited, keep original source)
-                    original_source = inherited_from or base_class
-                    
-                    # Add to appropriate access section with inheritance tracking
-                    if final_access == "public":
-                        self.public.methods.append((original_source, inherited_method))
-                    elif final_access == "protected":
-                        self.protected.methods.append((original_source, inherited_method))
-                    elif final_access == "private":
-                        self.private.methods.append((original_source, inherited_method))  # Still accessible internally
+        
+        # Only inherit public and protected methods
+        for inherited_from, method in base_class.public.methods + base_class.protected.methods:
+            if method.name not in existing_method_names:
+                # Create inherited method copy
+                inherited_method = Method(
+                    name=method.name,
+                    return_type=method.return_type,
+                    parameters=method.parameters,
+                    template_parameters=method.template_parameters,
+                    is_virtual=method.is_virtual,
+                    is_static=method.is_static,
+                    is_const=method.is_const,
+                    is_pure_virtual=method.is_pure_virtual,
+                    comment=method.comment,
+                    namespace=method.namespace
+                )
+                inherited_method.set_parent(self)
+                
+                # Determine final access level
+                final_access = self._determine_inherited_access(inheritance_access, method, base_class)
+                original_source = inherited_from or base_class
+                
+                # Add to appropriate access section
+                if final_access == "public":
+                    self.public.methods.append((original_source, inherited_method))
+                elif final_access == "protected":
+                    self.protected.methods.append((original_source, inherited_method))
+                elif final_access == "private":
+                    self.private.methods.append((original_source, inherited_method))
     
-    def _determine_inherited_access(self, inheritance_access: str, method: Function, base_class: 'Class') -> str:
+    def _determine_inherited_access(self, inheritance_access: str, method: Method, base_class: 'Class') -> str:
         """Determine the access level of an inherited method.
         
         Args:
@@ -300,3 +300,20 @@ class Class(Definition):
             bool: True if class has no pure virtual methods and can be instantiated
         """
         return not self.is_pure_virtual
+    
+    def add_access_section(self, access_level: str, section: AccessSection) -> None:
+        """Add or replace an access section.
+        
+        Args:
+            access_level (str): Access level ('public', 'private', 'protected')
+            section (AccessSection): Access section to add
+        """
+        section.set_parent(self)
+        if access_level == "public":
+            self.public = section
+        elif access_level == "private":
+            self.private = section
+        elif access_level == "protected":
+            self.protected = section
+        else:
+            raise ValueError(f"Invalid access level: {access_level}")
