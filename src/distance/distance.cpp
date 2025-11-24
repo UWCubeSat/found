@@ -17,28 +17,31 @@ namespace found {
 ///// SpheroidDistanceDeterminationAlgorithm //////
 
 PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
-    if (conicSection_ == new Mat3(0,0,0,0,0,0,0,0,0)){ // check if conicSection_ was not initialized on construction
+    Mat3 zeroMat = {0,0,0,
+                    0,0,0,
+                    0,0,0};
+    if (conicSection_ == zeroMat){ // check if conicSection_ was not initialized on construction
         if (p.size() < 3) return {0, 0, 0};
-        conicSection_ = GetConicSection(p);
+        //conicSection_ = getConicSection(p);
     }
 
     // We use the adjugate of the matrix, which describes the conic envelope (set of lines that are tangent to the conic)
     // This matrix is symmetric
     Mat3 conicEnvelope = conicSection_.Adjugate();
     // Make sure the determinant is negative so that only one of the eigenvalues is negative
-    if (conicEnvelope.Det > ) conicEnvelope = -1 * conicEnvelope;
+    if (conicEnvelope.Det() > 0) conicEnvelope = conicEnvelope*static_cast<decimal>(-1.0);
 
     Vec3 conicEnvelopeEigenvalues = conicEnvelope.EigenvaluesSymmetric();
-    Mat3 conicEnvelopeEigenvectors = conicEnvelope.EigenvectorsSymmetric(conicEnvelopeEigenvalues);
+    Mat3 conicEnvelopeEigenvectors = conicEnvelope.EigenvectorsSymmetric();
 
     Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEnvelopeEigenvalues, conicEnvelopeEigenvectors);
-
-    return pickPosition(possibleSolutions, principleAxisDimensions_.z, conicEnvelope);
+    return possibleSolutions.Column(0);
+    //return pickPosition(possibleSolutions, principleAxisDimensions_.z, conicEnvelope);
 }
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEnvelopeEigenvalues, Mat3 conicEnvelopeEigenvectors){
     decimal a = principleAxes.x;
-    decimal b = principleAxes.y;
+    // decimal b = principleAxes.y; same as a
     decimal c = principleAxes.z;
 
     // lambda1, lambda2, lambda3
@@ -54,10 +57,11 @@ Mat3 SpheroidDistanceDeterminationAlgorithm::SolveForPossiblePositions(Vec3 prin
     *  See tutorial paper (search tutorial in slack; Eqs. 205-207) for more details
     */
     decimal scale = (a*a*l1)/(l2 - l3);
-    Vec2 rho = scale * Vec2(
+    Vec2 rho = {
         -((c/a)*(c/a) - l2/l1)*(1 - l2/l1),
         ((c/a)*(c/a) - l3/l1)*(1 - l3/l1)
-    );
+    };
+    rho = rho * scale;
 
     Vec3 solution1 = conicEnvelopeEigenvectors * Vec3(0, sqrt(rho.x), sqrt(rho.y));  // there may be a way to compute these two operations faster?
     Vec3 solution2 = conicEnvelopeEigenvectors * Vec3(0, -sqrt(rho.x), sqrt(rho.y)); // they are almost the exact same
@@ -66,27 +70,24 @@ Mat3 SpheroidDistanceDeterminationAlgorithm::SolveForPossiblePositions(Vec3 prin
     solution1 = solution1 * (int)((0 > solution1.z) - (solution1.z > 0));
     solution2 = solution2 * (int)((0 > solution2.z) - (solution2.z > 0));
 
-    return Mat3(
-        solution1.x, solution2.x, 0,
-        solution1.y, solution2.y, 0,
-        solution1.z, solution2.z, 0
-    );
+    Mat3 possible_solutions = {solution1.x, solution2.x, 0,
+                               solution1.y, solution2.y, 0,
+                               solution1.z, solution2.z, 0};
+    return possible_solutions;
 }
 
-Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions, decimal principleAxisC, Mat3 conicEnvelope){
-    // Normalize to make calculations later easier
-    Vec3 trueAxisOfRotation = cam.SpatialToCamera({0,0,1}).Normalize();
+Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions, decimal principleAxisC, Mat3 conicEnvelope, Vec3 trueAxisOfRotation){
     // Renaming to make it clearer; If this causes performance issues just replace it
     decimal trueEigenvalue = principleAxisC*principleAxisC;
 
     // If the solution is correct, the axis of rotation will be (nearly) an eigenvector of the matrix formed 
     // by adding the conicEnvelope and the outerproduct of the solution 
     // see tutorial (Eqs. 168, 154)
-    Vec3 possibleSolution1 =  possibleSolutions.column(0);
-    decimal sol1EigenvectorCandidate = (conicEnvelope + possibleSolution1.OuterProduct(possibleSolution1))*trueAxisOfRotation;
+    Vec3 possibleSolution1 =  possibleSolutions.Column(0);
+    Vec3 sol1EigenvectorCandidate = (conicEnvelope + possibleSolution1.OuterProduct(possibleSolution1))*trueAxisOfRotation;
 
-    Vec3 possibleSolution2 =  possibleSolutions.column(1);
-    decimal sol2EigenvectorCandidate = (conicEnvelope + possibleSolution2.OuterProduct(possibleSolution2))*trueAxisOfRotation;
+    Vec3 possibleSolution2 =  possibleSolutions.Column(1);
+    Vec3 sol2EigenvectorCandidate = (conicEnvelope + possibleSolution2.OuterProduct(possibleSolution2))*trueAxisOfRotation;
     
     // Check how aligned the vectors are; if the a.o.r. was a true eigenvector, taking the dot product with the result of
     // the multiplication and dividing by the eigenvalue should give exactly 1
@@ -94,7 +95,8 @@ Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions
     decimal sol2Error = (sol2EigenvectorCandidate*trueAxisOfRotation / trueEigenvalue) - 1;
     
     // return the solution with less error; ideally it should not even be close
-    return possibleSolution1 : possibleSolution2 ? DECIMAL_ABS(sol1Error) < DECIMAL_ABS(sol2Error);
+    if (sol1Error < sol2Error)  return possibleSolution1;
+    return possibleSolution2;
 }
 
 ///// SphericalDistanceDeterminationAlgorithm /////

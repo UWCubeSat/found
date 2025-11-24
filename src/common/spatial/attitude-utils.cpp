@@ -6,6 +6,10 @@
 
 #include <stdexcept>
 
+#include "common/logging.hpp"
+
+#define DEFAULT_TOLERANCE DECIMAL(1e-3)
+
 namespace found {
 
 ///////////////////////////////////
@@ -41,6 +45,13 @@ Vec2 Vec2::operator+(const Vec2 &other) const {
 
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
+}
+
+decimal Vec3::At(int i) const{
+    if (i == 0) return x;
+    if (i == 1) return y;
+    if (i == 2) return z;
+    throw std::runtime_error("index out of bounds");
 }
 
 decimal Vec3::Magnitude() const {
@@ -111,68 +122,6 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     };
 }
 
-
-decimal Vec4::Magnitude() const {
-    return sqrt(MagnitudeSq());
-}
-
-decimal Vec4::MagnitudeSq() const {
-    return w*w+x*x+y*y+z*z;
-}
-
-Vec4 Vec4::Normalize() const {
-    decimal mag = Magnitude();
-    return {
-        w/mag, x/mag, y/mag, z/mag,
-    };
-}
-
-Vec4 Vec4::operator-() const {
-    return { -w, -x, -y, -z };
-}
-
-Vec4 Vec4::operator-(const Vec4 &other) const {
-    return { w - other.w, x - other.x, y - other.y, z - other.z };
-}
-
-decimal Vec4::operator*(const Vec4 &other) const {
-    return w*other.w + x*other.x + y*other.y + z*other.z;
-}
-
-Vec4 Vec4::operator*(const decimal &scalar) const {
-    return { w*scalar, x*scalar, y*scalar, z*scalar };
-}
-
-Vec4 Vec4::operator/(const decimal &divisor) const {
-    return { w/divisor, x / divisor, y / divisor, z / divisor };
-}
-
-Vec4 &Vec4::operator+=(const Vec4 &other) {
-    this->w += other.w;
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
-
-    return *this;
-}
-
-Vec4 Vec4::operator*(const Mat4 &other) const {
-    return {
-        w*other.At(0,0) + x*other.At(0,1) + y*other.At(0,2) + z*other.At(0,3),
-        w*other.At(1,0) + x*other.At(1,1) + y*other.At(1,2) + z*other.At(1,3),
-        w*other.At(2,0) + x*other.At(2,1) + y*other.At(2,2) + z*other.At(2,3),
-        w*other.At(3,0) + x*other.At(3,1) + y*other.At(3,2) + z*other.At(3,3),
-    };
-}
-
-Mat3 Vec4::OuterProduct(const Vec4 &other) const {
-    return {
-        w*other.w, w*other.x, w*other.y, w*other.z,
-        x*other.w, x*other.x, x*other.y, x*other.z,
-        y*other.w, y*other.x, y*other.y, y*other.z,
-        z*other.w, z*other.x, z*other.y, z*other.z
-    };
-}
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////
@@ -267,10 +216,10 @@ Mat3 Mat3::operator*(const decimal &scalar) const {
     };
 }
 
-Mat3 Mat3::operator==(const Mat3 &other) const{
-    for (int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            if (other.At(i, j) != this.At(i, j)) return false;
+bool Mat3::operator==(const Mat3 &other) const {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++){
+            if (abs(other.At(i, j) - At(i, j)) < DEFAULT_TOLERANCE) return false;
         }
     }
     return true;
@@ -300,33 +249,25 @@ Mat3 Mat3::Inverse() const {
     return res * scalar;
 }
 
-Mat3 Mat3::Cofactor() const{
-    Mat3 C;
-    // Take the determinant of the minor, alternate multiplying by +-
-    C(0,0) =  (At(1,1) * At(2,2) - At(1,2) * At(2,1));
-    C(0,1) = -(At(1,0) * At(2,2) - At(1,2) * At(2,0));
-    C(0,2) =  (At(1,0) * At(2,1) - At(1,1) * At(2,0));
-
-    C(1,0) = -(At(0,1) * At(2,2) - At(0,2) * At(2,1));
-    C(1,1) =  (At(0,0) * At(2,2) - At(0,2) * At(2,0));
-    C(1,2) = -(At(0,0) * At(2,1) - At(0,1) * At(2,0));
-
-    C(2,0) =  (At(0,1) * At(1,2) - At(0,2) * At(1,1));
-    C(2,1) = -(At(0,0) * At(1,2) - At(0,2) * At(1,0));
-    C(2,2) =  (At(0,0) * At(1,1) - At(0,1) * At(1,0));
+Mat3 Mat3::Cofactor() const {
+    Mat3 C ={
+        (At(1,1) * At(2,2) - At(1,2) * At(2,1)), (At(1,0) * At(2,2) - At(1,2) * At(2,0)), (At(1,0) * At(2,1) - At(1,1) * At(2,0)),
+        (At(0,1) * At(2,2) - At(0,2) * At(2,1)), (At(0,0) * At(2,2) - At(0,2) * At(2,0)), (At(0,0) * At(2,1) - At(0,1) * At(2,0)),
+        (At(0,1) * At(1,2) - At(0,2) * At(1,1)), (At(0,0) * At(1,2) - At(0,2) * At(1,0)), (At(0,0) * At(1,1) - At(0,1) * At(1,0))
+    };    
 
     return C;
 }
 
-Mat3 Mat3::Adjugate() const{
-    Cofactor().Transpose();
+Mat3 Mat3::Adjugate() const {
+    return Cofactor().Transpose();
 }
 
 // Given a pair (u, v), solves (cos, sin) * (-v, u) = 0 for cos and sin
 // Check the eigenvalue paper (Eq. 3) for derivation
 void GetCosSin(decimal u, decimal v, decimal& cos, decimal& sin){
     decimal length = sqrt(u*u + v*v);
-    if (length 0){
+    if (length != 0){
         cos = u/length;
         sin = v/length;
         if (cos > 0){
@@ -346,23 +287,77 @@ bool Converged(decimal diag1, decimal diag2, decimal superdiag){
     return sum + superdiag == sum;
 }
 
+// takes in a vec3 of eigenvalues and returns a sorted vec3
+Vec3 sortEigenvalues(Vec3 eigenvalues){
+    decimal x = eigenvalues.x;
+    decimal y = eigenvalues.y;
+    decimal z = eigenvalues.z;
+    if (x > y){
+        if (y > z) return {0, 1, 2};
+        if (x > z) return {0, 2, 1};
+        return {2, 0, 1};
+    }
+    if (x > z) return {1, 0, 2};
+    if (y > z) return {1, 2, 0};
+    return {2, 1, 0};
+}
+
+// Takes in a mat3 of eigenvectors and sorts them according to eigenvalue
+//
+// This WILL break if an eigenvalue is degenerate, so just make sure our satellite doesn't do that 👍
+// Since we're dealing with really precise floats this *should* be very improbably but who knows
+// If our satellite explodes randomly I'm sorry
+// I will probably fix this later maybe - Senuka
+Mat3 sortEigenvectors(Vec3 sortedEigenvalues, Mat3 eigenvectors, Mat3 matrix){
+    Vec3 eigenvector0;
+    Vec3 eigenvector1;
+    Vec3 eigenvector2;
+
+    for (int i = 0; i < 3; i ++){
+        if (abs(eigenvectors.At(i, 0)) < DEFAULT_TOLERANCE) continue;
+        decimal eigenvalue0 = (matrix.Row(i) * eigenvectors.Column(0))/eigenvectors.At(i, 0);
+        if (abs(eigenvalue0 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(0);
+        if (abs(eigenvalue0 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(0);
+        if (abs(eigenvalue0 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(0);
+    }
+
+    for (int i = 0; i < 3; i ++){
+        if (abs(eigenvectors.At(i, 1)) < DEFAULT_TOLERANCE) continue;
+        decimal eigenvalue1 = (matrix.Row(i) * eigenvectors.Column(1))/eigenvectors.At(i, 1);
+        if (abs(eigenvalue1 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(1);
+        if (abs(eigenvalue1 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(1);
+        if (abs(eigenvalue1 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(1);
+    }
+
+    for (int i = 0; i < 3; i ++){
+        if (abs(eigenvectors.At(i, 2)) < DEFAULT_TOLERANCE) continue;
+        decimal eigenvalue2 = (matrix.Row(i) * eigenvectors.Column(2))/eigenvectors.At(i, 2);
+        if (abs(eigenvalue2 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(2);
+        if (abs(eigenvalue2 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(2);
+        if (abs(eigenvalue2 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(2);
+    }
+
+    return Mat3FromCols(eigenvector0, eigenvector1, eigenvector2);
+
+}
+
 /* Sorry, this function is gonna be long while I work on it (I'll clean it up later) - Senuka
 *  The paper writes all the matrix multiplication out explicitly; while this might be technically faster since it lets us 
 *  skip computing a couple positions, I think readability is more important here
 * 
-*  Also i'm not 100% sure these are sorted, I need to check
 */
-Vec3 Mat3::EigenvaluesSymmetric() const{
+Vec3 Mat3::EigenvaluesSymmetric() {
+    if (_eigenvectorsAlreadyCalculated) return _eigenvalues;
     decimal half = static_cast<decimal>(0.5);
 
     // First compute Householder reflection to set b02 to 0
     // Eq. 2
     decimal c, s;
-    GetCosSin(a12, -a02, c, s);
+    GetCosSin(At(1,2), -At(0,2), c, s);
     Mat3 HouseholderRefl = {c,  s, 0, 
                             s, -c, 0,
                             0,  0, 1};
-    Mat3 B = HouseholderRefl * this * HouseholderRefl; //technically should be transpose on the left but it's the same matrix
+    Mat3 B = HouseholderRefl * (*this) * HouseholderRefl; //technically should be transpose on the left but it's the same matrix
     // Matrix B is now a tridiagonal matrix
 
     // This matrix will be the product of all the reflections, and will eventually turn into our list of eigenvectors
@@ -371,18 +366,18 @@ Vec3 Mat3::EigenvaluesSymmetric() const{
                         0,0,1};
     
     // The smallest number we can represent is 2^-alpha          
-    int alpha = 0; // TODO Figure out what this is for decimal
+    int alpha = 2; // TODO Figure out what this is for decimal; for some reason 2 seems to work for now which obviously is not at all accurate but what do i know
     int i = 0, imax = 0, power = 0;
     decimal c2, s2;
 
-    if (DECIMAL_ABS(b12) <= DECIMAL_ABS(b01)){
+    if (DECIMAL_ABS(B.At(1,2)) <= DECIMAL_ABS(B.At(0,1))){
         // Eq. 12
         // finds alpha in b12 = x * 2^alpha
-        std::frexp(b12, &power);
+        std::frexp(B.At(1,2), &power);
         imax = 2 * (power + alpha + 1);
         for (i = 0; i < imax; ++i){
             // Compute Givens reflection of B in Eq. 4
-            GetCosSin(half * (b00 - b11), b01, c2, s2); // For some reason the math says to do b11 - b00?? I'm gonna go with the code for now but I'll do the math myself later to make sure - Senuka
+            GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2); 
             s = DECIMAL_SQRT(half * (1 - c2));
             c = s2 / (2 * s);
             Mat3 GivensReflection = {c, 0, -s,
@@ -395,15 +390,15 @@ Vec3 Mat3::EigenvaluesSymmetric() const{
             ReflProduct = ReflProduct * GivensReflection;
 
             if (Converged(B.At(0,0), B.At(1,1), B.At(0,1))){
-                GetCosSin(half * (b00 - b11), b01, c2, s2);
-                s = DECIMAL_SQRT(half * (1 - cc2));
+                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
+                s = DECIMAL_SQRT(half * (1 - c2));
                 c = half * s2 / s;
                 HouseholderRefl = { c,  s, 0, 
                                     s, -c, 0,
                                     0,  0, 1};
 
                 // This matrix is now the diagonal estimate
-                B = HouseholderRefl * this * HouseholderRefl;
+                B = HouseholderRefl * (*this) * HouseholderRefl;
                 // This matrix is now the eigenvector matrix estimate
                 ReflProduct = ReflProduct * HouseholderRefl;
                 break;
@@ -413,11 +408,11 @@ Vec3 Mat3::EigenvaluesSymmetric() const{
     else{
         // Eq. 12
         // finds alpha in b01 = x * 2^alpha
-        std::frexp(b01, &power);
+        std::frexp(B.At(0,1), &power);
         imax = 2 * (power + alpha + 1);
         for (i = 0; i < imax; ++i){
             // Compute Givens reflection of B in Eq. 4
-            GetCosSin(half * (b11 - b22), b12, c2, s2); // Same issue as above
+            GetCosSin(half * (B.At(1,1) - B.At(2,2)), B.At(1,2), c2, s2);
             s = DECIMAL_SQRT(half * (1 - c2));
             c = s2 / (2 * s);
             Mat3 GivensReflection = {0, 1, 0,
@@ -430,15 +425,15 @@ Vec3 Mat3::EigenvaluesSymmetric() const{
             ReflProduct = ReflProduct * GivensReflection;
 
             if (Converged(B.At(1,1), B.At(2,2), B.At(1,2))){
-                GetCosSin(half * (b00 - b11), b01, c2, s2);
-                s = DECIMAL_SQRT(half * (1 - cc2));
+                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
+                s = DECIMAL_SQRT(half * (1 - c2));
                 c = half * s2 / s;
                 HouseholderRefl = { c,  s, 0, 
                                     s, -c, 0,
                                     0,  0, 1};
 
                 // This matrix is now the diagonal estimate
-                B = HouseholderRefl * this * HouseholderRefl;
+                B = HouseholderRefl * (*this) * HouseholderRefl;
                 // This matrix is now the eigenvector matrix estimate
                 ReflProduct = ReflProduct * HouseholderRefl;
                 break;
@@ -446,116 +441,31 @@ Vec3 Mat3::EigenvaluesSymmetric() const{
         }
     }
 
-    _eigenvectors = ReflProduct;
+    // Get the eigenvalues and eigenvectors, sort them, and store them
+    Vec3 unsortedEigenvalues = {B.At(0,0), B.At(1,1), B.At(2,2)};
+    Vec3 eigenvalueOrder = sortEigenvalues(unsortedEigenvalues);
+    _eigenvalues = {unsortedEigenvalues.At(eigenvalueOrder.x), unsortedEigenvalues.At(eigenvalueOrder.y), unsortedEigenvalues.At(eigenvalueOrder.z)};
+    Mat3 sortedEigenvectors = sortEigenvectors(_eigenvalues, ReflProduct, *this);
+    _eigenvector1 = sortedEigenvectors.Column(0);
+    _eigenvector2 = sortedEigenvectors.Column(1);
+    _eigenvector3 = sortedEigenvectors.Column(2);
     _eigenvectorsAlreadyCalculated = true;
-    Vec3 eigenvalues = {B.At(0,0), B.At(1,1), B.At(2,2)};
-    return eigenvalues;
+    return _eigenvalues;
 }
 
-Mat3 Mat3::EigenvectorsSymmetric(Vec3 eigenvalues) const{
-    if (_eigenvectorsAlreadyCalculated) return _eigenvectors;
-    EigenvaluesSymmetric();
-    return _eigenvectors;
+Mat3 Mat3::EigenvectorsSymmetric() {
+    
+    if (!_eigenvectorsAlreadyCalculated) EigenvaluesSymmetric();
+    Mat3 eigenvectors = Mat3FromCols(_eigenvector1, _eigenvector2, _eigenvector3);
+    return eigenvectors;
 }
 
-decimal Mat4::At(int i, int j) const {
-    return x[4*i+j];
-}
-
-Vec3 Mat4::Column(int j) const {
-    return {At(0,j), At(1,j), At(2,j), At(3,j)};
-}
-
-Vec3 Mat4::Row(int i) const {
-    return {At(i,0), At(i,1), At(i,2), At(i, 3)};
-}
-
-decimal Mat4::Trace() const {
-    return At(0,0) + At(1,1) + At(2,2) + At(3,3);
-}
-
-// ngl I got chatgpt to write this all out cause I could not be bothered
-// please test thoroughly
-decimal Mat4::Det() const {
-    return
-        (At(0,0) * ((At(1,1)*(At(2,2)*At(3,3) - At(3,2)*At(2,3)))
-             - (At(1,2)*(At(2,1)*At(3,3) - At(3,1)*At(2,3)))
-             + (At(1,3)*(At(2,1)*At(3,2) - At(3,1)*At(2,2))))) -
-
-        (At(0,1) * ((At(1,0)*(At(2,2)*At(3,3) - At(3,2)*At(2,3)))
-             - (At(1,2)*(At(2,0)*At(3,3) - At(3,0)*At(2,3)))
-             + (At(1,3)*(At(2,0)*At(3,2) - At(3,0)*At(2,2))))) +
-
-        (At(0,2) * ((At(1,0)*(At(2,1)*At(3,3) - At(3,1)*At(2,3)))
-             - (At(1,1)*(At(2,0)*At(3,3) - At(3,0)*At(2,3)))
-             + (At(1,3)*(At(2,0)*At(3,1) - At(3,0)*At(2,1))))) -
-
-        (At(0,3) * ((At(1,0)*(At(2,1)*At(3,2) - At(3,1)*At(2,2)))
-             - (At(1,1)*(At(2,0)*At(3,2) - At(3,0)*At(2,2)))
-             + (At(1,2)*(At(2,0)*At(3,1) - At(3,0)*At(2,1)))));
-}
-
-Mat4 Mat4::operator+(const Mat4 &other) const {
-    return {
-        At(0,0)+other.At(0,0), At(0,1)+other.At(0,1), At(0,2)+other.At(0,2), At(0,3)+other.At(0,3),
-        At(1,0)+other.At(1,0), At(1,1)+other.At(1,1), At(1,2)+other.At(1,2), At(1,3)+other.At(1,3),
-        At(2,0)+other.At(2,0), At(2,1)+other.At(2,1), At(2,2)+other.At(2,2), At(2,3)+other.At(2,3),
-        At(3,0)+other.At(3,0), At(3,1)+other.At(3,1), At(3,2)+other.At(3,2), At(3,3)+other.At(3,3)
-    };
-}
-
-Mat4 Mat4::operator*(const Mat4 &other) const {
-#define _MATMUL_ENTRY(row, col) At(row,0)*other.At(0,col) + At(row,1)*other.At(1,col) + At(row,2)*other.At(2,col) + At(row,3)*other.At(3,col)
-    return {
-        _MATMUL_ENTRY(0,0), _MATMUL_ENTRY(0,1), _MATMUL_ENTRY(0,2), _MATMUL_ENTRY(0,3),
-        _MATMUL_ENTRY(1,0), _MATMUL_ENTRY(1,1), _MATMUL_ENTRY(1,2), _MATMUL_ENTRY(1,3),
-        _MATMUL_ENTRY(2,0), _MATMUL_ENTRY(2,1), _MATMUL_ENTRY(2,2), _MATMUL_ENTRY(2,3),
-        _MATMUL_ENTRY(3,0), _MATMUL_ENTRY(3,1), _MATMUL_ENTRY(3,2), _MATMUL_ENTRY(3,3)
-    };
-#undef _MATMUL_ENTRY
-}
-
-Vec4 Mat4::operator*(const Vec4 &vec) const {
-    return {
-        vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2) + vec.z*At(0,3),
-        vec.x*At(1,0) + vec.y*At(1,1) + vec.z*At(1,2) + vec.z*At(1,3),
-        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2) + vec.z*At(2,3),
-        vec.x*At(3,0) + vec.y*At(3,1) + vec.z*At(3,2) + vec.z*At(3,3)
-    };
-}
-
-Mat4 Mat4::operator*(const decimal &scalar) const {
-    return {
-        scalar*At(0,0) + scalar*At(0,1) + scalar*At(0,2) + scalar*At(0,3),
-        scalar*At(1,0) + scalar*At(1,1) + scalar*At(1,2) + scalar*At(1,3),
-        scalar*At(2,0) + scalar*At(2,1) + scalar*At(2,2) + scalar*At(2,3),
-        scalar*At(3,0) + scalar*At(3,1) + scalar*At(3,2) + scalar*At(3,3)
-    };
-}
-
-Mat4 Mat4::Transpose() const {
-    return {
-        At(0,0) + At(0,1) + At(0,2) + At(0,3),
-        At(1,0) + At(1,1) + At(1,2) + At(1,3),
-        At(2,0) + At(2,1) + At(2,2) + At(2,3),
-        At(3,0) + At(3,1) + At(3,2) + At(3,3)
-    };
-}
 
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
                             0,0,1};
 
-/// 4x4 identity matrix
-const Mat4 kIdentityMat4 = {1,0,0,0,
-                            0,1,0,0,
-                            0,0,1,0
-                            0,0,0,1};
-
-///////////////////////////////////
-///////// QUATERNION CLASS ////////
-///////////////////////////////////
 
 /**
  * Create a quaternion which represents a rotation of theta around the axis input
@@ -699,6 +609,12 @@ Vec3 Attitude::Rotate(const Vec3 &vec) const {
     }
 }
 
+Mat3 Mat3FromCols(Vec3 col1, Vec3 col2, Vec3 col3){
+    Mat3 output = { col1.x, col2.x, col3.x,
+                    col1.y, col2.y, col3.y,
+                    col1.z, col2.z, col3.z};
+    return output;
+}
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
 ///////////////////////////////////
