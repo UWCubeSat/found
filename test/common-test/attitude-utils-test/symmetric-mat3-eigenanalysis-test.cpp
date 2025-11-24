@@ -36,7 +36,7 @@ void checkIndividualEigenvectorDependence(Vec3 expected, Vec3 actual, decimal to
         EXPECT_LT(abs(expected.x - actual.x), tolerance);
         if (abs(expected.y) < tolerance || abs(actual.y) < tolerance){
             EXPECT_LT(abs(expected.y - actual.y), tolerance);
-            if (abs(expected.z) < tolerance || abs(actual.z) < tolerance) { EXPECT_LT(abs(expected.z-actual.z), tolerance); } // we should only hit this if there's less than 3 eigenvectors
+            if (abs(expected.z) < tolerance || abs(actual.z) < tolerance) { EXPECT_LT(abs(expected.z-actual.z), tolerance); }
         } else {
             decimal ratio = expected.y / actual.y;
             if (abs(expected.z) < tolerance || abs(actual.z) < tolerance) { EXPECT_LT(abs(expected.z - actual.z), tolerance);
@@ -140,6 +140,31 @@ TEST(SymmetricMat3EigenanalysisTest, TestRandomMatrix) {
     Mat3 actualMat = input.EigenvectorsSymmetric();
     Mat3 expectedMat = { 0.573927,  -0.0200101, -0.818662,
                          0.443177,  -0.833065,   0.331054, 
-                         0.688623,   0.552813,   0.469251, };
+                         0.688623,   0.552813,   0.469251 };
     checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
 }
+
+
+
+// THE ALGORITHM DOES NOT WORK IF AN EIGENVALUE IS 0; I DON'T THINK WE NEED THIS THOUGH
+
+// TEST(SymmetricMat3EigenanalysisTest, TestEigenvalue0Matrix) {
+//     // three eigenvalues of 1 are expected for the identity matrix
+//     Vec3 expected = {static_cast<decimal>(10.8151),
+//                                 static_cast<decimal>(0.184927),
+//                                 static_cast<decimal>(0)};
+
+//     // Not const because eigenvalues get stored
+//     Mat3 input = {  9, 4, 0,
+//                     4, 2, 0,
+//                     0, 0, 0};
+
+//     Vec3 actual = input.EigenvaluesSymmetric();
+//     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
+
+//     Mat3 actualMat = input.EigenvectorsSymmetric();
+//     Mat3 expectedMat = { 0,  -0.413216, 0.910633,
+//                          0,   0.910633,   0.413216, 
+//                          1,   0,   0 };
+//     checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
+// }

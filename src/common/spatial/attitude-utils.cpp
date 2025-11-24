@@ -366,7 +366,7 @@ Vec3 Mat3::EigenvaluesSymmetric() {
                         0,0,1};
     
     // The smallest number we can represent is 2^-alpha          
-    int alpha = 2; // TODO Figure out what this is for decimal; for some reason 2 seems to work for now which obviously is not at all accurate but what do i know
+    int alpha = 2; // TODO Figure out what this is for decimal; for some reason only 2 seems to work??? I have no idea why
     int i = 0, imax = 0, power = 0;
     decimal c2, s2;
 
