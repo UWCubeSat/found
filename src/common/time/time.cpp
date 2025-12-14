@@ -1,5 +1,7 @@
 #include "common/time/time.hpp"
 
+#include <chrono>
+#include <cstdint>
 #include <ctime>
 
 #include "common/decimal.hpp"
@@ -18,17 +20,29 @@
 namespace found {
 
 DateTime getUTCTime() {
-    std::time_t now = std::time(nullptr);
-    std::tm* utc_time = std::gmtime(&now);
+    // Use chrono for nanosecond precision
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::chrono::system_clock::duration duration = now.time_since_epoch();
+    std::chrono::nanoseconds nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(duration);
+    uint64_t epochs_ns = static_cast<uint64_t>(nanos.count());
+
+    // Get broken-down time for year/month/day/etc.
+    std::time_t now_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* utc_time = std::gmtime(&now_t);
+
+    // Calculate nanoseconds within the current second
+    std::chrono::seconds secs = std::chrono::duration_cast<std::chrono::seconds>(duration);
+    int nanosecond = static_cast<int>((nanos - std::chrono::duration_cast<std::chrono::nanoseconds>(secs)).count());
 
     return {
-        now,
+        epochs_ns,
         static_cast<int>(utc_time->tm_year + 1900),  // tm_year is years since 1900
         static_cast<int>(utc_time->tm_mon + 1),      // tm_mon is months since January (0-11)
         static_cast<int>(utc_time->tm_mday),         // tm_mday is day of the month (1-31)
         static_cast<int>(utc_time->tm_hour),         // tm_hour is hours since midnight (0-23)
         static_cast<int>(utc_time->tm_min),          // tm_min is minutes after the hour (0-59)
-        static_cast<int>(utc_time->tm_sec)           // tm_sec is seconds after the minute (0-60)
+        static_cast<int>(utc_time->tm_sec),          // tm_sec is seconds after the minute (0-60)
+        nanosecond                                   // nanoseconds within current second
     };
 }
 
@@ -41,14 +55,15 @@ DateTime getUT1Time() {
     // provides Delta UT1 values from 2025 to 2026, the average is
     // 0.087497 seconds, so we use that as a rough approximation.
     DateTime now = getUTCTime();
-    now.epochs += AVG_DELTA_UT1;  // Adjust for UT1, this is a rough approximation
-    now.second += AVG_DELTA_UT1;  // Adjust seconds accordingly
+    // Convert AVG_DELTA_UT1 (seconds) to nanoseconds and add
+    now.epochs += static_cast<uint64_t>(AVG_DELTA_UT1 * NS_PER_SEC);
+    now.nanosecond += static_cast<int>((AVG_DELTA_UT1 - static_cast<int>(AVG_DELTA_UT1)) * NS_PER_SEC);
     return now;
 }
 
 decimal getJulianDateTime(DateTime &time) {
     // Purportedly, the Julian date is also
-    // time.epochs / 86400.0 + 2440587.5, but
+    // time.epochs / NS_PER_DAY + JULIAN_UNIX_EPOCH, but
     // this is apparently just an approximation.
 
     // The below formula is from https://aa.usno.navy.mil/faq/JD_formula
@@ -58,35 +73,39 @@ decimal getJulianDateTime(DateTime &time) {
     decimal D = time.day + 1721013.5;
     decimal julianDate = A - B + C + D;
 
-    return julianDate + time.hour / DECIMAL(24.0) +
-           time.minute / DECIMAL(1440.0) + time.second / DECIMAL(86400.0) -
+    return julianDate + time.hour / DECIMAL(HOURS_PER_DAY) +
+           time.minute / DECIMAL(MIN_PER_DAY) + time.second / DECIMAL(SEC_PER_DAY) +
+           time.nanosecond / DECIMAL(NS_PER_DAY) -
            DECIMAL(0.5) * (100 * time.year + time.month > 190002.5 ? 1 : -1) +
            DECIMAL(0.5);
 }
 
 decimal getCurrentJulianDateTime() {
     #ifdef FAST
-        // If FAST is defined, we use the approximation
-        return getJulianDateTime(std::time(nullptr));
+        // If FAST is defined, we use the approximation with nanosecond precision
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        std::chrono::nanoseconds nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
+        return getJulianDateTime(static_cast<uint64_t>(nanos.count()));
     #else
         DateTime time = getUT1Time();
         return getJulianDateTime(time);
     #endif
 }
 
-decimal getJulianDateTime(std::time_t epochs) {
-    return epochs / 86400.0 + 2440587.5;
+decimal getJulianDateTime(uint64_t epochs) {
+    // epochs is in nanoseconds, divide by nanoseconds per day
+    return epochs / NS_PER_DAY + JULIAN_UNIX_EPOCH;
 }
 
 decimal getGreenwichMeanSiderealTime(DateTime &time) {
     // Purportedly, the Greenwich Mean Sidereal Time (GMST)
-    // is also 15(18.697374558 + 24.06570982441908 * (JDT - 2451545.0))
+    // is also 15(18.697374558 + 24.06570982441908 * (JDT - J2000_JULIAN_DATE))
     // in degrees
 
     // The below formula is from http://tiny.cc/4wal001
     decimal JDT = getJulianDateTime(time);
-    decimal D_tt = JDT - DECIMAL(2451545.0);  // Julian date - J2000.0
-    decimal t = D_tt / DECIMAL(36525.0);  // Julian centuries since J2000.0
+    decimal D_tt = JDT - DECIMAL(J2000_JULIAN_DATE);  // Julian date - J2000.0
+    decimal t = D_tt / DECIMAL(DAYS_PER_JULIAN_CENTURY);  // Julian centuries since J2000.0
 
     return DECIMAL(280.46061837) +
            DECIMAL(360.98564736629) * D_tt +
@@ -96,16 +115,19 @@ decimal getGreenwichMeanSiderealTime(DateTime &time) {
 
 decimal getCurrentGreenwichMeanSiderealTime() {
     #ifdef FAST
-        // If FAST is defined, we use the approximation
-        return getGreenwichMeanSiderealTime(std::time(nullptr));
+        // If FAST is defined, we use the approximation with nanosecond precision
+        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+        std::chrono::nanoseconds nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
+        return getGreenwichMeanSiderealTime(static_cast<uint64_t>(nanos.count()));
     #else
         DateTime time = getUT1Time();
         return getGreenwichMeanSiderealTime(time);
     #endif
 }
 
-decimal getGreenwichMeanSiderealTime(std::time_t epochs) {
-    return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) * (getJulianDateTime(epochs) - DECIMAL(2451545.0)));
+decimal getGreenwichMeanSiderealTime(uint64_t epochs) {
+    return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) * 
+            (getJulianDateTime(epochs) - DECIMAL(J2000_JULIAN_DATE)));
 }
 
 }  // namespace found

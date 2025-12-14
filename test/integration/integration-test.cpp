@@ -123,11 +123,35 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
     ASSERT_DF_EQ(expected, actual, 1);
 }
 
+TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
+    int argc = 6;
+    const char *argv[] = {"found", "distance",
+        "--image", "test/common/assets/example_image.jpg",
+        "--reference-orientation", "1.1 1.2 1.3",
+        "--relative-orientation", "1.4 1.5 1.6"};
+
+    testing::internal::CaptureStdout();  // Start capturing stdout
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+
+    // Current output is just nothing, it outputs the {0, 0, 0} m vector
+    std::stringstream expectedOutput;
+    expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Calculated Position: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX
+                   << ", " << NUMBER_REGEX << "\\) m\\s*"
+                   << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
+                   << "Distance from Earth: " << NUMBER_REGEX << " m\\s*";
+
+    ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
+}
+
 TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
     int argc = 7;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", "2025-11-11 19:30:00",
+        "--image-time", "2025-11-11 19:30:00.00",
         "--reference-as-orientation"};
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -151,7 +175,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
     int argc = 15;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", "2025-11-11 19:30:00",
+                        "--image-time", "2025-11-11 19:30:00.00",
                         "--reference-as-orientation",
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -175,7 +199,7 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
     int argc = 25;
     const char *argv[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", "2025-11-11 19:30:00",
+                        "--image-time", "2025-11-11 19:30:00.00",
                         "--reference-as-orientation",
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -214,7 +238,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     int argc2 = 14;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", "2025-11-11 19:30:00",
+                        "--image-time", "2025-11-11 19:30:00.00",
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),
@@ -253,7 +277,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     int argc2 = 16;
     const char *argv2[] = {"found", "distance",
                         "--image", example_earth1.path,
-                        "--image-time", "2025-11-11 19:30:00",
+                        "--image-time", "2025-11-11 19:30:00.00",
                         "--calibration-data", temp_df,
                         "--camera-focal-length", example_earth1.FocalLength.c_str(),
                         "--camera-pixel-size", example_earth1.PixelSize.c_str(),

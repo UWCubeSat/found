@@ -128,7 +128,7 @@ inline Image strtoimage(const std::string &str) {
  * 
  * @param str The string to convert
  * 
- * @return The time from epoch that the string represents
+ * @return The time from epoch that the string represents (epochs in nanoseconds)
  */
 inline DateTime strtodatetime(const std::string &str) {
     std::tm tm = {};
@@ -139,16 +139,28 @@ inline DateTime strtodatetime(const std::string &str) {
         throw std::invalid_argument("Invalid datetime format: " + str);
     }
 
+    int nanosecond = 0;
+    std::string nanos_str;
+    if (std::getline(ss, nanos_str) && nanos_str.size() > 1 && nanos_str[0] == '.') {
+        nanos_str = nanos_str.substr(1);
+        nanos_str.resize(9, '0');  // pad or truncate to 9 digits
+        nanosecond = std::stoi(nanos_str);
+    }
+
     std::time_t t = timegm(&tm);
 
+    // Convert to nanoseconds: seconds * NS_PER_SEC + nanoseconds
+    uint64_t epochs_ns = static_cast<uint64_t>(t) * NS_PER_SEC + static_cast<uint64_t>(nanosecond);
+
     return {
-        t,
+        epochs_ns,
         tm.tm_year + 1900,
         tm.tm_mon + 1,
         tm.tm_mday,
         tm.tm_hour,
         tm.tm_min,
-        tm.tm_sec
+        tm.tm_sec,
+        nanosecond
     };
 }
 

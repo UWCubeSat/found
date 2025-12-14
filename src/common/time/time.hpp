@@ -1,6 +1,7 @@
 #ifndef SRC_COMMON_TIME_TIME_HPP_
 #define SRC_COMMON_TIME_TIME_HPP_
 
+#include <cstdint>
 #include <ctime>
 
 #include "common/decimal.hpp"
@@ -10,13 +11,31 @@ namespace found {
 // Average Delta UT1 in seconds, based on USNO data
 #define AVG_DELTA_UT1 0.087497
 
+/// Nanoseconds per second
+constexpr uint64_t NS_PER_SEC = 1000000000ULL;
+/// Nanoseconds per day (86400 seconds)
+constexpr double NS_PER_DAY = 86400.0 * NS_PER_SEC;
+/// Seconds per day
+constexpr double SEC_PER_DAY = 86400.0;
+/// Minutes per day
+constexpr double MIN_PER_DAY = 1440.0;
+/// Hours per day
+constexpr double HOURS_PER_DAY = 24.0;
+
+/// Julian date at Unix epoch (January 1, 1970 00:00:00 UTC)
+constexpr double JULIAN_UNIX_EPOCH = 2440587.5;
+/// J2000.0 epoch Julian date (January 1, 2000 12:00:00 TT)
+constexpr double J2000_JULIAN_DATE = 2451545.0;
+/// Days per Julian century
+constexpr double DAYS_PER_JULIAN_CENTURY = 36525.0;
+
 /**
  * DateTime represents
  * a date and time
  */
 struct DateTime {
-    /// Seconds since epoch
-    std::time_t epochs;
+    /// Nanoseconds since epoch
+    uint64_t epochs;
     /// Year (e.g., 2023)
     int year;
     /// Month (1-12)
@@ -29,6 +48,8 @@ struct DateTime {
     int minute;
     /// Second of the minute (0-60)
     int second;
+    /// Nanosecond of the second (0-999999999)
+    int nanosecond = 0;
 };
 
 /**
@@ -49,14 +70,14 @@ DateTime getUT1Time();
 
 /**
  * Obtains the Julian date from
- * the given epochs in seconds
+ * the given epochs in nanoseconds
  * 
- * @param epochs The epochs in seconds
+ * @param epochs The epochs in nanoseconds
  * 
  * @return The Julian date corresponding
  * to the given epochs
  */
-decimal getJulianDateTime(std::time_t epochs);
+decimal getJulianDateTime(uint64_t epochs);
 
 /**
  * Obtains the current Julian date
@@ -81,13 +102,13 @@ decimal getCurrentJulianDateTime();
  * Obtains the Greenwich Mean Sidereal Time
  * in decimal format from the given epochs
  * 
- * @param epochs The epochs in seconds
+ * @param epochs The epochs in nanoseconds
  * 
  * @return The Greenwich Mean Sidereal Time
  * corresponding to the given epochs in
  * degrees
  */
-decimal getGreenwichMeanSiderealTime(std::time_t epochs);
+decimal getGreenwichMeanSiderealTime(uint64_t epochs);
 
 /**
  * Obtains the Greenwich Mean Sidereal Time

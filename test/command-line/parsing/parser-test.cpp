@@ -87,7 +87,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     int argc = 42;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", "2025-11-11 19:30:00",
+        "--image-time", "2025-11-11 19:30:00.00",
         "--calibration-data", "test/common/assets/empty-df.found",
         "--reference-as-orientation", "false",
         "--camera-focal-length", "1.5",
@@ -115,8 +115,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
 
     ASSERT_IMAGE_EQ(expectedImage, options.image);
 
-    // Test Time
-    DateTime expectedImageTime{1762889400, 2025, 11, 11, 19, 30, 0};
+    // Test Time (epochs in nanoseconds: 1762889400 seconds * NS_PER_SEC)
+    DateTime expectedImageTime{1762889400000000000ULL, 2025, 11, 11, 19, 30, 0};
     ASSERT_EQ(expectedImageTime.epochs, options.imageTime.epochs);
     ASSERT_EQ(expectedImageTime.year, options.imageTime.year);
     ASSERT_EQ(expectedImageTime.month, options.imageTime.month);
@@ -124,6 +124,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EQ(expectedImageTime.hour, options.imageTime.hour);
     ASSERT_EQ(expectedImageTime.minute, options.imageTime.minute);
     ASSERT_EQ(expectedImageTime.second, options.imageTime.second);
+    ASSERT_EQ(expectedImageTime.nanosecond, options.imageTime.nanosecond);
 
     // Test other options
     ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
@@ -153,7 +154,7 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
     int argc = 9;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
-        "--image-time", "2025-11-11 19:30:00",
+        "--image-time", "2025-11-11 19:30:00.00",
         "--reference-as-orientation",
         "--calibration-data", "test/common/assets/empty-df.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
@@ -169,6 +170,15 @@ TEST_F(ParserTest, DistanceParserNoRefAsOriValue) {
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory
+}
+
+TEST_F(ParserTest, DistanceParserInvalidTimeInput) {
+    int argc = 5;
+    const char *argv[] = {"found", "distance",
+        "--image-time", "invalid-input",
+        "--reference-as-orientation"};
+
+    ASSERT_THROW(ParseDistanceOptions(argc, const_cast<char **>(argv)), std::invalid_argument);
 }
 
 TEST_F(ParserTest, TestDistanceParserRefAsOriWithEquals) {
