@@ -25,21 +25,25 @@
 #define DECIMAL(x) (static_cast<decimal>(x))
 
 // Math Constants wrapped with Decimal typecast
-#define DECIMAL_M_E             (DECIMAL(M_E))           /* e */
-#define DECIMAL_M_LOG2E         (DECIMAL(M_LOG2E))       /* log_2 e */
-#define DECIMAL_M_LOG10E        (DECIMAL(M_LOG10E))      /* log_10 e */
-#define DECIMAL_M_LN2           (DECIMAL(M_LN2))         /* log_e 2 */
-#define DECIMAL_M_LN10          (DECIMAL(M_LN10))        /* log_e 10 */
-#define DECIMAL_M_PI            (DECIMAL(M_PI))          /* pi */
-#define DECIMAL_M_PI_2          (DECIMAL(M_PI_2))        /* pi/2 */
-#define DECIMAL_M_PI_4          (DECIMAL(M_PI_4))        /* pi/4 */
-#define DECIMAL_M_1_PI          (DECIMAL(M_1_PI))        /* 1/pi */
-#define DECIMAL_M_2_PI          (DECIMAL(M_2_PI))        /* 2/pi */
-#define DECIMAL_M_2_SQRTPI      (DECIMAL(M_2_SQRTPI))    /* 2/sqrt(pi) */
-#define DECIMAL_M_SQRT2         (DECIMAL(M_SQRT2))       /* sqrt(2) */
-#define DECIMAL_M_SQRT1_2       (DECIMAL(M_SQRT1_2))     /* 1/sqrt(2) */
-#define DECIMAL_M_R_E           (DECIMAL(6371008.7714))  /* Earth's Radius */
-#define DECIMAL_INF             (DECIMAL(INFINITY))      /* Infinity */
+#define DECIMAL_M_E             (DECIMAL(M_E))               /* e */
+#define DECIMAL_M_LOG2E         (DECIMAL(M_LOG2E))           /* log_2 e */
+#define DECIMAL_M_LOG10E        (DECIMAL(M_LOG10E))          /* log_10 e */
+#define DECIMAL_M_LN2           (DECIMAL(M_LN2))             /* log_e 2 */
+#define DECIMAL_M_LN10          (DECIMAL(M_LN10))            /* log_e 10 */
+#define DECIMAL_M_PI            (DECIMAL(M_PI))              /* pi */
+#define DECIMAL_M_PI_2          (DECIMAL(M_PI_2))            /* pi/2 */
+#define DECIMAL_M_PI_4          (DECIMAL(M_PI_4))            /* pi/4 */
+#define DECIMAL_M_1_PI          (DECIMAL(M_1_PI))            /* 1/pi */
+#define DECIMAL_M_2_PI          (DECIMAL(M_2_PI))            /* 2/pi */
+#define DECIMAL_M_2_SQRTPI      (DECIMAL(M_2_SQRTPI))        /* 2/sqrt(pi) */
+#define DECIMAL_M_SQRT2         (DECIMAL(M_SQRT2))           /* sqrt(2) */
+#define DECIMAL_M_SQRT1_2       (DECIMAL(M_SQRT1_2))         /* 1/sqrt(2) */
+#define DECIMAL_M_R_E           (DECIMAL(6371008.7714))      /* Earth's Radius */
+#define DECIMAL_M_A_E           (DECIMAL(6378137.0))         /* WGS84 Semi-major axis (m) */
+#define DECIMAL_M_E2_E          (DECIMAL(0.00669437999014))  /* WGS84 First eccentricity squared */
+#define DECIMAL_M_B_E           (DECIMAL_M_A_E * DECIMAL_SQRT(DECIMAL(1.0) - DECIMAL_M_E2_E))  
+        /* WGS84 Semi-minor axis (m) */
+#define DECIMAL_INF             (DECIMAL(INFINITY))          /* Infinity */
 
 // Math Functions wrapped with Decimal typecast
 #define DECIMAL_POW(base,power) (DECIMAL(std::pow(base, power)))

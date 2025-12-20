@@ -7,39 +7,27 @@
 namespace found {
 
     /**
-     * Represents an Earth-centric
-     * Spherical Vector with time
-     * information
-     */
-    struct EarthSphericalVec3 {
-        /// Longitude (RA, degrees)
-        decimal longitude;
-        /// Lattitude (DE, degrees)
-        decimal lattitude;
-        /// Radius NOT Altitude (r, meters)
-        decimal radius;
-        /// Greenwich Mean Sidereal Time (degrees)
-        decimal GMST;
-    };
-
-    /**
-     * Obtains a celestial vector within Earth's Rotating Frame,
-     * in longitude/lattitude/altitude
+     * Converts a celestial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
      * 
-     * @param celestialVector The celestial vector to convert
-     * @param gmst The current GMST value, in degrees
+     * This function takes a position vector in the celestial coordinate system and
+     * converts it to ECEF coordinates using the WGS84 ellipsoid. The conversion involves:
+     * 1. Rotating the vector to Earth's rotating frame using GMST
+     * 2. Extracting geodetic coordinates (latitude, longitude, altitude)
+     * 3. Converting to ECEF coordinates using the WGS84 ellipsoid
      * 
-     * @return An EarthSphericalVec3 describing celestialVector
-     * within Earth's Rotating Frame at time GMST
+     * @param celestialVector The celestial vector to convert (in meters)
+     * @param gmst The current Greenwich Mean Sidereal Time value, in degrees
+     * 
+     * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters.
+     *         The coordinates are in the Earth-Centered, Earth-Fixed frame where:
+     *         - x-axis points to the intersection of the equator and prime meridian
+     *         - y-axis points to 90°E longitude on the equator
+     *         - z-axis points to the North Pole
      * 
      * @pre celestialVector must be in the frame of the celestial
-     * coordinate system NOT the camera coordinate system
+     *      coordinate system NOT the camera coordinate system
      */
-    EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst);
-
-    // NOTE: I purposefully don't include a GetEarthCoordinates(Vec3 &celestialVector).
-    // This is becuase celestialVector and gmst are derived at different times, though
-    // they originate from the same time point.
+    ECEFCoordinates GetEarthCoordinates(Vec3 &celestialVector, decimal gmst);
 
 }  // namespace found
 

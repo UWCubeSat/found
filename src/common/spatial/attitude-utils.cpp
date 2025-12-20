@@ -454,4 +454,49 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
     de = asin(vec.z);
 }
 
+decimal EarthRadiusAtLatitude(decimal latitude) {
+    // Calculate sin and cos of latitude
+    decimal sin_lat = DECIMAL_SIN(latitude);
+    decimal cos_lat = DECIMAL_COS(latitude);
+    decimal sin_lat_sq = sin_lat * sin_lat;
+    decimal cos_lat_sq = cos_lat * cos_lat;
+
+    // Calculate geocentric radius: distance from Earth's center to point on ellipsoid surface
+    // R(φ) = sqrt{((a² cos φ)² + (b² sin φ)²) / ((a cos φ)² + (b sin φ)²)}
+    //      = sqrt{(a⁴ cos²φ + b⁴ sin²φ) / (a² cos²φ + b² sin²φ)}
+    decimal a2 = DECIMAL_M_A_E * DECIMAL_M_A_E;
+    decimal a4 = a2 * a2;
+    decimal b2 = DECIMAL_M_B_E * DECIMAL_M_B_E;
+    decimal b4 = b2 * b2;
+
+    decimal numerator = a4 * cos_lat_sq + b4 * sin_lat_sq;
+    decimal denominator = a2 * cos_lat_sq + b2 * sin_lat_sq;
+
+    return DECIMAL_SQRT(numerator / denominator);
+}
+
+ECEFCoordinates LLAToECEF(decimal latitude, decimal longitude, decimal altitude) {
+    // Calculate sin and cos of latitude
+    decimal sin_lat = DECIMAL_SIN(latitude);
+    decimal cos_lat = DECIMAL_COS(latitude);
+    decimal sin_lat_sq = sin_lat * sin_lat;
+
+    // Calculate prime vertical radius N(φ) = a / sqrt(1 - e² * sin²(φ))
+    decimal N = DECIMAL_M_A_E / DECIMAL_SQRT(DECIMAL(1.0) - DECIMAL_M_E2_E * sin_lat_sq);
+
+    // Calculate ECEF coordinates
+    // x = (N(φ) + h) * cos(φ) * cos(λ)
+    // y = (N(φ) + h) * cos(φ) * sin(λ)
+    // z = (N(φ) * (1 - e²) + h) * sin(φ)
+    decimal N_plus_h = N + altitude;
+    decimal cos_lon = DECIMAL_COS(longitude);
+    decimal sin_lon = DECIMAL_SIN(longitude);
+    
+    return ECEFCoordinates(
+        N_plus_h * cos_lat * cos_lon,
+        N_plus_h * cos_lat * sin_lon,
+        (N * (DECIMAL(1.0) - DECIMAL_M_E2_E) + altitude) * sin_lat
+    );
+}
+
 }  // namespace found

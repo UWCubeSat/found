@@ -126,7 +126,7 @@ decimal getCurrentGreenwichMeanSiderealTime() {
 }
 
 decimal getGreenwichMeanSiderealTime(uint64_t epochs) {
-    return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) * 
+    return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
             (getJulianDateTime(epochs) - DECIMAL(J2000_JULIAN_DATE)));
 }
 

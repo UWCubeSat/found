@@ -8,7 +8,7 @@
 
 namespace found {
 
-EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
+ECEFCoordinates GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
     // Converts epoch time to GMST in degrees, then we convert to radians
     // We should ensure Euclidean Mod, but both the divisor and dividend
     // are positive, so we don't need it (GMST > 0 after Jan 1st, 2000).
@@ -21,12 +21,12 @@ EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
     decimal RA = std::atan2(position.y, position.x);  // Huh, the range is [-PI, PI], not [0, 2PI]. That's convenient
     decimal DE = std::asin(position.Normalize().z);  // Range is [-PI/2, PI/2]
 
-    // Longitude, Lattitude and Altitude Follow, with conversion
-    // to degrees and range adjustment from RA to longitude
-    return {RadToDeg(RA),
-            RadToDeg(DE),
-            position.Magnitude(),
-            gmst};
+    // Altitude: subtract the Earth's radius at this latitude from position magnitude
+    decimal radius = position.Magnitude();
+    decimal altitude = radius - EarthRadiusAtLatitude(DE);
+        
+    // Convert LLA to ECEF coordinates
+    return LLAToECEF(RA, DE, altitude);
 }
 
 }  // namespace found

@@ -228,6 +228,63 @@ class Vec3 {
     Mat3 OuterProduct(const Vec3 &) const;
 };
 
+/**
+ * Represents Earth-Centered, Earth-Fixed (ECEF) coordinates.
+ * 
+ * ECEF is a Cartesian coordinate system with its origin at Earth's center.
+ * The axes are:
+ * - x-axis: Points to the intersection of the equator and prime meridian (0° latitude, 0° longitude)
+ * - y-axis: Points to 90°E longitude on the equator (0° latitude, 90°E longitude)
+ * - z-axis: Points to the North Pole (90°N latitude)
+ * 
+ * All coordinates are in meters.
+ */
+struct ECEFCoordinates {
+    /// The x coordinate (meters)
+    decimal x;
+    /// The y coordinate (meters)
+    decimal y;
+    /// The z coordinate (meters)
+    decimal z;
+
+    /**
+     * Constructs ECEF coordinates from x, y, z components
+     * 
+     * @param x The x coordinate in meters
+     * @param y The y coordinate in meters
+     * @param z The z coordinate in meters
+     */
+    constexpr ECEFCoordinates(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {}
+
+    /**
+     * Constructs ECEF coordinates from a Vec3
+     * 
+     * @param vec The vector to convert
+     */
+    explicit constexpr ECEFCoordinates(const Vec3 &vec) : x(vec.x), y(vec.y), z(vec.z) {}
+
+    /**
+     * Default construction
+     */
+    ECEFCoordinates() = default;
+
+    /**
+     * Converts this to a Vec3
+     * 
+     * @return A Vec3 with the same coordinates
+     */
+    constexpr Vec3 ToVec3() const {
+        return Vec3(x, y, z);
+    }
+
+    /**
+     * Provides the magnitude (distance from Earth's center) of this coordinate
+     * 
+     * @return The magnitude in meters
+     */
+    decimal Magnitude() const;
+};
+
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////
@@ -850,6 +907,34 @@ constexpr decimal RadToArcSec(decimal rad) {
 constexpr decimal ArcSecToRad(decimal arcSec) {
     return DegToRad(arcSec / DECIMAL(3600.0));
 }
+
+
+// Geodetic Coordinate Conversions
+
+
+/**
+ * Calculates the geocentric radius (distance from Earth's center to a point on the
+ * ellipsoid surface) at a given geodetic latitude using the WGS84 ellipsoid.
+ * 
+ * @param latitude The geodetic latitude in radians
+ * 
+ * @return The geocentric radius at the given latitude in meters
+ */
+decimal EarthRadiusAtLatitude(decimal latitude);
+
+/**
+ * Converts geodetic coordinates (Latitude, Longitude, Altitude) to
+ * Earth-Centered, Earth-Fixed (ECEF) coordinates using WGS84 ellipsoid.
+ * 
+ * @param latitude The geodetic latitude in radians
+ * @param longitude The geodetic longitude in radians
+ * @param altitude The altitude above the WGS84 ellipsoid in meters
+ * 
+ * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters
+ * 
+ * @note Formula from: https://www.oc.nps.edu/oc2902w/coord/coordcvt.pdf
+ */
+ECEFCoordinates LLAToECEF(decimal latitude, decimal longitude, decimal altitude);
 
 }  // namespace found
 

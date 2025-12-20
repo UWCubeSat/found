@@ -84,7 +84,7 @@ We can then use this calibration information to now make some position estimates
 
 For the distance flags:
 1. The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases
-2. The time that the image was taken in UTC-1 time in the format YYYY-MM-DD HH:MM:SS where hours is in military time
+2. The time that the image was taken in UTC-1 time in the format YYYY-MM-DD HH:MM:SS.NS where hours is in military time
 3. We then specify our calibration data, which we generated from `tools.generator` (check out [our tools folder](tools) for more information)
 4. We can specify camera parameters, like the focal length (m)
 5. Or the pixel size (m)
