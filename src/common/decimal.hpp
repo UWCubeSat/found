@@ -41,7 +41,7 @@
 #define DECIMAL_M_R_E           (DECIMAL(6371008.7714))      /* Earth's Radius */
 #define DECIMAL_M_A_E           (DECIMAL(6378137.0))         /* WGS84 Semi-major axis (m) */
 #define DECIMAL_M_E2_E          (DECIMAL(0.00669437999014))  /* WGS84 First eccentricity squared */
-#define DECIMAL_M_B_E           (DECIMAL_M_A_E * DECIMAL_SQRT(DECIMAL(1.0) - DECIMAL_M_E2_E))  
+#define DECIMAL_M_B_E           (DECIMAL_M_A_E * DECIMAL_SQRT(DECIMAL(1.0) - DECIMAL_M_E2_E))
         /* WGS84 Semi-minor axis (m) */
 #define DECIMAL_INF             (DECIMAL(INFINITY))          /* Infinity */
 

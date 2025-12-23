@@ -130,7 +130,7 @@ inline Image strtoimage(const std::string &str) {
  * 
  * @return The time from epoch that the string represents (epochs in nanoseconds)
  */
-inline DateTime strtodatetime(const std::string &str) {
+ inline DateTime strtodatetime(const std::string &str) {
     std::tm tm = {};
     std::istringstream ss(str);
 
@@ -138,6 +138,30 @@ inline DateTime strtodatetime(const std::string &str) {
     if (ss.fail()) {
         throw std::invalid_argument("Invalid datetime format: " + str);
     }
+
+    // Store original values for validation
+    int year = tm.tm_year + 1900;
+    int month = tm.tm_mon + 1;
+    int day = tm.tm_mday;
+    int hour = tm.tm_hour;
+    int minute = tm.tm_min;
+    int second = tm.tm_sec;
+
+    if (second > 59) {
+        throw std::invalid_argument("Invalid second in datetime: " + str);
+    }
+
+    // Validate day of month (considering leap years)
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    bool is_leap_year = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    if (is_leap_year && month == 2) {
+        days_in_month[1] = 29;
+    }
+    if (day > days_in_month[month - 1]) {
+        throw std::invalid_argument("Invalid day in datetime: " + str);
+    }
+
+    std::time_t t = timegm(&tm);
 
     int nanosecond = 0;
     std::string nanos_str;
@@ -147,19 +171,17 @@ inline DateTime strtodatetime(const std::string &str) {
         nanosecond = std::stoi(nanos_str);
     }
 
-    std::time_t t = timegm(&tm);
-
     // Convert to nanoseconds: seconds * NS_PER_SEC + nanoseconds
     uint64_t epochs_ns = static_cast<uint64_t>(t) * NS_PER_SEC + static_cast<uint64_t>(nanosecond);
 
     return {
         epochs_ns,
-        tm.tm_year + 1900,
-        tm.tm_mon + 1,
-        tm.tm_mday,
-        tm.tm_hour,
-        tm.tm_min,
-        tm.tm_sec,
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
         nanosecond
     };
 }

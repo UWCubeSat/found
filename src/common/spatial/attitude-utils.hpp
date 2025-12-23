@@ -908,34 +908,6 @@ constexpr decimal ArcSecToRad(decimal arcSec) {
     return DegToRad(arcSec / DECIMAL(3600.0));
 }
 
-
-// Geodetic Coordinate Conversions
-
-
-/**
- * Calculates the geocentric radius (distance from Earth's center to a point on the
- * ellipsoid surface) at a given geodetic latitude using the WGS84 ellipsoid.
- * 
- * @param latitude The geodetic latitude in radians
- * 
- * @return The geocentric radius at the given latitude in meters
- */
-decimal EarthRadiusAtLatitude(decimal latitude);
-
-/**
- * Converts geodetic coordinates (Latitude, Longitude, Altitude) to
- * Earth-Centered, Earth-Fixed (ECEF) coordinates using WGS84 ellipsoid.
- * 
- * @param latitude The geodetic latitude in radians
- * @param longitude The geodetic longitude in radians
- * @param altitude The altitude above the WGS84 ellipsoid in meters
- * 
- * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters
- * 
- * @note Formula from: https://www.oc.nps.edu/oc2902w/coord/coordcvt.pdf
- */
-ECEFCoordinates LLAToECEF(decimal latitude, decimal longitude, decimal altitude);
-
 }  // namespace found
 
 #endif  // SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_

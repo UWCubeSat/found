@@ -14,6 +14,7 @@
 #include "src/common/spatial/attitude-utils.hpp"
 #include "src/providers/converters.hpp"
 #include "src/common/decimal.hpp"
+#include "src/common/time/time.hpp"
 
 namespace found {
 
@@ -149,6 +150,157 @@ TEST(ConvertersTest, TestLocationRecordsDataFile) {
     ASSERT_TRUE(LocationRecordEqual(expected.positions[2], actual[2]));
 
     std::remove(temp_df);
+}
+
+TEST(ConvertersTest, TestDateTimeRecent) {
+    std::string str = "2024-02-29 14:30:45";  // Thu, Feb 29, 2024 (leap year)
+    DateTime dt = strtodatetime(str);
+
+    ASSERT_EQ(2024, dt.year);
+    ASSERT_EQ(2, dt.month);
+    ASSERT_EQ(29, dt.day);
+    ASSERT_EQ(14, dt.hour);
+    ASSERT_EQ(30, dt.minute);
+    ASSERT_EQ(45, dt.second);
+    ASSERT_EQ(0, dt.nanosecond);
+
+    // Calculate expected epoch
+    std::tm tm = {};
+    tm.tm_year = 2024 - 1900;
+    tm.tm_mon = 2 - 1;
+    tm.tm_mday = 29;
+    tm.tm_hour = 14;
+    tm.tm_min = 30;
+    tm.tm_sec = 45;
+    std::time_t t = timegm(&tm);
+    uint64_t expected_epochs = static_cast<uint64_t>(t) * NS_PER_SEC;
+    ASSERT_EQ(expected_epochs, dt.epochs);
+}
+
+TEST(ConvertersTest, TestDateTimeCompletelyWrong) {
+    std::string str = "not a date";
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+
+TEST(ConvertersTest, TestDateTimeInvalidDayInMonth) {
+    std::string str = "2026-02-30 14:30:45";
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+TEST(ConvertersTest, TestDateTimeNoNanoseconds) {
+    std::string str = "2030-09-12 13:20:12";
+    DateTime dt = strtodatetime(str);
+
+    ASSERT_EQ(2030, dt.year);
+    ASSERT_EQ(9, dt.month);
+    ASSERT_EQ(12, dt.day);
+    ASSERT_EQ(13, dt.hour);
+    ASSERT_EQ(20, dt.minute);
+    ASSERT_EQ(12, dt.second);
+    ASSERT_EQ(0, dt.nanosecond);
+
+    // Calculate expected epoch
+    std::tm tm = {};
+    tm.tm_year = 2030 - 1900;
+    tm.tm_mon = 9 - 1;
+    tm.tm_mday = 12;
+    tm.tm_hour = 13;
+    tm.tm_min = 20;
+    tm.tm_sec = 12;
+    std::time_t t = timegm(&tm);
+    uint64_t expected_epochs = static_cast<uint64_t>(t) * NS_PER_SEC;
+    ASSERT_EQ(expected_epochs, dt.epochs);
+}
+
+TEST(ConvertersTest, TestDateTimeInvalidNanoseconds) {
+    std::string str = "2024-12-22 14:30:45.abc";
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+
+TEST(ConvertersTest, TestDateTimeInvalidSecondTooHigh) {
+    std::string str = "2024-12-22 14:30:60";  // Second 60 (parses but invalid)
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+
+TEST(ConvertersTest, TestDateTimeInvalidDayTooHigh) {
+    std::string str = "2024-12-32 14:30:45";  // Day 32 for December
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+TEST(ConvertersTest, TestDateTimeInvalidNonLeapYearFeb29) {
+    std::string str = "2025-02-29 14:30:45";  // Feb 29 in non-leap year 2025
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+TEST(ConvertersTest, TestDateTimeValidNanoseconds) {
+    std::string str = "2024-12-22 14:30:45.123456789";
+    DateTime dt = strtodatetime(str);
+
+    ASSERT_EQ(2024, dt.year);
+    ASSERT_EQ(12, dt.month);
+    ASSERT_EQ(22, dt.day);
+    ASSERT_EQ(14, dt.hour);
+    ASSERT_EQ(30, dt.minute);
+    ASSERT_EQ(45, dt.second);
+    ASSERT_EQ(123456789, dt.nanosecond);
+
+    // Calculate expected epoch
+    std::tm tm = {};
+    tm.tm_year = 2024 - 1900;
+    tm.tm_mon = 12 - 1;
+    tm.tm_mday = 22;
+    tm.tm_hour = 14;
+    tm.tm_min = 30;
+    tm.tm_sec = 45;
+    std::time_t t = timegm(&tm);
+    uint64_t expected_epochs = static_cast<uint64_t>(t) * NS_PER_SEC + 123456789;
+    ASSERT_EQ(expected_epochs, dt.epochs);
+}
+
+TEST(ConvertersTest, TestDateTimeValidNanosecondsShort) {
+    std::string str = "2024-12-22 14:30:45.123";  // Short nanoseconds, should be padded
+    DateTime dt = strtodatetime(str);
+
+    ASSERT_EQ(2024, dt.year);
+    ASSERT_EQ(12, dt.month);
+    ASSERT_EQ(22, dt.day);
+    ASSERT_EQ(14, dt.hour);
+    ASSERT_EQ(30, dt.minute);
+    ASSERT_EQ(45, dt.second);
+    ASSERT_EQ(123000000, dt.nanosecond);  // Padded to 9 digits
+}
+
+TEST(ConvertersTest, TestDateTimeCenturyLeapYear) {
+    std::string str = "2000-02-29 12:00:00";  // Year 2000 is a leap year (divisible by 400)
+    DateTime dt = strtodatetime(str);
+
+    ASSERT_EQ(2000, dt.year);
+    ASSERT_EQ(2, dt.month);
+    ASSERT_EQ(29, dt.day);
+    ASSERT_EQ(12, dt.hour);
+    ASSERT_EQ(0, dt.minute);
+    ASSERT_EQ(0, dt.second);
+}
+
+TEST(ConvertersTest, TestDateTimeNonLeapCenturyYear) {
+    std::string str = "1900-02-29 12:00:00";  // Year 1900 is NOT a leap year (divisible by 100 but not 400)
+    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+}
+
+TEST(ConvertersTest, TestDateTimeNanosecondsDotOnly) {
+    std::string str = "2024-12-22 14:30:45.";  // Just a dot, no digits (size == 1)
+    DateTime dt = strtodatetime(str);
+    ASSERT_EQ(0, dt.nanosecond);  // Should default to 0 since size is not > 1
+}
+
+TEST(ConvertersTest, TestDateTimeNanosecondsNotStartingWithDot) {
+    // Text after time that doesn't start with '.' - should not parse as nanoseconds
+    std::string str = "2024-12-22 14:30:45xyz";
+    DateTime dt = strtodatetime(str);
+    ASSERT_EQ(0, dt.nanosecond);  // Should default to 0 since doesn't start with '.'
 }
 
 }  // namespace found
