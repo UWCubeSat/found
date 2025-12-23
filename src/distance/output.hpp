@@ -5,7 +5,7 @@
 #include "common/decimal.hpp"
 
 namespace found {
-    
+
     /**
      * Converts a celestial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
      * 

@@ -186,7 +186,7 @@ TEST(TimeTest, TestGetJulianDatePre1900) {
     };
 
     decimal julianDate = getJulianDateTime(time);
-    
+
     // The Julian date for 1861 should be around 2400000-2401000
     // This test ensures the pre-1900 branch is covered
     ASSERT_GT(julianDate, 2400000.0);

@@ -130,7 +130,7 @@ inline Image strtoimage(const std::string &str) {
  * 
  * @return The time from epoch that the string represents (epochs in nanoseconds)
  */
- inline DateTime strtodatetime(const std::string &str) {
+inline DateTime strtodatetime(const std::string &str) {
     std::tm tm = {};
     std::istringstream ss(str);
 
