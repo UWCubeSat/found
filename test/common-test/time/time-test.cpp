@@ -168,7 +168,7 @@ TEST(TimeTest, TestGetJulianDateJ2000) {
     // J2000.0 epoch is JD 2451545.0
     decimal expectedJulianDate = J2000_JULIAN_DATE;
 
-    ASSERT_DECIMAL_EQ(expectedJulianDate, julianDate, 0.01);
+    ASSERT_DECIMAL_EQ(expectedJulianDate, julianDate, DECIMAL(0.01));
 }
 
 TEST(TimeTest, TestGetJulianDatePre1900) {
@@ -189,8 +189,8 @@ TEST(TimeTest, TestGetJulianDatePre1900) {
 
     // The Julian date for 1861 should be around 2400000-2401000
     // This test ensures the pre-1900 branch is covered
-    ASSERT_GT(julianDate, 2400000.0);
-    ASSERT_LT(julianDate, 2401000.0);
+    ASSERT_GT(julianDate, DECIMAL(2400000.0));
+    ASSERT_LT(julianDate, DECIMAL(2401000.0));
 }
 
 TEST(TimeTest, TestGetJulianDate) {
