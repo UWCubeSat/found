@@ -1,0 +1,5 @@
+<map id="found::OrbitParams" name="found::OrbitParams">
+<area shape="rect" id="Node000001" title="OrbitParams defines the orbital parameters of a given orbit." alt="" coords="5,137,152,163"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="29,5,128,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,44,81,137,76,137,76,44"/>
+</map>
