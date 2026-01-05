@@ -146,6 +146,10 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
     return (v1-v2).Magnitude();
 }
 
+decimal SquareDistance(const Vec3 &v1, const Vec3 &v2) {
+    return (v1-v2).MagnitudeSq();
+}
+
 decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
@@ -305,7 +309,7 @@ Vec3 sortEigenvalues(Vec3 eigenvalues){
 // Takes in a mat3 of eigenvectors and sorts them according to eigenvalue
 //
 // This WILL break if an eigenvalue is degenerate, so just make sure our satellite doesn't do that 👍
-// Since we're dealing with really precise floats this *should* be very improbably but who knows
+// Since we're dealing with really precise floats this *should* be very improbable but who knows
 // If our satellite explodes randomly I'm sorry
 // I will probably fix this later maybe - Senuka
 Mat3 sortEigenvectors(Vec3 sortedEigenvalues, Mat3 eigenvectors, Mat3 matrix){
@@ -359,23 +363,35 @@ Vec3 Mat3::EigenvaluesSymmetric() {
                             0,  0, 1};
     Mat3 B = HouseholderRefl * (*this) * HouseholderRefl; //technically should be transpose on the left but it's the same matrix
     // Matrix B is now a tridiagonal matrix
-
     // This matrix will be the product of all the reflections, and will eventually turn into our list of eigenvectors
     Mat3 ReflProduct = {c,s,0,
                         s,-c,0,
                         0,0,1};
     
     // The smallest number we can represent is 2^-alpha          
-    int alpha = 2; // TODO Figure out what this is for decimal; for some reason only 2 seems to work??? I have no idea why
+    int alpha = 1079; // TODO Figure out what this is for decimal; for some reason only 2 seems to work??? I have no idea why
     int i = 0, imax = 0, power = 0;
     decimal c2, s2;
-
     if (DECIMAL_ABS(B.At(1,2)) <= DECIMAL_ABS(B.At(0,1))){
         // Eq. 12
         // finds alpha in b12 = x * 2^alpha
         std::frexp(B.At(1,2), &power);
         imax = 2 * (power + alpha + 1);
-        for (i = 0; i < imax; ++i){
+        for (i = 0; i < imax; i++){
+            if (Converged(B.At(0,0), B.At(1,1), B.At(0,1))){
+                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
+                s = DECIMAL_SQRT(half * (1 - c2));
+                c = half * s2 / s;
+                HouseholderRefl = { c,  s, 0, 
+                                    s, -c, 0,
+                                    0,  0, 1};
+
+                // This matrix is now the diagonal estimate
+                B = HouseholderRefl * B * HouseholderRefl;
+                // This matrix is now the eigenvector matrix estimate
+                ReflProduct = ReflProduct * HouseholderRefl;
+                break;
+            }
             // Compute Givens reflection of B in Eq. 4
             GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2); 
             s = DECIMAL_SQRT(half * (1 - c2));
@@ -388,21 +404,6 @@ Vec3 Mat3::EigenvaluesSymmetric() {
             B = GivensReflection.Transpose() * B * GivensReflection;
             // Update ReflProduct
             ReflProduct = ReflProduct * GivensReflection;
-
-            if (Converged(B.At(0,0), B.At(1,1), B.At(0,1))){
-                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
-                s = DECIMAL_SQRT(half * (1 - c2));
-                c = half * s2 / s;
-                HouseholderRefl = { c,  s, 0, 
-                                    s, -c, 0,
-                                    0,  0, 1};
-
-                // This matrix is now the diagonal estimate
-                B = HouseholderRefl * (*this) * HouseholderRefl;
-                // This matrix is now the eigenvector matrix estimate
-                ReflProduct = ReflProduct * HouseholderRefl;
-                break;
-            }
         }
     }
     else{
@@ -410,7 +411,21 @@ Vec3 Mat3::EigenvaluesSymmetric() {
         // finds alpha in b01 = x * 2^alpha
         std::frexp(B.At(0,1), &power);
         imax = 2 * (power + alpha + 1);
-        for (i = 0; i < imax; ++i){
+        for (i = 0; i < imax; i++){
+            if (Converged(B.At(1,1), B.At(2,2), B.At(1,2))){
+                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
+                s = DECIMAL_SQRT(half * (1 - c2));
+                c = half * s2 / s;
+                HouseholderRefl = { 1,  0, 0, 
+                                    0,  c, s,
+                                    0,  s, -c};
+
+                // This matrix is now the diagonal estimate
+                B = HouseholderRefl * B * HouseholderRefl;
+                // This matrix is now the eigenvector matrix estimate
+                ReflProduct = ReflProduct * HouseholderRefl;
+                break;
+            }
             // Compute Givens reflection of B in Eq. 4
             GetCosSin(half * (B.At(1,1) - B.At(2,2)), B.At(1,2), c2, s2);
             s = DECIMAL_SQRT(half * (1 - c2));
@@ -422,25 +437,9 @@ Vec3 Mat3::EigenvaluesSymmetric() {
             // Update B
             B = GivensReflection.Transpose() * B * GivensReflection;
             // Update ReflProduct
-            ReflProduct = ReflProduct * GivensReflection;
-
-            if (Converged(B.At(1,1), B.At(2,2), B.At(1,2))){
-                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
-                s = DECIMAL_SQRT(half * (1 - c2));
-                c = half * s2 / s;
-                HouseholderRefl = { c,  s, 0, 
-                                    s, -c, 0,
-                                    0,  0, 1};
-
-                // This matrix is now the diagonal estimate
-                B = HouseholderRefl * (*this) * HouseholderRefl;
-                // This matrix is now the eigenvector matrix estimate
-                ReflProduct = ReflProduct * HouseholderRefl;
-                break;
-            }
+            ReflProduct = ReflProduct * GivensReflection; 
         }
     }
-
     // Get the eigenvalues and eigenvectors, sort them, and store them
     Vec3 unsortedEigenvalues = {B.At(0,0), B.At(1,1), B.At(2,2)};
     Vec3 eigenvalueOrder = sortEigenvalues(unsortedEigenvalues);

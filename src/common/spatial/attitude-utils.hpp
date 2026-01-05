@@ -139,9 +139,9 @@ class Vec3 {
     // Unit Vector
 
     /**
-     * Provides the magnitude of this Vec2
+     * Returns a vector that is parallel to this with magnitude 1
      * 
-     * @return The magnitude of this
+     * @return A parallel vector with magnitude 1
     */
     Vec3 Normalize() const;
 
@@ -284,6 +284,17 @@ decimal Distance(const Vec2 &, const Vec2 &);
  * @return The distance between v1 and v2
 */
 decimal Distance(const Vec3 &, const Vec3 &);
+
+/**
+ * Determines the squared distance between two vectors
+ * This method is faster than regular distance, and should be used instead when possible
+ * 
+ * @param v1 The first vector
+ * @param v2 The second vector
+ * 
+ * @return The squared distance between v1 and v2
+*/
+decimal SquareDistance(const Vec3 &, const Vec3 &);
 
 /**
  * Determines the angle between two different vectors

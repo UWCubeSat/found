@@ -16,12 +16,12 @@ using found::Vec3;
 using found::Mat3;
 /**
  * Requires that vec1 == vec2 (using DecimalEquals)
- * 
+ *
  * @param vec1 A Vec3 object
  * @param vec2 A Vec3 object
  * @param tolerance The tolerance for vec1 to be
  * "equal" to vec2
- * 
+ *
  * @post Will have REQUIRE'd that vec1 is equal to
  * vec2, on a component basis, within tolerance
 */
@@ -53,11 +53,12 @@ void checkIndividualEigenvectorDependence(Vec3 expected, Vec3 actual, decimal to
 
 
 void checkMatrixEigenvectorDependence(Mat3 expected, Mat3 actual, decimal tolerance){
-    for (int i = 0; i < 3; i++){
-        std::stringstream ss1;
-        ss1 <<  "expected: " << expected.Column(i).x << " " << expected.Column(i).y << " " << expected.Column(i).z << "; actual : " << actual.Column(i).x << " " << actual.Column(i).y << " " << actual.Column(i).z;
-        LOG_INFO(ss1.str());
-    }
+    // Log eigenvector matrix
+    // for (int i = 0; i < 3; i++){
+    //     std::stringstream ss1;
+    //     ss1 <<  "expected: " << expected.Column(i).x << " " << expected.Column(i).y << " " << expected.Column(i).z << "; actual : " << actual.Column(i).x << " " << actual.Column(i).y << " " << actual.Column(i).z;
+    //     LOG_INFO(ss1.str());
+    // }
     checkIndividualEigenvectorDependence(expected.Column(0), actual.Column(0), tolerance);
     checkIndividualEigenvectorDependence(expected.Column(1), actual.Column(1), tolerance);
     checkIndividualEigenvectorDependence(expected.Column(2), actual.Column(2), tolerance);
@@ -139,32 +140,55 @@ TEST(SymmetricMat3EigenanalysisTest, TestRandomMatrix) {
 
     Mat3 actualMat = input.EigenvectorsSymmetric();
     Mat3 expectedMat = { 0.573927,  -0.0200101, -0.818662,
-                         0.443177,  -0.833065,   0.331054, 
+                         0.443177,  -0.833065,   0.331054,
                          0.688623,   0.552813,   0.469251 };
+    checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
+}
+
+TEST(SymmetricMat3EigenanalysisTest, TestEnvelopeMatrix) {
+    // three eigenvalues of 1 are expected for the identity matrix
+    Vec3 expected = {static_cast<decimal>(23.2845),
+                                static_cast<decimal>(11.8807),
+                                static_cast<decimal>(-6.69974)};
+
+    // Not const because eigenvalues get stored
+    Mat3 input = {   12.9597, 11.9471, -7.76076,
+                    11.9471, 6.19767, 3.82588,
+                    -7.76076, 3.82588, 9.30806};
+
+    Vec3 actual = input.EigenvaluesSymmetric();
+    VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
+
+    Mat3 actualMat = input.EigenvectorsSymmetric();
+    Mat3 expectedMat = { -0.809697,  -0.00903044, 0.586779,
+                         -0.495862,  0.5453,   -0.675847,
+                         0.313868, 0.838192,   0.44605 };
     checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
 }
 
 
 
+
+
 // THE ALGORITHM DOES NOT WORK IF AN EIGENVALUE IS 0; I DON'T THINK WE NEED THIS THOUGH
 
-// TEST(SymmetricMat3EigenanalysisTest, TestEigenvalue0Matrix) {
-//     // three eigenvalues of 1 are expected for the identity matrix
-//     Vec3 expected = {static_cast<decimal>(10.8151),
-//                                 static_cast<decimal>(0.184927),
-//                                 static_cast<decimal>(0)};
+TEST(SymmetricMat3EigenanalysisTest, TestEigenvalue0Matrix) {
+    // three eigenvalues of 1 are expected for the identity matrix
+    Vec3 expected = {static_cast<decimal>(10.8151),
+                                static_cast<decimal>(0.184927),
+                                static_cast<decimal>(0)};
 
-//     // Not const because eigenvalues get stored
-//     Mat3 input = {  9, 4, 0,
-//                     4, 2, 0,
-//                     0, 0, 0};
+    // Not const because eigenvalues get stored
+    Mat3 input = {  9, 4, 0,
+                    4, 2, 0,
+                    0, 0, 0};
 
-//     Vec3 actual = input.EigenvaluesSymmetric();
-//     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
+    Vec3 actual = input.EigenvaluesSymmetric();
+    VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 
-//     Mat3 actualMat = input.EigenvectorsSymmetric();
-//     Mat3 expectedMat = { 0,  -0.413216, 0.910633,
-//                          0,   0.910633,   0.413216, 
-//                          1,   0,   0 };
-//     checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
-// }
+    Mat3 actualMat = input.EigenvectorsSymmetric();
+    Mat3 expectedMat = {  0.910633,  -0.413216, 0,
+                         0.413216,   0.910633,   0,
+                         0,   0,   1 };
+    checkMatrixEigenvectorDependence(expectedMat, actualMat, DEFAULT_TOLERANCE);
+}

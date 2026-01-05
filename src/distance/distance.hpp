@@ -120,19 +120,13 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * the position vector of a sattelite from Earth by modeling
     * Earth as a spheroid
     * 
-    * @param principleAxisDimensions The principle axes that define Earth's spheroid
+    * @param principleAxes The principle axes that define Earth's spheroid
     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
     * @param cam The camera used to capture the picture of Earth
-    * @param conicSection The matrix that defines the conic section on the image
-    * [ A,   B/2,  D/2,
-    *  B/2,   C,   F/2,
-    *  D/2,  F/2,   G  ]
-    * which gives the conic equation Ax^2 + Bxy + Cy^2 + Dx + Fy + G = 0
-    * when multiplied by [x, y, 1]  (Transpose)
+    * @param AOR Earth's axis of rotation in camera coordinates
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam,Vec3 principleAxisDimensions,  Mat3 conicSection) : cam_(cam), principleAxisDimensions_(principleAxisDimensions), conicSection_(conicSection) {}
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxisDimensions) : cam_(cam), principleAxisDimensions_(principleAxisDimensions) { conicSection_ = {0,0,0,0,0,0,0,0,0}; }
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes,  const Points &p) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
     /**
@@ -144,67 +138,58 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @return PositionVector The position vector of the Earth relative
     * to the camera
     * 
-    * @pre p must refer to points taken by the camera that was passed to
-    * this
     * 
-    * @post If p.size() < 3, then the result is exactly the zero vector
     * */
     PositionVector Run(const Points &p) override;
 
  protected:
-    /**
-    * Finds the 2 possible solutions for the vector to Earth's center
-    *
-    * @param principleAxes The principle axes that define Earth's spheroid
-    * @param conicEnvelopeEigenvalues The eigenvalues of the matrix that defines the conic envelope on the image plane
-    * @param conicEnvelopeEigenvectors The eigenvectors of the matrix that defines the conic envelope on the image plane
-    * 
-    * @return A 3x3 matrix where the first two columns are the possible solutions. The third column can be ignored.
-    */
-    Mat3 SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEnvelopeEigenvalues, Mat3 conicEnvelopeEigenvectors);
 
-    /**
-    * Finds the correct solution out of the two possible solutions for the vector to Earth's center
-    *
-    * @param possibleSolutions The possible vectors that point to Earth's center
-    * @param principleAxisC The polar radius (axis c) of Earth's spheroid
-    * 
-    * @return The one that actually points to Earth's center, based on whether it agrees with Earth's axis of rotation
-    * @note This algorithm assumes the axis of rotation is cam.SpatialToCamera({0, 0, 1}), which I was told is correct; PLEASE VERIFY
-    */
-    Vec3 pickPosition(Mat3 possibleSolutions, decimal principleAxisC, Mat3 conicEnvelope, Vec3 trueAxisOfRotation);
+   /**
+   * Computes TCP, the transformation matrix from camera to Earth coordinates
+   * 
+   * @param AOR Earth's axis of rotation in camera coordinates
+   *
+   * @return TCP
+   * */
+    Mat3 ComputeCamToBodyTransformation(Vec3 AOR);
 
-    /**
-    * Finds the conic section given a set of points
-    * @param points the points on the horizon
-    *
-    * @return A 3x3 matrix that describes the conic section
-    */
-    Mat3 getConicSection(const Points &p);
+   /**
+   * Computes the inverse camera projection matrix
+   * does the same things as cam.CameraToSpatial except using z as depth
+   * 
+   * @param cam the camera object
+   *
+   * @return K; inverse camera projection matrix
+   * 
+   * */
+    Mat3 ComputeInvCameraProjMat(Camera cam);
 
-    /**
-    * cam_ field instance describes the camera settings used for the photo taken
-    */
+   /**
+   * performs TLS on Hn where H is the transpose matrix of all normalized vectors to the horizon
+   * 
+   * @param normalizedVecsToHorizon used to created H; these will be given transposed so they will be used as rows
+   *
+   * @return Vec3 normalized vector pointing to Earth's center
+   *
+   * */
+    Vec3 NormalizedVecToEarthTLS(std::unique_ptr<Vec3[]> &normalizedVecsToHorizon)
+
+   // cam_ field instance describes the camera settings used for the photo taken
     Camera cam_;
 
     /**
-    * principleAxisDimensions_ field instance describes the principle axes that define Earth's spheroid
+    * describes the principle axes that define Earth's spheroid
     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
     */
-    Vec3 principleAxisDimensions_;
+    Vec3 principleAxes_;
 
-    /**
-    * conicSection_ the cross section through the image plane of the cone has an apex at the camera
-    * and envelops the spheroid
-    * described by a Matrix
-    * [ A,   B/2,  D/2,
-    *  B/2,   C,   F/2,
-    *  D/2,  F/2,   G  ]
-    * that gives the conic equation Ax^2 + Bxy + Cy^2 + Dx + Fy + G = 0
-    * when multiplied by [x, y, 1]  (Transpose)
-    */
-    Mat3 conicSection_;
+
+   // Earth's axis of rotation in camera coordinates
+    Vec3 AOR_;
+
+    // points on the horizon in image coordinates
+    const Points &p;
 };
 
 /**

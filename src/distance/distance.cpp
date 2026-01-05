@@ -17,87 +17,46 @@ namespace found {
 ///// SpheroidDistanceDeterminationAlgorithm //////
 
 PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
-    Mat3 zeroMat = {0,0,0,
-                    0,0,0,
-                    0,0,0};
-    if (conicSection_ == zeroMat){ // check if conicSection_ was not initialized on construction
-        if (p.size() < 3) return {0, 0, 0};
-        //conicSection_ = getConicSection(p);
+    if (p.size() < 3) return {0, 0, 0}; // If someone puts in less than 3 points, we're probably at earth's core
+
+    const Mat3 DiagAxes = {principleAxisDimensions_.x,0,0,
+                              0,principleAxisDimensions_.y,0,
+                              0,0,principleAxisDimensions_.z};
+
+    const Mat3 DiagInvAxes = {1/principleAxisDimensions_.x,0,0,
+                              0,1/principleAxisDimensions_.y,0,
+                              0,0,1/principleAxisDimensions_.z};
+
+    Mat3 invCameraProjMat = ComputeInvCameraProjMat(cam);
+    
+    Mat3 TCP = ComputeCamToBodyTransformation(AOR_);
+
+    Mat3 imageToSpace = DiagAxes * CamToBodyTransformation * inversePrincipleAxes;
+
+    int i = 0;
+    size_t pointsSize = p.size();
+    std::unique_ptr<Vec3[]> normalizedVecsToHorizon(new Vec3[pointsSize]);
+    for (const Vec2 &point : p) {
+        Vec3 pBar = {p.x, p.y, 1};
+        normalizedVecsToHorizon[i++] = imageToSpace * pBar;
     }
 
-    // We use the adjugate of the matrix, which describes the conic envelope (set of lines that are tangent to the conic)
-    // This matrix is symmetric
-    Mat3 conicEnvelope = conicSection_.Adjugate();
-    // Make sure the determinant is negative so that only one of the eigenvalues is negative
-    if (conicEnvelope.Det() > 0) conicEnvelope = conicEnvelope*static_cast<decimal>(-1.0);
+    Vec3 vecToEarth = NormalizedVecToEarthTLS(normalizedVecsToHorizon); // magnitude is a function of the distance and the principal axes
 
-    Vec3 conicEnvelopeEigenvalues = conicEnvelope.EigenvaluesSymmetric();
-    Mat3 conicEnvelopeEigenvectors = conicEnvelope.EigenvectorsSymmetric();
+    Vec3 vecToEarth = (1/sqrt(vecToEarth*vecToEarth - 1)) * TCP.transpose * DiagInvAxes * vecToEarth; // I really want to use fastinvsqrt but that would probably send our satellite into the sun
 
-    Mat3 possibleSolutions = SolveForPossiblePositions(principleAxisDimensions_, conicEnvelopeEigenvalues, conicEnvelopeEigenvectors);
-    return possibleSolutions.Column(0);
-    //return pickPosition(possibleSolutions, principleAxisDimensions_.z, conicEnvelope);
+    return vecToEarth;
 }
 
-Mat3 SpheroidDistanceDeterminationAlgorithm::SolveForPossiblePositions(Vec3 principleAxes, Vec3 conicEnvelopeEigenvalues, Mat3 conicEnvelopeEigenvectors){
-    decimal a = principleAxes.x;
-    // decimal b = principleAxes.y; same as a
-    decimal c = principleAxes.z;
+Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeCamToBodyTransformation(Vec3 AOR){
 
-    // lambda1, lambda2, lambda3
-    decimal l1 = conicEnvelopeEigenvalues.x;
-    decimal l2 = conicEnvelopeEigenvalues.y;
-    decimal l3 = conicEnvelopeEigenvalues.z;
-
-    /**
-    *  2D vector that can be manipulated to extract 2 possible solutions
-    *  The solutions take the form of [eigenvector matrix] * (column vector)[0, +-sqrt(rho1), +-sqrt(rho2)]
-    *  This produces four results but 2 will produce an image with Earth behind the camera (z < 0) so we can toss them
-    *  The form is a bit esoteric but I don't think there's a way to intuitively understand it
-    *  See tutorial paper (search tutorial in slack; Eqs. 205-207) for more details
-    */
-    decimal scale = (a*a*l1)/(l2 - l3);
-    Vec2 rho = {
-        -((c/a)*(c/a) - l2/l1)*(1 - l2/l1),
-        ((c/a)*(c/a) - l3/l1)*(1 - l3/l1)
-    };
-    rho = rho * scale;
-
-    Vec3 solution1 = conicEnvelopeEigenvectors * Vec3(0, sqrt(rho.x), sqrt(rho.y));  // there may be a way to compute these two operations faster?
-    Vec3 solution2 = conicEnvelopeEigenvectors * Vec3(0, -sqrt(rho.x), sqrt(rho.y)); // they are almost the exact same
-
-    // multiply by the sign of z to negate the vector if it places Earth behind the camera
-    solution1 = solution1 * (int)((0 > solution1.z) - (solution1.z > 0));
-    solution2 = solution2 * (int)((0 > solution2.z) - (solution2.z > 0));
-
-    Mat3 possible_solutions = {solution1.x, solution2.x, 0,
-                               solution1.y, solution2.y, 0,
-                               solution1.z, solution2.z, 0};
-    return possible_solutions;
 }
 
-Vec3 SpheroidDistanceDeterminationAlgorithm::pickPosition(Mat3 possibleSolutions, decimal principleAxisC, Mat3 conicEnvelope, Vec3 trueAxisOfRotation){
-    // Renaming to make it clearer; If this causes performance issues just replace it
-    decimal trueEigenvalue = principleAxisC*principleAxisC;
+Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam){
 
-    // If the solution is correct, the axis of rotation will be (nearly) an eigenvector of the matrix formed 
-    // by adding the conicEnvelope and the outerproduct of the solution 
-    // see tutorial (Eqs. 168, 154)
-    Vec3 possibleSolution1 =  possibleSolutions.Column(0);
-    Vec3 sol1EigenvectorCandidate = (conicEnvelope + possibleSolution1.OuterProduct(possibleSolution1))*trueAxisOfRotation;
-
-    Vec3 possibleSolution2 =  possibleSolutions.Column(1);
-    Vec3 sol2EigenvectorCandidate = (conicEnvelope + possibleSolution2.OuterProduct(possibleSolution2))*trueAxisOfRotation;
-    
-    // Check how aligned the vectors are; if the a.o.r. was a true eigenvector, taking the dot product with the result of
-    // the multiplication and dividing by the eigenvalue should give exactly 1
-    decimal sol1Error = (sol1EigenvectorCandidate*trueAxisOfRotation / trueEigenvalue) - 1;
-    decimal sol2Error = (sol2EigenvectorCandidate*trueAxisOfRotation / trueEigenvalue) - 1;
-    
-    // return the solution with less error; ideally it should not even be close
-    if (sol1Error < sol2Error)  return possibleSolution1;
-    return possibleSolution2;
 }
+
+ Vec3 SpheroidDistanceDeterminationAlgorithm::NormalizedVecToEarthTLS(std::unique_ptr<Vec3[]> &normalizedVecsToHorizon)
 
 ///// SphericalDistanceDeterminationAlgorithm /////
 

@@ -186,6 +186,8 @@ def generate_points(
     for pt in image_points:
         if camera.in_camera(pt):
             count += 1
+            if count % 10 == 0:
+                print(pt)
     if count == 0:
         logging.error(
             "The produced image does not capture Earth's edge. Skipping image output."
