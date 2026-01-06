@@ -323,6 +323,57 @@ decimal AngleUnit(const Vec3 &, const Vec3 &);
 ///////////////////////////////////
 
 /**
+ * A Matrix is a mutable object that represents a NxM Matrix
+ * may or may not be copied directly from https://researchdatapod.com/singular-value-decomposition-svd-cpp/ out of laziness
+ * 
+*/
+class Matrix {
+ private:
+     std::vector<std::vector<decimal>> data;
+     int rows, cols;
+ public:
+     // Constructor initializes matrix with zeros
+     Matrix(int r, int c) : rows(r), cols(c) {
+         data.resize(r, std::vector<decimal>(c, 0.0));
+     }
+
+     // Access operators for reading and modifying elements
+     decimal& operator()(int i, int j) { return data[i][j]; }
+     decimal Get(int i, int j) const { return data[i][j]; }
+     const decimal& operator()(int i, int j) const { return data[i][j]; }
+
+     // Get dimensions
+     int NumRows() const { return rows; }
+     int NumCols() const { return cols; }
+
+     /**
+     * Matrix Multiplication
+     * 
+     * @param other The other matrix
+     * 
+     * @return this @ other
+     */
+     Matrix operator*(const Matrix& other) const;
+
+     /**
+     * Obtains the transpose of this Matrix
+     * 
+     * @return The transpose Matrix of this
+     * 
+     * @note Use this over Inverse if your
+     * matrix is orthogonal (e.g. A DCM)
+    */
+     Matrix Transpose() const;
+
+     /**
+     * Frobenius norm (square root of sum of squared elements)
+     *
+     * @return guess
+      */ 
+     decimal Norm() const;
+};
+
+/**
  * A Mat3 is a mutable object that represents a 3x3 Matrix
  * 
 */
@@ -487,6 +538,9 @@ class Mat3 {
 
 /// Identity Matrix
 extern const Mat3 kIdentityMat3;
+
+
+
 
 ///////////////////////////////////
 //////// EULER ANGLES CLASS ///////
@@ -761,6 +815,49 @@ class Attitude {
     /// Internal Representation Type
     AttitudeType type;
 };
+
+
+///////////////////////////////////
+///////// SVD FUNCTIONS ///////////
+///////////////////////////////////
+
+struct SVDResult {
+    Matrix U; // Left sinuglar vector matrix
+    Matrix S; // Diagonal singular value matrix
+    Matrix V; // Right singular vector matrix
+
+    // Constructor
+    SVDResult(int m, int n) :
+        U(m, m), S(m, n), V(n, n) {}
+};
+
+/**
+ * Repeatedly refines approximations for the largest singular values and their vectors
+ * 
+ * @param A The matrix to perform SVD on
+ * @param v A reference to where the most powerful right singular vector should be stored
+ * @param sigma A reference to where the most powerful singular value should be stored
+ * @param u A reference to where the most powerful left singular vector should be stored
+ * @param maxIter The resolution of the function
+ * @param tol The tolerance of the function; if error is less than this, the function returns early
+ *
+ */ 
+void SVDPowerIteration(const Matrix& A,
+                        std::vector<decimal>& v,
+                        decimal& sigma,
+                        std::vector<decimal>& u,
+                        int maxIter = 100,
+                        decimal tol = 1e-10);
+/**
+ * Coputes the Singular Value Decomposition of a matrix
+ * 
+ * @param A The matrix to perform SVD on
+ * @param k the number of singular values to extract (the most powerful ones will be prioritized)
+ * 
+ * @return A struct containing U, S, and V; Left singular vector matrix, diagonal singular value matrix,
+ *          Right singular vector matrix
+ */
+SVDResult ComputeSVD(const Matrix& A, int k);                       
 
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////

@@ -127,6 +127,20 @@ class Camera {
     decimal PixelSize() const { return pixelSize; }
 
     /**
+     * Returns the x coordinate of the center of this camera
+     * 
+     * @return The x center of this
+     */
+    decimal XCenter() const { return xCenter; }
+
+    /**
+     * Returns the y coordinate of the center of this camera
+     * 
+     * @return The y center of this
+     */
+    decimal YCenter() const { return yCenter; }
+
+    /**
     * Provides the Field of View (FOV) of this Camera
     * 
     * @return The FOV of this, in radians

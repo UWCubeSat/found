@@ -19,44 +19,66 @@ namespace found {
 PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0}; // If someone puts in less than 3 points, we're probably at earth's core
 
-    const Mat3 DiagAxes = {principleAxisDimensions_.x,0,0,
-                              0,principleAxisDimensions_.y,0,
-                              0,0,principleAxisDimensions_.z};
+    const Mat3 DiagAxes = {principleAxes_.x,0,0,
+                              0,principleAxes_.y,0,
+                              0,0,principleAxes_.z};
 
-    const Mat3 DiagInvAxes = {1/principleAxisDimensions_.x,0,0,
-                              0,1/principleAxisDimensions_.y,0,
-                              0,0,1/principleAxisDimensions_.z};
+    const Mat3 DiagInvAxes = {1/principleAxes_.x,0,0,
+                              0,1/principleAxes_.y,0,
+                              0,0,1/principleAxes_.z};
 
-    Mat3 invCameraProjMat = ComputeInvCameraProjMat(cam);
+    Mat3 invCameraProjMat = ComputeInvCameraProjMat(cam_); 
     
     Mat3 TCP = ComputeCamToBodyTransformation(AOR_);
 
-    Mat3 imageToSpace = DiagAxes * CamToBodyTransformation * inversePrincipleAxes;
+    Mat3 imageToSpace = DiagAxes * TCP * invCameraProjMat;
 
     int i = 0;
     size_t pointsSize = p.size();
-    std::unique_ptr<Vec3[]> normalizedVecsToHorizon(new Vec3[pointsSize]);
+    std::vector<Vec3> normalizedVecsToHorizon = std::vector<Vec3>(pointsSize, {0.0, 0.0, 0.0});
+
     for (const Vec2 &point : p) {
-        Vec3 pBar = {p.x, p.y, 1};
+        Vec3 pBar = {point.x, point.y, 1};
         normalizedVecsToHorizon[i++] = imageToSpace * pBar;
     }
 
-    Vec3 vecToEarth = NormalizedVecToEarthTLS(normalizedVecsToHorizon); // magnitude is a function of the distance and the principal axes
+    Vec3 vecToEarth = VecToEarthTLS(normalizedVecsToHorizon); // vecToEarth magnitude is a function of the distance and the principal axes
 
-    Vec3 vecToEarth = (1/sqrt(vecToEarth*vecToEarth - 1)) * TCP.transpose * DiagInvAxes * vecToEarth; // I really want to use fastinvsqrt but that would probably send our satellite into the sun
+    Vec3 vecToEarth = (TCP.Transpose() * DiagInvAxes * vecToEarth) * (1/sqrt(vecToEarth*vecToEarth - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
 
     return vecToEarth;
 }
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeCamToBodyTransformation(Vec3 AOR){
+    Vec3 randomVec = {0.57735,0.57735,0.57735}; // pick a random vector
+    Vec3 orthogonalVec1 = AOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
+    Vec3 orthogonalVec2 = AOR.CrossProduct(orthogonalVec1); // get the other orthogonal vector on the equator; should already be normalized
 
+    // just use basis vectors as columns
+    Mat3 TCP = {
+        orthogonalVec1.x, AOR.x, orthogonalVec2.x,
+        orthogonalVec1.y, AOR.y, orthogonalVec2.y,
+        orthogonalVec1.z, AOR.z, orthogonalVec2.z
+    };
+
+    return TCP;
 }
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam){
+    float dx = cam.FocalLength()/cam.PixelSize();
+    float dy = dx;
+    Mat3 KInv = {
+        1/dx,   0,      -cam.XCenter()/dx,
+        0,      1/dy,   -cam.YCenter()/dy,
+        0,      0,      1
+    };
 
+    return KInv;
 }
 
- Vec3 SpheroidDistanceDeterminationAlgorithm::NormalizedVecToEarthTLS(std::unique_ptr<Vec3[]> &normalizedVecsToHorizon)
+ Vec3 SpheroidDistanceDeterminationAlgorithm::VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon){
+    
+}
 
 ///// SphericalDistanceDeterminationAlgorithm /////
 

@@ -7,6 +7,8 @@
 #include <stdexcept>
 
 #include "common/logging.hpp"
+#include <vector>
+#include <numeric>
 
 #define DEFAULT_TOLERANCE DECIMAL(1e-3)
 
@@ -164,6 +166,43 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 ///////// MATRIX CLASS ////////////
 ///////////////////////////////////
 
+Matrix Matrix::operator*(const Matrix& other) const {
+    if (cols != other.rows) {
+            throw std::invalid_argument("Matrix dimensions don't match for multiplication");
+        }
+        Matrix result(rows, other.cols);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < other.cols; ++j) {
+                decimal sum = 0.0;
+                for (int k = 0; k < cols; ++k) {
+                    sum += Get(i, k) * other.Get(k, j);
+                }
+                result(i, j) = sum;
+            }
+        }
+        return result;
+}
+
+Matrix Matrix::Transpose() const {
+    Matrix result(cols, rows);
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                result(j, i) = Get(i, j);
+            }
+        }
+        return result;
+}
+
+decimal Matrix::Norm() const {
+    decimal sum = 0.0;
+    for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                sum += Get(i,j) * Get(i, j);
+            }
+        }
+        return std::sqrt(sum);
+}
+
 decimal Mat3::At(int i, int j) const {
     return x[3*i+j];
 }
@@ -265,198 +304,6 @@ Mat3 Mat3::Cofactor() const {
 
 Mat3 Mat3::Adjugate() const {
     return Cofactor().Transpose();
-}
-
-// Given a pair (u, v), solves (cos, sin) * (-v, u) = 0 for cos and sin
-// Check the eigenvalue paper (Eq. 3) for derivation
-void GetCosSin(decimal u, decimal v, decimal& cos, decimal& sin){
-    decimal length = sqrt(u*u + v*v);
-    if (length != 0){
-        cos = u/length;
-        sin = v/length;
-        if (cos > 0){
-            cos = -cos;
-            sin = -sin;
-        }
-    }
-    else{
-        cos = -1;
-        sin = 0;
-    }
-}
-
-// Checks if the result of the iteration has converged to an acceptable degree
-bool Converged(decimal diag1, decimal diag2, decimal superdiag){
-    decimal sum = DECIMAL_ABS(diag1) + DECIMAL_ABS(diag2);
-    return sum + superdiag == sum;
-}
-
-// takes in a vec3 of eigenvalues and returns a sorted vec3
-Vec3 sortEigenvalues(Vec3 eigenvalues){
-    decimal x = eigenvalues.x;
-    decimal y = eigenvalues.y;
-    decimal z = eigenvalues.z;
-    if (x > y){
-        if (y > z) return {0, 1, 2};
-        if (x > z) return {0, 2, 1};
-        return {2, 0, 1};
-    }
-    if (x > z) return {1, 0, 2};
-    if (y > z) return {1, 2, 0};
-    return {2, 1, 0};
-}
-
-// Takes in a mat3 of eigenvectors and sorts them according to eigenvalue
-//
-// This WILL break if an eigenvalue is degenerate, so just make sure our satellite doesn't do that 👍
-// Since we're dealing with really precise floats this *should* be very improbable but who knows
-// If our satellite explodes randomly I'm sorry
-// I will probably fix this later maybe - Senuka
-Mat3 sortEigenvectors(Vec3 sortedEigenvalues, Mat3 eigenvectors, Mat3 matrix){
-    Vec3 eigenvector0;
-    Vec3 eigenvector1;
-    Vec3 eigenvector2;
-
-    for (int i = 0; i < 3; i ++){
-        if (abs(eigenvectors.At(i, 0)) < DEFAULT_TOLERANCE) continue;
-        decimal eigenvalue0 = (matrix.Row(i) * eigenvectors.Column(0))/eigenvectors.At(i, 0);
-        if (abs(eigenvalue0 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(0);
-        if (abs(eigenvalue0 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(0);
-        if (abs(eigenvalue0 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(0);
-    }
-
-    for (int i = 0; i < 3; i ++){
-        if (abs(eigenvectors.At(i, 1)) < DEFAULT_TOLERANCE) continue;
-        decimal eigenvalue1 = (matrix.Row(i) * eigenvectors.Column(1))/eigenvectors.At(i, 1);
-        if (abs(eigenvalue1 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(1);
-        if (abs(eigenvalue1 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(1);
-        if (abs(eigenvalue1 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(1);
-    }
-
-    for (int i = 0; i < 3; i ++){
-        if (abs(eigenvectors.At(i, 2)) < DEFAULT_TOLERANCE) continue;
-        decimal eigenvalue2 = (matrix.Row(i) * eigenvectors.Column(2))/eigenvectors.At(i, 2);
-        if (abs(eigenvalue2 - sortedEigenvalues.x) < DEFAULT_TOLERANCE) eigenvector0 = eigenvectors.Column(2);
-        if (abs(eigenvalue2 - sortedEigenvalues.y) < DEFAULT_TOLERANCE) eigenvector1 = eigenvectors.Column(2);
-        if (abs(eigenvalue2 - sortedEigenvalues.z) < DEFAULT_TOLERANCE) eigenvector2 = eigenvectors.Column(2);
-    }
-
-    return Mat3FromCols(eigenvector0, eigenvector1, eigenvector2);
-
-}
-
-/* Sorry, this function is gonna be long while I work on it (I'll clean it up later) - Senuka
-*  The paper writes all the matrix multiplication out explicitly; while this might be technically faster since it lets us 
-*  skip computing a couple positions, I think readability is more important here
-* 
-*/
-Vec3 Mat3::EigenvaluesSymmetric() {
-    if (_eigenvectorsAlreadyCalculated) return _eigenvalues;
-    decimal half = static_cast<decimal>(0.5);
-
-    // First compute Householder reflection to set b02 to 0
-    // Eq. 2
-    decimal c, s;
-    GetCosSin(At(1,2), -At(0,2), c, s);
-    Mat3 HouseholderRefl = {c,  s, 0, 
-                            s, -c, 0,
-                            0,  0, 1};
-    Mat3 B = HouseholderRefl * (*this) * HouseholderRefl; //technically should be transpose on the left but it's the same matrix
-    // Matrix B is now a tridiagonal matrix
-    // This matrix will be the product of all the reflections, and will eventually turn into our list of eigenvectors
-    Mat3 ReflProduct = {c,s,0,
-                        s,-c,0,
-                        0,0,1};
-    
-    // The smallest number we can represent is 2^-alpha          
-    int alpha = 1079; // TODO Figure out what this is for decimal; for some reason only 2 seems to work??? I have no idea why
-    int i = 0, imax = 0, power = 0;
-    decimal c2, s2;
-    if (DECIMAL_ABS(B.At(1,2)) <= DECIMAL_ABS(B.At(0,1))){
-        // Eq. 12
-        // finds alpha in b12 = x * 2^alpha
-        std::frexp(B.At(1,2), &power);
-        imax = 2 * (power + alpha + 1);
-        for (i = 0; i < imax; i++){
-            if (Converged(B.At(0,0), B.At(1,1), B.At(0,1))){
-                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
-                s = DECIMAL_SQRT(half * (1 - c2));
-                c = half * s2 / s;
-                HouseholderRefl = { c,  s, 0, 
-                                    s, -c, 0,
-                                    0,  0, 1};
-
-                // This matrix is now the diagonal estimate
-                B = HouseholderRefl * B * HouseholderRefl;
-                // This matrix is now the eigenvector matrix estimate
-                ReflProduct = ReflProduct * HouseholderRefl;
-                break;
-            }
-            // Compute Givens reflection of B in Eq. 4
-            GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2); 
-            s = DECIMAL_SQRT(half * (1 - c2));
-            c = s2 / (2 * s);
-            Mat3 GivensReflection = {c, 0, -s,
-                                     s, 0, c,
-                                     0, 1, 0};
-
-            // Update B
-            B = GivensReflection.Transpose() * B * GivensReflection;
-            // Update ReflProduct
-            ReflProduct = ReflProduct * GivensReflection;
-        }
-    }
-    else{
-        // Eq. 12
-        // finds alpha in b01 = x * 2^alpha
-        std::frexp(B.At(0,1), &power);
-        imax = 2 * (power + alpha + 1);
-        for (i = 0; i < imax; i++){
-            if (Converged(B.At(1,1), B.At(2,2), B.At(1,2))){
-                GetCosSin(half * (B.At(0,0) - B.At(1,1)), B.At(0,1), c2, s2);
-                s = DECIMAL_SQRT(half * (1 - c2));
-                c = half * s2 / s;
-                HouseholderRefl = { 1,  0, 0, 
-                                    0,  c, s,
-                                    0,  s, -c};
-
-                // This matrix is now the diagonal estimate
-                B = HouseholderRefl * B * HouseholderRefl;
-                // This matrix is now the eigenvector matrix estimate
-                ReflProduct = ReflProduct * HouseholderRefl;
-                break;
-            }
-            // Compute Givens reflection of B in Eq. 4
-            GetCosSin(half * (B.At(1,1) - B.At(2,2)), B.At(1,2), c2, s2);
-            s = DECIMAL_SQRT(half * (1 - c2));
-            c = s2 / (2 * s);
-            Mat3 GivensReflection = {0, 1, 0,
-                                     c, 0, -s,
-                                     s, 0, c};
-
-            // Update B
-            B = GivensReflection.Transpose() * B * GivensReflection;
-            // Update ReflProduct
-            ReflProduct = ReflProduct * GivensReflection; 
-        }
-    }
-    // Get the eigenvalues and eigenvectors, sort them, and store them
-    Vec3 unsortedEigenvalues = {B.At(0,0), B.At(1,1), B.At(2,2)};
-    Vec3 eigenvalueOrder = sortEigenvalues(unsortedEigenvalues);
-    _eigenvalues = {unsortedEigenvalues.At(eigenvalueOrder.x), unsortedEigenvalues.At(eigenvalueOrder.y), unsortedEigenvalues.At(eigenvalueOrder.z)};
-    Mat3 sortedEigenvectors = sortEigenvectors(_eigenvalues, ReflProduct, *this);
-    _eigenvector1 = sortedEigenvectors.Column(0);
-    _eigenvector2 = sortedEigenvectors.Column(1);
-    _eigenvector3 = sortedEigenvectors.Column(2);
-    _eigenvectorsAlreadyCalculated = true;
-    return _eigenvalues;
-}
-
-Mat3 Mat3::EigenvectorsSymmetric() {
-    
-    if (!_eigenvectorsAlreadyCalculated) EigenvaluesSymmetric();
-    Mat3 eigenvectors = Mat3FromCols(_eigenvector1, _eigenvector2, _eigenvector3);
-    return eigenvectors;
 }
 
 
@@ -614,6 +461,117 @@ Mat3 Mat3FromCols(Vec3 col1, Vec3 col2, Vec3 col3){
                     col1.z, col2.z, col3.z};
     return output;
 }
+
+///////////////////////////////////
+///////// SVD FUNCTIONS ///////////
+///////////////////////////////////
+
+// NOT COPY PASTED from https://researchdatapod.com/singular-value-decomposition-svd-cpp/ because i am a responsible coder
+// We're basically just guessing a random V, computing the corresponding U, using that to compute a slightly more accurate V
+// and just repeating it until it works
+// 100% optimizable this is just placeholder
+void SVDPowerIteration(const Matrix& A,
+                        std::vector<decimal>& v,
+                        decimal& sigma,
+                        std::vector<decimal>& u,
+                        int maxIter = 100,
+                        decimal tol = 1e-10){
+    int m = A.NumRows();
+    int n = A.NumCols();
+    
+    // initialize with random values (maybe refactor to make it deterministic?)
+    for (decimal& val : v){
+        val = static_cast<decimal>(rand()) / RAND_MAX;
+    }
+
+    // normalize v
+    decimal norm_v = std::sqrt(std::inner_product(v.begin(), v.end(), v.begin(), 0.0));
+    for (decimal& val : v) {
+        val /= norm_v;
+    }
+
+    std::vector<decimal> prev_v = v;
+
+    for (int iter = 0; iter < maxIter; ++iter) {
+        // Multiply A by v to get u
+        u.assign(m, 0.0);
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                u[i] += A(i, j) * v[j];
+            }
+        }
+
+        // Compute sigma (norm of u)
+        sigma = std::sqrt(std::inner_product(u.begin(), u.end(), u.begin(), 0.0));
+
+        // Normalize u
+        for (decimal& val : u) {
+            val /= sigma;
+        }
+
+        // Multiply A^T by u to get new v
+        v.assign(n, 0.0);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                v[i] += A(j, i) * u[j];
+            }
+        }
+
+        // Normalize v
+        norm_v = std::sqrt(std::inner_product(v.begin(), v.end(), v.begin(), 0.0));
+        for (decimal& val : v) {
+            val /= norm_v;
+        }
+
+        // Check convergence
+        decimal diff = 0.0;
+        for (int i = 0; i < n; ++i) {
+            diff += std::abs(v[i] - prev_v[i]);
+        }
+        if (diff < tol) {
+            break;
+        }
+        prev_v = v;
+    }
+}
+
+// https://researchdatapod.com/singular-value-decomposition-svd-cpp/
+// probably placeholder depending on how its optimized
+SVDResult ComputeSVD(const Matrix& A, int k){
+    int m = A.NumRows();
+    int n = A.NumCols();
+    SVDResult result(m, n);
+
+    // Make a copy of A to work on
+    Matrix B = A;
+
+    for (int i = 0; i < k; ++i) {
+            std::vector<decimal> v(n);
+            std::vector<decimal> u(m);
+            decimal sigma;
+
+            SVDPowerIteration(B, v, sigma, u);
+
+            // Store results in U, S, and V matrices
+            for (int j = 0; j < m; ++j) {
+                result.U(j, i) = u[j];
+            }
+            result.S(i, i) = sigma;
+            for (int j = 0; j < n; ++j) {
+                result.V(j, i) = v[j];
+            }
+
+            // Deflate B by subtracting the outer product of u, v scaled by sigma
+            for (int r = 0; r < m; ++r) {
+                for (int c = 0; c < n; ++c) {
+                    B(r, c) -= sigma * u[r] * v[c];
+                }
+            }
+        }
+        return result;
+}
+
+
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
 ///////////////////////////////////

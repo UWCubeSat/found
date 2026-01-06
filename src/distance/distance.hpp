@@ -126,7 +126,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @param cam The camera used to capture the picture of Earth
     * @param AOR Earth's axis of rotation in camera coordinates
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes,  const Points &p) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR) {}
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
     /**
@@ -169,10 +169,10 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
    * 
    * @param normalizedVecsToHorizon used to created H; these will be given transposed so they will be used as rows
    *
-   * @return Vec3 normalized vector pointing to Earth's center
+   * @return Vec3 vector pointing to Earth's center with a magnitude dependent on the true distance and the principle axes
    *
    * */
-    Vec3 NormalizedVecToEarthTLS(std::unique_ptr<Vec3[]> &normalizedVecsToHorizon)
+    Vec3 VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon);
 
    // cam_ field instance describes the camera settings used for the photo taken
     Camera cam_;
@@ -187,9 +187,6 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
    // Earth's axis of rotation in camera coordinates
     Vec3 AOR_;
-
-    // points on the horizon in image coordinates
-    const Points &p;
 };
 
 /**
