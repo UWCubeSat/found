@@ -76,8 +76,22 @@ Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam)
     return KInv;
 }
 
- Vec3 SpheroidDistanceDeterminationAlgorithm::VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon){
-    
+// Supposedly this is how to do TLS. I have no idea why.
+Vec3 SpheroidDistanceDeterminationAlgorithm::VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon){
+    int size = normalizedVecsToHorizon.size();
+    Matrix A(size, 3);
+    for (int i = 0; i < size; i++){
+        A(i, 0) = normalizedVecsToHorizon[i].x;
+        A(i, 1) = normalizedVecsToHorizon[i].y;
+        A(i, 2) = normalizedVecsToHorizon[i].z;
+    }
+
+    Matrix V = ComputeSVD(A, size).V;
+
+    V = V.Transpose();
+    Vec3 x = {V.Get(0,V.NumCols()-1), V.Get(1,V.NumCols()-1), V.Get(2,V.NumCols()-1)};
+    x = x/V.Get(V.NumRows()-1, V.NumCols()-1);
+    return x;    
 }
 
 ///// SphericalDistanceDeterminationAlgorithm /////
