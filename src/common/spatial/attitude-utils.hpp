@@ -2,6 +2,7 @@
 #define SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 
 #include <memory>
+#include <vector>
 
 #include "common/decimal.hpp"
 
@@ -534,6 +535,16 @@ class Mat3 {
     * @note not const because it stores the eigenvectors/eigenvalues when completed
     */
     Mat3 EigenvectorsSymmetric() ;
+
+    /**
+     * Solves Ax = b where A is this matrix, and b is a known vector
+     * uses Cramer's rule
+     * 
+     * @param b the known vector
+     * 
+     * @return the vector to solve for
+     */
+    Vec3 SolveCramer(Vec3 b) ;
 };
 
 /// Identity Matrix

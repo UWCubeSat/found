@@ -1,3 +1,8 @@
+// TEMP
+#include <string>
+#include <sstream>
+// TEMP
+
 #include "distance/distance.hpp"
 
 #include <assert.h>
@@ -27,46 +32,45 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
                               0,1/principleAxes_.y,0,
                               0,0,1/principleAxes_.z};
 
+
     Mat3 invCameraProjMat = ComputeInvCameraProjMat(cam_); 
     
-    Mat3 TCP = ComputeCamToBodyTransformation(AOR_);
-
-    Mat3 imageToSpace = DiagAxes * TCP * invCameraProjMat;
+    Mat3 TPC = ComputeBodyToCamTransformation(AOR_);
+    
+    Mat3 imageToSpace = DiagInvAxes * TPC.Transpose() * invCameraProjMat;
 
     int i = 0;
     size_t pointsSize = p.size();
     std::vector<Vec3> normalizedVecsToHorizon = std::vector<Vec3>(pointsSize, {0.0, 0.0, 0.0});
-
     for (const Vec2 &point : p) {
         Vec3 pBar = {point.x, point.y, 1};
-        normalizedVecsToHorizon[i++] = imageToSpace * pBar;
+        normalizedVecsToHorizon[i++] = (imageToSpace * pBar).Normalize();
     }
-
     Vec3 vecToEarth = VecToEarthTLS(normalizedVecsToHorizon); // vecToEarth magnitude is a function of the distance and the principal axes
-
-    Vec3 vecToEarth = (TCP.Transpose() * DiagInvAxes * vecToEarth) * (1/sqrt(vecToEarth*vecToEarth - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
+    vecToEarth = (TPC * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth*vecToEarth - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
 
     return vecToEarth;
 }
 
-Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeCamToBodyTransformation(Vec3 AOR){
+Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeBodyToCamTransformation(Vec3 AOR){
     Vec3 randomVec = {0.57735,0.57735,0.57735}; // pick a random vector
     Vec3 orthogonalVec1 = AOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
     Vec3 orthogonalVec2 = AOR.CrossProduct(orthogonalVec1); // get the other orthogonal vector on the equator; should already be normalized
 
     // just use basis vectors as columns
-    Mat3 TCP = {
+    // flip z since we're going from a right handed system to a left handed one
+    Mat3 TPC = {
         orthogonalVec1.x, AOR.x, orthogonalVec2.x,
         orthogonalVec1.y, AOR.y, orthogonalVec2.y,
-        orthogonalVec1.z, AOR.z, orthogonalVec2.z
+        -orthogonalVec1.z, -AOR.z, -orthogonalVec2.z
     };
 
-    return TCP;
+    return TPC;
 }
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam){
-    float dx = cam.FocalLength()/cam.PixelSize();
-    float dy = dx;
+    decimal dx = cam.FocalLength()/cam.PixelSize();
+    decimal dy = dx;
     Mat3 KInv = {
         1/dx,   0,      -cam.XCenter()/dx,
         0,      1/dy,   -cam.YCenter()/dy,
@@ -79,17 +83,17 @@ Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam)
 // Supposedly this is how to do TLS. I have no idea why.
 Vec3 SpheroidDistanceDeterminationAlgorithm::VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon){
     int size = normalizedVecsToHorizon.size();
-    Matrix A(size, 3);
+    Matrix A(size, 4);
     for (int i = 0; i < size; i++){
         A(i, 0) = normalizedVecsToHorizon[i].x;
         A(i, 1) = normalizedVecsToHorizon[i].y;
         A(i, 2) = normalizedVecsToHorizon[i].z;
+        A(i, 3) = 1;
     }
-
-    Matrix V = ComputeSVD(A, size).V;
-
+    SVDResult result = ComputeSVD(A, 4);
+    Matrix V = ComputeSVD(A, 4).V; 
     V = V.Transpose();
-    Vec3 x = {V.Get(0,V.NumCols()-1), V.Get(1,V.NumCols()-1), V.Get(2,V.NumCols()-1)};
+    Vec3 x = {V.Get(V.NumCols()-1,0), V.Get(V.NumCols()-1,1), V.Get(V.NumCols()-1,2)};
     x = x/V.Get(V.NumRows()-1, V.NumCols()-1);
     return x;    
 }

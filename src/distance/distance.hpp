@@ -127,6 +127,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @param AOR Earth's axis of rotation in camera coordinates
     */
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR) {}
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
     /**
@@ -142,16 +143,16 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * */
     PositionVector Run(const Points &p) override;
 
- protected:
+
 
    /**
-   * Computes TCP, the transformation matrix from camera to Earth coordinates
+   * Computes TPC, the transformation matrix from Earth coordinates to camera coordinates
    * 
    * @param AOR Earth's axis of rotation in camera coordinates
    *
-   * @return TCP
+   * @return TPC
    * */
-    Mat3 ComputeCamToBodyTransformation(Vec3 AOR);
+    Mat3 ComputeBodyToCamTransformation(Vec3 AOR);
 
    /**
    * Computes the inverse camera projection matrix
@@ -173,6 +174,12 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
    *
    * */
     Vec3 VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon);
+
+ protected:
+
+   
+
+ 
 
    // cam_ field instance describes the camera settings used for the photo taken
     Camera cam_;

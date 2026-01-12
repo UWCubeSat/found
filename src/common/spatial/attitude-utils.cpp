@@ -1,6 +1,7 @@
 
 #include "common/spatial/attitude-utils.hpp"
 
+
 #include <math.h>
 #include <assert.h>
 
@@ -185,8 +186,8 @@ Matrix Matrix::operator*(const Matrix& other) const {
 
 Matrix Matrix::Transpose() const {
     Matrix result(cols, rows);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
                 result(j, i) = Get(i, j);
             }
         }
@@ -195,8 +196,8 @@ Matrix Matrix::Transpose() const {
 
 decimal Matrix::Norm() const {
     decimal sum = 0.0;
-    for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
+    for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
                 sum += Get(i,j) * Get(i, j);
             }
         }
@@ -247,7 +248,7 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
         vec.x*At(1,0) + vec.y*At(1,1) + vec.z*At(1,2),
-        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2),
+        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2)
     };
 }
 
@@ -273,7 +274,7 @@ Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
         At(0,1), At(1,1), At(2,1),
-        At(0,2), At(1,2), At(2,2),
+        At(0,2), At(1,2), At(2,2)
     };
 }
 
@@ -304,6 +305,26 @@ Mat3 Mat3::Cofactor() const {
 
 Mat3 Mat3::Adjugate() const {
     return Cofactor().Transpose();
+}
+
+Vec3 Mat3::SolveCramer(Vec3 b){
+    Mat3 DX = {
+        b.x, At(0,1), At(0,2),
+        b.y, At(1,1), At(1,2),
+        b.z, At(2,1), At(2,2)
+    };
+    Mat3 DY = {
+        At(0,0), b.x,  At(0,2),
+        At(1,0), b.y,  At(1,2),
+        At(2,0), b.z,  At(2,2)
+    };
+    Mat3 DZ = {
+        At(0,0),   At(0,1), b.x,
+        At(1,0),   At(1,1), b.y,
+        At(2,0),   At(2,1), b.z
+        };
+    Vec3 x = {DX.Det()/Det(), DY.Det()/Det(), DZ.Det()/Det()};
+    return x;
 }
 
 
@@ -474,8 +495,8 @@ void SVDPowerIteration(const Matrix& A,
                         std::vector<decimal>& v,
                         decimal& sigma,
                         std::vector<decimal>& u,
-                        int maxIter = 100,
-                        decimal tol = 1e-10){
+                        int maxIter,
+                        decimal tol){
     int m = A.NumRows();
     int n = A.NumCols();
     
