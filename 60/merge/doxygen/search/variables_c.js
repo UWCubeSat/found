@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['offset_5f_0',['offset_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a23d8414ecd9c09b3df79d706cf20cd07',1,'found::SimpleEdgeDetectionAlgorithm']]],
-  ['options_5f_1',['options_',['../classfound_1_1CalibrationPipelineExecutor.html#a6868dd515ef99357515a472660d0eeea',1,'found::CalibrationPipelineExecutor::options_'],['../classfound_1_1DistancePipelineExecutor.html#a79b288b7cdafc63191981cf172875366',1,'found::DistancePipelineExecutor::options_'],['../classfound_1_1OrbitPipelineExecutor.html#ae0822e056d80e333e61f571eaa8bfede',1,'found::OrbitPipelineExecutor::options_']]],
-  ['orbitpropagationalgorithm_2',['orbitPropagationAlgorithm',['../classfound_1_1OrbitPipelineExecutor.html#a6f0665327e1ccbb6b2fcc3f16bba24d3',1,'found::OrbitPipelineExecutor']]],
-  ['orientation_3',['orientation',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#ac7ee96e7a752852eec28726c5ef2c1af',1,'found::LOSTVectorGenerationAlgorithm']]],
-  ['outplanerotation_4',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]]
+  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
+  ['majoraxis_1',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
+  ['maximumrefreshes_5f_2',['maximumRefreshes_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a2339269a4bd1a7929ab24aa228403af1',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['minimumiterations_5f_3',['minimumIterations_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a0a87c9bd48356173bfe8b21f5cee58fc',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['minoraxis_4',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
+  ['minute_5',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
+  ['month_6',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
+  ['mu_5f_7',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ecefcoordinates_0',['ECEFCoordinates',['../structfound_1_1ECEFCoordinates.html',1,'found']]],
+  ['earthsphericalvec3_0',['EarthSphericalVec3',['../structfound_1_1EarthSphericalVec3.html',1,'found']]],
   ['edge_1',['Edge',['../structfound_1_1Edge.html',1,'found']]],
   ['edgedetectionalgorithm_2',['EdgeDetectionAlgorithm',['../classfound_1_1EdgeDetectionAlgorithm.html',1,'found']]],
   ['ellipticdistancedeterminationalgorithm_3',['EllipticDistanceDeterminationAlgorithm',['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html',1,'found']]],

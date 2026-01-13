@@ -15,7 +15,7 @@ var annotated_dup =
       [ "DateTime", "structfound_1_1DateTime.html", "structfound_1_1DateTime" ],
       [ "DistanceDeterminationAlgorithm", "classfound_1_1DistanceDeterminationAlgorithm.html", null ],
       [ "DistancePipelineExecutor", "classfound_1_1DistancePipelineExecutor.html", "classfound_1_1DistancePipelineExecutor" ],
-      [ "ECEFCoordinates", "structfound_1_1ECEFCoordinates.html", "structfound_1_1ECEFCoordinates" ],
+      [ "EarthSphericalVec3", "structfound_1_1EarthSphericalVec3.html", "structfound_1_1EarthSphericalVec3" ],
       [ "Edge", "structfound_1_1Edge.html", "structfound_1_1Edge" ],
       [ "EdgeDetectionAlgorithm", "classfound_1_1EdgeDetectionAlgorithm.html", null ],
       [ "EllipticDistanceDeterminationAlgorithm", "classfound_1_1EllipticDistanceDeterminationAlgorithm.html", "classfound_1_1EllipticDistanceDeterminationAlgorithm" ],

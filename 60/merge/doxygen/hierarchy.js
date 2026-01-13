@@ -72,7 +72,7 @@ var hierarchy =
     [ "found::DataFileHeader", "structfound_1_1DataFileHeader.html", null ],
     [ "found::DateTime", "structfound_1_1DateTime.html", null ],
     [ "DistanceOptions", "classDistanceOptions.html", null ],
-    [ "found::ECEFCoordinates", "structfound_1_1ECEFCoordinates.html", null ],
+    [ "found::EarthSphericalVec3", "structfound_1_1EarthSphericalVec3.html", null ],
     [ "found::Edge", "structfound_1_1Edge.html", null ],
     [ "found::EulerAngles", "classfound_1_1EulerAngles.html", null ],
     [ "found::Image", "structfound_1_1Image.html", null ],

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
-  ['magnitude_1',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()'],['../structfound_1_1ECEFCoordinates.html#a5addc69b090847d4de4eb95d6b9b6f9c',1,'found::ECEFCoordinates::Magnitude()']]],
+  ['magnitude_1',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()']]],
   ['magnitudesq_2',['magnitudesq',['../structfound_1_1Vec2.html#ab4d7bbb2908f7962e50263a2e6731788',1,'found::Vec2::MagnitudeSq()'],['../classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23',1,'found::Vec3::MagnitudeSq()']]],
   ['majoraxis_3',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
   ['mat3_4',['Mat3',['../classfound_1_1Mat3.html',1,'found']]],
