@@ -12,7 +12,9 @@ namespace found {
 #define AVG_DELTA_UT1 0.087497
 
 /// Nanoseconds per second
-constexpr uint64_t NS_PER_SEC = 1000000000ULL;
+constexpr double NS_PER_SEC = 1000000000ULL;
+/// Average Delta UT1 in nanoseconds (pre-computed for efficiency)
+constexpr double AVG_DELTA_UT1_NS = AVG_DELTA_UT1 * NS_PER_SEC;
 /// Nanoseconds per day (86400 seconds)
 constexpr double NS_PER_DAY = 86400.0 * NS_PER_SEC;
 /// Seconds per day

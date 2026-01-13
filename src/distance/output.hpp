@@ -6,6 +6,21 @@
 
 namespace found {
 
+/**
+ * Represents Earth coordinates in spherical form (Longitude, Latitude, Altitude)
+ * with associated GMST value
+ */
+struct EarthSphericalVec3 {
+    /// Longitude in degrees
+    decimal longitude;
+    /// Latitude in degrees
+    decimal latitude;
+    /// Altitude in meters (distance from Earth's center)
+    decimal altitude;
+    /// Greenwich Mean Sidereal Time in degrees
+    decimal gmst;
+};
+
     /**
      * Converts a celestial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
      * 
@@ -23,6 +38,21 @@ namespace found {
      *      coordinate system NOT the camera coordinate system
      */
     ECEFCoordinates GetEarthCoordinates(Vec3 &celestialVector, decimal gmst);
+
+    /**
+     * Obtains a celestial vector within Earth's Rotating Frame,
+     * in longitude/lattitude/altitude
+     * 
+     * @param celestialVector The celestial vector to convert
+     * @param gmst The current GMST value, in degrees
+     * 
+     * @return An EarthSphericalVec3 describing celestialVector
+     * within Earth's Rotating Frame at time GMST
+     * 
+     * @pre celestialVector must be in the frame of the celestial
+     * coordinate system NOT the camera coordinate system
+     */
+    EarthSphericalVec3 GetEarthLLACoordinates(Vec3 &celestialVector, decimal gmst);
 
 }  // namespace found
 

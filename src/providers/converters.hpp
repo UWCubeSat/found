@@ -24,6 +24,8 @@
 // This is preferable than continuing with invalid data and outputting an unintended
 // result.
 
+constexpr int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
 namespace found {
 
 /**
@@ -152,12 +154,12 @@ inline DateTime strtodatetime(const std::string &str) {
     }
 
     // Validate day of month (considering leap years)
-    int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     bool is_leap_year = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    int max_days = days_in_month[month - 1];
     if (is_leap_year && month == 2) {
-        days_in_month[1] = 29;
+        max_days = 29;
     }
-    if (day > days_in_month[month - 1]) {
+    if (day > max_days) {
         throw std::invalid_argument("Invalid day in datetime: " + str);
     }
 

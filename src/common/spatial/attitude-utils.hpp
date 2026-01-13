@@ -239,51 +239,7 @@ class Vec3 {
  * 
  * All coordinates are in meters.
  */
-struct ECEFCoordinates {
-    /// The x coordinate (meters)
-    decimal x;
-    /// The y coordinate (meters)
-    decimal y;
-    /// The z coordinate (meters)
-    decimal z;
-
-    /**
-     * Constructs ECEF coordinates from x, y, z components
-     * 
-     * @param x The x coordinate in meters
-     * @param y The y coordinate in meters
-     * @param z The z coordinate in meters
-     */
-    constexpr ECEFCoordinates(decimal x, decimal y, decimal z) : x(x), y(y), z(z) {}
-
-    /**
-     * Constructs ECEF coordinates from a Vec3
-     * 
-     * @param vec The vector to convert
-     */
-    explicit constexpr ECEFCoordinates(const Vec3 &vec) : x(vec.x), y(vec.y), z(vec.z) {}
-
-    /**
-     * Default construction
-     */
-    ECEFCoordinates() = default;
-
-    /**
-     * Converts this to a Vec3
-     * 
-     * @return A Vec3 with the same coordinates
-     */
-    constexpr Vec3 ToVec3() const {
-        return Vec3(x, y, z);
-    }
-
-    /**
-     * Provides the magnitude (distance from Earth's center) of this coordinate
-     * 
-     * @return The magnitude in meters
-     */
-    decimal Magnitude() const;
-};
+typedef Vec3 ECEFCoordinates;
 
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////

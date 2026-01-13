@@ -55,8 +55,8 @@ DateTime getUT1Time() {
     // provides Delta UT1 values from 2025 to 2026, the average is
     // 0.087497 seconds, so we use that as a rough approximation.
     DateTime now = getUTCTime();
-    // Convert AVG_DELTA_UT1 (seconds) to nanoseconds and add
-    now.epochs += static_cast<uint64_t>(AVG_DELTA_UT1 * NS_PER_SEC);
+    // Add AVG_DELTA_UT1 in nanoseconds
+    now.epochs += AVG_DELTA_UT1_NS;
     now.nanosecond += static_cast<int>((AVG_DELTA_UT1 - static_cast<int>(AVG_DELTA_UT1)) * NS_PER_SEC);
     return now;
 }

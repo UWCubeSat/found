@@ -91,7 +91,7 @@ TEST(TimeTest, TestGetUT1Time) {
 
     // Check the nanoseconds with tolerance
     // UT1 = UTC + AVG_DELTA_UT1, so add that offset to expected
-    uint64_t delta_ut1_ns = static_cast<uint64_t>(AVG_DELTA_UT1 * NS_PER_SEC);
+    uint64_t delta_ut1_ns = AVG_DELTA_UT1_NS;
     ASSERT_RANGE(actual.epochs,
                  static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns,
                  static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns + 5 * NS_PER_SEC);  // 5 seconds tolerance
@@ -155,7 +155,7 @@ TEST(TimeTest, TestGetJulianDateJ2000) {
     // Test using J2000.0 epoch (January 1, 2000, 12:00 TT)
     // This is a well-known reference point: JD = 2451545.0
     DateTime time{
-        946728000ULL * NS_PER_SEC,  // Jan 1, 2000, 12:00:00 UTC in nanoseconds
+        static_cast<uint64_t>(946728000ULL * NS_PER_SEC),  // Jan 1, 2000, 12:00:00 UTC in nanoseconds
         2000,
         1,
         1,
@@ -269,7 +269,7 @@ TEST(TimeTest, TestGetGreenwichMeanSiderealTimeEpoch) {
     // Unix timestamp 946684800 = Jan 1, 2000 00:00:00 UTC
     // epochs in nanoseconds: 946684800 seconds * NS_PER_SEC
     DateTime time{
-        946684800ULL * NS_PER_SEC,
+        static_cast<uint64_t>(946684800ULL * NS_PER_SEC),
         2000,
         1,
         1,
