@@ -63,8 +63,6 @@ class Pipeline : public FunctionStage<Input, Output> {
     virtual Output Run(const Input &input) = 0;
 
  protected:
-    /// The stages of this
-    Action *stages[N];
     /// Ownership storage for the stages
     std::unique_ptr<Action> ownedStages[N];
     /// The number of stages
@@ -90,7 +88,6 @@ class Pipeline : public FunctionStage<Input, Output> {
     inline void AddStageHelper(std::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->stages[size] = stage.get();
         this->ownedStages[size++] = std::move(stage);
     }
 
@@ -111,7 +108,6 @@ class Pipeline : public FunctionStage<Input, Output> {
     inline void CompleteHelper(std::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->stages[size] = stage.get();
         this->ownedStages[size++] = std::move(stage);
         this->ready = true;
     }
@@ -123,7 +119,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      */
     inline void DoActionHelper() {
         for (size_t i = 0; i < this->size; i++) {
-            this->stages[i]->DoAction();
+            this->ownedStages[i]->DoAction();
         }
     }
 };
@@ -330,7 +326,8 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
         }
         *this->product = input;
         for (size_t i = 0; i < this->size; i++) {
-            dynamic_cast<ModifyingStage<T> *>(this->stages[i])->SetResource(*this->product);  // GCOVR_EXCL_LINE
+            dynamic_cast<ModifyingStage<T> *>(this->ownedStages[i].get())
+                                              ->SetResource(*this->product);  // GCOVR_EXCL_LINE
         }
         Pipeline<T, T, N>::DoActionHelper();
         return *this->product;

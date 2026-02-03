@@ -8,7 +8,6 @@
 #include "command-line/parsing/options.hpp"
 #include "common/pipeline/pipelines.hpp"
 #include "distance/edge.hpp"
-#include "providers/stage-providers.hpp"
 
 namespace found {
 
@@ -50,24 +49,6 @@ class NoOpEdgeFilter : public ModifyingStage<Points> {
         (void)pts;
     }
 };
-
-/**
- * Options-aware provider. Constructs a pipeline containing all filters
- * that are enabled in options and returns it. If no filter is enabled,
- * returns nullptr to indicate "no filters".
- */
-inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &options) {
-    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
-    bool added = false;
-
-    if (options.enableNoOpEdgeFilter) {
-        pipeline->Complete(std::make_unique<NoOpEdgeFilter>());
-        added = true;
-    }
-
-    if (!added) return nullptr;
-    return pipeline;
-}
 
 }  // namespace found
 

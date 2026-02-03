@@ -13,8 +13,10 @@
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
+#include "distance/edge-filters.hpp"
 
 #include "orbit/orbit.hpp"
+
 
 // TODO(nguy8tri): Include statement for Orbit Pipeline
 // TODO: Fully Implement this when orbit stage is implemented
@@ -42,7 +44,7 @@ inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -56,7 +58,7 @@ inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(con
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
 inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
-    const DistanceOptions &options) {
+    DistanceOptions &&options) {
     if (options.distanceAlgo == SDDA) {
         return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, Camera(options.focalLength,
             options.pixelSize, options.image.width, options.image.height));
@@ -85,7 +87,7 @@ inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminat
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &options) {
+inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
@@ -99,6 +101,27 @@ inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorit
         }
         return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
+}
+
+/**
+ * Provides an EdgeFilteringAlgorithms ptr. Currently only
+ * allows no operations.
+ * 
+ * @param options The options to derive the edge filtering algorithm from
+ * 
+ * @return std::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
+ */
+inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(DistanceOptions &&options) {
+    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
+    bool added = false;
+
+    if (options.enableNoOpEdgeFilter) {
+        pipeline->Complete(std::make_unique<NoOpEdgeFilter>());
+        added = true;
+    }
+
+    if (!added) return nullptr;
+    return pipeline;
 }
 
 // TODO: Uncomment when orbit stage is implemented

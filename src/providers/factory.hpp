@@ -31,10 +31,10 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
  * @return A pointer to a DistancePipelineExecutor
  */
 inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
-    std::unique_ptr<EdgeDetectionAlgorithm> edgeAlg = ProvideEdgeDetectionAlgorithm(options);
-    std::unique_ptr<EdgeFilteringAlgorithms> filtersOpt = ProvideEdgeFilteringAlgorithm(options);
-    std::unique_ptr<DistanceDeterminationAlgorithm> distAlg = ProvideDistanceDeterminationAlgorithm(options);
-    std::unique_ptr<VectorGenerationAlgorithm> vecAlg = ProvideVectorGenerationAlgorithm(options);
+    std::unique_ptr<EdgeDetectionAlgorithm> edgeAlg = ProvideEdgeDetectionAlgorithm(std::move(options));
+    std::unique_ptr<EdgeFilteringAlgorithms> filtersOpt = ProvideEdgeFilteringAlgorithm(std::move(options));
+    std::unique_ptr<DistanceDeterminationAlgorithm> distAlg = ProvideDistanceDeterminationAlgorithm(std::move(options));
+    std::unique_ptr<VectorGenerationAlgorithm> vecAlg = ProvideVectorGenerationAlgorithm(std::move(options));
 
     if (filtersOpt) {
         return std::make_unique<DistancePipelineExecutor>(std::move(options),
