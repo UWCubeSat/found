@@ -157,7 +157,6 @@ var NAVTREEINDEX0 =
 "classfound_1_1Pipeline.html#a2a946eeb973d15bece75bcdd72ad05af":[1,0,0,35,5],
 "classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4":[1,0,0,35,8],
 "classfound_1_1Pipeline.html#a9d735ebe747c08637884c925915cec74":[1,0,0,35,4],
-"classfound_1_1Pipeline.html#aa037d6c18fcc268121c28ea9eab1fa8e":[1,0,0,35,9],
 "classfound_1_1Pipeline.html#ae103e91d6f40898eee3d864893457aa1":[1,0,0,35,2],
 "classfound_1_1Pipeline.html#aea82599564e6d8188961b86512f7b062":[1,0,0,35,7],
 "classfound_1_1Pipeline.html#afe1594f7c9950f65f0c74a9afe4f1bb1":[1,0,0,35,6],
@@ -249,5 +248,6 @@ var NAVTREEINDEX0 =
 "edge-filters_8hpp_source.html":[2,0,0,4,1],
 "edge_8hpp_source.html":[2,0,0,4,2],
 "encoding_8hpp_source.html":[2,0,0,3,1],
-"executors_8hpp_source.html":[2,0,0,1,0,0]
+"executors_8hpp_source.html":[2,0,0,1,0,0],
+"factory_8hpp_source.html":[2,0,0,6,1]
 };

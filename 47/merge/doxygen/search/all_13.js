@@ -28,6 +28,5 @@ var searchData=
   ['stage_3c_20const_20raw_5ftype_3c_20std_3a_3apair_3c_20eulerangles_2c_20eulerangles_20_3e_20_3e_20_26_2c_20raw_5ftype_3c_20quaternion_20_3e_20_3e_25',['Stage&lt; const raw_type&lt; std::pair&lt; EulerAngles, EulerAngles &gt; &gt; &amp;, raw_type&lt; Quaternion &gt; &gt;',['../classfound_1_1Stage.html',1,'found']]],
   ['stage_3c_20const_20raw_5ftype_3c_20t_20_3e_20_26_2c_20raw_5ftype_3c_20t_20_3e_20_3e_26',['Stage&lt; const raw_type&lt; T &gt; &amp;, raw_type&lt; T &gt; &gt;',['../classfound_1_1Stage.html',1,'found']]],
   ['stage_3c_20raw_5ftype_3c_20points_20_3e_20_26_2c_20void_20_3e_27',['Stage&lt; raw_type&lt; Points &gt; &amp;, void &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stage_3c_20raw_5ftype_3c_20t_20_3e_20_26_2c_20void_20_3e_28',['Stage&lt; raw_type&lt; T &gt; &amp;, void &gt;',['../classfound_1_1Stage.html',1,'found']]],
-  ['stages_29',['stages',['../classfound_1_1Pipeline.html#aa037d6c18fcc268121c28ea9eab1fa8e',1,'found::Pipeline']]]
+  ['stage_3c_20raw_5ftype_3c_20t_20_3e_20_26_2c_20void_20_3e_28',['Stage&lt; raw_type&lt; T &gt; &amp;, void &gt;',['../classfound_1_1Stage.html',1,'found']]]
 ];

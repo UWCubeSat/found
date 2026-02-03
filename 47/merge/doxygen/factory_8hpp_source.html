@@ -117,10 +117,10 @@ $(document).ready(function(){initNavTree('factory_8hpp_source.html',''); initRes
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">inline</span> std::unique_ptr&lt;DistancePipelineExecutor&gt; CreateDistancePipelineExecutor(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    std::unique_ptr&lt;EdgeDetectionAlgorithm&gt; edgeAlg = ProvideEdgeDetectionAlgorithm(options);</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    std::unique_ptr&lt;EdgeFilteringAlgorithms&gt; filtersOpt = ProvideEdgeFilteringAlgorithm(options);</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    std::unique_ptr&lt;DistanceDeterminationAlgorithm&gt; distAlg = ProvideDistanceDeterminationAlgorithm(options);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    std::unique_ptr&lt;VectorGenerationAlgorithm&gt; vecAlg = ProvideVectorGenerationAlgorithm(options);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    std::unique_ptr&lt;EdgeDetectionAlgorithm&gt; edgeAlg = ProvideEdgeDetectionAlgorithm(std::move(options));</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    std::unique_ptr&lt;EdgeFilteringAlgorithms&gt; filtersOpt = ProvideEdgeFilteringAlgorithm(std::move(options));</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    std::unique_ptr&lt;DistanceDeterminationAlgorithm&gt; distAlg = ProvideDistanceDeterminationAlgorithm(std::move(options));</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    std::unique_ptr&lt;VectorGenerationAlgorithm&gt; vecAlg = ProvideVectorGenerationAlgorithm(std::move(options));</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordflow">if</span> (filtersOpt) {</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordflow">return</span> std::make_unique&lt;DistancePipelineExecutor&gt;(std::move(options),</div>

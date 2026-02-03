@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: providers/factory.hpp</div>
-            <div>Date: 2025-11-20 21:57:26</div>
+            <div>Date: 2026-02-03 18:37:10</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -60,7 +60,7 @@
       <th>Block coverage</th>
     </tr>
     <tr><td><a href="#l21">found::CreateCalibrationPipelineExecutor(CalibrationOptions&amp;&amp;) (line 21)</a></td><td>called 4 times</td><td>77.0%</td></tr>
-    <tr><td><a href="#l33">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 33)</a></td><td>called 9 times</td><td>91.0%</td></tr>
+    <tr><td><a href="#l33">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 33)</a></td><td>called 9 times</td><td>92.0%</td></tr>
   </table>
 </details>
 </div>
@@ -322,12 +322,12 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 9 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 9 times.</div>
                         </div>
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeDetectionAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edgeAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeDetectionAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edgeAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
@@ -335,12 +335,12 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 9 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 9 times.</div>
                         </div>
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeFilteringAlgorithms</span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtersOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeFilteringAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeFilteringAlgorithms</span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtersOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeFilteringAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
@@ -348,12 +348,12 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 8 times.</div>
                         </div>
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DistanceDeterminationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DistanceDeterminationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
@@ -361,12 +361,12 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 8 times.</div>
                         </div>
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">VectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">VectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>

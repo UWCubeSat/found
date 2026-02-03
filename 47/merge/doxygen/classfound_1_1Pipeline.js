@@ -8,6 +8,5 @@ var classfound_1_1Pipeline =
     [ "finalProduct", "classfound_1_1Pipeline.html#a2a946eeb973d15bece75bcdd72ad05af", null ],
     [ "ownedStages", "classfound_1_1Pipeline.html#afe1594f7c9950f65f0c74a9afe4f1bb1", null ],
     [ "ready", "classfound_1_1Pipeline.html#aea82599564e6d8188961b86512f7b062", null ],
-    [ "size", "classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4", null ],
-    [ "stages", "classfound_1_1Pipeline.html#aa037d6c18fcc268121c28ea9eab1fa8e", null ]
+    [ "size", "classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4", null ]
 ];
