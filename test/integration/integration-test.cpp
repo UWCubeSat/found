@@ -144,7 +144,7 @@ TEST_F(IntegrationTest, TestMainCompressionCli) {
                                       "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw",
                                       0,
                                       out_dir.data());
-    std::string bitstream_path = std::string(out_dir.data()) + "/z-output-bitstream.bin";
+    std::string bitstream_path = std::string(out_dir.data()) + "/output.bin";
     ASSERT_TRUE(PathExists(bitstream_path));
 }
 
