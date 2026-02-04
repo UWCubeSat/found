@@ -134,6 +134,29 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
+/**
+ * CompressionPipelineExecutor is the pipeline
+ * executor for the CCSDS-123 compression pipeline.
+ */
+class CompressionPipelineExecutor : public PipelineExecutor {
+ public:
+      /**
+       * Constructs a CompressionPipelineExecutor
+       * 
+       * @param options The options to create the pipeline
+       */
+      explicit CompressionPipelineExecutor(CompressionOptions &&options);
+
+      void ExecutePipeline() override;
+      void OutputResults() override;
+
+ private:
+      /// The Compression options being used
+      const CompressionOptions options_;
+      /// Result code from compression
+      int result_ = 0;
+};
+
 }  // namespace found
 
 #endif  // SRC_COMMAND_LINE_EXECUTION_EXECUTORS_HPP_

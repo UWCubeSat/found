@@ -183,6 +183,48 @@ TEST_F(ParserTest, TestOrbitParserBadFlag) {
     ASSERT_EXIT(ParseOrbitOptions(argc, const_cast<char **>(argv)), testing::ExitedWithCode(EXIT_FAILURE), "");
 }
 
+TEST_F(ParserTest, CompressionParserBaseCase) {
+    int argc = 2;
+    const char *argv[] = {"found", "compression"};
+    CompressionOptions options = ParseCompressionOptions(argc, const_cast<char **>(argv));
+
+    ASSERT_EQ("", options.imagePath);
+    ASSERT_EQ("", options.outputDir);
+    ASSERT_EQ(0, options.ael);
+    ASSERT_EQ(0, options.x);
+    ASSERT_EQ(0, options.y);
+    ASSERT_EQ(0, options.z);
+    ASSERT_EQ("", options.dtype);
+}
+
+TEST_F(ParserTest, CompressionParserGeneral) {
+    int argc = 16;
+    const char *argv[] = {"found", "compression",
+        "--image-path", "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw",
+        "--output-dir", "test/compression_output",
+        "--ael", "3",
+        "--x", "10",
+        "--y", "20",
+        "--z", "30",
+        "--dtype", "u8be"};
+    CompressionOptions options = ParseCompressionOptions(argc, const_cast<char **>(argv));
+
+    ASSERT_EQ("test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw", options.imagePath);
+    ASSERT_EQ("test/compression_output", options.outputDir);
+    ASSERT_EQ(3, options.ael);
+    ASSERT_EQ(10, options.x);
+    ASSERT_EQ(20, options.y);
+    ASSERT_EQ(30, options.z);
+    ASSERT_EQ("u8be", options.dtype);
+}
+
+TEST_F(ParserTest, CompressionParserBadFlag) {
+    int argc = 4;
+    const char *argv[] = {"found", "compression",
+        "--meep", "meep"};
+    ASSERT_EXIT(ParseCompressionOptions(argc, const_cast<char **>(argv)), testing::ExitedWithCode(EXIT_FAILURE), "");
+}
+
 TEST_F(ParserTest, OrbitParserBaseCase) {
     int argc = 2;
     const char *argv[] = {"found", "orbit"};

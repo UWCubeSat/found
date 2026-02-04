@@ -26,6 +26,8 @@ int main(int argc, char **argv) {
         executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
     } else if (command == "distance") {
         executor = CreateDistancePipelineExecutor(ParseDistanceOptions(argc, argv));
+        } else if (command == "compression") {
+        executor = CreateCompressionPipelineExecutor(ParseCompressionOptions(argc, argv));
     // TODO: Uncomment when orbit stage is implemented
     // } else if (command == "orbit") {
     //     executor = CreateOrbitPipelineExecutor(ParseOrbitOptions(argc, argv));
@@ -38,6 +40,7 @@ int main(int argc, char **argv) {
                 << "Current Capabilities include: " << std::endl;
         std::cout << "\t1. Calibrates the algorithm to produce a relative attitude (option: calibration)" << std::endl;
         std::cout << "\t2. Finds the distance from a given image to a planet (option: distance)" << std::endl;
+        std::cout << "\t3. Compresses a raw hyperspectral image (option: compression)" << std::endl;
         // TODO: Uncomment when orbit stage is implemented
         // std::cout << "\t3. Projects an orbit from multiple position vectors (option: distance)" << std::endl;
         std::cout << std::endl;
@@ -57,6 +60,14 @@ int main(int argc, char **argv) {
                 std::cout << "    --" << name << std::endl;                                        \
                 std::cout << "\t\t" << doc << std::endl;
         DISTANCE
+        #undef FOUND_CLI_OPTION
+        std::cout << std::endl;
+        std::cout << "==================== Compression Flags ====================" << std::endl;
+        std::cout << std::endl;
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+            std::cout << "    --" << name << std::endl;                                        \
+            std::cout << "\t\t" << doc << std::endl;
+        COMPRESS
         #undef FOUND_CLI_OPTION
         // TODO: Uncomment when orbit stage is implemented
         // std::cout << std::endl;

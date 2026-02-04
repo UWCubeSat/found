@@ -212,4 +212,54 @@ OrbitOptions ParseOrbitOptions(int argc, char **argv) {
     return options;
 }
 
+CompressionOptions ParseCompressionOptions(int argc, char **argv) {
+    // Define an enum for each valid flag (command-line entry), which maps it from the name
+    // to an integer
+    enum class ClientOption {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                prop,
+        COMPRESS
+        #undef FOUND_CLI_OPTION
+    };
+
+    // Define an array of options, which defines the traits pertaining to each
+    // expected command-line entry
+    static option long_options[] = {
+        #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                {name,                                                                        \
+                defaultArg == kNoDefaultArgument ? required_argument : optional_argument,     \
+                0,                                                                            \
+                static_cast<int>(ClientOption::prop)},
+        COMPRESS
+        #undef FOUND_CLI_OPTION
+        {0}
+    };
+
+    // Define our result, and iterator helpers
+    CompressionOptions options;
+    int index;
+    int option;
+
+    // Iterates through the list of command-line tokens and figures out
+    // what data to assign to which field in options. Note that the
+    // FOUND_CLI_OPTION defines the conversion already between any
+    // particular parameter (as a string) to its actual type
+    while ((option = getopt_long(argc, argv, "", long_options, &index)) != -1) {
+        switch (option) {
+            #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+                    case static_cast<int>(ClientOption::prop):                                    \
+                        ASSIGN(options, prop, converter, defaultArg)                              \
+                        break;
+            COMPRESS
+            #undef FOUND_CLI_OPTION
+            default:
+                LOG_ERROR("Illegal flag detected. " << HELP_MSG);
+                exit(EXIT_FAILURE);
+                break;
+        }
+    }
+
+    return options;
+}
+
 }  // namespace found

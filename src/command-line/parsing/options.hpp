@@ -77,6 +77,16 @@ FOUND_CLI_OPTION("time-step"    , decimal               , dt          , 0.01    
 FOUND_CLI_OPTION("radius"       , decimal               , radius      , DECIMAL_M_R_E, found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The planetary radius to use (m)"               ) \
 FOUND_CLI_OPTION("mu"           , decimal               , mu          , 398600.4418  , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The standard gravitational parameter (m^3/s^2)")
 
+/// Compression Flags
+#define COMPRESS \
+FOUND_CLI_OPTION("image-path", std::string, imagePath, "" , optarg , kNoDefaultArgument, REQ_ASSIGN, "Input raw image path"            ) \
+FOUND_CLI_OPTION("output-dir", std::string, outputDir, "" , optarg , kNoDefaultArgument, REQ_ASSIGN, "Output directory for results"    ) \
+FOUND_CLI_OPTION("ael"       , int        , ael      , 0  , atoi(optarg), kNoDefaultArgument, REQ_ASSIGN, "Absolute error limit (>=0)" ) \
+FOUND_CLI_OPTION("x"         , int        , x        , 0  , atoi(optarg), kNoDefaultArgument, REQ_ASSIGN, "Override X dimension"            ) \
+FOUND_CLI_OPTION("y"         , int        , y        , 0  , atoi(optarg), kNoDefaultArgument, REQ_ASSIGN, "Override Y dimension"            ) \
+FOUND_CLI_OPTION("z"         , int        , z        , 0  , atoi(optarg), kNoDefaultArgument, REQ_ASSIGN, "Override Z dimension"            ) \
+FOUND_CLI_OPTION("dtype"     , std::string, dtype    , "" , optarg , kNoDefaultArgument, REQ_ASSIGN, "Override dtype (e.g., u8be)"     )
+
 // NOLINTEND
 
 class CalibrationOptions {
@@ -100,6 +110,14 @@ class OrbitOptions {
 #define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
     type prop = defaultVal;
     ORBIT
+#undef FOUND_CLI_OPTION
+};
+
+class CompressionOptions {
+ public:
+#define FOUND_CLI_OPTION(name, type, prop, defaultVal, converter, defaultArg, ASSIGN, doc) \
+    type prop = defaultVal;
+    COMPRESS
 #undef FOUND_CLI_OPTION
 };
 

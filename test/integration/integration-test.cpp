@@ -1,11 +1,16 @@
-#include <gtest/gtest.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
+#include <gtest/gtest.h>
 #include <stb_image/stb_image.h>
 
+#include <array>
+#include <cstdio>
+#include <cstring>
+#include <istream>
 #include <sstream>
 #include <string>
-#include <istream>
-#include <cstdio>
 
 #include "test/common/common.hpp"
 
@@ -16,6 +21,11 @@
 
 #include "src/command-line/found-main.hpp"
 #include "src/command-line/parsing/options.hpp"
+
+extern "C" {
+#include "ccsds123_io.h"  // NOLINT(build/include_subdir)
+#include "ccsds123_utils.h"  // NOLINT(build/include_subdir)
+}
 
 namespace found {
 
@@ -31,6 +41,49 @@ class IntegrationTest : public testing::Test {
         std::remove(temp_df);
     }
 };
+
+namespace {
+
+bool PathExists(const std::string &path) {
+    struct stat st;
+    return stat(path.c_str(), &st) == 0;
+}
+
+void RemovePathRecursive(const std::string &path) {
+    struct stat st;
+    if (lstat(path.c_str(), &st) != 0) return;
+
+    if (S_ISDIR(st.st_mode)) {
+        DIR *dir = opendir(path.c_str());
+        if (dir) {
+            for (dirent *ent = readdir(dir); ent != nullptr; ent = readdir(dir)) {
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
+                std::string child = path + "/" + ent->d_name;
+                RemovePathRecursive(child);
+            }
+            closedir(dir);
+        }
+        rmdir(path.c_str());
+    } else {
+        unlink(path.c_str());
+    }
+}
+
+class OutputDirGuard {
+ public:
+    explicit OutputDirGuard(const std::string &path) : path_(path) {
+        RemovePathRecursive(path_);
+    }
+
+    ~OutputDirGuard() {
+        RemovePathRecursive(path_);
+    }
+
+ private:
+    std::string path_;
+};
+
+}  // namespace
 
 TEST_F(IntegrationTest, TestMainNothing) {
     int argc = 1;
@@ -69,6 +122,31 @@ TEST_F(IntegrationTest, TestMainHelp) {
 }
 
 // TODO: Add more integration tests here to make this more complete
+
+TEST_F(IntegrationTest, TestMainCompressionCli) {
+    std::string output_dir = "test/compression_output";
+    OutputDirGuard guard(output_dir);
+
+    const std::string output_dir_str = output_dir;
+
+    int argc = 6;
+    const char *argv[] = {
+        "found",
+        "compression",
+        "--image-path", "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw",
+        "--output-dir", output_dir_str.c_str()
+    };
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::array<char, CCSDS123_MAX_PATH_LEN> out_dir{};
+    ccsds123_build_output_folder_path(output_dir_str.c_str(),
+                                      "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw",
+                                      0,
+                                      out_dir.data());
+    std::string bitstream_path = std::string(out_dir.data()) + "/z-output-bitstream.bin";
+    ASSERT_TRUE(PathExists(bitstream_path));
+}
 
 TEST_F(IntegrationTest, TestMainCalibrationBadDistanceAlgorithm) {
     int argc = 4;

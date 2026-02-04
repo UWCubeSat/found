@@ -35,6 +35,17 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
                                     ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
 }
 
+/**
+ * Creates a CompressionPipelineExecutor
+ * 
+ * @param options The options to create the pipeline executor from
+ * 
+ * @return A pointer to a CompressionPipelineExecutor
+ */
+inline std::unique_ptr<CompressionPipelineExecutor> CreateCompressionPipelineExecutor(CompressionOptions &&options) {
+    return std::make_unique<CompressionPipelineExecutor>(std::forward<CompressionOptions>(options));
+}
+
 // TODO: Uncomment when orbit stage is implemented
 /**
  * Creates an OrbitPipelineExecutor

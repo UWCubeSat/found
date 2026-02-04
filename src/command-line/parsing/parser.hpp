@@ -44,6 +44,18 @@ DistanceOptions ParseDistanceOptions(int argc, char **argv);
  */
 OrbitOptions ParseOrbitOptions(int argc, char **argv);
 
+/**
+ * Parses the compression options from the command line to
+ * run the compression algorithm
+ * 
+ * @param argc The number of command-line arguments
+ * @param argv The command line arguments
+ * 
+ * @return CompressionOptions The options for the compression
+ * algorithm as extracted from the command line
+ */
+CompressionOptions ParseCompressionOptions(int argc, char **argv);
+
 }  // namespace found
 
 

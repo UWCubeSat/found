@@ -137,10 +137,32 @@ target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 # Set the source libraries
 set(SRC_LIBS ${STB_IMAGE})
 
+##### hyperC Compression Library ####
+
+set(HYPERC_REPO https://github.com/MahirEmran/found_hyperC.git)
+set(HYPERC_TAG found)
+
+FetchContent_Declare(
+    found_hyperc
+    GIT_REPOSITORY ${HYPERC_REPO}
+    GIT_TAG ${HYPERC_TAG}
+)
+
+FetchContent_MakeAvailable(found_hyperc)
+
+# Fix include dirs for exported target
+set_target_properties(hc-compress-lib PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "")
+target_include_directories(hc-compress-lib
+    PUBLIC
+        $<BUILD_INTERFACE:${found_hyperc_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
+
 ##### FOUND Library #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
 target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
+target_link_libraries(found_lib PRIVATE hc-compress-lib)
+target_include_directories(found_lib PRIVATE ${found_hyperc_SOURCE_DIR}/include)
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
@@ -219,6 +241,7 @@ if(ENABLE_WORKFLOW)
 add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
                                                 LOGGING_LEVEL=INFO)
+target_include_directories(found-test PRIVATE ${found_hyperc_SOURCE_DIR}/include)
 target_compile_options(found-test PRIVATE
     --coverage
     -pthread
@@ -228,6 +251,7 @@ target_compile_options(found-test PRIVATE
 target_link_libraries(found-test PRIVATE
     --coverage
     ${TEST_LIBS}
+    hc-compress-lib
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>)
 set_target_properties(found-test PROPERTIES
@@ -307,6 +331,12 @@ install(TARGETS found_lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
+install(TARGETS hc-compress-lib
+    EXPORT foundTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include)
 install(TARGETS ${STB_IMAGE}
         EXPORT foundTargets
         ARCHIVE DESTINATION lib
