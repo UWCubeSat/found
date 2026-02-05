@@ -21,13 +21,13 @@ class CompressionAlgorithm : public FunctionStage<std::string, CompressionResult
  */
 class CCSDS123CompressionAlgorithm : public CompressionAlgorithm {
  public:
-   /// Constructs a CCSDS123CompressionAlgorithm
-   CCSDS123CompressionAlgorithm(std::string outputDir,
-                         int ael,
-                         int x,
-                         int y,
-                         int z,
-                         std::string dtype);
+    /// Constructs a CCSDS123CompressionAlgorithm
+    CCSDS123CompressionAlgorithm(std::string outputDir,
+                                 int ael,
+                                 int x,
+                                 int y,
+                                 int z,
+                                 std::string dtype);
     /// Destroys this algorithm
     ~CCSDS123CompressionAlgorithm() = default;
 
@@ -38,24 +38,24 @@ class CCSDS123CompressionAlgorithm : public CompressionAlgorithm {
      *
      * @return The compression result
      */
-  CompressionResult Run(const std::string &imagePath) override;
+    CompressionResult Run(const std::string &imagePath) override;
 
  private:
     /* Builds the output directory path for the compression output */
-  std::string BuildOutputDir(const std::string &imagePath) const;
+    std::string BuildOutputDir(const std::string &imagePath) const;
 
-   /// The output directory
-   std::string outputDir_;
-   /// Absolute error limit
-   int ael_ = 0;
-   /// Override X dimension
-   int x_ = 0;
-   /// Override Y dimension
-   int y_ = 0;
-   /// Override Z dimension
-   int z_ = 0;
-   /// Override datatype
-   std::string dtype_;
+    /// The output directory
+    std::string outputDir_;
+    /// Absolute error limit
+    int ael_ = 0;
+    /// Override X dimension
+    int x_ = 0;
+    /// Override Y dimension
+    int y_ = 0;
+    /// Override Z dimension
+    int z_ = 0;
+    /// Override datatype
+    std::string dtype_;
 };
 
 }  // namespace found

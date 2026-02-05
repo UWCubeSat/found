@@ -1,4 +1,6 @@
 # Define all constant directories
+CC ?= cc
+AR ?= ar
 SRC_DIR := src
 TEST_DIR := test
 LIB_DIR := libraries
@@ -52,6 +54,25 @@ DOXYGEN_AWESOME_URL := https://github.com/jothepro/$(DOXYGEN_AWESOME)/archive/re
 DOXYGEN_AWESOME_ZIP := $(CACHE_DIR)/v$(DOXYGEN_AWESOME_VERSION).tar.gz
 DOXYGEN_AWESOME_ARTIFACT := $(CACHE_DIR)/$(DOXYGEN_AWESOME)-$(DOXYGEN_AWESOME_VERSION)
 
+# Define the hyperC compression library
+HYPERC := found_hyperC
+HYPERC_VERSION := found
+HYPERC_URL := https://github.com/MahirEmran/$(HYPERC).git
+HYPERC_CACHE_DIR := $(CACHE_DIR)/$(HYPERC)-$(HYPERC_VERSION)
+HYPERC_SRC_DIR := $(HYPERC_CACHE_DIR)/src
+HYPERC_INCLUDE_DIR := $(HYPERC_CACHE_DIR)/include
+HYPERC_BUILD_DIR := $(BUILD_LIBRARY_SRC_DIR)/hyperc
+HYPERC_LIB_NAME := libhc-compress.a
+HYPERC_LIB := $(HYPERC_BUILD_DIR)/$(HYPERC_LIB_NAME)
+HYPERC_SRCS := \
+	$(HYPERC_SRC_DIR)/ccsds123_core.c \
+	$(HYPERC_SRC_DIR)/ccsds123_utils.c \
+	$(HYPERC_SRC_DIR)/ccsds123_io.c \
+	$(HYPERC_SRC_DIR)/hc_compress_api.c
+HYPERC_OBJS := $(patsubst $(HYPERC_SRC_DIR)/%.c, $(HYPERC_BUILD_DIR)/src/%.o, $(HYPERC_SRCS))
+HYPERC_CPPFLAGS := -I$(HYPERC_INCLUDE_DIR) -DUNIT_TEST
+HYPERC_CFLAGS ?= -std=c99 -O2 -Wall -Wextra -Wpedantic
+
 
 # Define all source and test code
 SRC := $(shell find $(SRC_DIR) -name "*.cpp")
@@ -88,7 +109,7 @@ endif
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
 # Compiler flags
-LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
+LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR) -I$(HYPERC_INCLUDE_DIR)
 LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
@@ -98,7 +119,7 @@ ifndef OMIT_ASAN
 	CXXFLAGS_TEST := $(CXXFLAGS_TEST) -fsanitize=address -fomit-frame-pointer # Also allow light optimization to get rid of dead code
 endif
 CXXFLAGS += $(LOGGING_MACROS)
-LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o # Any external libraries go here
+LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o $(HYPERC_LIB) # Any external libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
 
 # Targets
@@ -154,7 +175,7 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(HYPERC_CACHE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
@@ -173,9 +194,12 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
 	$(CXX) -I$(CACHE_DIR) -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o # Exclude CXXFLAGS because we know its fine
 
+$(HYPERC_CACHE_DIR):
+	git clone --depth 1 --branch $(HYPERC_VERSION) $(HYPERC_URL) $(HYPERC_CACHE_DIR)
+
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR) $(HYPERC_LIB)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
 $(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
 	mkdir -p $(@D)
@@ -206,7 +230,7 @@ test_setup_message:
 
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
-$(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
+$(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR) $(HYPERC_LIB)
 	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
 $(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
 	mkdir -p $(@D)
@@ -238,6 +262,15 @@ $(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST)
 	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@
 private_message:
 	$(call PRINT_TARGET_HEADER, private)
+
+# hyperC build rules
+$(HYPERC_LIB): $(HYPERC_OBJS)
+	@mkdir -p $(dir $@)
+	$(AR) rcs $@ $^
+
+$(HYPERC_BUILD_DIR)/src/%.o: $(HYPERC_SRC_DIR)/%.c $(HYPERC_CACHE_DIR)
+	@mkdir -p $(@D)
+	$(CC) $(CPPFLAGS) $(HYPERC_CPPFLAGS) $(HYPERC_CFLAGS) -c $< -o $@
 
 # The doxygen target	
 $(DOXYGEN_AWESOME_ARTIFACT):
