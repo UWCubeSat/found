@@ -1,72 +1,17 @@
-#include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <array>
-#include <cstring>
-#include <fstream>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "src/common/pipeline/pipelines.hpp"
-#include "src/command-line/execution/executors.hpp"
 
 #include "test/common/constants/pipeline-constants.hpp"
 #include "test/common/mocks/pipeline-mocks.hpp"
 
-extern "C" {
-#include "ccsds123_io.h"  // NOLINT(build/include_subdir)
-#include "ccsds123_utils.h"  // NOLINT(build/include_subdir)
-}
-
 namespace found {
-
-namespace {
-
-bool PathExists(const std::string &path) {
-    struct stat st;
-    return stat(path.c_str(), &st) == 0;
-}
-
-void RemovePathRecursive(const std::string &path) {
-    struct stat st;
-    if (lstat(path.c_str(), &st) != 0) return;
-
-    if (S_ISDIR(st.st_mode)) {
-        DIR *dir = opendir(path.c_str());
-        if (dir) {
-            for (dirent *ent = readdir(dir); ent != nullptr; ent = readdir(dir)) {
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
-                std::string child = path + "/" + ent->d_name;
-                RemovePathRecursive(child);
-            }
-            closedir(dir);
-        }
-        rmdir(path.c_str());
-    } else {
-        unlink(path.c_str());
-    }
-}
-
-class OutputDirGuard {
- public:
-    explicit OutputDirGuard(const std::string &path) : path_(path) {
-        RemovePathRecursive(path_);
-    }
-
-    ~OutputDirGuard() {
-        RemovePathRecursive(path_);
-    }
-
- private:
-    std::string path_;
-};
-
-}  // namespace
 
 /////////////////////////////////////////////
 ///////// SEQUENTIAL PIPELINE TEST //////////
@@ -254,110 +199,6 @@ TEST(SequentialPipelineTest, TestSequentialPipelineGeneral) {
                                  .Complete(*stage4)
                                  .Run(doubles[test_set]);
     ASSERT_EQ(strings[test_set], result);
-}
-
-/////////////////////////////////////////////
-/////// COMPRESSION PIPELINE TESTS //////////
-/////////////////////////////////////////////
-
-TEST(CompressionPipelineTest, TestCompressionPipelineRun) {
-    std::string output_dir = "test/compression_output";
-    OutputDirGuard guard(output_dir);
-
-    CompressionOptions options;
-    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
-    options.outputDir = output_dir;
-    options.ael = 0;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-
-    std::array<char, CCSDS123_MAX_PATH_LEN> out_dir{};
-    ccsds123_build_output_folder_path(output_dir.c_str(),
-                                      "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw",
-                                      0,
-                                      out_dir.data());
-    std::string bitstream_path = std::string(out_dir.data()) + "/output.bin";
-    ASSERT_TRUE(PathExists(bitstream_path));
-}
-
-TEST(CompressionPipelineTest, TestCompressionPipelineMissingInput) {
-    std::string output_dir = "test/compression_output";
-    OutputDirGuard guard(output_dir);
-
-    CompressionOptions options;
-    options.outputDir = output_dir;
-    options.ael = 0;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-
-    ASSERT_FALSE(PathExists(output_dir));
-}
-
-TEST(CompressionPipelineTest, TestCompressionPipelineMissingOutputDir) {
-    CompressionOptions options;
-    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
-    options.ael = 0;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-}
-
-TEST(CompressionPipelineTest, TestCompressionPipelineNegativeAel) {
-    std::string output_dir = "test/compression_output";
-    OutputDirGuard guard(output_dir);
-
-    CompressionOptions options;
-    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
-    options.outputDir = output_dir;
-    options.ael = -1;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-
-    ASSERT_FALSE(PathExists(output_dir));
-}
-
-TEST(CompressionPipelineTest, TestCompressionPipelineInvalidInputFile) {
-    std::string output_dir = "test/compression_output";
-    OutputDirGuard guard(output_dir);
-
-    CompressionOptions options;
-    options.imagePath = "test/common/assets/does-not-exist.raw";
-    options.outputDir = output_dir;
-    options.ael = 0;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-
-    ASSERT_TRUE(PathExists(output_dir));
-}
-
-TEST(CompressionPipelineTest, TestCompressionPipelineEnsureDirFailure) {
-    std::string output_dir = "test/compression_output_file";
-    RemovePathRecursive(output_dir);
-
-    std::ofstream file(output_dir.c_str());
-    file << "placeholder";
-    file.close();
-
-    CompressionOptions options;
-    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
-    options.outputDir = output_dir;
-    options.ael = 0;
-
-    CompressionPipelineExecutor executor(std::move(options));
-    executor.ExecutePipeline();
-    executor.OutputResults();
-
-    ASSERT_TRUE(PathExists(output_dir));
-    unlink(output_dir.c_str());
 }
 
 /**

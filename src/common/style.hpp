@@ -6,6 +6,7 @@
 #include <functional>
 #include <utility>
 #include <memory>
+#include <string>
 
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
@@ -44,6 +45,16 @@ struct Image {
      * image[channels * index + n]
      */
     unsigned char *image;
+};
+
+/**
+ * Represents compression results for CCSDS-123
+ */
+struct CompressionResult {
+    /// Result code from compression
+    int result = 0;
+    /// Output folder for compression results
+    std::string outputDir = "";
 };
 
 /**
@@ -180,6 +191,7 @@ typedef std::pair<std::function<Vec3(int)>,std::function<Vec3(int)>> KinematicPr
 constexpr size_t calibration_size = 1;
 constexpr size_t distance_size = 3;
 constexpr size_t orbit_size = 2;
+constexpr size_t compression_size = 1;
 
 /// Pipeline for Calibration
 typedef SequentialPipeline<std::pair<EulerAngles, EulerAngles>, Quaternion, calibration_size> CalibrationPipeline;
@@ -189,6 +201,9 @@ typedef SequentialPipeline<Image, PositionVector, distance_size> DistancePipelin
 
 /// Pipeline for Orbital Determination
 typedef SequentialPipeline<LocationRecords, LocationRecords, orbit_size> OrbitPipeline;
+
+/// Pipeline for CCSDS-123 Compression
+typedef SequentialPipeline<std::string, CompressionResult, compression_size> CompressionPipeline;
 
 }  // namespace found
 

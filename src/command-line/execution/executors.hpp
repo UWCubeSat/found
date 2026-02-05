@@ -9,6 +9,8 @@
 
 #include "calibrate/calibrate.hpp"
 
+#include "compression/compression.hpp"
+
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
@@ -140,21 +142,25 @@ class OrbitPipelineExecutor : public PipelineExecutor {
  */
 class CompressionPipelineExecutor : public PipelineExecutor {
  public:
-      /**
-       * Constructs a CompressionPipelineExecutor
-       * 
-       * @param options The options to create the pipeline
-       */
-      explicit CompressionPipelineExecutor(CompressionOptions &&options);
+    /**
+     * Constructs a CompressionPipelineExecutor
+     *
+     * @param options The options to create the pipeline
+     * @param compressionAlgorithm The compression algorithm to use
+     */
+    explicit CompressionPipelineExecutor(CompressionOptions &&options,
+                                         std::unique_ptr<CompressionAlgorithm> compressionAlgorithm);
 
-      void ExecutePipeline() override;
-      void OutputResults() override;
+    void ExecutePipeline() override;
+    void OutputResults() override;
 
  private:
-      /// The Compression options being used
-      const CompressionOptions options_;
-      /// Result code from compression
-      int result_ = 0;
+    /// The Compression options being used
+    const CompressionOptions options_;
+    /// The Compression pipeline
+    CompressionPipeline pipeline_;
+    /// The Compression Algorithm used
+    std::unique_ptr<CompressionAlgorithm> compressionAlgorithm;
 };
 
 }  // namespace found

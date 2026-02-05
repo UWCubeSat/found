@@ -6,12 +6,6 @@
 
 #include "common/logging.hpp"
 #include "common/time/time.hpp"
-#include "command-line/parsing/parser.hpp"
-
-extern "C" {
-#include "ccsds123_internal.h"  // NOLINT(build/include_subdir)
-#include "ccsds123_io.h"  // NOLINT(build/include_subdir)
-}
 
 namespace found {
 
@@ -119,50 +113,22 @@ void OrbitPipelineExecutor::OutputResults() {
                                              << futurePosition.timestamp << " s");
 }
 
-CompressionPipelineExecutor::CompressionPipelineExecutor(CompressionOptions &&options)
-    : options_(std::move(options)) {}
+CompressionPipelineExecutor::CompressionPipelineExecutor(CompressionOptions &&options,
+                                                         std::unique_ptr<CompressionAlgorithm> compressionAlgorithm)
+    : options_(std::move(options)) {
+    this->compressionAlgorithm = std::move(compressionAlgorithm);
+    this->pipeline_.Complete(*this->compressionAlgorithm);
+}
 
 void CompressionPipelineExecutor::ExecutePipeline() {
-    if (options_.imagePath.empty() || options_.outputDir.empty()) {
-        LOG_ERROR("Compression requires --image-path and --output-dir. " << HELP_MSG);
-        this->result_ = 1;
-        return;
-    }
-
-    if (options_.ael < 0) {
-        LOG_ERROR("AEL must be >= 0.");
-        this->result_ = 1;
-        return;
-    }
-
-    if (ccsds123_ensure_dir(options_.outputDir.c_str()) != 0) {
-        LOG_ERROR("Failed to create output dir: " << options_.outputDir);
-        this->result_ = 1;
-        return;
-    }
-
-    this->result_ = ccsds123_compress_one_image(options_.imagePath.c_str(),
-                                                options_.outputDir.c_str(),
-                                                options_.ael,
-                                                options_.x,
-                                                options_.y,
-                                                options_.z,
-                                                options_.dtype.c_str());
-
-    if (this->result_ != 0) {
-        LOG_ERROR("Compression failed for: " << options_.imagePath);
-    }
+    this->pipeline_.Run(this->options_.imagePath);
 }
 
 void CompressionPipelineExecutor::OutputResults() {
-    if (this->result_ != 0) return;
+    CompressionResult *&result = this->pipeline_.GetProduct();
+    if (result == nullptr || result->result != 0) return;
 
-    char out_dir[CCSDS123_MAX_PATH_LEN];
-    ccsds123_build_output_folder_path(options_.outputDir.c_str(),
-                                      options_.imagePath.c_str(),
-                                      options_.ael,
-                                      out_dir);
-    LOG_INFO("Compression complete. Output folder: " << out_dir);
+    LOG_INFO("Compression complete. Output folder: " << result->outputDir);
 }
 
 }  // namespace found

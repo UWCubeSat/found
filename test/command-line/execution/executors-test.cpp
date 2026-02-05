@@ -9,6 +9,7 @@
 #include <fstream>
 #include <ctime>
 
+#include "test/common/mocks/compression-mocks.hpp"
 #include "test/common/mocks/distance-mocks.hpp"
 #include "test/common/mocks/orbit-mocks.hpp"
 #include "test/common/common.hpp"
@@ -44,6 +45,10 @@ MATCHER_P(PointsMatcher, expected, "") {
 
 MATCHER_P(PositionVectorMatcher, expected, "") {
     return arg.x == expected.x && arg.y == expected.y && arg.z == expected.z;
+}
+
+MATCHER_P(CompressionInputMatcher, expected, "") {
+    return arg == expected;
 }
 
 TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
@@ -209,5 +214,71 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
 
+TEST(ExecutorsTest, TestCompressionPipelineExecutorSuccess) {
+    CompressionOptions options;
+    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
+    options.outputDir = "test/compression_output";
+    options.ael = 0;
+    options.x = 1;
+    options.y = 2;
+    options.z = 3;
+    options.dtype = "u8be";
+
+    CompressionResult result{0, "test/compression_output/mock"};
+
+    std::unique_ptr<MockCompressionAlgorithm> mockCompressionAlgorithm =
+        std::make_unique<MockCompressionAlgorithm>();
+    EXPECT_CALL(*mockCompressionAlgorithm, Run(CompressionInputMatcher(options.imagePath)))
+        .WillOnce(testing::Return(result));
+
+    CompressionPipelineExecutor executor(std::move(options), std::move(mockCompressionAlgorithm));
+    executor.ExecutePipeline();
+
+    testing::internal::CaptureStdout();
+    executor.OutputResults();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    ASSERT_THAT(output, testing::HasSubstr("Compression complete. Output folder: " + result.outputDir));
+}
+
+TEST(ExecutorsTest, TestCompressionPipelineExecutorOutputWithoutRun) {
+    CompressionOptions options;
+    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
+    options.outputDir = "test/compression_output";
+
+    std::unique_ptr<MockCompressionAlgorithm> mockCompressionAlgorithm =
+        std::make_unique<MockCompressionAlgorithm>();
+    EXPECT_CALL(*mockCompressionAlgorithm, Run(testing::_)).Times(0);
+
+    CompressionPipelineExecutor executor(std::move(options), std::move(mockCompressionAlgorithm));
+
+    testing::internal::CaptureStdout();
+    executor.OutputResults();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    ASSERT_THAT(output, testing::Not(testing::HasSubstr("Compression complete. Output folder:")));
+}
+
+TEST(ExecutorsTest, TestCompressionPipelineExecutorOutputErrorResult) {
+    CompressionOptions options;
+    options.imagePath = "test/common/assets/ISS034-E-54251-u8be-1x1024x1024.raw";
+    options.outputDir = "test/compression_output";
+
+    CompressionResult result{1, ""};
+
+    std::unique_ptr<MockCompressionAlgorithm> mockCompressionAlgorithm =
+        std::make_unique<MockCompressionAlgorithm>();
+    EXPECT_CALL(*mockCompressionAlgorithm, Run(CompressionInputMatcher(options.imagePath)))
+        .WillOnce(testing::Return(result));
+
+    CompressionPipelineExecutor executor(std::move(options), std::move(mockCompressionAlgorithm));
+    executor.ExecutePipeline();
+
+    testing::internal::CaptureStdout();
+    executor.OutputResults();
+    std::string output = testing::internal::GetCapturedStdout();
+
+    ASSERT_THAT(output, testing::Not(testing::HasSubstr("Compression complete. Output folder:")));
+}
 
 }  // namespace found

@@ -43,7 +43,8 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
  * @return A pointer to a CompressionPipelineExecutor
  */
 inline std::unique_ptr<CompressionPipelineExecutor> CreateCompressionPipelineExecutor(CompressionOptions &&options) {
-    return std::make_unique<CompressionPipelineExecutor>(std::forward<CompressionOptions>(options));
+    return std::make_unique<CompressionPipelineExecutor>(std::forward<CompressionOptions>(options),
+                                    ProvideCompressionAlgorithm(std::forward<CompressionOptions>(options)));
 }
 
 // TODO: Uncomment when orbit stage is implemented

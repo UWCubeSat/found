@@ -15,6 +15,8 @@
 
 #include "orbit/orbit.hpp"
 
+#include "compression/compression.hpp"
+
 // TODO(nguy8tri): Include statement for Orbit Pipeline
 // TODO: Fully Implement this when orbit stage is implemented
 
@@ -99,6 +101,22 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
         }
         return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
+}
+
+/**
+ * Provides a CompressionAlgorithm
+ *
+ * @param options The options to derive the compression algorithm from
+ *
+ * @return std::unique_ptr<CompressionAlgorithm> The compression algorithm
+ */
+std::unique_ptr<CompressionAlgorithm> ProvideCompressionAlgorithm(CompressionOptions &&options) {
+    return std::make_unique<CCSDS123CompressionAlgorithm>(options.outputDir,
+                                                          options.ael,
+                                                          options.x,
+                                                          options.y,
+                                                          options.z,
+                                                          options.dtype);
 }
 
 // TODO: Uncomment when orbit stage is implemented
