@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <string>
+#include <memory>
 
 #include "src/compression/compression.hpp"
 #include "test/common/mocks/compression-mocks.hpp"

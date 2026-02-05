@@ -3,6 +3,8 @@
 
 #include <gmock/gmock.h>
 
+#include <string>
+
 #include "compression/compression.hpp"
 
 namespace found {
