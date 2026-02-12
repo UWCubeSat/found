@@ -125,6 +125,10 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     };
 }
 
+Vec3 Vec3::OuterProduct(const Mat3 &other) const {
+    return other.Transpose() * *this;
+}
+
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////

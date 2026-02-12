@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <utility>
+#include <string>
 
 #include "common/style.hpp"
 #include "common/spatial/attitude-utils.hpp"
@@ -35,6 +36,27 @@ using found::bigAssImage;
 
 
 
+void print(std::stringstream * ss, std::string str){
+    *ss << str;
+}
+void bar(std::stringstream * ss){
+    print(ss, "\n-----------------------------------------");
+}
+void print(std::stringstream * ss, std::string str, decimal num){
+    *ss << "\n" << str << "\t:\t" << num;
+}
+void print(std::stringstream * ss, std::string str, Vec3 vec){
+    *ss << "\n" << str << "\t:\t[" << vec.x << ", "<< vec.y << ", " << vec.z << "]";
+}
+
+void conicEquation(std::stringstream * ss, Vec3 rc, Mat3 Ac){
+    Mat3 C = (Ac * rc.OuterProduct(rc) * (Ac)) + Ac*((rc.OuterProduct(Ac)*rc-1)*-1);
+    C = C * (1/C.At(0,0));
+    *ss << "\nConic Equation:\n" << C.At(0,0) << "x^2 + " << C.At(0,1) << "*2xy + " << C.At(1,1) << "*y^2 + " << C.At(0,2) <<"*2x + " << C.At(1,2) << "*2y+ " << C.At(2,2) << " = 0";
+}
+
+
+
 TEST(SpheroidDistanceDeterminationAlgorithmTest, TestRandomEarth1) {
     Vec3 principleAxisDimensions = {RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C};
     int imageWidth = 700;
@@ -49,22 +71,76 @@ TEST(SpheroidDistanceDeterminationAlgorithmTest, TestRandomEarth1) {
 
     Vec3 trueRp = {-4214.133704672528, -489.8481180046763, 6094.8902427420635};
 
-    Mat3 computedTCP = algo.ComputeBodyToCamTransformation(AOR);
-    Mat3 analyticalTCP = {-0.9336827385619191, 0.3164880078507422, -0.16754666394226866,
--0.3534677092449802, -0.8895289487459533, 0.2894802719772545,
-0.05742057325228543, -0.32950506859468437, -0.9424061160337359,
-};
-    Vec3 computedRp = analyticalTCP * expected;
+    Mat3 computedTCP = algo.ComputeBodyToCamTransformation(AOR).Transpose();
+    Vec3 computedRp = computedTCP * actual;
+
+    const Mat3 Ap = {1/(RADIUS_OF_EARTH_A*RADIUS_OF_EARTH_A),0,0,
+                              0,1/(RADIUS_OF_EARTH_A*RADIUS_OF_EARTH_A),0,
+                              0,0,1/(RADIUS_OF_EARTH_C*RADIUS_OF_EARTH_C)};
+
+    const Mat3 Ac = computedTCP * Ap * computedTCP.Transpose();
 
     std::stringstream ss1;
-    ss1 << "\nTCP Det: " << computedTCP.Det() << ", " << analyticalTCP.Det();
-    ss1 << "\nTCP computed dist: [" << computedRp.x << ", "<< computedRp.y << ", " << computedRp.z << "]; " << computedRp.MagnitudeSq();
-    ss1 << "\nTrue dist: [" << trueRp.x << ", "<< trueRp.y << ", " << trueRp.z << "]; " << trueRp.MagnitudeSq();
-    computedRp = computedTCP * expected;
-    ss1 << "\nTCP computed dist: [" << computedRp.x << ", "<< computedRp.y << ", " << computedRp.z << "]; " << computedRp.MagnitudeSq();
-    ss1 << "\nActual rc: [" << actual.x << ", "<< actual.y << ", " << actual.z << "]";
-    ss1 << "\nexpected rc: [" << expected.x << ", "<< expected.y << ", " << expected.z << "]";
+    print(&ss1,"\n");
+    conicEquation(&ss1, actual, Ac);
+    print(&ss1, "TCP Det  ", computedTCP.Det());
+    bar(&ss1);
+    print(&ss1, "True  rp", trueRp);
+    print(&ss1, "True |rp|", trueRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Calc  rp", computedRp);
+    print(&ss1, "Calc |rp|", computedRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Diff", trueRp.Magnitude()-computedRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Actual rc", actual);
+    print(&ss1, "Expected rc", expected);
+    print(&ss1,"\n");
     LOG_INFO(ss1.str());
+    EXPECT_LT(abs(trueRp.Magnitude() - computedRp.Magnitude()), 0.0001);
+    VECTOR_EQUALS(actual, expected, BALLPARK);
+}
 
+TEST(SpheroidDistanceDeterminationAlgorithmTest, TestRandomEarth2) {
+    Vec3 principleAxisDimensions = {RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C};
+    int imageWidth = 700;
+    int imageHeight = 600;
+    Camera cam(0.05, .0000514, imageWidth, imageHeight); 
+    Vec3 AOR = {-0.42324764, -0.1952689,  -0.88472114};
+    Points pts = {{static_cast<decimal>(576.4257627753286), static_cast<decimal>(598.7430618240066)},{static_cast<decimal>(661.6541409018258), static_cast<decimal>(529.7570867919333)},{static_cast<decimal>(588.0635060034172), static_cast<decimal>(589.777407622001)},{static_cast<decimal>(652.9762999432182), static_cast<decimal>(537.1447405098314)},{static_cast<decimal>(654.8726756023539), static_cast<decimal>(535.5376185395149)},{static_cast<decimal>(596.8277951206118), static_cast<decimal>(582.9335882529601)},{static_cast<decimal>(675.7904176672815), static_cast<decimal>(517.5374127325981)},{static_cast<decimal>(586.0334567507481), static_cast<decimal>(591.3513134961818)},{static_cast<decimal>(621.1805971719822), static_cast<decimal>(563.4936144300615)},{static_cast<decimal>(630.263881089284), static_cast<decimal>(556.0799787155689)},{static_cast<decimal>(608.1120899596912), static_cast<decimal>(574.0039264631828)},{static_cast<decimal>(615.7394551246949), static_cast<decimal>(567.8918454528773)},{static_cast<decimal>(649.2139282748626), static_cast<decimal>(540.3212122527914)},{static_cast<decimal>(636.8773833807785), static_cast<decimal>(550.6254141266548)},{static_cast<decimal>(628.9981942452558), static_cast<decimal>(557.118398931639)},{static_cast<decimal>(696.6164492479918), static_cast<decimal>(499.1081932263702)},{static_cast<decimal>(595.578519855075), static_cast<decimal>(583.9139850156122)},{static_cast<decimal>(590.0360864252954), static_cast<decimal>(588.243995953845)},{static_cast<decimal>(589.0709144084918), static_cast<decimal>(588.9947862041763)},{static_cast<decimal>(656.8422731356512), static_cast<decimal>(533.8641262088919)},{static_cast<decimal>(649.1286677782289), static_cast<decimal>(540.393010658714)},{static_cast<decimal>(603.1160173223736), static_cast<decimal>(577.9740065868167)},{static_cast<decimal>(593.14236249107), static_cast<decimal>(585.8211469811814)},
+};
+    SpheroidDistanceDeterminationAlgorithm algo(std::move(cam), principleAxisDimensions, AOR);
+    Vec3 actual = algo.Run(pts);
+    Vec3 expected = {2934.087845016932, 3818.970257548237, -5209.988096138158};
+
+    Vec3 trueRp = {1395.584236904298, -6443.276615765561, 2621.8147079167147};
+
+    Mat3 computedTCP = algo.ComputeBodyToCamTransformation(AOR).Transpose();
+    Vec3 computedRp = computedTCP * actual;
+
+    const Mat3 Ap = {1/(RADIUS_OF_EARTH_A*RADIUS_OF_EARTH_A),0,0,
+                              0,1/(RADIUS_OF_EARTH_A*RADIUS_OF_EARTH_A),0,
+                              0,0,1/(RADIUS_OF_EARTH_C*RADIUS_OF_EARTH_C)};
+
+    const Mat3 Ac = computedTCP * Ap * computedTCP.Transpose();
+
+    std::stringstream ss1;
+    print(&ss1,"\n");
+    conicEquation(&ss1, actual, Ac);
+    print(&ss1, "TCP Det  ", computedTCP.Det());
+    bar(&ss1);
+    print(&ss1, "True  rp", trueRp);
+    print(&ss1, "True |rp|", trueRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Calc  rp", computedRp);
+    print(&ss1, "Calc |rp|", computedRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Diff", trueRp.Magnitude()-computedRp.Magnitude());
+    bar(&ss1);
+    print(&ss1, "Actual rc", actual);
+    print(&ss1, "Expected rc", expected);
+    print(&ss1,"\n");
+    LOG_INFO(ss1.str());
+    EXPECT_LT(abs(trueRp.Magnitude() - computedRp.Magnitude()), 0.0001);
     VECTOR_EQUALS(actual, expected, BALLPARK);
 }

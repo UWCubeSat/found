@@ -229,6 +229,15 @@ class Vec3 {
      * @return this ⊗ other
     */
     Mat3 OuterProduct(const Vec3 &) const;
+
+    /**
+     * Computes row vector * matrix between this and matrix
+     * 
+     * @param other The matrix in this operation
+     * 
+     * @return row vector result of this * other
+    */
+    Vec3 OuterProduct(const Mat3 &) const;
 };
 
 ///////////////////////////////////

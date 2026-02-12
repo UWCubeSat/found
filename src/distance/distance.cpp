@@ -43,8 +43,8 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     size_t pointsSize = p.size();
     std::vector<Vec2> undistortedPoints = std::vector<Vec2>(pointsSize, {0.0,0.0});
     for (const Vec2 &point : p) {
-        Vec2 center = {cam_.XCenter(), cam_.YCenter()};
-        undistortedPoints[i++] = UndistortPoint(point, center, radialCoefficients_, tangentialCoefficients_);
+        // Vec2 center = {cam_.XCenter(), cam_.YCenter()};
+        undistortedPoints[i++] = point; //UndistortPoint(point, center, radialCoefficients_, tangentialCoefficients_);
     }
     i=0;
     std::vector<Vec3> normalizedVecsToHorizon = std::vector<Vec3>(pointsSize, {0.0, 0.0, 0.0});
@@ -61,15 +61,16 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeBodyToCamTransformation(Vec3 AOR){
     Vec3 randomVec = {0.57735,0.57735,0.57735}; // pick a random vector
-    Vec3 orthogonalVec1 = AOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
-    Vec3 orthogonalVec2 = AOR.CrossProduct(orthogonalVec1).Normalize(); // get the other orthogonal vector on the equator; should already be normalized
+    Vec3 tempAOR = {AOR.x, AOR.y, -AOR.z};
+    Vec3 orthogonalVec1 = tempAOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
+    Vec3 orthogonalVec2 = tempAOR.CrossProduct(orthogonalVec1).Normalize(); // get the other orthogonal vector on the equator; should already be normalized
 
     // just use basis vectors as columns
     // flip z since we're going from a right handed system to a left handed one
     Mat3 TPC = {
-        orthogonalVec1.x,   orthogonalVec2.x, AOR.x, 
-        orthogonalVec1.y,   orthogonalVec2.y, AOR.y, 
-        -orthogonalVec1.z, -orthogonalVec2.z, -AOR.z
+        orthogonalVec1.x,    orthogonalVec2.x,   AOR.x, 
+        orthogonalVec1.y,    orthogonalVec2.y,   AOR.y, 
+        -orthogonalVec1.z,   -orthogonalVec2.z,  AOR.z
     };
 
     return TPC;

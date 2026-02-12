@@ -126,7 +126,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @param cam The camera used to capture the picture of Earth
     * @param AOR Earth's axis of rotation in camera coordinates
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR.Normalize()), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR, Vec3 radialCoefficients, Vec2 tangentialCoefficients) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_(radialCoefficients), tangentialCoefficients_(tangentialCoefficients) {}
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
