@@ -41,11 +41,18 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 
     int i = 0;
     size_t pointsSize = p.size();
+    std::vector<Vec2> undistortedPoints = std::vector<Vec2>(pointsSize, {0.0,0.0});
+    for (const Vec2 &point : p) {
+        Vec2 center = {cam_.XCenter(), cam_.YCenter()};
+        undistortedPoints[i++] = UndistortPoint(point, center, radialCoefficients_, tangentialCoefficients_);
+    }
+    i=0;
     std::vector<Vec3> normalizedVecsToHorizon = std::vector<Vec3>(pointsSize, {0.0, 0.0, 0.0});
     for (const Vec2 &point : p) {
         Vec3 pBar = {point.x, point.y, 1};
         normalizedVecsToHorizon[i++] = (imageToSpace * pBar).Normalize();
     }
+    
     Vec3 vecToEarth = VecToEarthTLS(normalizedVecsToHorizon); // vecToEarth magnitude is a function of the distance and the principal axes
     vecToEarth = (TPC * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth*vecToEarth - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
 
@@ -55,17 +62,28 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeBodyToCamTransformation(Vec3 AOR){
     Vec3 randomVec = {0.57735,0.57735,0.57735}; // pick a random vector
     Vec3 orthogonalVec1 = AOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
-    Vec3 orthogonalVec2 = AOR.CrossProduct(orthogonalVec1); // get the other orthogonal vector on the equator; should already be normalized
+    Vec3 orthogonalVec2 = AOR.CrossProduct(orthogonalVec1).Normalize(); // get the other orthogonal vector on the equator; should already be normalized
 
     // just use basis vectors as columns
     // flip z since we're going from a right handed system to a left handed one
     Mat3 TPC = {
-        orthogonalVec1.x, AOR.x, orthogonalVec2.x,
-        orthogonalVec1.y, AOR.y, orthogonalVec2.y,
-        -orthogonalVec1.z, -AOR.z, -orthogonalVec2.z
+        orthogonalVec1.x,   orthogonalVec2.x, AOR.x, 
+        orthogonalVec1.y,   orthogonalVec2.y, AOR.y, 
+        -orthogonalVec1.z, -orthogonalVec2.z, -AOR.z
     };
 
     return TPC;
+}
+
+// stupid equation
+Vec2 SpheroidDistanceDeterminationAlgorithm::UndistortPoint(Vec2 point, Vec2 center, Vec3 k, Vec2 p){
+    Vec2 vecFromCenter = point-center;
+    decimal r = vecFromCenter.x*vecFromCenter.x + vecFromCenter.y*vecFromCenter.y;
+    Vec2 term1 = vecFromCenter*(1+k.x*r*r+k.y*r*r*r*r+k.z*r*r*r*r*r*r);
+    decimal x = vecFromCenter.x;
+    decimal y= vecFromCenter.y;
+    Vec2 term2 = {2*p.x*x*y + p.y*(r*r+2*x*x), p.y*(r*r*+2*y*y)+2*p.y*x*y};
+    return term1+term2;
 }
 
 Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeInvCameraProjMat(Camera cam){

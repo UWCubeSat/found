@@ -85,3 +85,28 @@ TEST(SVDTest, Test3Random10x5) {
         }
     }
 }
+
+TEST(SVDTest, Test3Random10x50) {
+    int modulo = 10000000;
+    decimal divisor = 1000;
+
+    Matrix mat(10,50);
+
+    for(int i = 0; i < 10; i++){
+        for(int j = 0; j < 50; j++){
+            mat(i,j) = (rand() % modulo)/divisor;
+        }
+    }
+
+    SVDResult result = ComputeSVD(mat, 10);
+    
+    Matrix reconstruction = result.U * result.S * result.V.Transpose();
+
+    for(int i = 0; i < 10; i++){
+        for(int j = 0; j < 50; j++){
+            decimal expected = mat.Get(i,j);
+            decimal actual = reconstruction.Get(i,j);
+            EXPECT_LT(abs(expected - actual), DEFAULT_TOLERANCE);
+        }
+    }
+}

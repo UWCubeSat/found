@@ -126,7 +126,8 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @param cam The camera used to capture the picture of Earth
     * @param AOR Earth's axis of rotation in camera coordinates
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR) {}
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR, Vec3 radialCoefficients, Vec2 tangentialCoefficients) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_(radialCoefficients), tangentialCoefficients_(tangentialCoefficients) {}
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
@@ -165,6 +166,8 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
    * */
     Mat3 ComputeInvCameraProjMat(Camera cam);
 
+    Vec2 UndistortPoint(Vec2 point, Vec2 center, Vec3 k, Vec2 p);
+
    /**
    * performs TLS on Hn where H is the transpose matrix of all normalized vectors to the horizon
    * 
@@ -194,6 +197,10 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
    // Earth's axis of rotation in camera coordinates
     Vec3 AOR_;
+
+    Vec3 radialCoefficients_;
+
+    Vec2 tangentialCoefficients_;
 };
 
 /**
