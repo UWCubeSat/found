@@ -168,7 +168,7 @@ constexpr const char *temp_df = "test/common/assets/temp.found";
 constexpr const char *pos_data = "test/common/assets/position-data/pos-data-valid.txt";
 /// The sample image
 const ImageData example_earth1(
-    "test/common/assets/example_earth1.png",
+    "test/common/assets/example_earth3.JPG",
     85e-3,
     20e-6,
     {DegToRad(140), 0, 0},

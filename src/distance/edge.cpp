@@ -3,9 +3,12 @@
 #include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <tuple>
 #include <vector>
 #include <functional>
 #include <unordered_set>
+#include <limits>
+#include <cmath>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -364,6 +367,241 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     for (const auto &[label, component] : components) result.push_back(component);
 
     return result;
+}
+
+////// Zernike Edge Detection Algorithm //////
+
+std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::imageToGrayscaleDouble(const Image &image) {
+        uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
+        std::unique_ptr<decimal[]> result(new decimal[imageSize]);
+        
+        for (uint64_t i = 0; i < imageSize; i++) {
+            // Average channels to get grayscale
+            int sum = 0;
+            for (int c = 0; c < image.channels; c++) {
+                sum += image.image[image.channels * i + c];
+            }
+            result[i] = DECIMAL(sum) / DECIMAL(image.channels);
+        }
+        
+        return result;
+}
+
+std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
+        const decimal* imageData,
+        int imageWidth,
+        int imageHeight,
+        decimal centerX,
+        decimal centerY,
+        int windowSize
+    ) {
+        std::unique_ptr<decimal[]> window(new decimal[windowSize * windowSize]);
+        int halfWindow = windowSize / 2;
+        int centerXInt = static_cast<int>(DECIMAL_ROUND(centerX));
+        int centerYInt = static_cast<int>(DECIMAL_ROUND(centerY));
+        
+        for (int i = 0; i < windowSize; i++) {
+            for (int j = 0; j < windowSize; j++) {
+                int imgX = centerXInt + (j - halfWindow);
+                int imgY = centerYInt + (i - halfWindow);
+                
+                // Handle boundaries: use edge values
+                imgX = std::max(0, std::min(imgX, imageWidth - 1));
+                imgY = std::max(0, std::min(imgY, imageHeight - 1));
+                
+                uint64_t imgIndex = static_cast<uint64_t>(imgY * imageWidth + imgX);
+                window[i * windowSize + j] = imageData[imgIndex];
+            }
+        }
+        
+        return window;
+}
+
+std::tuple<std::unique_ptr<decimal[]>, std::unique_ptr<decimal[]>, std::unique_ptr<decimal[]>>
+ZernikeEdgeDetectionAlgorithm::computeZernikeKernels(int windowSize) {
+    int n2 = windowSize * windowSize;
+    std::unique_ptr<decimal[]> kernelZ11Real(new decimal[n2]);
+    std::unique_ptr<decimal[]> kernelZ11Imag(new decimal[n2]);
+    std::unique_ptr<decimal[]> kernelZ20(new decimal[n2]);
+
+    decimal* kernelZ11RealPtr = kernelZ11Real.get();
+    decimal* kernelZ11ImagPtr = kernelZ11Imag.get();
+    decimal* kernelZ20Ptr     = kernelZ20.get();
+
+    // Pixel width in normalized coordinates = 2/N
+    decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
+    decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
+
+    // Number of sub-samples per pixel side for the area integral.
+    // 16x16 = 256 samples per pixel
+    constexpr int SUB = 16;
+    decimal subStep   = pixelWidth / DECIMAL(SUB);
+    decimal subOffset = subStep / DECIMAL(2.0);  // centre of first sub-cell
+
+    for (int i = 0; i < windowSize; i++) {
+        for (int j = 0; j < windowSize; j++) {
+            // Centre of pixel (i,j) in normalized coords
+            decimal uCenter = DECIMAL(2.0) * DECIMAL(j) / DECIMAL(windowSize) - offset;
+            decimal vCenter = DECIMAL(2.0) * DECIMAL(i) / DECIMAL(windowSize) - offset;
+
+            decimal sum11 = DECIMAL(0.0);
+            decimal sum20 = DECIMAL(0.0);
+
+            for (int si = 0; si < SUB; si++) {
+                for (int sj = 0; sj < SUB; sj++) {
+                    decimal u = uCenter - pixelWidth / DECIMAL(2.0)
+                                + DECIMAL(sj) * subStep + subOffset;
+                    decimal v = vCenter - pixelWidth / DECIMAL(2.0)
+                                + DECIMAL(si) * subStep + subOffset;
+
+                    decimal rSquared = u * u + v * v;
+                    if (rSquared <= DECIMAL(1.0)) {
+                        sum11 += u;                               // Re[T_11] = u
+                        sum20 += DECIMAL(2.0) * rSquared - DECIMAL(1.0);  // T_20
+                    }
+                }
+            }
+
+            // Multiply by pixel area / num_subsamples = pixelWidth² / SUB²
+            decimal areaWeight = pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
+            int idx = i * windowSize + j;
+            kernelZ11RealPtr[idx] = areaWeight * sum11;
+            kernelZ20Ptr[idx]     = areaWeight * sum20;
+        }
+    }
+
+    // Imaginary kernel is the transpose of real (Eq. 75) — computed second,
+    // after kernelZ11Real is fully populated (including zeros outside circle).
+    for (int i = 0; i < windowSize; i++) {
+        for (int j = 0; j < windowSize; j++) {
+            kernelZ11ImagPtr[i * windowSize + j] =
+                kernelZ11RealPtr[j * windowSize + i];
+        }
+    }
+
+    return std::make_tuple(
+        std::move(kernelZ11Real),
+        std::move(kernelZ11Imag),
+        std::move(kernelZ20)
+    );
+}
+
+decimal ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
+    const decimal* window,
+    const decimal* kernelZ11Real,
+    const decimal* kernelZ11Imag,
+    const decimal* kernelZ20,
+    int windowSize
+) {
+    decimal A11Real = DECIMAL(0.0);
+    decimal A11Imag = DECIMAL(0.0);
+    decimal A20Val = DECIMAL(0.0);
+    
+    for (int i = 0; i < windowSize; i++) {
+        for (int j = 0; j < windowSize; j++) {
+            int idx = i * windowSize + j;
+            decimal intensity = window[idx];
+            
+            A11Real += intensity * kernelZ11Real[idx];
+            A11Imag += intensity * kernelZ11Imag[idx];
+            A20Val += intensity * kernelZ20[idx];
+        }
+    }
+    
+    ZernikeMoment A11 = {A11Real, A11Imag};
+    ZernikeMoment A20 = {A20Val, DECIMAL(0.0)};
+    return {A11, A20};
+}
+
+decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ZernikeMoment& A11) {
+    return DECIMAL_ATAN2(A11.imag, A11.real);
+}
+
+decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(
+        decimal A11Prime,
+        decimal A20,
+        decimal transitionWidth
+    ) {
+    decimal w = transitionWidth;
+    decimal wSqu = w * w;
+
+    decimal discriminant = ((wSqu - DECIMAL(1.0)) * (wSqu - DECIMAL(1.0)) - DECIMAL(2.0) * wSqu * (A20.real / A11Prime));
+    return (DECIMAL(1.0) - wSqu - SQRT(discriminant)) / wSqu;
+}
+
+Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(
+    const Vec2& windowCenter,
+    decimal l,
+    decimal psi,
+    int windowSize
+) {
+    decimal scale = DECIMAL(windowSize) / DECIMAL(2.0);
+    decimal offsetX = scale * l * DECIMAL_COS(psi);
+    decimal offsetY = scale * l * DECIMAL_SIN(psi);
+    
+    return Vec2{windowCenter.x + offsetX, windowCenter.y + offsetY};
+}
+
+Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 1: Get initial edge points using the initial algorithm
+    Points initialPoints = initialEdgeAlgorithm_->Run(image);
+    
+    if (initialPoints.empty()) {
+        return initialPoints;
+    }
+    
+    // Step 2: Convert image to grayscale double precision
+    std::unique_ptr<decimal[]> imageData = imageToGrayscaleDouble(image);
+    
+    // Step 3: Compute Zernike kernels once (reused for all windows)
+    std::unique_ptr<decimal[]> kernelZ11Real;
+    std::unique_ptr<decimal[]> kernelZ11Imag;
+    std::unique_ptr<decimal[]> kernelZ20;
+    std::tie(kernelZ11Real, kernelZ11Imag, kernelZ20) = computeZernikeKernels(windowSize_);
+    
+    // Step 4: Process each initial edge point
+    Points refinedPoints;
+    
+    for (const Vec2& initialPoint : initialPoints) {
+        // Step 4a: Extract window around the point
+        std::unique_ptr<decimal[]> window = extractWindow(
+            imageData.get(),
+            image.width,
+            image.height,
+            initialPoint.x,
+            initialPoint.y,
+            windowSize_
+        );
+        
+        // Step 4b: Compute Zernike moments for this window
+        ZernikeMoment A11;
+        ZernikeMoment A20;
+        std::tie(A11, A20) = computeZernikeMoments(
+            window.get(),
+            kernelZ11Real.get(),
+            kernelZ11Imag.get(),
+            kernelZ20.get(),
+            windowSize_
+        );
+        
+        // Step 4c: Extract edge angle ψ from A_11
+        decimal psi = extractEdgeAngle(A11);
+        
+        // Step 4d: Rotate A_11 to align with edge direction
+        decimal cosPsi = DECIMAL_COS(psi);
+        decimal sinPsi = DECIMAL_SIN(psi);
+        decimal A11Prime = A11.real * cosPsi + A11.imag * sinPsi;
+        
+        // Step 4e: Solve for edge distance l using Christian's equations
+        decimal l = solveEdgeDistance(A11Prime, A20.real, transitionWidth_);
+        
+        // Step 4f: Convert back to pixel coordinates
+        Vec2 refinedPoint = convertPolarToPixel(initialPoint, l, psi, windowSize_);
+        
+        refinedPoints.push_back(refinedPoint);
+    }
+    
+    return refinedPoints;
 }
 
 }  // namespace found
