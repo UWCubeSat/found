@@ -140,6 +140,14 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     return result;
 }
 
+
+////// Inertial Symmetry Edge Detection Algorithm //////
+
+Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image)
+{
+    return Points();
+}
+
 ////// Connected Components Algorithm //////
 
 /**

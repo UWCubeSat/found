@@ -90,6 +90,22 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
+ * This class represents the Inertial Symmetry Edge Detection Algorithm, which
+ * uses an approximation of the Earth's inertial parameters to guess the radius
+ * before finding the points on the horizon.
+ */
+class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+  public:
+    InertialSymmetryEdgeDetectionAlgorithm(decimal grayThreshold) : grayThreshold_(grayThreshold) {}
+
+    Points Run(const Image &image) override;
+
+  private:
+    decimal grayThreshold_;
+
+};
+
+/**
  * Computes the groups of components within the image
  * 
  * @param image The image that defines the possible pixels
