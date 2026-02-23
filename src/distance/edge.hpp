@@ -96,12 +96,14 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  */
 class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
   public:
-    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold) : grayThreshold_(grayThreshold) {}
+    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold, int lineCount) : grayThreshold_(grayThreshold), 
+        lineCount_(lineCount) {}
 
     Points Run(const Image &image) override;
 
   private:
     uint8_t grayThreshold_;
+    int lineCount_;
 
 };
 

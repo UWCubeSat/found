@@ -159,6 +159,33 @@ static Vec2 FindImageEdge(int imageWidth,
         return start;
 
     // Edge case: one component is zero.
+    if (direction.x == 0)
+        return direction.x < 0 ? Vec2(0, start.y) : Vec2(imageWidth, start.y);
+    else if (direction.y == 0)
+        return direction.y < 0 ? Vec2(start.x, 0) : Vec2(start.x, imageHeight);
+
+    decimal slope = direction.y / direction.x;
+    
+    // Intersection with y = 0
+    decimal x1 = start.x - start.y / slope;
+    if (x1 >= 0 && x1 <= imageWidth && direction.y < 0)
+        return Vec2(0, x1);
+    
+    // Intersection with y = imageHeight
+    decimal x2 = start.x - (start.y - imageHeight) / slope;
+    if (x2 >= 0 && x2 <= imageWidth && direction.y > 0) {
+        return Vec2(imageHeight, x2);
+    }
+
+    // Intersection with x = 0
+    decimal y1 = start.y - start.x * slope;
+    if (y1 >= 0 && y1 <= imageHeight && direction.x < 0) {
+        return Vec2(y1, 0);
+    }
+
+    // Intersection with x = imageWidth
+    decimal y2 = start.y - (start.x - imageWidth) * slope;
+    return Vec2(y2, imageWidth);
 }
 
 Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
@@ -232,9 +259,11 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     // Really rough estimate of the radius of the celestial body in the frame.
     decimal estimatedRadius = 2 * std::sqrt(Lmax / mass);
     
-    // Offset betwen the lines of correlation. As is described in the paper,
-    // this uses distance of 1/11th of the estimated radius.
-    Vec2 offset = wminHat * estimatedRadius * (DECIMAL(1.0) / DECIMAL(11.0));
+    // Offset betwen the lines of correlation. Tries to split the radius evenly
+    // with the number of lines.
+    Vec2 offset = wminHat * estimatedRadius * (DECIMAL(1.0) / DECIMAL(lineCount_));
+
+    // Step 3: Placing edge points
     
     return Points();
 }

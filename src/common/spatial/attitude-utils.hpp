@@ -25,6 +25,8 @@ struct Vec2 {
     /// The y coordinate
     decimal y;
 
+    constexpr Vec2(decimal x = 0, decimal y = 0) : x(x), y(y) {}
+
     // Magnitude
 
     /**
