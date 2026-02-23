@@ -143,8 +143,99 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Inertial Symmetry Edge Detection Algorithm //////
 
-Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image)
-{
+// Using a start point and a direction of a given ray, finds the point of
+// intersection at the edge of the image canvas.
+static Vec2 FindImageEdge(int imageWidth, 
+                          int imageHeight, 
+                          Vec2 start,
+                          Vec2 direction) {
+    // Remove one from the width and height to ensure that we only get valid
+    // indices in the image.
+    imageWidth -= 1;
+    imageHeight -= 1;
+
+    // Edge case: no direction given.
+    if (direction.x == 0 && direction.y == 0)
+        return start;
+
+    // Edge case: one component is zero.
+}
+
+Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
+    // Step 1: Image processing
+    // A std::vector<bool> is used here as C++ allows storing bool vectors as
+    // bitsets; this is all the size we need.
+    std::vector<bool> pixels(image.width * image.height);
+
+    // First, average the channels into one value, then threshold the values.
+    // A max of three channels are averaged, just so we don't include the alpha
+    // channel in calculations.
+    //
+    // To simplify the next step, the "mass" and centroid of the thresholded
+    // area is also calculated in this step.
+    int averagedChannels = std::min(image.channels, 3);
+    int mass = 0;
+    decimal centroidX = 0, centroidY = 0;
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            int sum = 0;
+            for (int k = 0; k < averagedChannels; k++)
+                sum += image.image[(y * image.width + x) * image.channels + k];
+            int value = sum / averagedChannels;
+            pixels[y * image.width + x] = value > grayThreshold_;
+            if (value > grayThreshold_) {
+                mass++;
+                centroidX += x;
+                centroidY += y;
+            }
+        }
+    }
+    centroidX /= mass;
+    centroidY /= mass;
+    
+    // Step 2: Calculating inertial properties
+    // Calculate the moment and product of inertia of the thresholded area. This
+    // allows us to guess the radius and best line of symmetry with some
+    // eigenanalysis of its inertia tensor.
+    decimal Ix = 0, Iy = 0, Ixy = 0;
+    for (int x = 0; x < image.width; x++) {
+        for (int y = 0; y < image.height; y++) {
+            if (pixels[y * image.width + x]) {
+                decimal dx = DECIMAL(x) - centroidX;
+                decimal dy = DECIMAL(y) - centroidY;
+                Ix += dx * dx;
+                Iy += dy * dy;
+                Ixy -= dx * dy;
+            }
+        }
+    }
+    
+    // Trace and determinant of the inertia tensor.
+    decimal trace = Ix + Iy;
+    decimal determinant = Ix * Iy - Ixy * Ixy;
+    
+    // Eigenvalues of the inertia tensor.
+    decimal Lmax = DECIMAL(0.5) * (trace + std::sqrt(trace * trace - 4 * determinant));
+    decimal Lmin = DECIMAL(0.5) * (trace - std::sqrt(trace * trace - 4 * determinant));
+
+    // Eigenvectors of the inertia tensor, and normalizations of each.
+    // The eigenvector associated with the larger eigenvalue is the minor axis
+    // of the thresholded area.
+    Vec2 wmax{ 1, (Lmax - Ix) / Ixy };
+    Vec2 wmaxHat = wmax.Normalize();
+
+    // The eigenvector associated with the smaller eigenvalue is the major axis
+    // of the thresholded area.
+    Vec2 wmin{ 1, (Lmin - Ix) / Ixy };
+    Vec2 wminHat = wmin.Normalize();
+
+    // Really rough estimate of the radius of the celestial body in the frame.
+    decimal estimatedRadius = 2 * std::sqrt(Lmax / mass);
+    
+    // Offset betwen the lines of correlation. As is described in the paper,
+    // this uses distance of 1/11th of the estimated radius.
+    Vec2 offset = wminHat * estimatedRadius * (DECIMAL(1.0) / DECIMAL(11.0));
+    
     return Points();
 }
 

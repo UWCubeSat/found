@@ -96,12 +96,12 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  */
 class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
   public:
-    InertialSymmetryEdgeDetectionAlgorithm(decimal grayThreshold) : grayThreshold_(grayThreshold) {}
+    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold) : grayThreshold_(grayThreshold) {}
 
     Points Run(const Image &image) override;
 
   private:
-    decimal grayThreshold_;
+    uint8_t grayThreshold_;
 
 };
 
