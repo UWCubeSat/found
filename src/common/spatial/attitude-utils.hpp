@@ -68,7 +68,7 @@ struct Vec2 {
      * 
      * @param scalar The scalar
      * 
-     * @return scalar * this
+     * @return this * scalar
      */
     Vec2 operator*(const decimal &scalar) const;
 
@@ -89,6 +89,22 @@ struct Vec2 {
      * @return this - other
      */
     Vec2 operator-(const Vec2 &other) const;
+
+    /**
+     * Unary negate
+     *
+     * @return The negative of this vector
+     */
+    Vec2 operator-() const;
+
+    /**
+     * Scalar-vector division
+     *
+     * @param scalar The scalar
+     *
+     * @return this / scalar
+     */
+    Vec2 operator/(const decimal &scalar) const;
 };
 
 class Mat3;  // define above so we can use in Vec3 class

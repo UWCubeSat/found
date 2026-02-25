@@ -96,14 +96,23 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  */
 class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
   public:
-    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold, int lineCount) : grayThreshold_(grayThreshold), 
-        lineCount_(lineCount) {}
+    /**
+     * Instantiates a new instance of this algorithm using the given
+     * grayThreshold value and a lineCount (equal to the maximum number of
+     * points that can be emitted). A line must be greater than lineEpsilon
+     * length.
+     */
+    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold, 
+                                           int lineCount, 
+                                           decimal lineEpsilon) : grayThreshold_(grayThreshold),
+        lineCount_(lineCount), lineEpsilon_(lineEpsilon) {}
 
     Points Run(const Image &image) override;
 
   private:
     uint8_t grayThreshold_;
     int lineCount_;
+    decimal lineEpsilon_;
 
 };
 

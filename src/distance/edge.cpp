@@ -188,6 +188,34 @@ static Vec2 FindImageEdge(int imageWidth,
     return Vec2(y2, imageWidth);
 }
 
+// Using a binary image, give a value in [0,1] using a bilinear sample at the
+// given image coordinate.
+static decimal SampleImageBilinear(int imageWidth, 
+                                   int imageHeight,
+                                   std::vector<bool> &pixels, 
+                                   Vec2 position) {
+    int ix = (int) position.x;
+    int iy = (int) position.y;
+    
+    // Assume black when out of bounds of the image.
+    if (ix + 1 >= imageWidth || iy + 1 >= imageHeight)
+        return 0;
+
+    // Get a coordinate relative to the pixel in the image
+    decimal px = position.x - ix;
+    decimal py = position.y - iy;
+
+    // Implicit cast here from bool to decimal
+    decimal v0 = pixels[iy * imageWidth + ix];
+    decimal v1 = pixels[iy * imageWidth + (ix + 1)];
+    decimal v2 = pixels[(iy + 1) * imageWidth + ix];
+    decimal v3 = pixels[(iy + 1) * imageWidth + (ix + 1)];
+    
+    return (DECIMAL(1.0) - py) * 
+        (v0 * (DECIMAL(1.0) - px) + v1 * px) + 
+        py * (v2 * (DECIMAL(1.0) - px) + v3 * px);
+}
+
 Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 1: Image processing
     // A std::vector<bool> is used here as C++ allows storing bool vectors as
@@ -202,7 +230,7 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     // area is also calculated in this step.
     int averagedChannels = std::min(image.channels, 3);
     int mass = 0;
-    decimal centroidX = 0, centroidY = 0;
+    Vec2 centroid;
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
             int sum = 0;
@@ -212,13 +240,12 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
             pixels[y * image.width + x] = value > grayThreshold_;
             if (value > grayThreshold_) {
                 mass++;
-                centroidX += x;
-                centroidY += y;
+                centroid.x += x;
+                centroid.y += y;
             }
         }
     }
-    centroidX /= mass;
-    centroidY /= mass;
+    centroid = centroid * (DECIMAL(1.0) / DECIMAL(mass));
     
     // Step 2: Calculating inertial properties
     // Calculate the moment and product of inertia of the thresholded area. This
@@ -228,8 +255,8 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
             if (pixels[y * image.width + x]) {
-                decimal dx = DECIMAL(x) - centroidX;
-                decimal dy = DECIMAL(y) - centroidY;
+                decimal dx = DECIMAL(x) - centroid.x;
+                decimal dy = DECIMAL(y) - centroid.y;
                 Ix += dx * dx;
                 Iy += dy * dy;
                 Ixy -= dx * dy;
@@ -242,8 +269,8 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     decimal determinant = Ix * Iy - Ixy * Ixy;
     
     // Eigenvalues of the inertia tensor.
-    decimal Lmax = DECIMAL(0.5) * (trace + std::sqrt(trace * trace - 4 * determinant));
-    decimal Lmin = DECIMAL(0.5) * (trace - std::sqrt(trace * trace - 4 * determinant));
+    decimal Lmax = DECIMAL(0.5) * (trace + DECIMAL_SQRT(trace * trace - 4 * determinant));
+    decimal Lmin = DECIMAL(0.5) * (trace - DECIMAL_SQRT(trace * trace - 4 * determinant));
 
     // Eigenvectors of the inertia tensor, and normalizations of each.
     // The eigenvector associated with the larger eigenvalue is the minor axis
@@ -257,13 +284,36 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     Vec2 wminHat = wmin.Normalize();
 
     // Really rough estimate of the radius of the celestial body in the frame.
-    decimal estimatedRadius = 2 * std::sqrt(Lmax / mass);
+    decimal estimatedRadius = 2 * DECIMAL_SQRT(Lmax / mass);
     
     // Offset betwen the lines of correlation. Tries to split the radius evenly
     // with the number of lines.
-    Vec2 offset = wminHat * estimatedRadius * (DECIMAL(1.0) / DECIMAL(lineCount_));
+    Vec2 offset = wminHat * estimatedRadius / lineCount_;
 
     // Step 3: Placing edge points
+    for (int i = -lineCount_; i <= lineCount_; i++) {
+        // First, find the lines by getting the points that intersect the image
+        // bounds.
+        Vec2 start = FindImageEdge(
+            image.width, image.height,
+            centroid + (offset * i),
+            wmaxHat
+        );
+        Vec2 end = FindImageEdge(
+            image.width, image.height,
+            centroid + (offset * i),
+            -wmaxHat
+        );
+
+        decimal length = (start - end).Magnitude();
+
+        // Skip lines that are too short.
+        if (length < lineEpsilon_)
+            continue;
+
+        Vec2 dir = (start - end) / length;
+
+    }
     
     return Points();
 }
