@@ -45,6 +45,17 @@ GTEST_CACHE_DIR := $(CACHE_DIR)/$(GTEST)-$(GTEST_VERSION)
 GTEST_CACHE_BUILD_DIR := $(GTEST_CACHE_DIR)/build
 GTEST_DIR := $(BUILD_LIBRARY_TEST_DIR)/$(GTEST)-$(GTEST_VERSION)
 
+# Define the nlohmann/json library (header-only)
+NLOHMANN_JSON := nlohmann_json
+NLOHMANN_JSON_VERSION := v3.11.3
+NLOHMANN_JSON_URL := https://raw.githubusercontent.com/nlohmann/json/$(NLOHMANN_JSON_VERSION)/single_include/nlohmann/json.hpp
+NLOHMANN_JSON_CACHE_DIR := $(CACHE_DIR)/$(NLOHMANN_JSON)
+NLOHMANN_JSON_HEADER := $(NLOHMANN_JSON_CACHE_DIR)/nlohmann/json.hpp
+
+# Define stb_image_write (for test visualization, e.g. zernike-performance-test)
+STB_IMAGE_WRITE_URL := https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h
+STB_IMAGE_WRITE_HEADER := $(CACHE_DIR)/stb_image_write.h
+
 # Define the Doxygen style library
 DOXYGEN_AWESOME = doxygen-awesome-css
 DOXYGEN_AWESOME_VERSION := 2.3.4
@@ -89,7 +100,7 @@ LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
 # Compiler flags
 LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
-LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
+LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -I$(NLOHMANN_JSON_CACHE_DIR) -I$(CACHE_DIR) -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=gnu++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
@@ -189,7 +200,7 @@ $(GOOGLE_STYLECHECK_TARGET): $(SRC) $(SRC_H)
 	cpplint $(SRC) $(SRC_H)
 
 # The test setup target (sets up directories and gtest)
-$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_DOCUMENTATION_COVERAGE_DIR) $(GTEST_DIR)
+$(TEST_SETUP_TARGET): $(COMPILE_SETUP_TARGET) test_setup_message $(BUILD_DOCUMENTATION_COVERAGE_DIR) $(GTEST_DIR) $(NLOHMANN_JSON_HEADER) $(STB_IMAGE_WRITE_HEADER)
 $(BUILD_DOCUMENTATION_COVERAGE_DIR):
 	mkdir -p $(BUILD_DOCUMENTATION_COVERAGE_DIR)
 $(GTEST_DIR): $(GTEST_CACHE_DIR)
@@ -201,6 +212,12 @@ $(GTEST_CACHE_DIR):
 	mkdir -p $(GTEST_CACHE_BUILD_DIR)
 	cd $(GTEST_CACHE_BUILD_DIR) && cmake .. && cmake --build . --parallel 16
 	rm $(GTEST_CACHE_ARTIFACT)
+$(NLOHMANN_JSON_HEADER):
+	mkdir -p $(NLOHMANN_JSON_CACHE_DIR)/nlohmann
+	wget $(NLOHMANN_JSON_URL) -O $(NLOHMANN_JSON_HEADER)
+$(STB_IMAGE_WRITE_HEADER):
+	mkdir -p $(CACHE_DIR)
+	wget $(STB_IMAGE_WRITE_URL) -O $(STB_IMAGE_WRITE_HEADER)
 test_setup_message:
 	$(call PRINT_TARGET_HEADER, $(TEST_SETUP_TARGET))
 
