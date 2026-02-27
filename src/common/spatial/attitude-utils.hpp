@@ -2,6 +2,7 @@
 #define SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 
 #include <memory>
+#include <vector>
 
 #include "common/decimal.hpp"
 
@@ -128,6 +129,13 @@ class Vec3 {
     decimal Magnitude() const;
 
     /**
+     * @param i the index
+     * 
+     * @return The value at the i'th index
+    */
+    decimal At(int i) const;
+
+    /**
      * Provides the square of the magnitude of this Vec3
      * 
      * @return The square of the magnitude of this
@@ -137,9 +145,9 @@ class Vec3 {
     // Unit Vector
 
     /**
-     * Provides the magnitude of this Vec2
+     * Returns a vector that is parallel to this with magnitude 1
      * 
-     * @return The magnitude of this
+     * @return A parallel vector with magnitude 1
     */
     Vec3 Normalize() const;
 
@@ -226,6 +234,15 @@ class Vec3 {
      * @return this ⊗ other
     */
     Mat3 OuterProduct(const Vec3 &) const;
+
+    /**
+     * Computes row vector * matrix between this and matrix
+     * 
+     * @param other The matrix in this operation
+     * 
+     * @return row vector result of this * other
+    */
+    Vec3 OuterProduct(const Mat3 &) const;
 };
 
 ///////////////////////////////////
@@ -284,6 +301,17 @@ decimal Distance(const Vec2 &, const Vec2 &);
 decimal Distance(const Vec3 &, const Vec3 &);
 
 /**
+ * Determines the squared distance between two vectors
+ * This method is faster than regular distance, and should be used instead when possible
+ * 
+ * @param v1 The first vector
+ * @param v2 The second vector
+ * 
+ * @return The squared distance between v1 and v2
+*/
+decimal SquareDistance(const Vec3 &, const Vec3 &);
+
+/**
  * Determines the angle between two different vectors
  * 
  * @param vec1 The first vector
@@ -306,8 +334,95 @@ decimal Angle(const Vec3 &, const Vec3 &);
 decimal AngleUnit(const Vec3 &, const Vec3 &);
 
 ///////////////////////////////////
-///////// MATRIX CLASS ////////////
+///////// MATRIX CLASSES ////////////
 ///////////////////////////////////
+
+/**
+ * A Matrix is a mutable object that represents a NxM Matrix
+ * may or may not be copied directly from https://researchdatapod.com/singular-value-decomposition-svd-cpp/ out of laziness
+*/
+class Matrix {
+ private:
+     /// The values in the matrix
+     std::vector<std::vector<decimal>> data;
+     /// The number of rows
+     int _rows;
+     /// The number of columns
+     int _cols;
+
+ public:
+     /** 
+      * Constructor initializes matrix with zeros
+      * @param rows the number of rows
+      * @param cols the number of columns
+      */
+     Matrix(int rows, int cols) : _rows(rows), _cols(cols) {
+         data.resize(rows, std::vector<decimal>(cols, 0.0));
+     }
+
+     /**
+      * Access the value at i,j using a function if you're a coward
+      * @param i the row to access
+      * @param j the column to access
+      * 
+      * @return the value at (i,j) in this matrix
+      */
+     decimal Get(int i, int j) const { return data[i][j]; }
+
+     /**
+      * Access the value at i,j using parentheses with write perms
+      * @param i the row to access
+      * @param j the column to access
+      * 
+      * @return the value at (i,j) in this matrix
+      */
+     decimal& operator()(int i, int j) { return data[i][j]; }
+
+     /**
+      * Access the value at i,j using parentheses
+      * @param i the row to access
+      * @param j the column to access
+      * 
+      * @return the value at (i,j) in this matrix
+      */
+     const decimal& operator()(int i, int j) const { return data[i][j]; }
+
+     /**
+      * @return the number of rows
+      */
+     int NumRows() const { return _rows; }
+
+     /**
+      * @return the number of rows
+      */
+     int NumCols() const { return _cols; }
+
+     /**
+     * Matrix multiplication
+     * 
+     * @param other The other matrix
+     * 
+     * @return this * other
+     */
+     Matrix operator*(const Matrix& other) const;
+
+     /**
+     * Obtains the transpose of this Matrix
+     * 
+     * @return The transpose matrix of this
+     * 
+     * @note Use this over Inverse if your
+     * matrix is orthogonal (e.g. A rotation matrix)
+    */
+     Matrix Transpose() const;
+
+     /**
+     * Computes the Frobenius norm (square root of sum of squared elements)
+     *
+     * @return Frobenius norm (square root of sum of squared elements)
+      */ 
+     decimal Norm() const;
+};
 
 /**
  * A Mat3 is a mutable object that represents a 3x3 Matrix
@@ -318,7 +433,19 @@ class Mat3 {
     /// The matrix entries
     decimal x[9];
 
-    // Accessor
+    /// The symmetric eigenvalue function automatically generates this and it would be a waste to recalculate
+    /// The eigenvalues in descending order
+    Vec3 _eigenvalues;
+
+    /// The eigenvector corresponding to the largest eigenvalue
+    Vec3 _eigenvector1;
+    /// The eigenvector corresponding to the second largest eigenvalue
+    Vec3 _eigenvector2;
+    /// Left as an exercise for the reader
+    Vec3 _eigenvector3;
+
+    /// whether [Eigenvalues/Eigenvectors]Symmetric has been run
+    bool _eigenvectorsAlreadyCalculated;
 
     /**
     * Obtains an entry in this Matrix
@@ -403,6 +530,15 @@ class Mat3 {
      */
     Mat3 operator*(const decimal &) const;
 
+    /**
+     * Matrix Equality
+     * 
+     * @param other The other matrix to check equality with
+     * 
+     * @return true if all entries are equal, false if not
+     */
+    bool operator==(const Mat3 &) const;
+
     // Transformations
 
     /**
@@ -421,10 +557,56 @@ class Mat3 {
      * @return The inverse Matrix of this 
     */
     Mat3 Inverse() const;
+
+    /**
+     * Obtains the cofactor of this Matrix
+     * 
+     * @return The cofactor matrix of this
+     * https://www.geeksforgeeks.org/maths/cofactor-matrix/
+    */
+    Mat3 Cofactor() const;
+
+    /**
+     * Obtains the adjugate (classical adjoint) of this Matrix
+     * 
+     * @return The adjugate matrix of this
+    */
+    Mat3 Adjugate() const;
+
+    /**
+    * Finds the eigenvalues of a symmetric matrix
+    * https://www.geometrictools.com/Documentation/RobustEigenSymmetric3x3.pdf 
+    *
+    * @return The eigenvalues of this, sorted from greatest to least
+    * I'm probably going to move this to its own file at some point
+    * @note not const because it stores the eigenvectors/eigenvalues when completed
+    */
+    Vec3 EigenvaluesSymmetric();
+
+    /**
+    * Finds the eigenvectors of a symmetric matrix
+    *
+    * @return The eigenvectors of this, sorted from greatest eigenvalue to least
+    * @note not const because it stores the eigenvectors/eigenvalues when completed
+    */
+    Mat3 EigenvectorsSymmetric();
+
+    /**
+     * Solves Ax = b where A is this matrix, and b is a known vector
+     * uses Cramer's rule
+     * 
+     * @param b the known vector
+     * 
+     * @return the vector to solve for
+     */
+    Vec3 SolveCramer(Vec3 b);
 };
 
 /// Identity Matrix
 extern const Mat3 kIdentityMat3;
+
+
+
 
 ///////////////////////////////////
 //////// EULER ANGLES CLASS ///////
@@ -700,6 +882,61 @@ class Attitude {
     AttitudeType type;
 };
 
+
+///////////////////////////////////
+///////// SVD FUNCTIONS ///////////
+///////////////////////////////////
+
+/**
+ * A struct to contain the result of singular value decomposition
+ */
+struct SVDResult {
+    /// Left sinuglar vector matrix
+    Matrix U;
+
+    /// Diagonal singular value matrix
+    Matrix S;
+
+    /// Right singular vector matrix
+    Matrix V;
+
+    /**
+     * The constructor
+     * @param m the number of rows
+     * @param n the number of columns
+     */
+    SVDResult(int m, int n) :
+        U(m, m), S(m, n), V(n, n) {}
+};
+
+/**
+ * Repeatedly refines approximations for the largest singular values and their vectors
+ * 
+ * @param A The matrix to perform SVD on
+ * @param v A reference to where the most powerful right singular vector should be stored
+ * @param sigma A reference to where the most powerful singular value should be stored
+ * @param u A reference to where the most powerful left singular vector should be stored
+ * @param maxIter The resolution of the function
+ * @param tol The tolerance of the function; if error is less than this, the function returns early
+ *
+ */ 
+void SVDPowerIteration(const Matrix& A,
+                        std::vector<decimal>& v,
+                        decimal& sigma,
+                        std::vector<decimal>& u,
+                        int maxIter = 100,
+                        decimal tol = 1e-10);
+/**
+ * Coputes the Singular Value Decomposition of a matrix
+ * 
+ * @param A The matrix to perform SVD on
+ * @param k the number of singular values to extract (the most powerful ones will be prioritized)
+ * 
+ * @return A struct containing U, S, and V; Left singular vector matrix, diagonal singular value matrix,
+ *          Right singular vector matrix
+ */
+SVDResult ComputeSVD(const Matrix& A, int k);
+
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
 ///////////////////////////////////
@@ -721,6 +958,8 @@ class Attitude {
  * angles that the direction cosines hold.
 */
 Mat3 QuaternionToDCM(const Quaternion &);
+
+Mat3 Mat3FromCols(Vec3 col1, Vec3 col2, Vec3 col3);
 
 /**
  * Creates a Quaternion based on a Direction Cosine Matrix (rotation matrix)

@@ -6,6 +6,12 @@
 
 #include <stdexcept>
 
+#include <vector>
+#include <numeric>
+
+
+#define DEFAULT_TOLERANCE DECIMAL(1e-3)
+
 namespace found {
 
 ///////////////////////////////////
@@ -41,6 +47,13 @@ Vec2 Vec2::operator+(const Vec2 &other) const {
 
 Vec2 Vec2::operator-(const Vec2 &other) const {
     return { x - other.x, y - other.y };
+}
+
+decimal Vec3::At(int i) const {
+    if (i == 0) return x;
+    if (i == 1) return y;
+    if (i == 2) return z;
+    throw std::runtime_error("index out of bounds");
 }
 
 decimal Vec3::Magnitude() const {
@@ -111,6 +124,13 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
     };
 }
 
+Vec3 Vec3::OuterProduct(const Mat3 &other) const {
+    // We implicitly store everything as column vecs,
+    // so we do (v^T*A)^T = A^T*v where v is the column vector
+    // and A is the other matrix
+    return other.Transpose() * (*this);
+}
+
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////
@@ -135,6 +155,10 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
     return (v1-v2).Magnitude();
 }
 
+decimal SquareDistance(const Vec3 &v1, const Vec3 &v2) {
+    return (v1-v2).MagnitudeSq();
+}
+
 decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
     return AngleUnit(vec1.Normalize(), vec2.Normalize());
 }
@@ -148,6 +172,43 @@ decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
 ///////////////////////////////////
 ///////// MATRIX CLASS ////////////
 ///////////////////////////////////
+
+Matrix Matrix::operator*(const Matrix& other) const {
+    if (_cols != other._rows) {
+            throw std::invalid_argument("Matrix dimensions don't match for multiplication");
+        }
+        Matrix result(_rows, other._cols);
+        for (int i = 0; i < _rows; ++i) {
+            for (int j = 0; j < other._cols; ++j) {
+                decimal sum = 0.0;
+                for (int k = 0; k < _cols; ++k) {
+                    sum += Get(i, k) * other.Get(k, j);
+                }
+                result(i, j) = sum;
+            }
+        }
+        return result;
+}
+
+Matrix Matrix::Transpose() const {
+    Matrix result(_cols, _rows);
+        for (int i = 0; i < _rows; ++i) {
+            for (int j = 0; j < _cols; ++j) {
+                result(j, i) = Get(i, j);
+            }
+        }
+        return result;
+}
+
+decimal Matrix::Norm() const {
+    decimal sum = 0.0;
+    for (int i = 0; i < _rows; ++i) {
+            for (int j = 0; j <_cols; ++j) {
+                sum += Get(i,j) * Get(i, j);
+            }
+        }
+        return std::sqrt(sum);
+}
 
 decimal Mat3::At(int i, int j) const {
     return x[3*i+j];
@@ -193,7 +254,7 @@ Vec3 Mat3::operator*(const Vec3 &vec) const {
     return {
         vec.x*At(0,0) + vec.y*At(0,1) + vec.z*At(0,2),
         vec.x*At(1,0) + vec.y*At(1,1) + vec.z*At(1,2),
-        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2),
+        vec.x*At(2,0) + vec.y*At(2,1) + vec.z*At(2,2)
     };
 }
 
@@ -205,16 +266,28 @@ Mat3 Mat3::operator*(const decimal &scalar) const {
     };
 }
 
+bool Mat3::operator==(const Mat3 &other) const {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (abs(other.At(i, j) - At(i, j)) < DEFAULT_TOLERANCE) return false;
+        }
+    }
+    return true;
+}
+
+
 Mat3 Mat3::Transpose() const {
     return {
         At(0,0), At(1,0), At(2,0),
         At(0,1), At(1,1), At(2,1),
-        At(0,2), At(1,2), At(2,2),
+        At(0,2), At(1,2), At(2,2)
     };
 }
 
 Mat3 Mat3::Inverse() const {
     // https://ardoris.wordpress.com/2008/07/18/general-formula-for-the-inverse-of-a-3x3-matrix/
+    decimal determinant = Det();
+    if (determinant == 0) throw std::invalid_argument("Matrix is non-invertible");
     decimal scalar = 1 / Det();
 
     Mat3 res = {
@@ -226,14 +299,46 @@ Mat3 Mat3::Inverse() const {
     return res * scalar;
 }
 
+Mat3 Mat3::Cofactor() const {
+    Mat3 C ={
+        (At(1,1)*At(2,2) - At(1,2)*At(2,1)), (At(1,0)*At(2,2) - At(1,2)*At(2,0)), (At(1,0)*At(2,1) - At(1,1)*At(2,0)),
+        (At(0,1)*At(2,2) - At(0,2)*At(2,1)), (At(0,0)*At(2,2) - At(0,2)*At(2,0)), (At(0,0)*At(2,1) - At(0,1)*At(2,0)),
+        (At(0,1)*At(1,2) - At(0,2)*At(1,1)), (At(0,0)*At(1,2) - At(0,2)*At(1,0)), (At(0,0)*At(1,1) - At(0,1)*At(1,0))
+    };
+
+    return C;
+}
+
+Mat3 Mat3::Adjugate() const {
+    return Cofactor().Transpose();
+}
+
+Vec3 Mat3::SolveCramer(Vec3 b) {
+    Mat3 DX = {
+        b.x, At(0,1), At(0,2),
+        b.y, At(1,1), At(1,2),
+        b.z, At(2,1), At(2,2)
+    };
+    Mat3 DY = {
+        At(0,0), b.x,  At(0,2),
+        At(1,0), b.y,  At(1,2),
+        At(2,0), b.z,  At(2,2)
+    };
+    Mat3 DZ = {
+        At(0,0),   At(0,1), b.x,
+        At(1,0),   At(1,1), b.y,
+        At(2,0),   At(2,1), b.z
+        };
+    Vec3 x = {DX.Det()/Det(), DY.Det()/Det(), DZ.Det()/Det()};
+    return x;
+}
+
+
 /// 3x3 identity matrix
 const Mat3 kIdentityMat3 = {1,0,0,
                             0,1,0,
                             0,0,1};
 
-///////////////////////////////////
-///////// QUATERNION CLASS ////////
-///////////////////////////////////
 
 /**
  * Create a quaternion which represents a rotation of theta around the axis input
@@ -376,6 +481,124 @@ Vec3 Attitude::Rotate(const Vec3 &vec) const {
             throw std::runtime_error("No representation available");
     }
 }
+
+Mat3 Mat3FromCols(Vec3 col1, Vec3 col2, Vec3 col3) {
+    Mat3 output = { col1.x, col2.x, col3.x,
+                    col1.y, col2.y, col3.y,
+                    col1.z, col2.z, col3.z};
+    return output;
+}
+
+///////////////////////////////////
+///////// SVD FUNCTIONS ///////////
+///////////////////////////////////
+
+// NOT COPY PASTED from https://researchdatapod.com/singular-value-decomposition-svd-cpp/
+// because i am a responsible coder
+// We're basically just guessing a random V, computing the corresponding U,
+// using that to compute a slightly more accurate V
+// and just repeating it until it works
+void SVDPowerIteration(const Matrix& A,
+                        std::vector<decimal>& v,
+                        decimal& sigma,
+                        std::vector<decimal>& u,
+                        int maxIter,
+                        decimal tol) {
+    int m = A.NumRows();
+    int n = A.NumCols();
+
+    // initialize with 177 in every entry
+    for (decimal& val : v) {
+        val = static_cast<decimal>(117) / RAND_MAX;
+    }
+
+    // normalize v
+    decimal norm_v = std::sqrt(std::inner_product(v.begin(), v.end(), v.begin(), 0.0));
+    for (decimal& val : v) {
+        val /= norm_v;
+    }
+
+    std::vector<decimal> prev_v = v;
+
+    for (int iter = 0; iter < maxIter; ++iter) {
+        // Multiply A by v to get u
+        u.assign(m, 0.0);
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                u[i] += A(i, j) * v[j];
+            }
+        }
+
+        // Compute sigma (norm of u)
+        sigma = std::sqrt(std::inner_product(u.begin(), u.end(), u.begin(), 0.0));
+
+        // Normalize u
+        for (decimal& val : u) {
+            val /= sigma;
+        }
+
+        // Multiply A^T by u to get new v
+        v.assign(n, 0.0);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                v[i] += A(j, i) * u[j];
+            }
+        }
+
+        // Normalize v
+        norm_v = std::sqrt(std::inner_product(v.begin(), v.end(), v.begin(), 0.0));
+        for (decimal& val : v) {
+            val /= norm_v;
+        }
+
+        // Check convergence
+        decimal diff = 0.0;
+        for (int i = 0; i < n; ++i) {
+            diff += std::abs(v[i] - prev_v[i]);
+        }
+        if (diff < tol) {
+            break;
+        }
+        prev_v = v;
+    }
+}
+
+// https://researchdatapod.com/singular-value-decomposition-svd-cpp/
+// probably will be changed at some point
+SVDResult ComputeSVD(const Matrix& A, int k) {
+    int m = A.NumRows();
+    int n = A.NumCols();
+    SVDResult result(m, n);
+
+    // Make a copy of A to work on
+    Matrix B = A;
+
+    for (int i = 0; i < k; ++i) {
+            std::vector<decimal> v(n);
+            std::vector<decimal> u(m);
+            decimal sigma;
+
+            SVDPowerIteration(B, v, sigma, u);
+
+            // Store results in U, S, and V matrices
+            for (int j = 0; j < m; ++j) {
+                result.U(j, i) = u[j];
+            }
+            result.S(i, i) = sigma;
+            for (int j = 0; j < n; ++j) {
+                result.V(j, i) = v[j];
+            }
+
+            // Deflate B by subtracting the outer product of u, v scaled by sigma
+            for (int r = 0; r < m; ++r) {
+                for (int c = 0; c < n; ++c) {
+                    B(r, c) -= sigma * u[r] * v[c];
+                }
+            }
+        }
+        return result;
+}
+
 
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
