@@ -36,14 +36,18 @@ TEST_F(IntegrationTest, TestMainNothing) {
     int argc = 1;
     const char *argv[1] = {"found"};
 
+    testing::internal::CaptureStderr();
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
+    testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainNoOption) {
     int argc = 3;
     const char *argv[3] = {"found", "--png", "none.png"};
 
+    testing::internal::CaptureStderr();
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
+    testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainHelp) {
@@ -73,8 +77,9 @@ TEST_F(IntegrationTest, TestMainHelp) {
 TEST_F(IntegrationTest, TestMainCalibrationBadDistanceAlgorithm) {
     int argc = 4;
     const char *argv[] = {"found", "distance", "--distance-algo", "NEDDA"};
-
+    testing::internal::CaptureStderr();
     ASSERT_THROW(main(argc, const_cast<char **>(argv)), std::runtime_error);
+    testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {

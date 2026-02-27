@@ -81,7 +81,9 @@ TEST_F(SerializationTest, CorrectHeader) {
 TEST_F(SerializationTest, IncorrectHeader) {
     std::string incorrectStr(reinterpret_cast<const char*>(incorrectCRCTestHeader), sizeof(incorrectCRCTestHeader));
     std::istringstream stream(incorrectStr);
+    testing::internal::CaptureStderr();
     ASSERT_THROW(readHeader(stream), std::runtime_error);
+    testing::internal::GetCapturedStderr();
 }
 
 /**
