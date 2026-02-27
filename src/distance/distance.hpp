@@ -111,7 +111,6 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
  * algorithm calculates the distance from Earth based on the pixels of Earth's edge found in the image.
  * 
  * @note This class treats Earth as a spheroid (accurate for most bodies in our solar system)
- * @note For any given set of points, this class will output TWO possible solutions
 */
 class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
@@ -124,10 +123,10 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
     * @param cam The camera used to capture the picture of Earth
-    * @param AOR Earth's axis of rotation in camera coordinates
+    * @param attitude The declination, roll, right ascension of the camera
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR.Normalize()), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR, Vec3 radialCoefficients, Vec2 tangentialCoefficients) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_(radialCoefficients), tangentialCoefficients_(tangentialCoefficients) {}
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 attitude) : cam_(cam), principleAxes_(principleAxes), attitude_(attitude), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 attitude, Vec3 radialCoefficients, Vec2 tangentialCoefficients) : cam_(cam), principleAxes_(principleAxes), attitude_(attitude), radialCoefficients_(radialCoefficients), tangentialCoefficients_(tangentialCoefficients) {}
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
@@ -149,11 +148,11 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
    /**
    * Computes TPC, the transformation matrix from Earth coordinates to camera coordinates
    * 
-   * @param AOR Earth's axis of rotation in camera coordinates
+   * @param attitude The declination, roll, right ascension of the camera
    *
-   * @return TPC
+   * @return TPC, body to camera coordinate transformation matrix (rotation)
    * */
-    Mat3 ComputeBodyToCamTransformation(Vec3 AOR);
+    Mat3 ComputeBodyToCamTransformation(Vec3 attitude);
 
    /**
    * Computes the inverse camera projection matrix
@@ -195,8 +194,8 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     Vec3 principleAxes_;
 
 
-   // Earth's axis of rotation in camera coordinates
-    Vec3 AOR_;
+   // The declination, roll, right ascension of the camera
+    Vec3 attitude_;
 
     Vec3 radialCoefficients_;
 

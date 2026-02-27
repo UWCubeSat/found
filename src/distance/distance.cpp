@@ -35,7 +35,7 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 
     Mat3 invCameraProjMat = ComputeInvCameraProjMat(cam_); 
     
-    Mat3 TPC = ComputeBodyToCamTransformation(AOR_);
+    Mat3 TPC = ComputeBodyToCamTransformation(attitude_);
     
     Mat3 imageToSpace = DiagInvAxes * TPC.Transpose() * invCameraProjMat;
 
@@ -59,21 +59,29 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     return vecToEarth;
 }
 
-Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeBodyToCamTransformation(Vec3 AOR){
-    Vec3 randomVec = {0.57735,0.57735,0.57735}; // pick a random vector
-    Vec3 tempAOR = {AOR.x, AOR.y, -AOR.z};
-    Vec3 orthogonalVec1 = tempAOR.CrossProduct(randomVec).Normalize(); // do a cross product to get a vector orthogonal to AOR, which will be on the equator
-    Vec3 orthogonalVec2 = tempAOR.CrossProduct(orthogonalVec1).Normalize(); // get the other orthogonal vector on the equator; should already be normalized
+// converting from Z up Y forward (world) to Y up Z forward (camera)
+Mat3 SpheroidDistanceDeterminationAlgorithm::ComputeBodyToCamTransformation(Vec3 attitude){
+    decimal pi = 3.14159;
+    Mat3 Xrot = {1, 0, 0,
+        0, cos(attitude.x), -sin(attitude.x),
+        0, sin(attitude.x), cos(attitude.x)};
+    // adjustment to get cam facing positive Y with X aligned to world
+    Mat3 adjustment = {1, 0, 0,
+        0, cos(pi/2), -sin(pi/2),
+        0, sin(pi/2), cos(pi/2)};
+    Mat3 Yrot = {cos(attitude.y), 0, sin(attitude.y),
+        0, 1, 0,
+        -sin(attitude.y), 0, cos(attitude.y)};
+    Mat3 Zrot = {cos(attitude.z), -sin(attitude.z), 0,
+        sin(attitude.z), cos(attitude.z), 0,
+        0, 0, 1};
 
-    // just use basis vectors as columns
-    // flip z since we're going from a right handed system to a left handed one
-    Mat3 TPC = {
-        orthogonalVec1.x,    orthogonalVec2.x,   AOR.x, 
-        orthogonalVec1.y,    orthogonalVec2.y,   AOR.y, 
-        -orthogonalVec1.z,   -orthogonalVec2.z,  AOR.z
-    };
+    Mat3 invertZ = {1, 0, 0,
+        0, 1, 0,
+        0, 0, -1};
 
-    return TPC;
+    Mat3 TCP = Zrot * Xrot * Yrot * adjustment * invertZ;
+    return TCP.Transpose();
 }
 
 // stupid equation

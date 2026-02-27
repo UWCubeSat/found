@@ -126,6 +126,7 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
 }
 
 Vec3 Vec3::OuterProduct(const Mat3 &other) const {
+    // compute the entire thing as v*A = (A*vT)T where v is a row vector
     return other.Transpose() * *this;
 }
 
