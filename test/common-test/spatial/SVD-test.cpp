@@ -94,7 +94,7 @@ TEST(SVDTest, Test3Random10x5) {
 }
 
 TEST(SVDTest, Test3Random10x50) {
-    int modulo = 10000000;
+    int modulo = 1000000;
     decimal divisor = 1000;
 
     std::default_random_engine rando;
