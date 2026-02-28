@@ -30,15 +30,15 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
     return (v1 - v2).norm();
 }
 
-decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
-    return AngleUnit(vec1.normalized(), vec2.normalized());
-}
+// decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
+//     return AngleUnit(vec1.normalized(), vec2.normalized());
+// }
 
-decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
-    decimal dot = vec1.dot(vec2);
-    // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
-    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
-}
+// decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
+//     decimal dot = vec1.dot(vec2);
+//     // TODO: we shouldn't need this nonsense, right? how come acos sometimes gives nan?
+//     return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
+// }
 
 ///////////////////////////////////
 ///////// QUATERNION HELPERS //////
@@ -97,11 +97,9 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
 }
 
 Vec3 SphericalToSpatial(const decimal ra, const decimal de) {
-    return Vec3(
-        cos(ra)*cos(de),
-        sin(ra)*cos(de),
-        sin(de)
-    );
+    return Vec3(cos(ra)*cos(de),
+                sin(ra)*cos(de),
+                sin(de));
 }
 
 void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {

@@ -1,10 +1,10 @@
 #ifndef SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 #define SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 
-#include <memory>
-
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+#include <memory>
 
 #include "common/decimal.hpp"
 
@@ -91,27 +91,9 @@ decimal Distance(const Vec2 &, const Vec2 &);
 */
 decimal Distance(const Vec3 &, const Vec3 &);
 
-/**
- * Determines the angle between two different vectors
- * 
- * @param vec1 The first vector
- * @param vec2 The second vector
- * 
- * @return The angle, in radians, between vec1 and vec2
-*/
-decimal Angle(const Vec3 &, const Vec3 &);
+// decimal Angle(const Vec3 &, const Vec3 &);
 
-/**
- * Determines the angle between two different vectors
- * 
- * @param vec1 The first vector
- * @param vec2 The second vector
- * 
- * @return The angle, in radians, between vec1 and vec2
- * 
- * @pre The magnitude of vec1 and vec2 are 1
-*/
-decimal AngleUnit(const Vec3 &, const Vec3 &);
+// decimal AngleUnit(const Vec3 &, const Vec3 &);
 
 ///////////////////////////////////
 ///////// MATRIX CLASS ////////////

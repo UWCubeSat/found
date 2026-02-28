@@ -131,8 +131,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoArbitraryReferenceAndRel
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
     // Setup Dependencies
-    Quaternion referenceOrientation(0, 1.0, 2.0, 3.0);
-    Quaternion relativeOrientation(0, 4.0, 5.0, 6.0);
+    Quaternion referenceOrientation = Quaternion(0, 1.0, 2.0, 3.0).normalized();
+    Quaternion relativeOrientation = Quaternion(0, 4.0, 5.0, 6.0).normalized();
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     // Create a PositionVector to test with

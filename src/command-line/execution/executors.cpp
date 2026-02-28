@@ -1,8 +1,8 @@
 #include "command-line/execution/executors.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <utility>
-#include <cstring>
 
 #include "common/logging.hpp"
 #include "common/time/time.hpp"
@@ -73,9 +73,9 @@ void DistancePipelineExecutor::OutputResults() {
         outputDF.header = this->options_.calibrationData.header;
         outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
         outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
-        std::memcpy(outputDF.positions.get(),
-                    this->options_.calibrationData.positions.get(),
-                    outputDF.header.num_positions);
+        std::copy(this->options_.calibrationData.positions.get(),
+                  this->options_.calibrationData.positions.get() + outputDF.header.num_positions,
+                  outputDF.positions.get());
     } else {
         outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
         outputDF.positions = std::make_unique<LocationRecord[]>(1);

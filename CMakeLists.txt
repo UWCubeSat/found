@@ -157,7 +157,6 @@ set(SRC_LIBS ${STB_IMAGE})
 
 add_library(found_lib STATIC ${FILTERED_SRC})
 target_link_libraries(found_lib PUBLIC Eigen3::Eigen PRIVATE ${STB_IMAGE})
-target_compile_options(found_lib PRIVATE -Wdouble-promotion -Werror)
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
@@ -212,6 +211,8 @@ endif()
 
 ########## Targets ##########
 
+add_compile_options(-Wdouble-promotion -Werror)
+
 ##### compile #####
 
 file(MAKE_DIRECTORY ${BIN_DIR})
@@ -219,7 +220,6 @@ file(MAKE_DIRECTORY ${BIN_DIR})
 add_executable(found ${SRC_MAIN})
 
 target_link_libraries(found PRIVATE ${SRC_LIBS} found_lib)
-target_compile_options(found PRIVATE -Wdouble-promotion -Werror)
 target_compile_definitions(found PRIVATE 
         $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
         $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)

@@ -18,7 +18,8 @@ EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
     Vec3 position = toEarthRotatingFrame * celestialVector;
 
     // Figure out the right ascension and declination of the vector
-    decimal RA = std::atan2(position.y(), position.x());  // Huh, the range is [-PI, PI], not [0, 2PI]. That's convenient
+    // Range is [-PI, PI], not [0, 2PI]. That's convenient
+    decimal RA = std::atan2(position.y(), position.x());
     decimal DE = std::asin(position.normalized().z());  // Range is [-PI/2, PI/2]
 
     // Longitude, Lattitude and Altitude Follow, with conversion

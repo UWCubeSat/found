@@ -350,11 +350,16 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         auto &compToMerge = compIt->second;
         auto &lowestComp = components[lowestLabel];
         lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
-        if (compToMerge.upperLeft.x() < lowestComp.upperLeft.x()) lowestComp.upperLeft.x() = compToMerge.upperLeft.x();
-        if (compToMerge.lowerRight.x() > lowestComp.lowerRight.x()) lowestComp.lowerRight.x() = compToMerge.lowerRight.x();
-        // We skip this statement, because its impossible (a higher component is level or lower than a lower component):
-        // if (compToMerge.upperLeft.y() < lowestComp.upperLeft.y()) lowestComp.upperLeft.y() = compToMerge.upperLeft.y();
-        if (compToMerge.lowerRight.y() > lowestComp.lowerRight.y()) lowestComp.lowerRight.y() = compToMerge.lowerRight.y();
+        if (compToMerge.upperLeft.x() < lowestComp.upperLeft.x())
+            lowestComp.upperLeft.x() = compToMerge.upperLeft.x();
+        if (compToMerge.lowerRight.x() > lowestComp.lowerRight.x())
+            lowestComp.lowerRight.x() = compToMerge.lowerRight.x();
+        // We skip this statement, because its impossible
+        // (a higher component is level or lower than a lower component):
+        // if (compToMerge.upperLeft.y() < lowestComp.upperLeft.y())
+        //     lowestComp.upperLeft.y() = compToMerge.upperLeft.y();
+        if (compToMerge.lowerRight.y() > lowestComp.lowerRight.y())
+            lowestComp.lowerRight.y() = compToMerge.lowerRight.y();
 
         components.erase(compIt);
     }

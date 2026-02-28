@@ -32,11 +32,9 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     decimal xPixel = -vector.x() + xCenter;
     decimal yPixel = -vector.y() + yCenter;
 
-    return Vec3(
-        1,
-        xPixel * pixelSize / focalLength,
-        yPixel * pixelSize / focalLength
-    );
+    return Vec3(1,
+                xPixel * pixelSize / focalLength,
+                yPixel * pixelSize / focalLength);
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {

@@ -14,6 +14,17 @@
 
 namespace found {
 
+///// Test-only helpers /////
+
+inline decimal AngleUnit(const Vec3 &vec1, const Vec3 &vec2) {
+    decimal dot = vec1.dot(vec2);
+    return dot >= 1 ? 0 : dot <= -1 ? DECIMAL_M_PI-DECIMAL(0.0000001) : DECIMAL_ACOS(dot);
+}
+
+inline decimal Angle(const Vec3 &vec1, const Vec3 &vec2) {
+    return AngleUnit(vec1.normalized(), vec2.normalized());
+}
+
 ///// Definition of custom ASSERT_* statements /////
 
 #define DEFAULT_TOLERANCE DECIMAL(1e-3)
