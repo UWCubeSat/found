@@ -11,30 +11,58 @@ namespace found {
 ////////// CAMERA CLASS ///////////
 ///////////////////////////////////
 
-Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
-    // can't handle things behind the camera.
-    assert(vector.x() > 0);
-    // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
-
-    decimal focalFactor = focalLength/vector.x()/pixelSize;
-
-    decimal yPixel = vector.y()*focalFactor;
-    decimal zPixel = vector.z()*focalFactor;
-
-    return Vec2(-yPixel + xCenter, -zPixel + yCenter);
+Camera::Camera(decimal focalLength,
+               int xResolution, int yResolution,
+               decimal xCenter, decimal yCenter,
+               decimal xPixelPitch, decimal yPixelPitch)
+    : focalLength(focalLength),
+      xResolution(xResolution), yResolution(yResolution),
+      xCenter(xCenter), yCenter(yCenter),
+      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch) {
+    initializeCalibrationMatrixes();
 }
 
-Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
+Camera::Camera(decimal focalLength, decimal pixelSize,
+               int xResolution, int yResolution)
+    : Camera(focalLength, xResolution, yResolution,
+             xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
+             pixelSize, pixelSize) {}
+
+void Camera::initializeCalibrationMatrixes() {
+    decimal dx = focalLength / xPixelPitch;
+    decimal dy = focalLength / yPixelPitch;
+
+    // Compute the calibration matrix
+    calibrationMatrix = Mat3::Zero();
+    calibrationMatrix(0, 0) = dx;
+    calibrationMatrix(1, 1) = dy;
+    calibrationMatrix(0, 2) = xCenter;
+    calibrationMatrix(1, 2) = yCenter;
+    calibrationMatrix(2, 2) = 1.0;
+    
+    // Compute the inverse calibration matrix
+    inverseCalibrationMatrix = Mat3::Zero();
+    inverseCalibrationMatrix(0, 0) = 1.0 / dx;
+    inverseCalibrationMatrix(1, 1) = 1.0 / dy;
+    inverseCalibrationMatrix(0, 2) = -xCenter / dx;
+    inverseCalibrationMatrix(1, 2) = -yCenter / dy;
+    inverseCalibrationMatrix(2, 2) = 1.0;
+}
+
+Vec2 Camera::SpatialToPixelCoordinates(const Vec3 &vector) const {
+    // can't handle things behind the camera.
+    assert(vector.z() > 0);
+    // use similiar triangles to get the image coordinates
+    Vec3 homogenousImageCoordinates = Vec3(vector.x() / vector.z(), vector.y() / vector.z(), 1.0);
+    // transform image coordinates to pixel coordinates using the calibration matrix
+    Vec3 homogenousPixelCoordinates = calibrationMatrix * homogenousImageCoordinates;
+
+    return Vec2(homogenousPixelCoordinates.x(), homogenousPixelCoordinates.y());
+}
+
+Vec3 Camera::PixelToImageCoordinates(const Vec2 &vector) const {
     assert(InSensor(vector));
-
-    // isn't it interesting: To convert from center-based to left-corner-based coordinates is the
-    // same formula; f(x)=f^{-1}(x) !
-    decimal xPixel = -vector.x() + xCenter;
-    decimal yPixel = -vector.y() + yCenter;
-
-    return Vec3(1,
-                xPixel * pixelSize / focalLength,
-                yPixel * pixelSize / focalLength);
+    return inverseCalibrationMatrix * Vec3(vector.x(), vector.y(), 1.0);
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {
@@ -43,22 +71,6 @@ bool Camera::InSensor(const Vec2 &vector) const {
     // so vector is still in the image.
     return vector.x() >= 0 && vector.x() <= xResolution
         && vector.y() >= 0 && vector.y() <= yResolution;
-}
-
-decimal Camera::Fov() const {
-    return FocalLengthToFov(focalLength, xResolution, 1.0);
-}
-
-///////////////////////////////////
-////// CONVERSION FUNCTIONS ///////
-///////////////////////////////////
-
-decimal FovToFocalLength(decimal xFov, decimal xResolution) {
-    return xResolution / DECIMAL(2.0) / tan(xFov/2);
-}
-
-decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize) {
-    return atan(xResolution/2 * pixelSize / focalLength) * 2;
 }
 
 }  // namespace found

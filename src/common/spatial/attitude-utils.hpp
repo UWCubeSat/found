@@ -10,10 +10,6 @@
 
 namespace found {
 
-// At first, I wanted to have two separate Attitude classes, one storing Euler angles and converting
-// to Quaterinon, and another storing as Quaternion and converting to Euler. But abstract classes
-// make everything more annoying, because you need vectors of pointers...ugh!
-
 ///////////////////////////////////
 ///////// VECTOR CLASSES //////////
 ///////////////////////////////////
@@ -91,10 +87,6 @@ decimal Distance(const Vec2 &, const Vec2 &);
 */
 decimal Distance(const Vec3 &, const Vec3 &);
 
-// decimal Angle(const Vec3 &, const Vec3 &);
-
-// decimal AngleUnit(const Vec3 &, const Vec3 &);
-
 ///////////////////////////////////
 ///////// MATRIX CLASS ////////////
 ///////////////////////////////////
@@ -143,7 +135,7 @@ using AngleAxis = Eigen::AngleAxis<decimal>;
 ///////////////////////////////////
 
 
-// Attitude Conversions
+/// Attitude Conversions
 
 
 /**
@@ -217,35 +209,7 @@ inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }
 
 
-// Spherical-Vector Conversions
-
-
-/**
- * Converts spherical direction to a unit vector on the unit sphere
- * 
- * @param ra The right ascension of the direction in question
- * @param de The declination of the direction in question
- * 
- * @return A 3D unit vector that represents the vector on the unit sphere
- * corresponding to this direction
-*/
-Vec3 SphericalToSpatial(decimal ra, decimal de);
-
-/**
- * Converts a unit vector on the unit sphere to a spherical direction
- * 
- * @param vec The vector to convert from
- * @param ra The right ascension that will represent the right ascension
- * of vec
- * @param de The declination that will represent the declination of vec
- * 
- * @post This function's output are the parameters ra and de, and those
- * parameters are modified after this function runs.
-*/
-void SpatialToSpherical(const Vec3 &, decimal &ra, decimal &de);
-
-
-// Angle Conversions
+/// Angle Conversions
 
 
 /**

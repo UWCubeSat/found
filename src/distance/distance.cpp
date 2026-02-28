@@ -19,9 +19,9 @@ namespace found {
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return Vec3(0, 0, 0);
 
-    const Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).normalized(),
-                      cam_.CameraToSpatial(p[p.size() / 2]).normalized(),
-                      cam_.CameraToSpatial(p[p.size() - 1]).normalized()};
+    const Vec3 spats[3] = {cam_.PixelToImageCoordinates(p[0]).normalized(),
+                      cam_.PixelToImageCoordinates(p[p.size() / 2]).normalized(),
+                      cam_.PixelToImageCoordinates(p[p.size() - 1]).normalized()};
 
     return this->Run(spats[0], spats[1], spats[2]);
 }
@@ -126,7 +126,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t pointsSize = p.size();
     std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
     for (const Vec2 &point : p) {
-        projectedPoints[i++] = this->cam_.CameraToSpatial(point).normalized();
+        projectedPoints[i++] = this->cam_.PixelToImageCoordinates(point).normalized();
     }
     i = 0;
     std::unique_ptr<uint64_t[]> logits(new uint64_t[pointsSize]);

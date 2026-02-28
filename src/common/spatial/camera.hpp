@@ -12,12 +12,17 @@ namespace found {
 ///////////////////////////////////
 
 /**
- * A Camera is a mutable object that represents a Camera.
+ * A Camera is a mutable object that represents a pinhole camera.
  * 
  * @pre Camera dimensions are in SI
  * 
- * @note This object contains enough information to reconstruct a Camera Matrix
- * 
+ * @note Follows the convention as laid out in Fundamentals of Space OpNav (Christian, 2026)
+ * - The optical center (hole in pinhole camera model) is located at the origin (0, 0, 0)
+ * - The x-axis points to the right
+ * - The y-axis points down 
+ * - The z-axis points along the camera's optical axis (depth)
+ * - The virtual image plane is located at z = 1
+ * - The detector plane is located at z = -focalLength
 */
 class Camera {
  public:
@@ -30,17 +35,16 @@ class Camera {
      * Creates a Camera object off of real Camera parameters
      * 
      * @param focalLength The focal length of the camera
-     * @param pixelSize The physical size of a pixel (in meters)
-     * @param xCenter,yCenter The "principal point" of the camera. 
      * @param xResolution The resolution of the camera in the x-direction
      * @param yResolution The resolution of the camera in the y-direction
+     * @param xCenter,yCenter The "principal point" of the camera. 
+     * @param xPixelPitch The physical size of a pixel in the x-direction (in meters)
+     * @param yPixelPitch The physical size of a pixel in the y-direction (in meters)
      */
-    Camera(decimal focalLength, decimal pixelSize,
+    Camera(decimal focalLength,
+           int xResolution, int yResolution,
            decimal xCenter, decimal yCenter,
-           int xResolution, int yResolution)
-        : focalLength(focalLength), pixelSize(pixelSize),
-          xCenter(xCenter), yCenter(yCenter),
-          xResolution(xResolution), yResolution(yResolution) {}
+           decimal xPixelPitch, decimal yPixelPitch);
 
     /**
      * Creates a Camera object off of ideal Camera parameters
@@ -53,140 +57,89 @@ class Camera {
      * @note In an ideal camera, the x and y centers are just half the resolution, 
      * but physical cameras often have a bit of offset.
      */
-    Camera(decimal focalLength, decimal pixelSize, int xResolution, int yResolution)
-        : Camera(focalLength, pixelSize,
-                 xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
-                 xResolution, yResolution) {}
-
-    // Projection of vectors into image and space
+    Camera(decimal focalLength, decimal pixelSize, int xResolution, int yResolution);
 
     /**
-    * Converts from a 3D point in space to a 2D point on the camera sensor.
+    * Converts from a 3D point in space expressed in the camera coordiante system
+    * to a 2D point in pixel coordinates.
     * 
     * @param vector A 3D vector to convert to a vector on the camera
     * 
     * @return The 2D Vector that represents the 3D vector on the camera
     * 
-    * @note Assumes that X is the depth direction and that it points away 
-    * from the center of the sensor, i.e., any vector (x, 0, 0) will be at 
-    * (xResolution/2, yResolution/2) on the sensor.
+    * @note Assumes that Z is the depth direction and that it points away
+    * from the center of the sensor. Coordinate system: X=right, Y=up, Z=depth.
+    * Any vector (0, 0, z) will be at (xResolution/2, yResolution/2) on the sensor.
     */
-    Vec2 SpatialToCamera(const Vec3 &) const;
+    Vec2 SpatialToPixelCoordinates(const Vec3 &) const;
 
     /**
-    * Gives a point in 3d space that could correspond to the given vector, using the same
-    * coordinate system described for SpatialToCamera.
+    * Maps a 2D point in pixel coordinates (row and column index of image matrix) to
+    * a point on the Image plane located at z=1 in 3D space.
     * 
     * @param vector The vector on the camera to convert to a 3D vector
     * 
-    * @return A vector in 3d space corresponding to the given vector, with x-component equal to 1
+    * @return A vector in 3d space corresponding to the given vector, with z-component equal to 1
     * 
     * @note Not all vectors returned by this function will necessarily have the same magnitude.
     * 
-    * @warning Other functions rely on the fact that returned vectors are placed one unit away (x-component equal to 1). Don't change this behavior!
+    * @warning Other functions rely on the fact that returned vectors are placed one unit away 
+    * (z-component equal to 1). Don't change this behavior!
     */
-    Vec3 CameraToSpatial(const Vec2 &) const;
+    Vec3 PixelToImageCoordinates(const Vec2 &) const;
 
     /**
-    * Evaluates whether a vector can be seen in the camera
-    * 
-    * @param vector The vector to evaluate
-    * 
-    * @return true iff vector could be seen in this camera
-   */
+     * Evaluates whether a vector can be seen in the camera
+     * 
+     * @param vector The vector to evaluate
+     * 
+     * @return true iff vector could be seen in this camera
+     */
     bool InSensor(const Vec2 &vector) const;
 
-    // Accessor Methods to Camera Parameters
-
-   /**
-     * Returns the X resolution of this camera
-     * 
-     * @return the X resolution of this
+    /**
+     * Expose camera calibration matrix (intrinsic matrix) 
+     *
+     * @return The camera calibration matrix
      */
-    int XResolution() const { return xResolution; }
+    const Mat3& GetCalibrationMatrix() const { return calibrationMatrix; }
 
     /**
-     * Returns the Y resolution of this camera
-     * 
-     * @return the Y resolution of this
-     */
-    int YResolution() const { return yResolution; }
-
-    /**
-     * Returns the focal length of this camera
-     * 
-     * @return The focal length of this
-     */
-    decimal FocalLength() const { return focalLength; }
-
-    /**
-     * Returns the pixel size of this camera
-     * 
-     * @return The pixel size of this
-     */
-    decimal PixelSize() const { return pixelSize; }
-
-    /**
-    * Provides the Field of View (FOV) of this Camera
-    * 
-    * @return The FOV of this, in radians
-    * 
-   */
-    decimal Fov() const;
-
-    // Mutator Method for Cameras
-
-    /**
-     * Sets the focal length of this
-     * 
-     * @param focalLength The focal length to give this camera
-     */
-    void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
+     * Expose inverse camera calibration matrix (intrinsic matrix) 
+     *
+     * @return The inverse camera calibration matrix
+     */ 
+    const Mat3& GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix; }
 
  private:
+   /**
+     * Computes and initializes the calibration matrix and the inverse calibration matrix 
+     * from camera parameters.
+     * 
+     * @post calibrationMatrix and inverseCalibrationMatrix are initialized and ready to use.
+     */
+    void initializeCalibrationMatrixes();
+
     // TODO: distortion
     /// The focal length (m)
     decimal focalLength;
-    /// The pixel size (m)
-    decimal pixelSize;
-    /// The x center (pixels)
-    decimal xCenter;
-    /// The y center (pixels)
-    decimal yCenter;
     /// The x resolution (pixels)
     int xResolution;
     /// The y resolution (pixels)
     int yResolution;
+    /// The x center (pixels)
+    decimal xCenter;
+    /// The y center (pixels)
+    decimal yCenter;
+    /// The x pixel pitch (m)
+    decimal xPixelPitch;
+    /// The y pixel pitch (m)
+    decimal yPixelPitch;
+    /// The camera calibration matrix
+    Mat3 calibrationMatrix;
+    /// The inverse camera calibration matrix
+    Mat3 inverseCalibrationMatrix;
 };
-
-///////////////////////////////////
-////// CONVERSION FUNCTIONS ///////
-///////////////////////////////////
-
-/**
- * Provides the focal length of a camera for given parameters
- * 
- * @param xFov The horizontal field of view
- * @param xResolution The horizontal resolution
- * 
- * @return The focal length of a camera with a given xFov and
- * xResolution
- * 
-*/
-decimal FovToFocalLength(decimal xFov, decimal xResolution);
-
-/**
- * Provides the FOV of a camera for given parameters
- * 
- * @param focalLength The focal length
- * @param xResolution The horizontal resolution
- * @param pixelSize The size of a pixel in a Camera
- * 
- * @return The FOV of a camera with a given focalLength,
- * xResolution, and pixelSize
- * 
-*/
-decimal FocalLengthToFov(decimal focalLength, decimal xResolution, decimal pixelSize);
 
 }  // namespace found
 
