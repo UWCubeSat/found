@@ -126,9 +126,13 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @param cam The camera used to capture the picture of Earth
     * @param AOR Earth's axis of rotation in camera coordinates
     */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR.Normalize()), radialCoefficients_({0,0,0}), tangentialCoefficients_({0,0}) {} 
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Vec3 AOR, Vec3 radialCoefficients, Vec2 tangentialCoefficients) : cam_(cam), principleAxes_(principleAxes), AOR_(AOR), radialCoefficients_(radialCoefficients), tangentialCoefficients_(tangentialCoefficients) {}
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Quaternion relativeOrientation, Quaternion referenceOrientation) 
+      : cam_(cam), principleAxes_(principleAxes), orientationPC_(Attitude(relativeOrientation * referenceOrientation).GetDCM()) {}
+
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Quaternion orientation) 
+      : cam_(cam), principleAxes_(principleAxes), orientationPC_(Attitude(orientation).GetDCM()) {}
+
+   
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
     /**
@@ -144,39 +148,6 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * */
     PositionVector Run(const Points &p) override;
 
-
-
-   /**
-   * Computes TPC, the transformation matrix from Earth coordinates to camera coordinates
-   * 
-   * @param AOR Earth's axis of rotation in camera coordinates
-   *
-   * @return TPC
-   * */
-    Mat3 ComputeBodyToCamTransformation(Vec3 AOR);
-
-   /**
-   * Computes the inverse camera projection matrix
-   * does the same things as cam.CameraToSpatial except using z as depth
-   * 
-   * @param cam the camera object
-   *
-   * @return K; inverse camera projection matrix
-   * 
-   * */
-    Mat3 ComputeInvCameraProjMat(Camera cam);
-
-    Vec2 UndistortPoint(Vec2 point, Vec2 center, Vec3 k, Vec2 p);
-
-   /**
-   * performs TLS on Hn where H is the transpose matrix of all normalized vectors to the horizon
-   * 
-   * @param normalizedVecsToHorizon used to created H; these will be given transposed so they will be used as rows
-   *
-   * @return Vec3 vector pointing to Earth's center with a magnitude dependent on the true distance and the principle axes
-   *
-   * */
-    Vec3 VecToEarthTLS(std::vector<Vec3> &normalizedVecsToHorizon);
 
  protected:
 
@@ -196,11 +167,8 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
 
    // Earth's axis of rotation in camera coordinates
-    Vec3 AOR_;
+    Mat3 orientationPC_;
 
-    Vec3 radialCoefficients_;
-
-    Vec2 tangentialCoefficients_;
 };
 
 /**
