@@ -15,17 +15,17 @@ EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
     decimal GMST = std::fmod(DECIMAL_M_PI * gmst / DECIMAL(180.0), 2 * DECIMAL_M_PI);
     // Figure out Earth's Rotating Frame and express the position in that frame
     Quaternion toEarthRotatingFrame = SphericalToQuaternion(GMST, 0, 0);
-    Vec3 position = toEarthRotatingFrame.Rotate(celestialVector);
+    Vec3 position = toEarthRotatingFrame * celestialVector;
 
     // Figure out the right ascension and declination of the vector
-    decimal RA = std::atan2(position.y, position.x);  // Huh, the range is [-PI, PI], not [0, 2PI]. That's convenient
-    decimal DE = std::asin(position.Normalize().z);  // Range is [-PI/2, PI/2]
+    decimal RA = std::atan2(position.y(), position.x());  // Huh, the range is [-PI, PI], not [0, 2PI]. That's convenient
+    decimal DE = std::asin(position.normalized().z());  // Range is [-PI/2, PI/2]
 
     // Longitude, Lattitude and Altitude Follow, with conversion
     // to degrees and range adjustment from RA to longitude
     return {RadToDeg(RA),
             RadToDeg(DE),
-            position.Magnitude(),
+            position.norm(),
             gmst};
 }
 

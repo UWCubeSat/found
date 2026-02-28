@@ -19,12 +19,12 @@ namespace found {
 #define DEFAULT_TOLERANCE DECIMAL(1e-3)
 
 constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
-    return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
+    return abs(a.x() - b.x()) < DEFAULT_TOLERANCE && abs(a.y() - b.y()) < DEFAULT_TOLERANCE;
 };
 
 constexpr auto Vec3Equal = [](const Vec3 &a, const Vec3 &b) {
-    return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE
-           && abs(a.z - b.z) < DEFAULT_TOLERANCE;
+    return abs(a.x() - b.x()) < DEFAULT_TOLERANCE && abs(a.y() - b.y()) < DEFAULT_TOLERANCE
+           && abs(a.z() - b.z()) < DEFAULT_TOLERANCE;
 };
 
 constexpr auto LocationRecordEqual = [](const LocationRecord &a, const LocationRecord &b) {
@@ -42,23 +42,23 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 #define ASSERT_DECIMAL_EQ_DEFAULT(val1, val2) ASSERT_DECIMAL_EQ(val1, val2, DEFAULT_TOLERANCE)
 
 #define ASSERT_VEC2_EQ(val1, val2, tolerance) \
-    ASSERT_DECIMAL_EQ(val1.x, val2.x, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.y, val2.y, tolerance)
+    ASSERT_DECIMAL_EQ(val1.x(), val2.x(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.y(), val2.y(), tolerance)
 
 #define ASSERT_VEC2_EQ_DEFAULT(val1, val2) ASSERT_VEC2_EQ(val1, val2, DEFAULT_TOLERANCE)
 
 #define ASSERT_VEC3_EQ(val1, val2, tolerance) \
-    ASSERT_DECIMAL_EQ(val1.x, val2.x, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.y, val2.y, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.z, val2.z, tolerance)
+    ASSERT_DECIMAL_EQ(val1.x(), val2.x(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.y(), val2.y(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.z(), val2.z(), tolerance)
 
 #define ASSERT_VEC3_EQ_DEFAULT(val1, val2) ASSERT_VEC3_EQ(val1, val2, DEFAULT_TOLERANCE)
 
 #define ASSERT_QUAT_EQ(val1, val2, tolerance) \
-    ASSERT_DECIMAL_EQ(val1.real, val2.real, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.i, val2.i, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.j, val2.j, tolerance); \
-    ASSERT_DECIMAL_EQ(val1.k, val2.k, tolerance)
+    ASSERT_DECIMAL_EQ(val1.w(), val2.w(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.x(), val2.x(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.y(), val2.y(), tolerance); \
+    ASSERT_DECIMAL_EQ(val1.z(), val2.z(), tolerance)
 
 #define ASSERT_QUAT_EQ_DEFAULT(val1, val2) ASSERT_QUAT_EQ(val1, val2, DEFAULT_TOLERANCE)
 
@@ -66,8 +66,8 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
     { \
         Quaternion quat1 = SphericalToQuaternion(val1); \
         Quaternion quat2 = SphericalToQuaternion(val2); \
-        if (quat1.real < 0) quat1 = -quat1; \
-        if (quat2.real < 0) quat2 = -quat2; \
+        if (quat1.w() < 0) quat1 = Quaternion(-quat1.w(), -quat1.x(), -quat1.y(), -quat1.z()); \
+        if (quat2.w() < 0) quat2 = Quaternion(-quat2.w(), -quat2.x(), -quat2.y(), -quat2.z()); \
         ASSERT_QUAT_EQ(quat1, quat2, tolerance); \
     }
 
@@ -148,17 +148,17 @@ struct ImageData {
     ImageData(const char *path, decimal focal_length, decimal pixel_size, EulerAngles orientation, Vec3 position) :
             path(path), focal_length(focal_length), FocalLength(std::to_string(focal_length)), pixel_size(pixel_size),
             PixelSize(std::to_string(pixel_size)), orientation(orientation), position(position) {
-        Orientation += orientation.ra;
+        Orientation += orientation.x();
         Orientation += ",";
-        Orientation += orientation.de;
+        Orientation += orientation.y();
         Orientation += ",";
-        Orientation += orientation.roll;
+        Orientation += orientation.z();
 
-        Position += position.x;
+        Position += position.x();
         Position += ",";
-        Position += position.y;
+        Position += position.y();
         Position += ",";
-        Position += position.z;
+        Position += position.z();
     }
 };
 

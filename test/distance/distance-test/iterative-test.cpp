@@ -62,9 +62,9 @@ using found::IterativeSphericalDistanceDeterminationAlgorithm;
  * vec2, on a component basis, within tolerance
 */
 #define VECTOR_EQUALS(vec1, vec2, tolerance) \
-    EXPECT_LT(abs(vec1.x - vec2.x), tolerance); \
-    EXPECT_LT(abs(vec1.y - vec2.y), tolerance); \
-    EXPECT_LT(abs(vec1.z - vec2.z), tolerance);
+    EXPECT_LT(abs(vec1.x() - vec2.x()), tolerance); \
+    EXPECT_LT(abs(vec1.y() - vec2.y()), tolerance); \
+    EXPECT_LT(abs(vec1.z() - vec2.z()), tolerance);
 
 TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestConstructorLowPowers) {
     // Taken from TestCenteredEarthRandom7
@@ -348,7 +348,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
     TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
         // Step 0: Determine Quaterion rotation
         found::Quaternion positionDirection = found::SphericalToQuaternion(
-            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).Conjugate();
+            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).conjugate();
 
         // Step I: Pick some distance (m) and a Camera
         decimal y_E = RADIUS_OF_EARTH + 10000000;
@@ -372,9 +372,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
         Vec3 p2 = {centerMag, -projectionRadiusMag, 0};
         Vec3 p3 = {centerMag, -projectionRadiusMag * DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
 
-        Vec3 p1Rotated = positionDirection.Rotate(p1);
-        Vec3 p2Rotated = positionDirection.Rotate(p2);
-        Vec3 p3Rotated = positionDirection.Rotate(p3);
+        Vec3 p1Rotated = positionDirection * p1;
+        Vec3 p2Rotated = positionDirection * p2;
+        Vec3 p3Rotated = positionDirection * p3;
 
         // Step III: Use CTS to convert to 2D vectors
         Points pts = {cam.SpatialToCamera(p1Rotated),

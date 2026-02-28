@@ -12,11 +12,13 @@
 namespace found {
 
 TEST(CalibrationTest, TestCalibrateAbsolute) {
-    EulerAngles local = Quaternion(0.36, 0.48, 0.64, 0.48).ToSpherical();
+    EulerAngles local = QuaternionToSpherical(Quaternion(0.36, 0.48, 0.64, 0.48));
     EulerAngles reference(0, 0, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    EulerAngles actual = algorithm.Run(std::make_pair(local, reference)).Canonicalize().ToSpherical();
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
+    if (result.w() < 0) result = Quaternion(-result.w(), -result.x(), -result.y(), -result.z());
+    EulerAngles actual = QuaternionToSpherical(result);
 
     ASSERT_EA_EQ_DEFAULT(local, actual);
 }
@@ -29,7 +31,9 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
     EulerAngles expected(7 * DECIMAL_M_PI / 4, 0, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    EulerAngles actual = algorithm.Run(std::make_pair(local, reference)).Canonicalize().ToSpherical();
+    Quaternion result1 = algorithm.Run(std::make_pair(local, reference));
+    if (result1.w() < 0) result1 = Quaternion(-result1.w(), -result1.x(), -result1.y(), -result1.z());
+    EulerAngles actual = QuaternionToSpherical(result1);
 
     ASSERT_EA_EQ_DEFAULT(expected, actual);
 }
@@ -41,9 +45,11 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
     EulerAngles expected(0, DECIMAL_M_PI / 6, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    EulerAngles actual = algorithm.Run(std::make_pair(local, reference)).Canonicalize().ToSpherical();
+    Quaternion result2 = algorithm.Run(std::make_pair(local, reference));
+    if (result2.w() < 0) result2 = Quaternion(-result2.w(), -result2.x(), -result2.y(), -result2.z());
+    EulerAngles actual2 = QuaternionToSpherical(result2);
 
-    ASSERT_EA_EQ_DEFAULT(expected, actual);
+    ASSERT_EA_EQ_DEFAULT(expected, actual2);
 }
 
 TEST(CalibrationTest, TestCalibrateGeneral) {
@@ -64,8 +70,8 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     Quaternion diffLocal = DCMToQuaternion(QuaternionToDCM(result) * QuaternionToDCM(diffReference));
 
     // See if the calibration holds for different axes
-    ASSERT_QUAT_EQ_DEFAULT((expectedLocalQ * SphericalToQuaternion(reference).Conjugate()),
-                           (diffLocal * diffReference.Conjugate()));
+    ASSERT_QUAT_EQ_DEFAULT((expectedLocalQ * SphericalToQuaternion(reference).conjugate()),
+                           (diffLocal * diffReference.conjugate()));
 }
 
 }  // namespace found

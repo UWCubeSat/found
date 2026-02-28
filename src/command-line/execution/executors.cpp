@@ -26,10 +26,10 @@ void CalibrationPipelineExecutor::ExecutePipeline() {
 void CalibrationPipelineExecutor::OutputResults() {
     // Output the results of the calibration
     Quaternion *&calibrationQuaternion = this->pipeline_.GetProduct();
-    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->real << ", "
-                                         << calibrationQuaternion->i << ", "
-                                         << calibrationQuaternion->j << ", "
-                                         << calibrationQuaternion->k << ")");
+    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->w() << ", "
+                                         << calibrationQuaternion->x() << ", "
+                                         << calibrationQuaternion->y() << ", "
+                                         << calibrationQuaternion->z() << ")");
     DataFile outputDF{};
     outputDF.relative_attitude = *calibrationQuaternion;
     std::ofstream outputFile(this->options_.outputFile);
@@ -61,10 +61,10 @@ void DistancePipelineExecutor::ExecutePipeline() {
 
 void DistancePipelineExecutor::OutputResults() {
     PositionVector *&positionVector = this->pipeline_.GetProduct();
-    LOG_INFO("Calculated Position: (" << positionVector->x << ", "
-                                      << positionVector->y << ", "
-                                      << positionVector->z << ") m");
-    LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
+    LOG_INFO("Calculated Position: (" << positionVector->x() << ", "
+                                      << positionVector->y() << ", "
+                                      << positionVector->z() << ") m");
+    LOG_INFO("Distance from Earth: " << positionVector->norm() << " m");
     // TODO: Figure out a much more optimized way of doing this please, especially
     // since we're saving it into the exact same file, there should be an easy way
     // to simply modify the file directly instead of this mess.
@@ -106,9 +106,9 @@ void OrbitPipelineExecutor::ExecutePipeline() {
 void OrbitPipelineExecutor::OutputResults() {
     // TODO: Output this somewhere
     [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
-    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
-                                             << futurePosition.position.y << ", "
-                                             << futurePosition.position.z << ") m"
+    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x() << ", "
+                                             << futurePosition.position.y() << ", "
+                                             << futurePosition.position.z() << ") m"
                                              << " at time "
                                              << futurePosition.timestamp << " s");
 }

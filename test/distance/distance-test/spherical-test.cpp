@@ -47,12 +47,12 @@ using found::SphericalDistanceDeterminationAlgorithm;
  * vec2, on a component basis, within tolerance
 */
 #define VECTOR_EQUALS(vec1, vec2, tolerance) \
-    EXPECT_LT(abs(vec1.x - vec2.x), tolerance); \
-    EXPECT_LT(abs(vec1.y - vec2.y), tolerance); \
-    EXPECT_LT(abs(vec1.z - vec2.z), tolerance);
+    EXPECT_LT(abs(vec1.x() - vec2.x()), tolerance); \
+    EXPECT_LT(abs(vec1.y() - vec2.y()), tolerance); \
+    EXPECT_LT(abs(vec1.z() - vec2.z()), tolerance);
 
 std::ostream &operator<<(std::ostream &stream, const Vec3 &vector) {
-    stream << std::fixed << std::setprecision(5) << "(" << vector.x << ", " << vector.y << ", " << vector.z << ")";
+    stream << std::fixed << std::setprecision(5) << "(" << vector.x() << ", " << vector.y() << ", " << vector.z() << ")";
     return stream;
 }
 
@@ -192,7 +192,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
     TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
         // Step 0: Determine Quaterion rotation
         found::Quaternion positionDirection = found::SphericalToQuaternion(
-            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).Conjugate();
+            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).conjugate();
 
         // Step I: Pick some distance (m) and a Camera
         decimal y_E = RADIUS_OF_EARTH + 10000000;
@@ -223,9 +223,9 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
 
         // LOG_INFO(ss1.str());
 
-        Vec3 p1Rotated = positionDirection.Rotate(p1);
-        Vec3 p2Rotated = positionDirection.Rotate(p2);
-        Vec3 p3Rotated = positionDirection.Rotate(p3);
+        Vec3 p1Rotated = positionDirection * p1;
+        Vec3 p2Rotated = positionDirection * p2;
+        Vec3 p3Rotated = positionDirection * p3;
 
         // std::stringstream ss;
         // ss << p1Rotated.x << " " << p1Rotated.y << " " << p1Rotated.z;
