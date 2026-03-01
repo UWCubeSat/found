@@ -134,15 +134,6 @@ add_library(${STB_IMAGE} STATIC ${STB_IMAGE_SRC})
 target_compile_definitions(${STB_IMAGE} PRIVATE STB_IMAGE_IMPLEMENTATION)
 target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
-##### stb_image_write (for test visualization) #####
-
-set(STB_IMAGE_WRITE_URL "https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h")
-set(STB_IMAGE_WRITE_HEADER "${CACHE_DIR}/stb_image_write.h")
-if(NOT EXISTS "${STB_IMAGE_WRITE_HEADER}")
-    message(STATUS "Downloading stb_image_write.h")
-    file(DOWNLOAD ${STB_IMAGE_WRITE_URL} ${STB_IMAGE_WRITE_HEADER})
-endif()
-
 # Set the source libraries
 set(SRC_LIBS ${STB_IMAGE})
 
@@ -180,14 +171,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-FetchContent_Declare(
-    nlohmann_json
-    GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG v3.11.2
-)
-FetchContent_MakeAvailable(nlohmann_json)
-
-set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS} nlohmann_json::nlohmann_json)
+set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
 
 ##### Documentation Libraries #####
 
@@ -233,7 +217,6 @@ if(ENABLE_WORKFLOW)
 ##### test #####
 
 add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
-target_include_directories(found-test PRIVATE ${CACHE_DIR})
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
                                                 LOGGING_LEVEL=INFO)
 target_compile_options(found-test PRIVATE

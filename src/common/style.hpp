@@ -65,6 +65,14 @@ struct Edge {
 typedef std::vector<Edge> Edges;
 
 /**
+ * Holds the real and imaginary parts of a complex number.
+ */
+ struct ComplexNumber {
+    decimal real;
+    decimal imag;
+};
+
+/**
  * Represents a connected component in an image
  * 
  * @note This must be carried with the original

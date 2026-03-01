@@ -40,8 +40,6 @@
 #define DECIMAL_M_SQRT1_2       (DECIMAL(M_SQRT1_2))     /* 1/sqrt(2) */
 #define DECIMAL_M_R_E           (DECIMAL(6371008.7714))  /* Earth's Radius */
 #define DECIMAL_INF             (DECIMAL(INFINITY))      /* Infinity */
-/// Small epsilon for numerical stability (machine epsilon for the decimal type)
-#define DECIMAL_EPSILON         (std::numeric_limits<decimal>::epsilon())
 
 // Math Functions wrapped with Decimal typecast
 #define DECIMAL_POW(base,power) (DECIMAL(std::pow(base, power)))
