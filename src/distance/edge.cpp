@@ -396,10 +396,10 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
     return window;
 }
 
-std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>> 
+std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
         ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
-    std::unique_ptr<ComplexNumber[]> kernelZ11(new decimal[windowSize * windowSize]);
-    std::unique_ptr<ComplexNumber[]> kernelZ20(new decimal[windowSize * windowSize]);
+    std::unique_ptr<ComplexNumber[]> kernelZ11(new ComplexNumber[windowSize * windowSize]);
+    std::unique_ptr<ComplexNumber[]> kernelZ20(new ComplexNumber[windowSize * windowSize]);
 
     decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
     decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
@@ -410,7 +410,6 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
 
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
-
             decimal uCenter = DECIMAL(2.0) * DECIMAL(j) / DECIMAL(windowSize) - offset;
             decimal vCenter = DECIMAL(2.0) * DECIMAL(i) / DECIMAL(windowSize) - offset;
 
@@ -419,7 +418,6 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
 
             for (int si = 0; si < SUB; si++) {
                 for (int sj = 0; sj < SUB; sj++) {
-
                     decimal u = uCenter - pixelWidth/DECIMAL(2.0)
                                 + DECIMAL(sj)*subStep + subOffset;
                     decimal v = vCenter - pixelWidth/DECIMAL(2.0)
@@ -440,7 +438,7 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
             int idx = i * windowSize + j;
 
             kernelZ11[idx].real = areaWeight * sum11;
-            kernelZ11[idx].imag = DECIMAL(0.0); // filled later
+            kernelZ11[idx].imag = DECIMAL(0.0);  // filled later
 
             kernelZ20[idx].real = areaWeight * sum20;
             kernelZ20[idx].imag = DECIMAL(0.0);
@@ -455,7 +453,7 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
         }
     }
 
-    return {kernelZ11, kernelZ20};
+    return {std::move(kernelZ11), std::move(kernelZ20)};
 }
 
 std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
@@ -469,9 +467,9 @@ std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZe
             int idx = i * windowSize + j;
             decimal intensity = window[idx];
 
-            A11Real += intensity * kernelZ11.real[idx];
-            A11Imag += intensity * kernelZ11.img[idx];
-            A20Val += intensity * kernelZ20.real[idx];
+            A11Real += intensity * kernelZ11[idx].real;
+            A11Imag += intensity * kernelZ11[idx].imag;
+            A20Val += intensity * kernelZ20[idx].real;
         }
     }
 
@@ -484,10 +482,7 @@ decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ComplexNumber& A11
     return DECIMAL_ATAN2(A11.imag, A11.real);
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(
-    decimal A11Prime,
-    decimal A20,
-    decimal transitionWidth) {
+decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(decimal A11Prime, decimal A20, decimal transitionWidth) {
     if (DECIMAL_ABS(A11Prime) < DECIMAL(1e-10)) {
         return DECIMAL(0.0);
     }
@@ -498,12 +493,7 @@ decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(
     return (DECIMAL(1.0) - wSqu - sqrt(discriminant)) / wSqu;
 }
 
-Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(
-    const Vec2& windowCenter,
-    decimal l,
-    decimal psi,
-    int windowSize
-) {
+Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter, decimal l, decimal psi) {
     decimal scale = DECIMAL(windowSize) / DECIMAL(2.0);
     decimal offsetX = scale * l * DECIMAL_COS(psi);
     decimal offsetY = scale * l * DECIMAL_SIN(psi);
@@ -516,8 +506,8 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         throw std::invalid_argument("windowSize must be a positive odd integer");
     }
 
-    Points &initialPoints = initialEdgeAlgorithm->Run(image);
-    
+    Points initialPoints = initialEdgeAlgorithm->Run(image);
+
     if (initialPoints.empty()) {
         return initialPoints;
     }
@@ -537,8 +527,7 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         ComplexNumber A20;
         std::tie(A11, A20) = computeZernikeMoments(
             window.get(),
-            kernelZ11Real.get(),
-            kernelZ11Imag.get(),
+            kernelZ11.get(),
             kernelZ20.get());
 
         // Step 2c: Extract edge angle ψ from A_11

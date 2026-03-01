@@ -67,7 +67,7 @@ typedef std::vector<Edge> Edges;
 /**
  * Holds the real and imaginary parts of a complex number.
  */
- struct ComplexNumber {
+struct ComplexNumber {
     decimal real;
     decimal imag;
 };

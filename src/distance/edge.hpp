@@ -152,9 +152,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      *
      * @pre image must only contain one channel
      */
-    std::unique_ptr<decimal[]> extractWindow(
-        const Image &image,
-        const Vec2 &center);
+    std::unique_ptr<decimal[]> extractWindow(const Image &image, const Vec2 &center);
 
     /**
      * Computes the Zernike polynomial convolution kernels Z_11 and Z_20 for a square unit disk 
