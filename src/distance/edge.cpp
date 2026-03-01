@@ -146,11 +146,11 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 /**
  * Checks if a label is present in the list of adjacent labels
- *
+ * 
  * @param label The label to check
  * @param adjacentLabels The list of adjacent labels
  * @param size The size of the list
- *
+ * 
  * @return true iff label is in adjacentLabels
  */
 inline bool LabelPresent(int label, int *adjacentLabels, int size) {
@@ -165,11 +165,11 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
 
 /**
  * Updates the component with the given pixel
- *
+ * 
  * @param component The component to update
  * @param index The index to add
  * @param pixel The pixel to add
- *
+ * 
  * @pre Must be called in order of increasing index
  */
 inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
@@ -183,7 +183,7 @@ inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
 
 /**
  * Adds a pixel to some component, creating a new component if necessary
- *
+ * 
  * @param image The image to which the pixel belongs
  * @param index The index of the pixel
  * @param L The current label
@@ -191,9 +191,9 @@ inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
  * @param size The number of adjacent labels
  * @param components The components that are part of the image
  * @param equivalencies The labels that are equivalent to each other
- *
+ * 
  * @return The label of the component point that was added
- *
+ * 
  * Updates components with the new pixel as appropriate
  */
 inline int NWayEquivalenceAdd(const Image &image,
