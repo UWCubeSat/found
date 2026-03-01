@@ -31,18 +31,26 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
 }
 
 ///////////////////////////////////
-///////// QUATERNION HELPERS //////
+////// CONVERSION FUNCTIONS ///////
 ///////////////////////////////////
 
-/**
- * Converts a Quaternion to Euler Angles.
- *
- * Uses the z-y'-x'' convention matching the custom ToSpherical() implementation.
- */
+Mat3 QuaternionToDCM(const Quaternion &quat) {
+    return quat.toRotationMatrix();
+}
+
+Quaternion DCMToQuaternion(const Mat3 &dcm) {
+    return Quaternion(dcm);
+}
+
 EulerAngles QuaternionToSpherical(const Quaternion &q) {
-    // Eigen stores (x, y, z, w) internally but accessors are .w(), .x(), .y(), .z()
-    // Our convention: real=w, i=x, j=y, k=z
-    decimal w = q.w(), x = q.x(), y = q.y(), z = q.z();
+    // Undo the axis permutation (new camera → old camera) so we can
+    // extract Euler angles using the original formulas.
+    // kAxisPermutationInv = inverse of -120° rotation about (1,1,1)/sqrt(3)
+    static const Quaternion kAxisPermutationInv(
+        DECIMAL(0.5), DECIMAL(0.5), DECIMAL(0.5), DECIMAL(0.5));
+    Quaternion qOld = kAxisPermutationInv * q;
+
+    decimal w = qOld.w(), x = qOld.x(), y = qOld.y(), z = qOld.z();
 
     decimal ra = atan2(2*(-w*z+x*y), 1-2*(y*y+z*z));
     if (ra < 0)
@@ -55,33 +63,22 @@ EulerAngles QuaternionToSpherical(const Quaternion &q) {
     return EulerAngles(ra, de, roll);
 }
 
-///////////////////////////////////
-////// CONVERSION FUNCTIONS ///////
-///////////////////////////////////
-
-Mat3 QuaternionToDCM(const Quaternion &quat) {
-    return quat.toRotationMatrix();
-}
-
-Quaternion DCMToQuaternion(const Mat3 &dcm) {
-    return Quaternion(dcm);
-}
-
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(roll >= DECIMAL(0.0) && roll <= 2*DECIMAL_M_PI);
     assert(ra >= DECIMAL(0.0) && ra <= 2*DECIMAL_M_PI);
-    assert(dec >= -DECIMAL_M_PI && dec <= DECIMAL_M_PI);
+    assert(dec >= -DECIMAL_M_PI/2 && dec <= DECIMAL_M_PI/2);
 
-    // when we are modifying the coordinate axes, the quaternion multiplication works so that the
-    // rotations are applied from left to right. This is the opposite as for modifying vectors.
+    // Build the forward rotation (camera → world) using intrinsic body-frame
+    // rotations applied left to right:
+    //   a: yaw by RA about Z (north-pole axis)
+    //   b: pitch by -dec about Y
+    //   c: roll by roll about X (line-of-sight in the intermediate frame)
+    Quaternion qRa(AngleAxis(ra, Vec3(0, 0, 1)));
+    Quaternion qDec(AngleAxis(DECIMAL_M_PI/2-dec, Vec3(0, 1, 0)));
+    Quaternion qRoll(AngleAxis(roll, Vec3(1, 0, 0)));
 
-    // It is indeed correct that a positive rotation in our right-handed coordinate frame is in the
-    // clockwise direction when looking down/through the axis of rotation. Just like the right hand
-    // rule for magnetic field around a current-carrying conductor.
-    Quaternion a(AngleAxis(ra, Vec3(0, 0, 1)));
-    Quaternion b(AngleAxis(-dec, Vec3(0, 1, 0)));
-    Quaternion c(AngleAxis(-roll, Vec3(1, 0, 0)));
-    Quaternion result = (a*b*c).conjugate();
+    // world to camera coordinate rotation
+    Quaternion result = qRoll * qRa * qDec;
     assert(DECIMAL_ABS(result.squaredNorm() - 1) < DECIMAL(0.00001));
     return result;
 }

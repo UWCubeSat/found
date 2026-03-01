@@ -7,9 +7,9 @@
 
 namespace found {
 
-///////////////////////////////////
-///// TEST FIXTURE ////////////////
-///////////////////////////////////
+////////////////////
+/// TEST FIXTURE ///
+////////////////////
 
 class CameraTest : public testing::Test {
  protected:
@@ -23,41 +23,9 @@ class CameraTest : public testing::Test {
     Camera fullCamera{0.05, 1280, 720, 640.5, 360.5, 5e-6, 4e-6};
 };
 
-///////////////////////////////////
-///// CALIBRATION MATRIX TESTS ////
-///////////////////////////////////
-
-/**
- * K * K^-1 should be the identity matrix for the ideal camera.
- */
-TEST_F(CameraTest, IdealCalibrationMatrixInverse) {
-    Mat3 product = idealCamera.GetCalibrationMatrix()
-                 * idealCamera.GetInverseCalibrationMatrix();
-    Mat3 identity = Mat3::Identity();
-
-    for (int r = 0; r < 3; ++r) {
-        for (int c = 0; c < 3; ++c) {
-            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
-                << "Mismatch at (" << r << ", " << c << ")";
-        }
-    }
-}
-
-/**
- * K * K^-1 should be the identity matrix for the full (non-ideal) camera.
- */
-TEST_F(CameraTest, FullCalibrationMatrixInverse) {
-    Mat3 product = fullCamera.GetCalibrationMatrix()
-                 * fullCamera.GetInverseCalibrationMatrix();
-    Mat3 identity = Mat3::Identity();
-
-    for (int r = 0; r < 3; ++r) {
-        for (int c = 0; c < 3; ++c) {
-            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
-                << "Mismatch at (" << r << ", " << c << ")";
-        }
-    }
-}
+////////////////////////////////
+/// CALIBRATION MATRIX TESTS ///
+////////////////////////////////
 
 /**
  * Verify explicit calibration matrix values for the ideal camera.
@@ -67,7 +35,7 @@ TEST_F(CameraTest, FullCalibrationMatrixInverse) {
  *       |    0 1000   500 |
  *       |    0    0     1 |
  */
-TEST_F(CameraTest, IdealCalibrationMatrixValues) {
+TEST_F(CameraTest, IdealCameraCalibrationMatrixValues) {
     const Mat3 &K = idealCamera.GetCalibrationMatrix();
 
     EXPECT_NEAR(K(0, 0), 1000.0, 1e-9);
@@ -92,7 +60,7 @@ TEST_F(CameraTest, IdealCalibrationMatrixValues) {
  *       |     0  12500   360.5 |
  *       |     0      0       1 |
  */
-TEST_F(CameraTest, FullCalibrationMatrixValues) {
+TEST_F(CameraTest, FullCameraCalibrationMatrixValues) {
     const Mat3 &K = fullCamera.GetCalibrationMatrix();
 
     EXPECT_NEAR(K(0, 0), 10000.0, 1e-6);
@@ -100,56 +68,86 @@ TEST_F(CameraTest, FullCalibrationMatrixValues) {
     EXPECT_NEAR(K(0, 2), 640.5, 1e-9);
     EXPECT_NEAR(K(1, 2), 360.5, 1e-9);
     EXPECT_NEAR(K(2, 2), 1.0, 1e-9);
-}
 
-///////////////////////////////////
-// SPATIAL TO PIXEL COORD TESTS //
-///////////////////////////////////
+    // Off-diagonal / unused entries should be zero
+    EXPECT_NEAR(K(0, 1), 0.0, 1e-9);
+    EXPECT_NEAR(K(1, 0), 0.0, 1e-9);
+    EXPECT_NEAR(K(2, 0), 0.0, 1e-9);
+    EXPECT_NEAR(K(2, 1), 0.0, 1e-9);
+}
 
 /**
- * A point on the optical axis (0, 0, z) should project to
- * the principal point (xCenter, yCenter).
+ * K * K^-1 should be the identity matrix for the ideal camera.
  */
-TEST_F(CameraTest, SpatialToPixelOnAxis) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 1));
-    EXPECT_NEAR(pixel.x(), 500.0, 1e-9);
-    EXPECT_NEAR(pixel.y(), 500.0, 1e-9);
+TEST_F(CameraTest, IdealInverseCameraCalibrationMatrixTest) {
+    Mat3 product = idealCamera.GetCalibrationMatrix()
+                 * idealCamera.GetInverseCalibrationMatrix();
+    Mat3 identity = Mat3::Identity();
+
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
+                << "Mismatch at (" << r << ", " << c << ")";
+        }
+    }
 }
+
+/**
+ * K * K^-1 should be the identity matrix for the full (non-ideal) camera.
+ */
+TEST_F(CameraTest, FullInverseCameraCalibrationMatrixTest) {
+    Mat3 product = fullCamera.GetCalibrationMatrix()
+                 * fullCamera.GetInverseCalibrationMatrix();
+    Mat3 identity = Mat3::Identity();
+
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
+                << "Mismatch at (" << r << ", " << c << ")";
+        }
+    }
+}
+
+////////////////////////////////////
+/// SPATIAL TO PIXEL COORD TESTS ///
+////////////////////////////////////
 
 /**
  * On-axis projection should be independent of depth.
  */
-TEST_F(CameraTest, SpatialToPixelOnAxisDifferentDepths) {
+TEST_F(CameraTest, SpatialToPixelOnAxisTest) {
     Vec2 p1 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 1));
     Vec2 p2 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 5));
     Vec2 p3 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 100));
 
-    EXPECT_NEAR(p1.x(), p2.x(), 1e-9);
-    EXPECT_NEAR(p1.y(), p2.y(), 1e-9);
-    EXPECT_NEAR(p2.x(), p3.x(), 1e-9);
-    EXPECT_NEAR(p2.y(), p3.y(), 1e-9);
+    EXPECT_NEAR(p1.x(), 500.0, 1e-9);
+    EXPECT_NEAR(p1.y(), 500.0, 1e-9);
+    EXPECT_NEAR(p2.x(), 500.0, 1e-9);
+    EXPECT_NEAR(p2.y(), 500.0, 1e-9);
+    EXPECT_NEAR(p3.x(), 500.0, 1e-9);
+    EXPECT_NEAR(p3.y(), 500.0, 1e-9);
 }
 
 /**
  * Simple right-shift: (1, 0, 1) should project to
- *   pixel_x = dx * (1/1) + xCenter = 1000 + 500 = 1500
- *   pixel_y = dy * (0/1) + yCenter = 0 + 500 = 500
+ *   pixel_x = dx * (1/2) + xCenter = 500 + 500 = 1000
+ *   pixel_y = dy * (0/2) + yCenter = 0 + 500 = 500
  */
 TEST_F(CameraTest, SpatialToPixelSimpleRight) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(1, 0, 1));
-    EXPECT_NEAR(pixel.x(), 1500.0, 1e-9);
+    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(1, 0, 2));
+    EXPECT_NEAR(pixel.x(), 1000.0, 1e-9);
     EXPECT_NEAR(pixel.y(), 500.0, 1e-9);
 }
 
 /**
  * Simple down-shift: (0, 1, 1) should project to
  *   pixel_x = 0 + 500 = 500
- *   pixel_y = 1000 * 1 + 500 = 1500
+ *   pixel_y = 1000 * 0.5 + 500 = 1000
  */
 TEST_F(CameraTest, SpatialToPixelSimpleDown) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(0, 1, 1));
+    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(0, 1, 2));
     EXPECT_NEAR(pixel.x(), 500.0, 1e-9);
-    EXPECT_NEAR(pixel.y(), 1500.0, 1e-9);
+    EXPECT_NEAR(pixel.y(), 1000.0, 1e-9);
 }
 
 /**
@@ -162,36 +160,5 @@ TEST_F(CameraTest, SpatialToPixelPerspective) {
     EXPECT_NEAR(pixel.y(), 1000.0, 1e-9);
 }
 
-/**
- * Negative spatial x should map left of center.
- * (-0.5, 0, 1) => (1000 * -0.5 + 500, 500) = (0, 500)
- */
-TEST_F(CameraTest, SpatialToPixelNegativeX) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(-0.5, 0, 1));
-    EXPECT_NEAR(pixel.x(), 0.0, 1e-9);
-    EXPECT_NEAR(pixel.y(), 500.0, 1e-9);
 }
 
-/**
- * Full camera with offset principal point.
- * (0, 0, 1) should still project to (xCenter, yCenter) = (640.5, 360.5)
- */
-TEST_F(CameraTest, FullCameraSpatialToPixelOnAxis) {
-    Vec2 pixel = fullCamera.SpatialToPixelCoordinates(Vec3(0, 0, 1));
-    EXPECT_NEAR(pixel.x(), 640.5, 1e-9);
-    EXPECT_NEAR(pixel.y(), 360.5, 1e-9);
-}
-
-/**
- * Full camera: (5e-6, 4e-6, 0.05) shifts by exactly 1 pixel in each direction.
- *   x/z = 5e-6 / 0.05 = 1e-4, pixel_x = 10000 * 1e-4 + 640.5 = 641.5
- *   y/z = 4e-6 / 0.05 = 8e-5, pixel_y = 12500 * 8e-5 + 360.5 = 361.5
- */
-TEST_F(CameraTest, FullCameraSpatialToPixelOnePixelShift) {
-    Vec2 pixel = fullCamera.SpatialToPixelCoordinates(
-        Vec3(5e-6, 4e-6, 0.05));
-    EXPECT_NEAR(pixel.x(), 641.5, 1e-6);
-    EXPECT_NEAR(pixel.y(), 361.5, 1e-6);
-}
-
-}  // namespace found

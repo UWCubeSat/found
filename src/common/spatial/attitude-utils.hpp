@@ -196,11 +196,12 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @param angles The euler angles to convert
  * 
- * @return A Quaternion representing this collection of Euler Angles
+ * @return A Quaternion representing a rotation from Earth Centerd Intertial Coordinates 
+ * (Z-axis is up) to Camera Coordinates, which are defined in more depth in `camera.hpp`.
  * 
- * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
- * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
- * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
+ * @note Returned Quaternion will reorient the coordinate axes so that the z-axis (optical axis)
+ * points at the given right ascension and declination, with the x-axis pointing right and the
+ * y-axis pointing down.
  * 
  * @warning Do not change this to return a forward quaternion unless you change conversion functions between
  * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
