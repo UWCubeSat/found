@@ -47,7 +47,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityTest) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, AlongOpticalAxisTest) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(180, 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
         LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
 
     // Create a PositionVector to test with
@@ -56,6 +56,48 @@ TEST(LOSTVectorGenerationAlgorithmTest, AlongOpticalAxisTest) {
 
     // Check if the result is as expected
     PositionVector expected = {100.0, 0.0, 0.0};  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
+}
+
+TEST(LOSTVectorGenerationAlgorithmTest, NoRotationTest) {
+    // Setup Dependencies
+    Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0);
+        LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+
+    // Create a PositionVector to test with
+    PositionVector x_E = {1.0, 1.0, 1.0};
+    PositionVector actual = vectorGen.Run(x_E);
+
+    // Check if the result is as expected
+    // negative sign because vector generation flips the vector
+    PositionVector expected = {-1.0, -1.0, -1.0};  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
+}
+
+TEST(LOSTVectorGenerationAlgorithmTest, PointAlongVernalEquinoxTest) {
+    // Setup Dependencies
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
+        LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+
+    // Create a PositionVector to test with
+    PositionVector x_E = {1.0, 1.0, 1.0};
+    PositionVector actual = vectorGen.Run(x_E);
+
+    // Check if the result is as expected
+    PositionVector expected = {-1.0, -1.0, 1.0};  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
+}
+
+TEST(LOSTVectorGenerationAlgorithmTest, READMETest) {
+    // Setup Dependencies
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(2.44346), 0, 0);
+    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+
+    // Create a PositionVector to test with
+    PositionVector x_E = {8.05339e+06, 972.935, 6.66896e+06};
+    PositionVector actual = vectorGen.Run(x_E);
+
+    PositionVector expected = {8.05339e+06, -4.28747e+06, -5.10809e+06};
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 

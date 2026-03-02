@@ -8,7 +8,8 @@ PositionVector LOSTVectorGenerationAlgorithm::Run(const PositionVector &x_E) {
     // Use the conjugate here, since the orientation is a backwards rotation. In
     // other words, the orientation is a rotation from the celestial frame to the
     // camera frame, but we want to go the other way.
-    return -(this->orientation.conjugate() * x_E);
+    Quaternion qRoll(AngleAxis(0, Vec3(0, 0, 1)));
+    return -(this->orientation * (qRoll * x_E));
 }
 
 }  // namespace found

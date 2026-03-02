@@ -75,10 +75,10 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     //   c: roll by roll about X (line-of-sight in the intermediate frame)
     Quaternion qRa(AngleAxis(ra, Vec3(0, 0, 1)));
     Quaternion qDec(AngleAxis(DECIMAL_M_PI/2-dec, Vec3(0, 1, 0)));
-    Quaternion qRoll(AngleAxis(roll, Vec3(1, 0, 0)));
+    Quaternion qRoll(AngleAxis(roll, Vec3(0, 0, 1)));
 
     // world to camera coordinate rotation
-    Quaternion result = qRoll * qRa * qDec;
+    Quaternion result = qRa * qDec * qRoll;
     assert(DECIMAL_ABS(result.squaredNorm() - 1) < DECIMAL(0.00001));
     return result;
 }

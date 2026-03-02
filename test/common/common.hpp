@@ -54,6 +54,15 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 
 #define ASSERT_VEC3_EQ_DEFAULT(val1, val2) ASSERT_VEC3_EQ(val1, val2, DEFAULT_TOLERANCE)
 
+#define ASSERT_MAT3_EQ(val1, val2, tolerance) \
+    for (int i = 0; i < 3; i++) { \
+        for (int j = 0; j < 3; j++) { \
+            ASSERT_DECIMAL_EQ(val1(i, j), val2(i, j), tolerance); \
+        } \
+    }
+
+#define ASSERT_MAT3_EQ_DEFAULT(val1, val2) ASSERT_MAT3_EQ(val1, val2, DEFAULT_TOLERANCE)
+
 #define ASSERT_QUAT_EQ(val1, val2, tolerance) \
     ASSERT_DECIMAL_EQ(val1.w(), val2.w(), tolerance); \
     ASSERT_DECIMAL_EQ(val1.x(), val2.x(), tolerance); \

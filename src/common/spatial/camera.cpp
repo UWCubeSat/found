@@ -39,7 +39,7 @@ void Camera::initializeCalibrationMatrixes() {
     calibrationMatrix(0, 2) = xCenter;
     calibrationMatrix(1, 2) = yCenter;
     calibrationMatrix(2, 2) = 1.0;
-    
+
     // Compute the inverse calibration matrix
     inverseCalibrationMatrix = Mat3::Zero();
     inverseCalibrationMatrix(0, 0) = 1.0 / dx;

@@ -92,11 +92,11 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
         return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
                                                                referenceOrientation);
     } else {
-        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
             return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
         }
+        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
         return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
 }

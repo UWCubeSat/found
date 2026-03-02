@@ -160,5 +160,28 @@ TEST_F(CameraTest, SpatialToPixelPerspective) {
     EXPECT_NEAR(pixel.y(), 1000.0, 1e-9);
 }
 
+TEST_F(CameraTest, PixelToImageCoordinatesCenterTest) {
+    Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(500, 500));
+
+    EXPECT_NEAR(imageCoords.x(), 0.0, 1e-9);
+    EXPECT_NEAR(imageCoords.y(), 0.0, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
 }
 
+TEST_F(CameraTest, PixelToImageCoordinatesOffCenterPositiveTest) {
+    Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(1000, 1000));
+
+    EXPECT_NEAR(imageCoords.x(), .5, 1e-9);
+    EXPECT_NEAR(imageCoords.y(), .5, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
+}
+
+TEST_F(CameraTest, PixelToImageCoordinatesOffCenterNegativeTest) {
+    Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(0, 0));
+
+    EXPECT_NEAR(imageCoords.x(), -.5, 1e-9);
+    EXPECT_NEAR(imageCoords.y(), -.5, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
+}
+
+}
