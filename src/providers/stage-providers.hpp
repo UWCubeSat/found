@@ -87,17 +87,18 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  */
 std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
+    Camera cam(options.focalLength, options.pixelSize, options.image.width, options.image.height);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
         return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
-                                                               referenceOrientation);
+                                                               referenceOrientation, cam);
     } else {
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
-            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation, cam);
         }
         Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation, cam);
     }
 }
 

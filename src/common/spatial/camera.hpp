@@ -44,7 +44,8 @@ class Camera {
     Camera(decimal focalLength,
            int xResolution, int yResolution,
            decimal xCenter, decimal yCenter,
-           decimal xPixelPitch, decimal yPixelPitch);
+           decimal xPixelPitch, decimal yPixelPitch,
+           Quaternion rotationIntoCelestialFrame = Quaternion(AngleAxis(DECIMAL_M_PI * 1.5, Vec3(0, 0, 1))));
 
     /**
      * Creates a Camera object off of ideal Camera parameters
@@ -111,6 +112,13 @@ class Camera {
      */ 
     const Mat3& GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix; }
 
+    /**
+     * Expose the rotation quaternion from camera frame into celestial frame
+     *
+     * @return The rotation quaternion into the celestial frame
+     */
+    const Quaternion& GetRotationIntoCelestialFrame() const { return rotationIntoCelestialFrame; }
+
  private:
    /**
      * Computes and initializes the calibration matrix and the inverse calibration matrix 
@@ -139,6 +147,8 @@ class Camera {
     Mat3 calibrationMatrix;
     /// The inverse camera calibration matrix
     Mat3 inverseCalibrationMatrix;
+    /// The rotation from camera frame into the celestial frame
+    Quaternion rotationIntoCelestialFrame;
 };
 
 }  // namespace found

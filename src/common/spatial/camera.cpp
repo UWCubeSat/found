@@ -14,11 +14,13 @@ namespace found {
 Camera::Camera(decimal focalLength,
                int xResolution, int yResolution,
                decimal xCenter, decimal yCenter,
-               decimal xPixelPitch, decimal yPixelPitch)
+               decimal xPixelPitch, decimal yPixelPitch,
+               Quaternion rotationIntoCelestialFrame)
     : focalLength(focalLength),
       xResolution(xResolution), yResolution(yResolution),
       xCenter(xCenter), yCenter(yCenter),
-      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch) {
+      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch),
+      rotationIntoCelestialFrame(rotationIntoCelestialFrame) {
     initializeCalibrationMatrixes();
 }
 
@@ -26,7 +28,8 @@ Camera::Camera(decimal focalLength, decimal pixelSize,
                int xResolution, int yResolution)
     : Camera(focalLength, xResolution, yResolution,
              xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
-             pixelSize, pixelSize) {}
+             pixelSize, pixelSize,
+             Quaternion(AngleAxis(DECIMAL_M_PI * 1.5, Vec3(0, 0, 1)))) {}
 
 void Camera::initializeCalibrationMatrixes() {
     decimal dx = focalLength / xPixelPitch;

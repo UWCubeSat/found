@@ -3,6 +3,7 @@
 #include "test/common/common.hpp"
 
 #include "src/common/spatial/attitude-utils.hpp"
+#include "src/common/spatial/camera.hpp"
 #include "src/common/decimal.hpp"
 
 #include "src/distance/vectorize.hpp"
@@ -35,7 +36,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityTest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(0, 0, 0);
     Quaternion relativeOrientation = SphericalToQuaternion(0, 0, 0);
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
+    Camera cam(0.01, 1000, 1000, 500, 500, 1e-5, 1e-5, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, cam);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -48,7 +50,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityTest) {
 TEST(LOSTVectorGenerationAlgorithmTest, AlongOpticalAxisTest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
-        LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+    Camera cam(0.01, 1000, 1000, 500, 500, 1e-5, 1e-5, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, cam);
 
     // Create a PositionVector to test with
     PositionVector x_E = {0.0, 0.0, 100.0};
@@ -62,7 +65,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, AlongOpticalAxisTest) {
 TEST(LOSTVectorGenerationAlgorithmTest, NoRotationTest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0);
-        LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+    Camera cam(0.01, 1000, 1000, 500, 500, 1e-5, 1e-5, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, cam);
 
     // Create a PositionVector to test with
     PositionVector x_E = {1.0, 1.0, 1.0};
@@ -77,7 +81,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, NoRotationTest) {
 TEST(LOSTVectorGenerationAlgorithmTest, PointAlongVernalEquinoxTest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
-        LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+    Camera cam(0.01, 1000, 1000, 500, 500, 1e-5, 1e-5, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, cam);
 
     // Create a PositionVector to test with
     PositionVector x_E = {1.0, 1.0, 1.0};
@@ -91,7 +96,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, PointAlongVernalEquinoxTest) {
 TEST(LOSTVectorGenerationAlgorithmTest, READMETest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(2.44346), 0, 0);
-    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation);
+    Camera cam(0.01, 1000, 1000, 500, 500, 1e-5, 1e-5, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, cam);
 
     // Create a PositionVector to test with
     PositionVector x_E = {8.05339e+06, 972.935, 6.66896e+06};

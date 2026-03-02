@@ -2,6 +2,7 @@
 #define SRC_DISTANCE_VECTORIZE_HPP_
 
 #include "common/spatial/attitude-utils.hpp"
+#include "common/spatial/camera.hpp"
 #include "common/style.hpp"
 #include "common/pipeline/stages.hpp"
 
@@ -36,19 +37,22 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @pre You must use a backwards rotation quaternion here. Remember that
      * forwards and backwards quaternions are conjugates.
     */
-    explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
-        : orientation(relativeOrientation * referenceOrientation) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation,
+                                           const Camera &cam)
+        : orientation(relativeOrientation * referenceOrientation),
+          cameraRotation(cam.GetRotationIntoCelestialFrame()) {}
 
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The absolute orientation of the FOUND camera
+     * @param cam The camera used to capture the image
      * 
      * @pre You must use a backwards rotation quaternion here. Remember that
      * forwards and backwards quaternions are conjugates.
     */
-    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
-    : orientation(orientation) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation, const Camera &cam)
+    : orientation(orientation), cameraRotation(cam.GetRotationIntoCelestialFrame()) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm() = default;
@@ -71,6 +75,8 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
 
     /// Orientation from LOST
     Quaternion orientation;
+    /// Rotation from camera frame into the celestial frame
+    Quaternion cameraRotation;
 };
 
 /**

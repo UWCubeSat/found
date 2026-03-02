@@ -15,7 +15,7 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
     
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(180, 0, 270);
+    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(270));
 
     Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.toRotationMatrix() * 
         earthCenteredInertial;
@@ -32,7 +32,7 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionCameraToEarthTest) {
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
     
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(180, 0, 270);
+    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(270));
 
     Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() * 
         cameraAlongVernalEquinox;
