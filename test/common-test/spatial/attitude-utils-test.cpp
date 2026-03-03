@@ -24,16 +24,16 @@ TEST(AttitudeUtilsTest, Vec3MidpointThreeArgTest) {
 TEST(AttitudeUtilsTest, Vec2DistanceTest) {
     Vec2 a(0.0, 0.0);
     Vec2 b(3.0, 4.0);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(5.0), Distance(a, b));
+    ASSERT_ANGLE_EQ_DEFAULT(DECIMAL(5.0), Distance(a, b));
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionToSphericalIdentity) {
     EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(0));
     EulerAngles angles = QuaternionToSpherical(Quaternion::Identity());
 
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionNorthPole) {
@@ -41,9 +41,9 @@ TEST(AttitudeUtilsTest, TestQuaternionNorthPole) {
     EulerAngles angles = QuaternionToSpherical(Quaternion::Identity() *
         Quaternion(Eigen::AngleAxis<decimal>(DegToRad(20), Vec3::UnitZ())));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionSouthPole) {
@@ -52,18 +52,18 @@ TEST(AttitudeUtilsTest, TestQuaternionSouthPole) {
         Quaternion(Eigen::AngleAxis<decimal>(DegToRad(-180), Vec3::UnitY())) *
         Quaternion(Eigen::AngleAxis<decimal>(DegToRad(190), Vec3::UnitZ())));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionNorthPoleNegativeRollNormalization) {
     Quaternion quat(Eigen::AngleAxis<decimal>(DegToRad(-60), Vec3::UnitZ()));
     EulerAngles angles = QuaternionToSpherical(quat);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(0),   angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(90),  angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(300), angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(0),   angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(90),  angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(300), angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionSouthPoleNegativeRollNormalization) {
@@ -72,9 +72,9 @@ TEST(AttitudeUtilsTest, TestQuaternionSouthPoleNegativeRollNormalization) {
     Quaternion quat = SphericalToQuaternion(expected);
     EulerAngles angles = QuaternionToSpherical(quat);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionNegativeRaNormalization) {
@@ -86,9 +86,9 @@ TEST(AttitudeUtilsTest, TestQuaternionNegativeRaNormalization) {
     Quaternion quat = SphericalToQuaternion(ra, dec, roll);
     EulerAngles angles = QuaternionToSpherical(quat);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(ra, angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(dec, angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(roll, angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(ra, angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(dec, angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(roll, angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestConversionAreInverse) {
@@ -99,9 +99,9 @@ TEST(AttitudeUtilsTest, TestConversionAreInverse) {
     Quaternion quat = SphericalToQuaternion(ra, dec, roll);
     EulerAngles angles = QuaternionToSpherical(quat);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(ra, angles.x());
-    ASSERT_DECIMAL_EQ_DEFAULT(dec, angles.y());
-    ASSERT_DECIMAL_EQ_DEFAULT(roll, angles.z());
+    ASSERT_ANGLE_EQ_DEFAULT(ra, angles.x());
+    ASSERT_ANGLE_EQ_DEFAULT(dec, angles.y());
+    ASSERT_ANGLE_EQ_DEFAULT(roll, angles.z());
 }
 
 TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {

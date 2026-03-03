@@ -41,6 +41,14 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 
 #define ASSERT_DECIMAL_EQ_DEFAULT(val1, val2) ASSERT_DECIMAL_EQ(val1, val2, DEFAULT_TOLERANCE)
 
+#define ASSERT_ANGLE_EQ(val1, val2, tolerance) \
+    ASSERT_LT(DECIMAL_M_PI - \
+              DECIMAL_ABS(DECIMAL_M_PI - \
+              DECIMAL_ABS(std::fmod(DECIMAL_ABS(val1 - val2), 2*M_PI))) \
+              , tolerance);
+
+#define ASSERT_ANGLE_EQ_DEFAULT(val1, val2) ASSERT_ANGLE_EQ(val1, val2, DEFAULT_TOLERANCE)
+
 #define ASSERT_VEC2_EQ(val1, val2, tolerance) \
     ASSERT_DECIMAL_EQ(val1.x(), val2.x(), tolerance); \
     ASSERT_DECIMAL_EQ(val1.y(), val2.y(), tolerance)

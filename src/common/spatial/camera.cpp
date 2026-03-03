@@ -38,22 +38,22 @@ void Camera::initializeCalibrationMatrixes() {
     calibrationMatrix(1, 1) = dy;
     calibrationMatrix(0, 2) = xCenter;
     calibrationMatrix(1, 2) = yCenter;
-    calibrationMatrix(2, 2) = 1.0;
+    calibrationMatrix(2, 2) = DECIMAL(1.0);
 
     // Compute the inverse calibration matrix
     inverseCalibrationMatrix = Mat3::Zero();
-    inverseCalibrationMatrix(0, 0) = 1.0 / dx;
-    inverseCalibrationMatrix(1, 1) = 1.0 / dy;
+    inverseCalibrationMatrix(0, 0) = DECIMAL(1.0) / dx;
+    inverseCalibrationMatrix(1, 1) = DECIMAL(1.0) / dy;
     inverseCalibrationMatrix(0, 2) = -xCenter / dx;
     inverseCalibrationMatrix(1, 2) = -yCenter / dy;
-    inverseCalibrationMatrix(2, 2) = 1.0;
+    inverseCalibrationMatrix(2, 2) = DECIMAL(1.0);
 }
 
 Vec2 Camera::SpatialToPixelCoordinates(const Vec3 &vector) const {
     // can't handle things behind the camera.
     assert(vector.z() > 0);
     // use similiar triangles to get the image coordinates
-    Vec3 homogenousImageCoordinates = Vec3(vector.x() / vector.z(), vector.y() / vector.z(), 1.0);
+    Vec3 homogenousImageCoordinates = Vec3(vector.x() / vector.z(), vector.y() / vector.z(), DECIMAL(1.0));
     // transform image coordinates to pixel coordinates using the calibration matrix
     Vec3 homogenousPixelCoordinates = calibrationMatrix * homogenousImageCoordinates;
 
@@ -62,7 +62,7 @@ Vec2 Camera::SpatialToPixelCoordinates(const Vec3 &vector) const {
 
 Vec3 Camera::PixelToImageCoordinates(const Vec2 &vector) const {
     assert(InSensor(vector));
-    return inverseCalibrationMatrix * Vec3(vector.x(), vector.y(), 1.0);
+    return inverseCalibrationMatrix * Vec3(vector.x(), vector.y(), DECIMAL(1.0));
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {
