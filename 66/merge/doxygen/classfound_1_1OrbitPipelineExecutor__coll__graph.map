@@ -1,0 +1,18 @@
+<map id="found::OrbitPipelineExecutor" name="found::OrbitPipelineExecutor">
+<area shape="rect" id="Node000001" title="OrbitPipelineExecutor is the pipeline executor for the orbit determination pipeline." alt="" coords="1236,55,1443,80"/>
+<area shape="rect" id="Node000002" href="$classfound_1_1PipelineExecutor.html" title="PipelineExecutor is an interface for classes that execute complex pipelines." alt="" coords="905,5,1080,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1094,28,1212,45,1260,52,1259,57,1212,50,1093,34"/>
+<area shape="rect" id="Node000003" href="$classOrbitOptions.html" title=" " alt="" coords="941,55,1045,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1058,65,1236,65,1236,70,1058,70"/>
+<area shape="rect" id="Node000004" href="$classfound_1_1SequentialPipeline.html" title=" " alt="" coords="861,104,1124,159"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1137,102,1269,77,1270,83,1138,107"/>
+<area shape="rect" id="Node000005" href="$classfound_1_1Pipeline.html" title="A Pipeline&lt;Input, Output, N&gt; is an abstract Pipeline that takes an Input, outputs an Output,..." alt="" coords="641,111,812,151"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="825,129,861,129,861,134,825,134"/>
+<area shape="rect" id="Node000006" href="$classfound_1_1FunctionStage.html" title="A FunctionStage is a data structure that wraps a function, and taking in parameter Input and returnin..." alt="" coords="433,141,592,181"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="605,145,641,140,642,146,606,151"/>
+<area shape="rect" id="Node000007" href="$classfound_1_1Stage.html" title=" " alt="" coords="163,140,337,195"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="351,162,433,160,433,165,351,167"/>
+<area shape="rect" id="Node000008" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="5,123,113,148"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="127,127,137,126,272,122,377,122,616,125,641,125,641,130,616,130,377,127,272,127,137,131,127,132"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="127,144,163,150,162,155,126,149"/>
+</map>
