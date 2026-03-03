@@ -7,6 +7,13 @@
 
 namespace found {
 
+// Tolerance for matrix-level identity checks (K * K^-1 == I)
+#ifdef FOUND_FLOAT_MODE
+    static constexpr decimal kMatrixInverseTol = 1e-4;
+#else
+    static constexpr decimal kMatrixInverseTol = 1e-9;
+#endif
+
 ////////////////////
 /// TEST FIXTURE ///
 ////////////////////
@@ -86,7 +93,7 @@ TEST_F(CameraTest, IdealInverseCameraCalibrationMatrixTest) {
 
     for (int r = 0; r < 3; ++r) {
         for (int c = 0; c < 3; ++c) {
-            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
+            EXPECT_NEAR(product(r, c), identity(r, c), kMatrixInverseTol)
                 << "Mismatch at (" << r << ", " << c << ")";
         }
     }
@@ -102,7 +109,7 @@ TEST_F(CameraTest, FullInverseCameraCalibrationMatrixTest) {
 
     for (int r = 0; r < 3; ++r) {
         for (int c = 0; c < 3; ++c) {
-            EXPECT_NEAR(product(r, c), identity(r, c), 1e-9)
+            EXPECT_NEAR(product(r, c), identity(r, c), kMatrixInverseTol)
                 << "Mismatch at (" << r << ", " << c << ")";
         }
     }

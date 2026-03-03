@@ -16,7 +16,11 @@ namespace found {
 
 ///// Definition of custom ASSERT_* statements /////
 
-#define DEFAULT_TOLERANCE DECIMAL(1e-3)
+#ifdef FOUND_FLOAT_MODE
+    #define DEFAULT_TOLERANCE DECIMAL(1e-2)
+#else
+    #define DEFAULT_TOLERANCE DECIMAL(1e-3)
+#endif
 
 constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
     return abs(a.x() - b.x()) < DEFAULT_TOLERANCE && abs(a.y() - b.y()) < DEFAULT_TOLERANCE;

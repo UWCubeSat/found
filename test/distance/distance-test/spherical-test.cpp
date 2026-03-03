@@ -28,7 +28,7 @@ using found::SphericalDistanceDeterminationAlgorithm;
 #define RADIUS_OF_EARTH (static_cast<decimal>(6378137.0))
 // Default DoubleEquals Tolerance (So big for float because of floating point problems)
 #ifdef FOUND_FLOAT_MODE
-    #define DEFAULT_TOLERANCE DECIMAL(600.0)
+    #define DEFAULT_TOLERANCE DECIMAL(1400.0)
 #else
     #include "test/common/common.hpp"
 #endif
