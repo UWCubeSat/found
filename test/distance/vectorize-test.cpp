@@ -34,7 +34,7 @@ Vec3 ProjectVector(Vec3 &v, Quaternion &q) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityRotation) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(Quaternion::Identity(), referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -47,7 +47,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityRotation) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestAlongOpticalAxis) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -61,7 +61,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestAlongOpticalAxis) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestPointAlongVernalEquinox) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -79,8 +79,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestPointAlongVernalEquinox) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(0, 0, 0);
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(0, 0, 0).conjugate();
+    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -95,8 +95,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 12), 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
+    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 12), 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -111,8 +111,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
+    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
@@ -126,7 +126,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoAribtraryFrame) {
     // Setup Dependencies
-    Quaternion orientation = SphericalToQuaternion(DECIMAL(3.9), DECIMAL(-0.5), DECIMAL(6.1));
+    Quaternion orientation = SphericalToQuaternion(DECIMAL(3.9), DECIMAL(-0.5), DECIMAL(6.1)).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(orientation, Quaternion::Identity());
 
     // Create PositionVector to test with
@@ -143,8 +143,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoAribtraryFrame) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoArbitraryReferenceAndRelativeFrames) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(5.9), DECIMAL(1.2), DECIMAL(4.7));
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(5.2), DECIMAL(-0.5), DECIMAL(3.4));
+    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(5.9), DECIMAL(1.2), DECIMAL(4.7)).conjugate();
+    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(5.2), DECIMAL(-0.5), DECIMAL(3.4)).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
 
     Quaternion newOrientation = (relativeOrientation * referenceOrientation);

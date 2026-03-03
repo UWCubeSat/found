@@ -137,37 +137,21 @@ using AngleAxis = Eigen::AngleAxis<decimal>;
 
 /// Attitude Conversions
 
-
-/**
- * Creates a Direction Cosine Matrix (DCM) off of a Quaternion.
- * 
- * @param quat The quaternion to base the DCM off of
- * 
- * @return A Matrix holding the direction cosines of a particular
- * attitude (orientation)
- * 
- * @note A DCM is also a rotation matrix. If B is a DCM, multiplying
- * B by Vector v will result in vector u where u is v rotated to the
- * angles that the direction cosines hold.
-*/
-Mat3 QuaternionToDCM(const Quaternion &);
-
-/**
- * Creates a Quaternion based on a Direction Cosine Matrix (rotation matrix)
- * 
- * @param dcm The matrix holding the direction cosines
- * 
- * @return A Quaternion that expresses the rotation defined in dcm
-*/
-Quaternion DCMToQuaternion(const Mat3 &);
-
 /**
  * Converts a Quaternion to Euler Angles
  * 
- * @param quat The quaternion to convert
+ * @param quat A world→camera rotation quaternion
  * 
- * @return An EulerAngle representing the equatorial coordinates of the z-axis with length 1,
- * as well as the roll about that axis, expressed in radians.
+ * @return An EulerAngle representing the right ascension, declination, and roll
+ * of the camera orientation, expressed in radians.
+ * 
+ * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
+ * given by the Euler angles. The roll is the last rotation applied and
+ * is counter clockwise (positive) about z-axis. 
+ * 
+ * @note In the case where the declination is ±90 degrees, there is a gimbal lock 
+ * and only the sum (RA + roll) or difference (roll - RA) is recoverable. In this 
+ * case, we set RA=0 and represent the rotation using the roll angle.
 */
 EulerAngles QuaternionToSpherical(const Quaternion &quat);
 
@@ -178,11 +162,11 @@ EulerAngles QuaternionToSpherical(const Quaternion &quat);
  * @param dec The declination of the Euler Angles
  * @param roll The roll of the Euler Angles
  * 
- * @return A quaternion representing the backwards rotation that will transform the vector defined
- * by the Euler angles back into the equatorial frame.
+ * @return A world→camera rotation quaternion corresponding to the given Euler angles.
  * 
- * @note This does not necessarilycomplete the full rotation from camera coordinates into equatorial coordinates
- * since the camera coordinate defintion might have some additional rotation built in.
+ * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
+ * given by the Euler angles. The roll is the last rotation applied and
+ * is counter clockwise (positive) about z-axis. 
  */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
@@ -191,11 +175,11 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @param angles The euler angles to convert
  * 
- * @return A quaternion representing the backwards rotation that will transform the vector defined
- * by the Euler angles back into the equatorial frame.
+ * @return A world→camera rotation quaternion corresponding to the given Euler angles.
  * 
- * @note This does not necessarilycomplete the full rotation from camera coordinates into equatorial coordinates
- * since the camera coordinate defintion might have some additional rotation built in.
+ * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
+ * given by the Euler angles. The roll is the last rotation applied and
+ * is counter clockwise (positive) about z-axis. 
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }

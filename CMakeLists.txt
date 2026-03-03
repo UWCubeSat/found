@@ -136,6 +136,7 @@ target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
 ##### Eigen #####
 
+set(EIGEN Eigen3::Eigen)
 # Disable Eigen's own tests and docs to speed up configuration
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
@@ -156,7 +157,7 @@ set(SRC_LIBS ${STB_IMAGE})
 ##### FOUND Library #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
-target_link_libraries(found_lib PUBLIC Eigen3::Eigen PRIVATE ${STB_IMAGE})
+target_link_libraries(found_lib PUBLIC ${EIGEN} PRIVATE ${STB_IMAGE})
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
@@ -187,7 +188,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
+set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS} ${EIGEN})
 
 ##### Documentation Libraries #####
 
@@ -245,7 +246,6 @@ target_compile_options(found-test PRIVATE
 target_link_libraries(found-test PRIVATE
     --coverage
     ${TEST_LIBS}
-    Eigen3::Eigen
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>)
 set_target_properties(found-test PROPERTIES

@@ -18,8 +18,8 @@ TEST(CalibrationTest, TestCalibrateAbsolute) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    // Round-trip: result * S2Q(reference) should recover S2Q(local)
-    Quaternion roundTrip = result * SphericalToQuaternion(reference);
+    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
+    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
     Quaternion expectedQ = SphericalToQuaternion(local);
     if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
     if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
@@ -33,8 +33,8 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    // Round-trip: result * S2Q(reference) should recover S2Q(local)
-    Quaternion roundTrip = result * SphericalToQuaternion(reference);
+    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
+    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
     Quaternion expectedQ = SphericalToQuaternion(local);
     if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
     if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
@@ -48,8 +48,8 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    // Round-trip: result * S2Q(reference) should recover S2Q(local)
-    Quaternion roundTrip = result * SphericalToQuaternion(reference);
+    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
+    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
     Quaternion expectedQ = SphericalToQuaternion(local);
     if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
     if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
@@ -65,19 +65,19 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     Quaternion expectedLocalQ = SphericalToQuaternion(local);
-    Quaternion actualLocalQ = result * SphericalToQuaternion(reference);
+    Quaternion actualLocalQ = SphericalToQuaternion(reference) * result.conjugate();
 
-    // See if multiplying the reference to the relative orientation
-    // gives the local orientation back.
+    // See if applying the calibration to the reference recovers the local orientation.
     ASSERT_QUAT_EQ_DEFAULT(expectedLocalQ, actualLocalQ);
 
     // Verify calibration holds for a different reference orientation
     Quaternion diffReference = SphericalToQuaternion(4.4, 1.2, 0.7);
-    Quaternion diffLocal = DCMToQuaternion(QuaternionToDCM(result) * QuaternionToDCM(diffReference));
+    // Compute what the local world→camera quaternion would be for a different reference
+    Quaternion diffLocal = diffReference * result.conjugate();
 
     // The calibration quaternion should be the same regardless of reference
-    Quaternion lhs = expectedLocalQ * SphericalToQuaternion(reference).conjugate();
-    Quaternion rhs = diffLocal * diffReference.conjugate();
+    Quaternion lhs = SphericalToQuaternion(local).conjugate() * SphericalToQuaternion(reference);
+    Quaternion rhs = diffLocal.conjugate() * diffReference;
     if (lhs.w() < 0) lhs = Quaternion(-lhs.w(), -lhs.x(), -lhs.y(), -lhs.z());
     if (rhs.w() < 0) rhs = Quaternion(-rhs.w(), -rhs.x(), -rhs.y(), -rhs.z());
     ASSERT_QUAT_EQ_DEFAULT(lhs, rhs);

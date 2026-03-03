@@ -34,31 +34,37 @@ decimal Distance(const Vec3 &v1, const Vec3 &v2) {
 ////// CONVERSION FUNCTIONS ///////
 ///////////////////////////////////
 
-Mat3 QuaternionToDCM(const Quaternion &quat) {
-    return quat.toRotationMatrix();
-}
-
-Quaternion DCMToQuaternion(const Mat3 &dcm) {
-    return Quaternion(dcm);
-}
-
 EulerAngles QuaternionToSpherical(const Quaternion &q) {
-    // Undo the axis permutation (new camera → old camera) so we can
-    // extract Euler angles using the original formulas.
-    // kAxisPermutationInv = inverse of -120° rotation about (1,1,1)/sqrt(3)
-    static const Quaternion kAxisPermutationInv(
-        DECIMAL(0.5), DECIMAL(0.5), DECIMAL(0.5), DECIMAL(0.5));
-    Quaternion qOld = kAxisPermutationInv * q;
+    // q is a world→camera quaternion built as (Qz(ra)*Qy(π/2−dec)*Qz(−roll))†.
+    // Roll is a positive counter-clockwise rotation about the camera boresight (z-axis).
+    // Decompose q† (camera→world) as a Z-Y-Z Euler sequence with angles (ra, π/2−dec, −roll).
+    decimal w = q.w(), x = q.x(), y = q.y(), z = q.z();
 
-    decimal w = qOld.w(), x = qOld.x(), y = qOld.y(), z = qOld.z();
+    // de = asin(R_q†[2][2]) where R_q†[2][2] = 1−2(x²+y²) = sin(dec)
+    decimal de = asin(1 - 2*(x*x + y*y));
 
-    decimal ra = atan2(2*(-w*z+x*y), 1-2*(y*y+z*z));
-    if (ra < 0)
-        ra += 2*DECIMAL_M_PI;
-    decimal de = -asin(2*(-w*y-x*z));
-    decimal roll = -atan2(2*(-w*x+y*z), 1-2*(x*x+y*y));
-    if (roll < 0)
-        roll += 2*DECIMAL_M_PI;
+    // Gimbal-lock at the poles: at the north pole only (ra − roll) is recoverable,
+    // at the south pole only (ra + roll). Convention: set ra=0 and deduce roll.
+    if (DECIMAL_ABS(de - DECIMAL_M_PI/2) < DECIMAL_TOLERANCE) {
+        // North pole singularity: roll equals the physical Z-rotation angle.
+        decimal roll = 2*atan2(z, w);
+        if (roll < 0) roll += 2*DECIMAL_M_PI;
+        return EulerAngles(DECIMAL(0.0), de, roll);
+    }
+    if (DECIMAL_ABS(de + DECIMAL_M_PI/2) < DECIMAL_TOLERANCE) {
+        // South pole singularity: roll is negated relative to the Z-rotation.
+        decimal roll = -2*atan2(x, y);
+        if (roll < 0) roll += 2*DECIMAL_M_PI;
+        return EulerAngles(DECIMAL(0.0), de, roll);
+    }
+
+    // General case: extract ra from R_q†[1][2] and R_q†[0][2]
+    decimal ra = atan2(y*z + w*x, x*z - w*y);
+    if (ra < 0) ra += 2*DECIMAL_M_PI;
+
+    // Extract roll (note: first atan2 argument is negated vs the Z-Y-Z third angle)
+    decimal roll = atan2(w*x - y*z, -(x*z + w*y));
+    if (roll < 0) roll += 2*DECIMAL_M_PI;
 
     return EulerAngles(ra, de, roll);
 }
@@ -68,19 +74,19 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(ra >= DECIMAL(0.0) && ra <= 2*DECIMAL_M_PI);
     assert(dec >= -DECIMAL_M_PI/2 && dec <= DECIMAL_M_PI/2);
 
-    // Build the forward rotation (camera → world) using intrinsic body-frame
+    // Build the camera→world rotation using intrinsic body-frame
     // rotations applied left to right:
     //   a: yaw by RA about Z (north-pole axis)
-    //   b: pitch by -dec about Y
-    //   c: roll by roll about X (line-of-sight in the intermediate frame)
-    Quaternion qRa(AngleAxis(ra, Vec3(0, 0, 1)));
-    Quaternion qDec(AngleAxis(DECIMAL_M_PI/2-dec, Vec3(0, 1, 0)));
-    Quaternion qRoll(AngleAxis(roll, Vec3(0, 0, 1)));
+    //   b: pitch by (π/2 − dec) about Y
+    //   c: negate roll about Z so that positive roll = CCW around boresight
+    Quaternion qRa(AngleAxis(ra,                    Vec3(0, 0, 1)));
+    Quaternion qDec(AngleAxis(DECIMAL_M_PI/2-dec,   Vec3(0, 1, 0)));
+    Quaternion qRoll(AngleAxis(-roll,               Vec3(0, 0, 1)));
 
-    // world to camera coordinate rotation
+    // Conjugate gives world→camera rotation
     Quaternion result = qRa * qDec * qRoll;
     assert(DECIMAL_ABS(result.squaredNorm() - 1) < DECIMAL(0.00001));
-    return result;
+    return result.conjugate();
 }
 
 }  // namespace found

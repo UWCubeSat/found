@@ -108,7 +108,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 
     Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3)));
     Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6)));
-    Quaternion rel = ref * loc.conjugate();
+    Quaternion rel = loc.conjugate() * ref;
 
     DataFile expected{
         {},

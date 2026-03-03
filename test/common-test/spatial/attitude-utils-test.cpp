@@ -27,6 +27,49 @@ TEST(AttitudeUtilsTest, Vec2DistanceTest) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(5.0), Distance(a, b));
 }
 
+TEST(AttitudeUtilsTest, TestQuaternionToSphericalIdentity) {
+    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(0));
+    EulerAngles angles = QuaternionToSpherical(Quaternion::Identity());
+
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestQuaternionNorthPole) {
+    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(125));
+    EulerAngles angles = QuaternionToSpherical(Quaternion::Identity() *
+        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(125), Vec3::UnitZ())));
+
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestQuaternionSouthPole) {
+    EulerAngles expected(DegToRad(0), DegToRad(-90), DegToRad(170));
+    EulerAngles angles = QuaternionToSpherical(
+        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(-180), Vec3::UnitY())) *
+        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(190), Vec3::UnitZ())));
+
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestConversionAreInverse) {
+    decimal ra = DegToRad(123.4);
+    decimal dec = DegToRad(-56.7);
+    decimal roll = DegToRad(89.0);
+
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    EulerAngles angles = QuaternionToSpherical(quat);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(ra, angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(dec, angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(roll, angles.z());
+}
+
 TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {
     Mat3 earthCenteredInertial = (Mat3() << 1, 0, 0,
                                             0, 1, 0,
@@ -36,9 +79,9 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
     
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(270));
+    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
 
-    Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.toRotationMatrix() * 
+    Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() * 
         earthCenteredInertial;
 
     ASSERT_MAT3_EQ_DEFAULT(cameraAlongVernalEquinox, earthToCamera);
@@ -53,9 +96,9 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionCameraToEarthTest) {
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
     
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(270));
+    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
 
-    Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() * 
+    Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.toRotationMatrix() * 
         cameraAlongVernalEquinox;
 
     ASSERT_MAT3_EQ_DEFAULT(earthCenteredInertial, cameraToEarth);
