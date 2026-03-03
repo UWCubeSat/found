@@ -35,7 +35,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * This is a forwards (camera-to-equatorial) rotation quaternion.
      * @param referenceOrientation The orientation of the reference frame relative to the equatorial frame.
      * This is also a forwards (camera-to-equatorial) rotation quaternion.
-     * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
+     * @param cameraEquatorialCoordinateOffset The difference between the camera coordinate definiont and the
      * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
      * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
@@ -43,15 +43,15 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * 
      */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation,
-                                           Quaternion cameraCelestialCoordinateOffset)
-        : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation, cameraCelestialCoordinateOffset) {}
+                                           Quaternion cameraEquatorialCoordinateOffset)
+        : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation, cameraEquatorialCoordinateOffset) {}
 
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The absolute orientation of the FOUND camera — a forwards
      * (camera-to-equatorial) rotation quaternion.
-     * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
+     * @param cameraEquatorialCoordinateOffset The difference between the camera coordinate definiont and the
      * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
      * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
@@ -61,8 +61,8 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      *      Forwards and backwards quaternions are conjugates of each other.
      * 
      */
-    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation, Quaternion cameraCelestialCoordinateOffset)
-        : orientation(orientation * cameraCelestialCoordinateOffset) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation, Quaternion cameraEquatorialCoordinateOffset)
+        : orientation(orientation * cameraEquatorialCoordinateOffset) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm() = default;

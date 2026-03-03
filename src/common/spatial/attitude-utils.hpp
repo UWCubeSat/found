@@ -166,7 +166,8 @@ Quaternion DCMToQuaternion(const Mat3 &);
  * 
  * @param quat The quaternion to convert
  * 
- * @return An EulerAngles representing the same orientation as the quaternion
+ * @return An EulerAngle representing the equatorial coordinates of the z-axis with length 1,
+ * as well as the roll about that axis, expressed in radians.
 */
 EulerAngles QuaternionToSpherical(const Quaternion &quat);
 

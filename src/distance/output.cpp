@@ -8,14 +8,14 @@
 
 namespace found {
 
-EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst) {
+EarthSphericalVec3 GetEarthCoordinates(Vec3 &equatorialVector, decimal gmst) {
     // Converts epoch time to GMST in degrees, then we convert to radians
     // We should ensure Euclidean Mod, but both the divisor and dividend
     // are positive, so we don't need it (GMST > 0 after Jan 1st, 2000).
     decimal GMST = std::fmod(DECIMAL_M_PI * gmst / DECIMAL(180.0), 2 * DECIMAL_M_PI);
     // Figure out Earth's Rotating Frame and express the position in that frame
     Quaternion toEarthRotatingFrame = SphericalToQuaternion(GMST, 0, 0);
-    Vec3 position = toEarthRotatingFrame * celestialVector;
+    Vec3 position = toEarthRotatingFrame * equatorialVector;
 
     // Figure out the right ascension and declination of the vector
     // Range is [-PI, PI], not [0, 2PI]. That's convenient

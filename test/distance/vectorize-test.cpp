@@ -179,8 +179,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestNonStandardCameraRotation) {
     // Setup Dependencies
     Quaternion referenceOrientation = Quaternion(0, 1.0, 2.0, 3.0).normalized();
     Quaternion relativeOrientation = Quaternion(0, 4.0, 5.0, 6.0).normalized();
-    Quaternion cameraCelestialCoordinateOffset = Quaternion(AngleAxis(DECIMAL(DECIMAL_M_PI / 4), Vec3(1, 0, 0)));
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, cameraCelestialCoordinateOffset);
+    Quaternion cameraEquatorialCoordinateOffset = Quaternion(AngleAxis(DECIMAL(DECIMAL_M_PI / 4), Vec3(1, 0, 0)));
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, cameraEquatorialCoordinateOffset);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -188,7 +188,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestNonStandardCameraRotation) {
 
     // Round-trip: applying the full inverse rotation chain to actual should recover x_E
     // orientation = relOri * refOri * camOffset, so inverse = camOffset.conj * refOri.conj * relOri.conj
-    PositionVector backToX_E = cameraCelestialCoordinateOffset.conjugate()
+    PositionVector backToX_E = cameraEquatorialCoordinateOffset.conjugate()
         * referenceOrientation.conjugate()
         * relativeOrientation.conjugate()
         * actual;

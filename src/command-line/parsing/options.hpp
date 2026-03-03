@@ -65,7 +65,7 @@ FOUND_CLI_OPTION("isdda-discrim-ratio"               , decimal           , ISDDA
 FOUND_CLI_OPTION("isdda-pdf-order"                   , int               , ISDDAPdfOrd                    , 2                                                                            , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Probability Density Function Order for ISSDA (even int)"  ) \
 FOUND_CLI_OPTION("isdda-radius-loss-order"           , int               , ISDDARadLossOrd                , 4                                                                            , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Radius Loss Order ISSDA (even int)"                       ) \
 FOUND_CLI_OPTION("output-file"                       , std::string       , outputFile                     , ""                                                                           , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
-FOUND_CLI_OPTION("camera-equatorial-coordinate-offset", found::Quaternion , cameraCelestialCoordinateOffset, found::Quaternion(found::AngleAxis(DECIMAL_M_PI * 1.5, found::Vec3(0, 0, 1))), found::strtoquat(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The rotation from the equatorial frame into the camera coordinate definition")
+FOUND_CLI_OPTION("camera-equatorial-coordinate-offset", found::Quaternion , cameraEquatorialCoordinateOffset, found::Quaternion(found::AngleAxis(DECIMAL_M_PI * 1.5, found::Vec3(0, 0, 1))), found::strtoquat(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The rotation from the equatorial frame into the camera coordinate definition")
 
 // Orbit Flags
 // TODO: Fix these all to correct parameters/outputs
