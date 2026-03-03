@@ -106,7 +106,7 @@ using Mat3 = Eigen::Matrix<decimal, 3, 3>;
  *
  * @note Backed by Eigen::Matrix<decimal, 3, 1> (Vec3).
  * Components: .x() = right ascension (ra), .y() = declination (de), .z() = roll.
- * We use z-y'-x'' Euler angles (yaw-pitch-roll order).
+ * We use z-y'-z'' Euler angles (yaw-pitch-roll order).
  */
 using EulerAngles = Vec3;
 

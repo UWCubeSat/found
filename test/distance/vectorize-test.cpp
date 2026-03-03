@@ -180,7 +180,8 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestNonStandardCameraRotation) {
     Quaternion referenceOrientation = Quaternion(0, 1.0, 2.0, 3.0).normalized();
     Quaternion relativeOrientation = Quaternion(0, 4.0, 5.0, 6.0).normalized();
     Quaternion cameraEquatorialCoordinateOffset = Quaternion(AngleAxis(DECIMAL(DECIMAL_M_PI / 4), Vec3(1, 0, 0)));
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, cameraEquatorialCoordinateOffset);
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation,
+                                            cameraEquatorialCoordinateOffset);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};

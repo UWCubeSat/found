@@ -54,7 +54,8 @@ using found::SphericalDistanceDeterminationAlgorithm;
     EXPECT_LT(abs(vec1.z() - vec2.z()), tolerance);
 
 std::ostream &operator<<(std::ostream &stream, const Vec3 &vector) {
-    stream << std::fixed << std::setprecision(5) << "(" << vector.x() << ", " << vector.y() << ", " << vector.z() << ")";
+    stream << std::fixed << std::setprecision(5) << "(" << vector.x() << ", "
+           << vector.y() << ", " << vector.z() << ")";
     return stream;
 }
 

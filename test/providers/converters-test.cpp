@@ -119,6 +119,16 @@ TEST(ConvertersTest, TestQuatSpace) {
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(4.0, 1.0, 2.0, 3.0), q);
 }
 
+TEST(ConvertersTest, TestQuatTwoValues) {
+    // Only two comma-separated values: triggers early loop exit (end==npos before index==3)
+    // and zero-fill loop (while index!=4).
+    std::string str = "1.0,2.0";
+    Quaternion q = strtoquat(str);
+
+    // Input is x,y,z,w order; missing z and w default to 0
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(0.0, 1.0, 2.0, 0.0), q);
+}
+
 TEST(ConvertersTest, TestLocationRecordsNonExistent) {
     ASSERT_THROW(strtolr("not_existent.txt"), std::runtime_error);
     ASSERT_THROW(strtolr(".txt"), std::runtime_error);

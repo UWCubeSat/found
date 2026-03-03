@@ -66,7 +66,7 @@ Vec3 Camera::PixelToImageCoordinates(const Vec2 &vector) const {
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {
-    // if vector.x == xResolution, then it is at the leftmost point
+    // if vector.x == xResolution, then it is at the rightmost point
     // of the pixel that's "hanging off" the edge of the image,
     // so vector is still in the image.
     return vector.x() >= 0 && vector.x() <= xResolution

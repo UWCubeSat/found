@@ -184,4 +184,24 @@ TEST_F(CameraTest, PixelToImageCoordinatesOffCenterNegativeTest) {
     EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
 }
 
+////////////////////////////
+/// InSensor BOUNDARY TESTS
+////////////////////////////
+
+TEST_F(CameraTest, InSensorOutOfBoundsNegativeX) {
+    EXPECT_FALSE(idealCamera.InSensor(Vec2(-1, 500)));
 }
+
+TEST_F(CameraTest, InSensorOutOfBoundsLargeX) {
+    EXPECT_FALSE(idealCamera.InSensor(Vec2(1001, 500)));
+}
+
+TEST_F(CameraTest, InSensorOutOfBoundsNegativeY) {
+    EXPECT_FALSE(idealCamera.InSensor(Vec2(500, -1)));
+}
+
+TEST_F(CameraTest, InSensorOutOfBoundsLargeY) {
+    EXPECT_FALSE(idealCamera.InSensor(Vec2(500, 1001)));
+}
+
+}  // namespace found

@@ -37,9 +37,9 @@ TEST(AttitudeUtilsTest, TestQuaternionToSphericalIdentity) {
 }
 
 TEST(AttitudeUtilsTest, TestQuaternionNorthPole) {
-    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(125));
+    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(20));
     EulerAngles angles = QuaternionToSpherical(Quaternion::Identity() *
-        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(125), Vec3::UnitZ())));
+        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(20), Vec3::UnitZ())));
 
     ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
     ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
@@ -55,6 +55,40 @@ TEST(AttitudeUtilsTest, TestQuaternionSouthPole) {
     ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
     ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
     ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestQuaternionNorthPoleNegativeRollNormalization) {
+    Quaternion quat(Eigen::AngleAxis<decimal>(DegToRad(-60), Vec3::UnitZ()));
+    EulerAngles angles = QuaternionToSpherical(quat);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(0),   angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(90),  angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(300), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestQuaternionSouthPoleNegativeRollNormalization) {
+    // roll=20° causes -2*atan2(x,y) < 0, exercising the south-pole normalization branch.
+    EulerAngles expected(DegToRad(0), DegToRad(-90), DegToRad(20));
+    Quaternion quat = SphericalToQuaternion(expected);
+    EulerAngles angles = QuaternionToSpherical(quat);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.x(), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.y(), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(expected.z(), angles.z());
+}
+
+TEST(AttitudeUtilsTest, TestQuaternionNegativeRaNormalization) {
+    // ra=350° causes atan2(yz+wx, xz-wy) < 0, exercising the general-case ra normalization branch.
+    decimal ra = DegToRad(350);
+    decimal dec = DegToRad(-30);
+    decimal roll = DegToRad(45);
+
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    EulerAngles angles = QuaternionToSpherical(quat);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(ra, angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(dec, angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(roll, angles.z());
 }
 
 TEST(AttitudeUtilsTest, TestConversionAreInverse) {
@@ -78,10 +112,10 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {
     Mat3 cameraAlongVernalEquinox = (Mat3() <<  0, 0, -1,
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
-    
+
     Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
 
-    Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() * 
+    Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() *
         earthCenteredInertial;
 
     ASSERT_MAT3_EQ_DEFAULT(cameraAlongVernalEquinox, earthToCamera);
@@ -95,13 +129,13 @@ TEST(AttitudeUtilsTest, SphericalToQuaternionCameraToEarthTest) {
     Mat3 cameraAlongVernalEquinox = (Mat3() <<  0, 0, -1,
                                                 1, 0, 0,
                                                 0, -1, 0).finished();
-    
+
     Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
 
-    Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.toRotationMatrix() * 
+    Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.toRotationMatrix() *
         cameraAlongVernalEquinox;
 
     ASSERT_MAT3_EQ_DEFAULT(earthCenteredInertial, cameraToEarth);
 }
 
-}
+}  // namespace found

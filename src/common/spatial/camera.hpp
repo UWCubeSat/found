@@ -69,7 +69,7 @@ class Camera {
     * @return The 2D Vector that represents the 3D vector on the camera
     * 
     * @note Assumes that Z is the depth direction and that it points away
-    * from the center of the sensor. Coordinate system: X=right, Y=up, Z=depth.
+    * from the center of the sensor. Coordinate system: X=right, Y=down, Z=depth.
     * Any vector (0, 0, z) will be at (xResolution/2, yResolution/2) on the sensor.
     */
     Vec2 SpatialToPixelCoordinates(const Vec3 &) const;
