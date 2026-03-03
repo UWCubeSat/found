@@ -32,16 +32,16 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param relativeOrientation The orientation of the FOUND camera with respect to the reference orientation.
-     * This is a backwards (celestial-to-camera) rotation quaternion.
+     * This is a forwards (camera-to-celestial) rotation quaternion.
      * @param referenceOrientation The orientation of the reference frame relative to the celestial frame.
-     * This is also a backwards (celestial-to-camera) rotation quaternion.
+     * This is also a forwards (camera-to-celestial) rotation quaternion.
      * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
      * celestial frame when the camera boresight is point at the celestial north pole. This is a rotation
      * from the celestial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
      * is a 90 degree counter-clockwise rotation about the celesital norht pole.
      * 
-    */
+     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation,
                                            Quaternion cameraCelestialCoordinateOffset)
         : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation, cameraCelestialCoordinateOffset) {}
@@ -49,25 +49,18 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param orientation The absolute orientation of the FOUND camera — a backwards
-     *        (celestial-to-camera) rotation quaternion.
+     * @param orientation The absolute orientation of the FOUND camera — a forwards
+     * (camera-to-celestial) rotation quaternion.
      * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
      * celestial frame when the camera boresight is point at the celestial north pole. This is a rotation
      * from the celestial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
      * is a 90 degree counter-clockwise rotation about the celesital norht pole.
      * 
-     * @pre orientation must be a backwards rotation quaternion (celestial → camera).
-     *      Backwards and forwards quaternions are conjugates of each other.
+     * @pre orientation must be a forwards rotation quaternion (camera → celestial).
+     *      Forwards and backwards quaternions are conjugates of each other.
      * 
-     * @note The stored orientation is a forwards (camera → celestial) rotation built from
-     *       two sequential rotations applied left-to-right:
-     *       1. cam.GetRotationIntoCelestialFrame() — corrects for physical camera mounting,
-     *          mapping the camera frame into the nominal (unmounted) camera frame
-     *       2. orientation.conjugate()             — maps the nominal camera frame into the
-     *          celestial frame
-     *       In Run(), orientation is applied directly to the input PositionVector.
-    */
+     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation, Quaternion cameraCelestialCoordinateOffset)
         : orientation(orientation * cameraCelestialCoordinateOffset) {}
 
@@ -78,7 +71,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
      * to Earth's center using information from LOST
      * 
-     * @pre This class was initialized by backwards quaternion(s)
+     * @pre This class was initialized by forwards quaternion(s)
      * 
      * @param x_E The distance from Earth
      * 
@@ -88,11 +81,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     PositionVector Run(const PositionVector &x_E) override;
 
  private:
-    // Fields specific to this algorithm go here, and helper methods
-
-    /// Combined orientation: camera mounting correction composed with the LOST-derived
-    /// rotation. Stored as a forwards (camera-to-celestial) quaternion; applied directly
-    /// in Run() to map the input PositionVector into the celestial frame.
+    /// Complete rotation from camera coordinate definition to celestial frame
     Quaternion orientation;
 };
 

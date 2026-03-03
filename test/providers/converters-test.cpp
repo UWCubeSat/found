@@ -105,6 +105,20 @@ TEST(ConvertersTest, TestDataFileNormal) {
     std::remove(temp_df);
 }
 
+TEST(ConvertersTest, TestQuatComma) {
+    std::string str = "1.0,2.0,3.0,4.0";  // x,y,z,w
+    Quaternion q = strtoquat(str);
+
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(4.0, 1.0, 2.0, 3.0), q);
+}
+
+TEST(ConvertersTest, TestQuatSpace) {
+    std::string str = "1.0 2.0 3.0 4.0";  // x,y,z,w
+    Quaternion q = strtoquat(str);
+
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(4.0, 1.0, 2.0, 3.0), q);
+}
+
 TEST(ConvertersTest, TestLocationRecordsNonExistent) {
     ASSERT_THROW(strtolr("not_existent.txt"), std::runtime_error);
     ASSERT_THROW(strtolr(".txt"), std::runtime_error);
