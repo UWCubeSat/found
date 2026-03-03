@@ -177,18 +177,12 @@ EulerAngles QuaternionToSpherical(const Quaternion &quat);
  * @param dec The declination of the Euler Angles
  * @param roll The roll of the Euler Angles
  * 
- * @return A Quaternion representing this collection of Euler Angles
+ * @return A quaternion representing the backwards rotation that will transform the vector defined
+ * by the Euler angles back into the equatorial frame.
  * 
- * @note Returned Quaternion will reorient the coordinate axes so that the x-axis points at the given
- * right ascension and declination, then roll the coordinate axes counterclockwise (i.e., the stars
- * will appear to rotate clockwise). This is an "improper" z-y'-x' Euler rotation.
- * 
- * @note Rotating a vector with this quaternion is equivalent to a backwards rotation (rotation into
- * the frame specified by the Euler angles).
- * 
- * @warning Do not change this to return a forward quaternion unless you change conversion functions between
- * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
-*/
+ * @note This does not necessarilycomplete the full rotation from camera coordinates into equatorial coordinates
+ * since the camera coordinate defintion might have some additional rotation built in.
+ */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
 /**
@@ -196,15 +190,11 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @param angles The euler angles to convert
  * 
- * @return A Quaternion representing a rotation from Earth Centerd Intertial Coordinates 
- * (Z-axis is up) to Camera Coordinates, which are defined in more depth in `camera.hpp`.
+ * @return A quaternion representing the backwards rotation that will transform the vector defined
+ * by the Euler angles back into the equatorial frame.
  * 
- * @note Returned Quaternion will reorient the coordinate axes so that the z-axis (optical axis)
- * points at the given right ascension and declination, with the x-axis pointing right and the
- * y-axis pointing down.
- * 
- * @warning Do not change this to return a forward quaternion unless you change conversion functions between
- * Quaternions, DCMs, and Euler Angles. In this file, all 3 systems are backwards rotations.
+ * @note This does not necessarilycomplete the full rotation from camera coordinates into equatorial coordinates
+ * since the camera coordinate defintion might have some additional rotation built in.
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }

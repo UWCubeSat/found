@@ -32,12 +32,12 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param relativeOrientation The orientation of the FOUND camera with respect to the reference orientation.
-     * This is a forwards (camera-to-celestial) rotation quaternion.
-     * @param referenceOrientation The orientation of the reference frame relative to the celestial frame.
-     * This is also a forwards (camera-to-celestial) rotation quaternion.
+     * This is a forwards (camera-to-equatorial) rotation quaternion.
+     * @param referenceOrientation The orientation of the reference frame relative to the equatorial frame.
+     * This is also a forwards (camera-to-equatorial) rotation quaternion.
      * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
-     * celestial frame when the camera boresight is point at the celestial north pole. This is a rotation
-     * from the celestial frame into the camera coordinate definition. Which for the current definion-- 
+     * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
+     * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
      * is a 90 degree counter-clockwise rotation about the celesital norht pole.
      * 
@@ -50,14 +50,14 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The absolute orientation of the FOUND camera — a forwards
-     * (camera-to-celestial) rotation quaternion.
+     * (camera-to-equatorial) rotation quaternion.
      * @param cameraCelestialCoordinateOffset The difference between the camera coordinate definiont and the
-     * celestial frame when the camera boresight is point at the celestial north pole. This is a rotation
-     * from the celestial frame into the camera coordinate definition. Which for the current definion-- 
+     * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
+     * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
      * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
      * is a 90 degree counter-clockwise rotation about the celesital norht pole.
      * 
-     * @pre orientation must be a forwards rotation quaternion (camera → celestial).
+     * @pre orientation must be a forwards rotation quaternion (camera → equatorial).
      *      Forwards and backwards quaternions are conjugates of each other.
      * 
      */
@@ -81,7 +81,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     PositionVector Run(const PositionVector &x_E) override;
 
  private:
-    /// Complete rotation from camera coordinate definition to celestial frame
+    /// Complete rotation from camera coordinate definition to equatorial frame
     Quaternion orientation;
 };
 

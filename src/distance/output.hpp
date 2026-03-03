@@ -23,16 +23,16 @@ namespace found {
     };
 
     /**
-     * Obtains a celestial vector within Earth's Rotating Frame,
+     * Obtains a equatorial vector within Earth's Rotating Frame,
      * in longitude/lattitude/altitude
      * 
-     * @param celestialVector The celestial vector to convert
+     * @param celestialVector The equatorial vector to convert
      * @param gmst The current GMST value, in degrees
      * 
      * @return An EarthSphericalVec3 describing celestialVector
      * within Earth's Rotating Frame at time GMST
      * 
-     * @pre celestialVector must be in the frame of the celestial
+     * @pre celestialVector must be in the frame of the equatorial
      * coordinate system NOT the camera coordinate system
      */
     EarthSphericalVec3 GetEarthCoordinates(Vec3 &celestialVector, decimal gmst);

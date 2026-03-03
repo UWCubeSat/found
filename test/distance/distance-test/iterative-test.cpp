@@ -41,9 +41,6 @@ using found::IterativeSphericalDistanceDeterminationAlgorithm;
 // Defualt Radius Loss Order
 #define DEFAULT_R_L_ORD 4
 
-// 270-degree rotation around the z-axis (radians)
-#define ROTATION_270_Z (DECIMAL_M_PI * 1.5)
-
 // Default Iterations
 #define DEFAULT_ITERATIONS_1 1
 #define DEFAULT_ITERATIONS_2 2
@@ -77,9 +74,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestConstructorLowPow
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected ={static_cast<decimal>(70446163.83446569740772247314453125000000),
-                              static_cast<decimal>(32912272.59358813613653182983398437500000),
-                              static_cast<decimal>(31783183.18714027479290962219238281250000)};
+    PositionVector expected ={static_cast<decimal>(-32912272.59358813613653182983398437500000),
+                              static_cast<decimal>(-31783183.18714027479290962219238281250000),
+                              static_cast<decimal>(70446163.83446569740772247314453125000000)};
 
     // Step II: Figure out my projection points
 
@@ -105,7 +102,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestConstructorLowPow
                                                           -3);
 
     // Testing that it still physically works
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -117,8 +114,8 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) 
     PositionVector expected = {0.0, 0.0, 0.0};
 
     // Pick any vectors
-    Vec3 p1 = {10, -26, 0};
-    Vec3 p2 = {27, 93, -62};
+    Vec3 p1 = {26, 0, 10};
+    Vec3 p2 = {-93, 62, 27};
     Points pts = {cam.SpatialToPixelCoordinates(p1),
                 cam.SpatialToPixelCoordinates(p2)};
 
@@ -131,7 +128,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) 
                                                           DEFAULT_DISC_RAT,
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
@@ -142,7 +139,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {x_E, 0, 0};
+    PositionVector expected = {0, 0, x_E};
 
     // Step II: Figure out my projection points
 
@@ -155,13 +152,13 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
     decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
     // c) Use 3 easy projections
-    Vec3 p1 = {centerMag, projectionRadiusMag * -DECIMAL_COS(4.1), projectionRadiusMag * DECIMAL_SIN(4.1)};
-    Vec3 p2 = {centerMag, projectionRadiusMag, 0};
-    Vec3 p3 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-3.1), projectionRadiusMag * DECIMAL_SIN(-3.1)};
-    Vec3 p4 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.5), projectionRadiusMag * DECIMAL_SIN(0.5)};
-    Vec3 p5 = {centerMag, projectionRadiusMag * -DECIMAL_COS(1.2), projectionRadiusMag * DECIMAL_SIN(1.2)};
-    Vec3 p6 = {centerMag, projectionRadiusMag * -DECIMAL_COS(9.4), projectionRadiusMag * DECIMAL_SIN(9.4)};
-    Vec3 p7 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-62.4), projectionRadiusMag * DECIMAL_SIN(-62.4)};
+    Vec3 p1 = {projectionRadiusMag * DECIMAL_COS(4.1), -projectionRadiusMag * DECIMAL_SIN(4.1), centerMag};
+    Vec3 p2 = {-projectionRadiusMag, 0, centerMag};
+    Vec3 p3 = {projectionRadiusMag * DECIMAL_COS(-3.1), -projectionRadiusMag * DECIMAL_SIN(-3.1), centerMag};
+    Vec3 p4 = {projectionRadiusMag * DECIMAL_COS(0.5), -projectionRadiusMag * DECIMAL_SIN(0.5), centerMag};
+    Vec3 p5 = {projectionRadiusMag * DECIMAL_COS(1.2), -projectionRadiusMag * DECIMAL_SIN(1.2), centerMag};
+    Vec3 p6 = {projectionRadiusMag * DECIMAL_COS(9.4), -projectionRadiusMag * DECIMAL_SIN(9.4), centerMag};
+    Vec3 p7 = {projectionRadiusMag * DECIMAL_COS(-62.4), -projectionRadiusMag * DECIMAL_SIN(-62.4), centerMag};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToPixelCoordinates(p1),
@@ -182,7 +179,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
 
     #ifdef FOUND_FLOAT_MODE
         // For some reason, it gets very inaccurate, but just the x coordinate is off by
@@ -201,7 +198,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 1, imageWidth, imageHeight);  // Focal length of 12 m
-    PositionVector expected = {x_E, 0, 0};
+    PositionVector expected = {0, 0, x_E};
 
     // Step II: Figure out my projection points
 
@@ -212,9 +209,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
     decimal p = sqrt(x_E * x_E - RADIUS_OF_EARTH * RADIUS_OF_EARTH);
 
     // c) Use 3 easy projections
-    Vec3 p1 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(p * DECIMAL_SIN(alpha)), 0};
-    Vec3 p2 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), static_cast<decimal>(-p * DECIMAL_SIN(alpha)), 0};
-    Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * DECIMAL_SIN(alpha))};
+    Vec3 p1 = {static_cast<decimal>(-p * DECIMAL_SIN(alpha)), 0, static_cast<decimal>(p * DECIMAL_COS(alpha))};
+    Vec3 p2 = {static_cast<decimal>(p * DECIMAL_SIN(alpha)), 0, static_cast<decimal>(p * DECIMAL_COS(alpha))};
+    Vec3 p3 = {0, static_cast<decimal>(-p * DECIMAL_SIN(alpha)), static_cast<decimal>(p * DECIMAL_COS(alpha))};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToPixelCoordinates(p1),
@@ -231,7 +228,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
@@ -242,7 +239,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {x_E, 0, 0};
+    PositionVector expected = {0, 0, x_E};
 
     // Step II: Figure out my projection points
 
@@ -255,9 +252,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
     decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
     // c) Use 3 easy projections
-    Vec3 p1 = {centerMag, projectionRadiusMag * -DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
-    Vec3 p2 = {centerMag, projectionRadiusMag, 0};
-    Vec3 p3 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
+    Vec3 p1 = {projectionRadiusMag * DECIMAL_COS(0.1), -projectionRadiusMag * DECIMAL_SIN(0.1), centerMag};
+    Vec3 p2 = {-projectionRadiusMag, 0, centerMag};
+    Vec3 p3 = {projectionRadiusMag * DECIMAL_COS(-0.1), -projectionRadiusMag * DECIMAL_SIN(-0.1), centerMag};
 
     // Step III: Use CTS to convert to 2D vectors
     Points pts = {cam.SpatialToPixelCoordinates(p1),
@@ -274,7 +271,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
@@ -285,7 +282,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) 
     int imageWidth = 6000;
     int imageHeight = 6000;
     Camera cam(0.085, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {0, x_E, 0};
+    PositionVector expected = {-x_E, 0, 0};
 
     // Step II: Figure out my projection points
 
@@ -309,7 +306,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY1) 
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
 
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
@@ -320,7 +317,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.0001, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {0, x_E, 0};
+    PositionVector expected = {-x_E, 0, 0};
 
     // Step II: Figure out my projection points
 
@@ -344,23 +341,22 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     // actual = actual * static_cast<decimal>(0.00002);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
 #ifndef FOUND_FLOAT_MODE
     TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
-        // Step 0: Determine Quaterion rotation
-        found::Quaternion positionDirection = found::SphericalToQuaternion(
-            static_cast<decimal> (M_PI / 2), static_cast<decimal>(0), static_cast<decimal>(0)).conjugate();
+        // Step 0: Determine rotation to move Earth from canonical (along Z) to along -X
+        Quaternion positionDirection(AngleAxis(-DECIMAL_M_PI / 2, Vec3(0, 1, 0)));
 
         // Step I: Pick some distance (m) and a Camera
         decimal y_E = RADIUS_OF_EARTH + 10000000;
         int imageWidth = 100000;
         int imageHeight = 100000;
         Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-        PositionVector expected = {0, y_E, 0};
+        PositionVector expected = {-y_E, 0, 0};
 
         // Step II: Figure out my projection points
 
@@ -372,10 +368,10 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
         decimal centerMag = static_cast<decimal>(p * DECIMAL_COS(alpha));
         decimal projectionRadiusMag = static_cast<decimal>(p * DECIMAL_SIN(alpha));
 
-        // c) Use 3 easy projections
-        Vec3 p1 = {centerMag, -projectionRadiusMag * DECIMAL_COS(0.1), projectionRadiusMag * DECIMAL_SIN(0.1)};
-        Vec3 p2 = {centerMag, -projectionRadiusMag, 0};
-        Vec3 p3 = {centerMag, -projectionRadiusMag * DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
+        // c) Use 3 easy projections (in new canonical frame: Z-forward)
+        Vec3 p1 = {projectionRadiusMag * DECIMAL_COS(0.1), -projectionRadiusMag * DECIMAL_SIN(0.1), centerMag};
+        Vec3 p2 = {projectionRadiusMag, 0, centerMag};
+        Vec3 p3 = {projectionRadiusMag * DECIMAL_COS(-0.1), -projectionRadiusMag * DECIMAL_SIN(-0.1), centerMag};
 
         Vec3 p1Rotated = positionDirection * p1;
         Vec3 p2Rotated = positionDirection * p2;
@@ -396,7 +392,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
                                                               DEFAULT_PDF_ORD,
                                                               DEFAULT_R_L_ORD);
 
-        PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+        PositionVector actual = algo.Run(pts);
 
         VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
     }
@@ -407,7 +403,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {-34252, 7000000, -1345};
+    PositionVector expected = {-7000000, 1345, -34252};
 
     // Step II: Figure out my projection points
 
@@ -431,7 +427,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                          DEFAULT_PDF_ORD,
                                                          DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -440,9 +436,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {static_cast<decimal>(6902903.16156481951475143432617187500000),
-                                static_cast<decimal>(4057963.08183827949687838554382324218750),
-                                static_cast<decimal>(-123345.00000000002910383045673370361328)};
+    PositionVector expected = {static_cast<decimal>(-4057963.08183827949687838554382324218750),
+                                static_cast<decimal>(123345.00000000002910383045673370361328),
+                                static_cast<decimal>(6902903.16156481951475143432617187500000)};
 
     // Step II: Figure out my projection points
 
@@ -466,7 +462,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -475,9 +471,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {static_cast<decimal>(7738762.75667632184922695159912109375000),
-                               static_cast<decimal>(4615994.28818791918456554412841796875000),
-                               static_cast<decimal>(-13345.00000000000000000000000000000000)};
+    PositionVector expected = {static_cast<decimal>(-4615994.28818791918456554412841796875000),
+                               static_cast<decimal>(13345.00000000000000000000000000000000),
+                               static_cast<decimal>(7738762.75667632184922695159912109375000)};
 
     // Step II: Figure out my projection points
 
@@ -501,7 +497,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -510,9 +506,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {static_cast<decimal>(87626881.87387187778949737548828125000000),
-                               static_cast<decimal>(20684452.64770639687776565551757812500000),
-                               static_cast<decimal>(-13345.00000000000363797880709171295166)};
+    PositionVector expected = {static_cast<decimal>(-20684452.64770639687776565551757812500000),
+                               static_cast<decimal>(13345.00000000000363797880709171295166),
+                               static_cast<decimal>(87626881.87387187778949737548828125000000)};
 
     // Step II: Figure out my projection points
 
@@ -536,7 +532,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -545,9 +541,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {static_cast<decimal>(49882640.75393147766590118408203125000000),
-                               static_cast<decimal>(18159469.50042396783828735351562500000000),
-                               static_cast<decimal>(-45628454.04873351752758026123046875000000)};
+    PositionVector expected = {static_cast<decimal>(-18159469.50042396783828735351562500000000),
+                               static_cast<decimal>(45628454.04873351752758026123046875000000),
+                               static_cast<decimal>(49882640.75393147766590118408203125000000)};
 
     // Step II: Figure out my projection points
 
@@ -571,7 +567,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -581,9 +577,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
         int imageWidth = 1024;
         int imageHeight = 1024;
         Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-        PositionVector expected ={static_cast<decimal>(54043203.25303997844457626342773437500000),
-                                static_cast<decimal>(8435671.34863081201910972595214843750000),
-                                static_cast<decimal>(-49841910.58559905737638473510742187500000)};
+        PositionVector expected ={static_cast<decimal>(-8435671.34863081201910972595214843750000),
+                                static_cast<decimal>(49841910.58559905737638473510742187500000),
+                                static_cast<decimal>(54043203.25303997844457626342773437500000)};
 
         // Step II: Figure out my projection points
 
@@ -607,7 +603,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-        PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+        PositionVector actual = algo.Run(pts);
         VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
     }
 #endif
@@ -617,9 +613,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected ={static_cast<decimal>(70446163.83446569740772247314453125000000),
-                              static_cast<decimal>(32912272.59358813613653182983398437500000),
-                              static_cast<decimal>(31783183.18714027479290962219238281250000)};
+    PositionVector expected ={static_cast<decimal>(-32912272.59358813613653182983398437500000),
+                              static_cast<decimal>(-31783183.18714027479290962219238281250000),
+                              static_cast<decimal>(70446163.83446569740772247314453125000000)};
 
     // Step II: Figure out my projection points
 
@@ -643,7 +639,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -652,9 +648,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected ={static_cast<decimal>(70285818.03521062433719635009765625000000),
-                              static_cast<decimal>(25857600.50544352829456329345703125000000),
-                              static_cast<decimal>(38938641.89612446725368499755859375000000)};
+    PositionVector expected ={static_cast<decimal>(-25857600.50544352829456329345703125000000),
+                              static_cast<decimal>(-38938641.89612446725368499755859375000000),
+                              static_cast<decimal>(70285818.03521062433719635009765625000000)};
 
     // Step II: Figure out my projection points
 
@@ -678,7 +674,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -687,9 +683,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected ={static_cast<decimal>(79999999.99999998509883880615234375000000),
-                              static_cast<decimal>(-1233.99999998530392986140213906764984),
-                              static_cast<decimal>(-44212.99999999998544808477163314819336)};
+    PositionVector expected ={static_cast<decimal>(1233.99999998530392986140213906764984),
+                              static_cast<decimal>(44212.99999999998544808477163314819336),
+                              static_cast<decimal>(79999999.99999998509883880615234375000000)};
 
     // Step II: Figure out my projection points
 
@@ -713,7 +709,7 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
 
@@ -722,9 +718,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
     int imageWidth = 1024;
     int imageHeight = 1024;
     Camera cam(0.012, 0.00002, imageWidth, imageHeight);  // Focal length of 12 mm
-    PositionVector expected = {static_cast<decimal>(80000000.00000000000000000000000000000000),
-                               static_cast<decimal>(32135.88188458501463173888623714447021),
-                               static_cast<decimal>(-30390.74234863133460748940706253051758)};
+    PositionVector expected = {static_cast<decimal>(-32135.88188458501463173888623714447021),
+                               static_cast<decimal>(30390.74234863133460748940706253051758),
+                               static_cast<decimal>(80000000.00000000000000000000000000000000)};
 
     // Step II: Figure out my projection points
 
@@ -748,6 +744,6 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthRand
                                                           DEFAULT_PDF_ORD,
                                                           DEFAULT_R_L_ORD);
 
-    PositionVector actual = Quaternion(AngleAxis(ROTATION_270_Z, Vec3(0, 0, 1))) * algo.Run(pts);
+    PositionVector actual = algo.Run(pts);
     VECTOR_EQUALS(expected, actual, DEFAULT_TOLERANCE);
 }
