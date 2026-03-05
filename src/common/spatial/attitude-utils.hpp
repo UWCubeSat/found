@@ -329,7 +329,8 @@ Eigen::VectorXd TLS(Eigen::MatrixXd data){
     Eigen::MatrixXd VT = svd.matrixV().transpose();
 
     // rows and cols are the same size here but I clarify so that it's more readable
-    return VT.col(VT.cols()-1).head(VT.rows()-1);
+    Eigen::VectorXd finalCol = VT.col(VT.cols()-1);
+    return finalCol.head(VT.rows()-2) / (-finalCol(VT.rows()-1))
 }
 
 }  // namespace found
