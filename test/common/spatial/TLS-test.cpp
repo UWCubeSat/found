@@ -7,7 +7,7 @@
 #include "src/common/spatial/attitude-utils.hpp"
 #include "src/common/decimal.hpp"
 
-#define TLS_TOLERANCE 0.05
+#define TLS_TOLERANCE decimal(0.05)
 
 #define VECTOR3_EQUALS(vec1, vec2, tolerance) \
     EXPECT_LT(abs(vec1.x() - vec2.x()), tolerance); \
