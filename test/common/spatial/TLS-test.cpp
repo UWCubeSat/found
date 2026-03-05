@@ -3,11 +3,13 @@
 
 #include "test/common/common.hpp"
 
+#include "common/logging.hpp"
+
 #include "src/common/spatial/attitude-utils.hpp"
 #include "src/common/decimal.hpp"
 
-#define DOUBLE_DEFAULT_TOLERANCE DECIMAL(0.001)
-#define TLS_TOLERANCE DECIMAL(0.05)
+#define DOUBLE_DEFAULT_TOLERANCE 0.001
+#define TLS_TOLERANCE 0.05
 
 #define VECTOR3_EQUALS(vec1, vec2, tolerance) \
     EXPECT_LT(abs(vec1(0) - vec2(0)), tolerance); \
@@ -54,7 +56,7 @@ TEST(TLSTest, vec2PermutatedTest) {
     };
     Eigen::Vector2d expected(3,1);
     Eigen::Vector2d actual = found::TLS(data);
-    VECTOR2_EQUALS(actual, expected, DOUBLE_DEFAULT_TOLERANCE);
+    VECTOR2_EQUALS(actual, expected, TLS_TOLERANCE);
 }
 
 // TEST(TLSTest, scalarInvalidTest) {
