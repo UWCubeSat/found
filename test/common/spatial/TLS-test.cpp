@@ -54,7 +54,7 @@ TEST(TLSTest, vec2PermutatedTest) {
     };
     Eigen::Vector2d expected(3,1);
     Eigen::Vector2d actual = found::TLS(data);
-    VECTOR2_EQUALS(actual, expected, TLS_TOLERANCE);
+    VECTOR2_EQUALS(actual, expected, DOUBLE_DEFAULT_TOLERANCE);
 }
 
 // TEST(TLSTest, scalarInvalidTest) {
