@@ -6,6 +6,7 @@
 #include "src/common/spatial/attitude-utils.hpp"
 #include "src/common/decimal.hpp"
 
+#define DOUBLE_DEFAULT_TOLERANCE DECIMAL(0.001)
 #define TLS_TOLERANCE DECIMAL(0.05)
 
 #define VECTOR3_EQUALS(vec1, vec2, tolerance) \
@@ -29,7 +30,7 @@ TEST(TLSTest, vec3Test) {
     };
     Eigen::Vector3d expected(1,1,1);
     Eigen::Vector3d actual = found::TLS(data);
-    VECTOR3_EQUALS(actual, expected, DEFAULT_TOLERANCE);
+    VECTOR3_EQUALS(actual, expected, DOUBLE_DEFAULT_TOLERANCE);
 }
 
 TEST(TLSTest, vec2Test) {
@@ -40,8 +41,8 @@ TEST(TLSTest, vec2Test) {
         {-1.0,5.0,2.0}
     };
     Eigen::Vector2d expected(3,1);
-    Eigen::VectorXd actual = found::TLS(data);
-    VECTOR2_EQUALS(actual, expected, DEFAULT_TOLERANCE);
+    Eigen::Vector2d actual = found::TLS(data);
+    VECTOR2_EQUALS(actual, expected, DOUBLE_DEFAULT_TOLERANCE);
 }
 
 TEST(TLSTest, vec2PermutatedTest) {
@@ -52,7 +53,7 @@ TEST(TLSTest, vec2PermutatedTest) {
         {-1.001,5.0,2.0}
     };
     Eigen::Vector2d expected(3,1);
-    Eigen::VectorXd actual = found::TLS(data);
+    Eigen::Vector2d actual = found::TLS(data);
     VECTOR2_EQUALS(actual, expected, TLS_TOLERANCE);
 }
 
