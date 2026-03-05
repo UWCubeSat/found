@@ -7,7 +7,7 @@
 #include "src/common/spatial/attitude-utils.hpp"
 #include "src/common/decimal.hpp"
 
-#define TLS_TOLERANCE decimal(0.05)
+#define TLS_TOLERANCE DECIMAL(0.05)
 
 #define VECTOR3_EQUALS(vec1, vec2, tolerance) \
     EXPECT_LT(abs(vec1.x() - vec2.x()), tolerance); \
@@ -21,14 +21,14 @@
 
 TEST(TLSTest, vec3Test) {
     Eigen::Matrix<decimal,6,4> data {
-        {1,1,1,3},
-        {1,2,3,6},
-        {0,0,0,0},
-        {-1,-1,-1,-3},
-        {-1,3,0,2},
-        {4329, -4211, 0, 118}
+        {DECIMAL(1),DECIMAL(1),DECIMAL(1),DECIMAL(3)},
+        {DECIMAL(1),DECIMAL(2),DECIMAL(3),DECIMAL(6)},
+        {DECIMAL(0),DECIMAL(0),DECIMAL(0),DECIMAL(0)},
+        {DECIMAL(-1),DECIMAL(-1),DECIMAL(-1),DECIMAL(-3)},
+        {DECIMAL(-1),DECIMAL(3),DECIMAL(0),DECIMAL(2)},
+        {DECIMAL(4329), DECIMAL(-4211), DECIMAL(0), DECIMAL(118)}
     };
-    Eigen::Vector3d expected(1,1,1);
+    Eigen::Vector3d expected(DECIMAL(1),DECIMAL(1),DECIMAL(1));
     Eigen::Vector3d actual = found::TLS(data);
     VECTOR3_EQUALS(actual, expected, DEFAULT_TOLERANCE);
 }
