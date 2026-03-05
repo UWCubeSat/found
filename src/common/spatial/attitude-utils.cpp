@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <assert.h>
+#include "common/logging.hpp"
 
 namespace found {
 
@@ -107,6 +108,27 @@ void SpatialToSpherical(const Vec3 &vec, decimal &ra, decimal &de) {
     if (ra < 0)
         ra += DECIMAL_M_PI*2;
     de = asin(vec.z());
+}
+
+Eigen::VectorXd TLS(Eigen::MatrixXd data) {
+    assert(data.cols() > 2 && "TLS input must have at least 3 columns");
+
+    // Since the input matrix will be thin and tall, the last column of V transpose
+    // will correspond to the vector with the smallest corresponding value in S,
+    // meaning it is the closest vector to the null space of the input
+    // We leave out Eigen::ComputeFullU so U will not be computed
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(data, Eigen::ComputeFullV);
+    Eigen::MatrixXd VT = svd.matrixV();
+
+    // rows and cols are the same size here but I clarify so that it's more readable
+    Eigen::VectorXd finalCol = VT.col(VT.cols()-1);
+
+    // We do head(rows - 1) because the function asks for the number numbers in the vector
+    // not the index. Since we're just looking for a vector in the null space, it can have
+    // arbitrary scaling. We therefore divide by the final entry (and negate) so that
+    // the result dots to the output as we expect.
+    // note we do *1/[] rather than /[] because division isn't defined for the vector class
+    return finalCol.head(VT.rows()-1) * (-1/(finalCol(VT.rows()-1)));
 }
 
 }  // namespace found

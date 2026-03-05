@@ -319,19 +319,7 @@ constexpr decimal ArcSecToRad(decimal arcSec) {
  * Notice the vector is M-1 because it must dot with the vector formed by the M-1 entries of a row
  * to get the result in the M'th entry
 */
-Eigen::VectorXd TLS(Eigen::MatrixXd data){
-
-    // Since the input matrix will be thin and tall, the last column of V transpose 
-    // will correspond to the vector with the smallest corresponding value in S, 
-    // meaning it is the closest vector to the null space of the input
-    // We leave out Eigen::ComputeFullU so U will not be computed
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd(data, Eigen::ComputeFullV);
-    Eigen::MatrixXd VT = svd.matrixV().transpose();
-
-    // rows and cols are the same size here but I clarify so that it's more readable
-    Eigen::VectorXd finalCol = VT.col(VT.cols()-1);
-    return finalCol.head(VT.rows()-2) / (-finalCol(VT.rows()-1))
-}
+Eigen::VectorXd TLS(Eigen::MatrixXd data);
 
 }  // namespace found
 
