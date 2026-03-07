@@ -1,5 +1,0 @@
-<map id="found::SVDResult" name="found::SVDResult">
-<area shape="rect" id="Node000001" title="A struct to contain the result of singular value decomposition." alt="" coords="5,123,140,148"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1Matrix.html" title="A Matrix is a mutable object that represents a NxM Matrix may or may not be copied directly from http..." alt="" coords="18,5,127,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,44,75,123,70,123,70,44"/>
-</map>

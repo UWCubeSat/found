@@ -1,5 +1,0 @@
-<map id="found::Mat3" name="found::Mat3">
-<area shape="rect" id="Node000001" title="A Mat3 is a mutable object that represents a 3x3 Matrix." alt="" coords="5,137,105,163"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1Vec3.html" title="A Vec3 is a mutable object that represents a 3D Vector." alt="" coords="6,5,105,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,44,58,137,53,137,53,44"/>
-</map>
