@@ -81,7 +81,9 @@ TEST_F(SerializationTest, CorrectHeader) {
 TEST_F(SerializationTest, IncorrectHeader) {
     std::string incorrectStr(reinterpret_cast<const char*>(incorrectCRCTestHeader), sizeof(incorrectCRCTestHeader));
     std::istringstream stream(incorrectStr);
+    testing::internal::CaptureStderr();
     ASSERT_THROW(readHeader(stream), std::runtime_error);
+    std::string output = testing::internal::GetCapturedStderr();
 }
 
 /**
@@ -101,7 +103,7 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     memcpy(expected.header.magic, "FOUN", 4);
     expected.header.version = 1;
     expected.header.num_positions = 2;
-    expected.relative_attitude = {0, 123456789., 987654321., 111111111.};
+    expected.relative_attitude = Quaternion(0, 123456789., 987654321., 111111111.);
 
     LocationRecord loc1{161803398, {100, 200, 300}};
     LocationRecord loc2{271828182, {-100, -200, -300}};
@@ -278,7 +280,7 @@ TEST_F(SerializationTest, RoundTripSerializationEmptyPositions) {
     memcpy(data.header.magic, "FOUN", 4);
     data.header.version = 1;
     data.header.num_positions = 0;
-    data.relative_attitude = {0, 0, 0, 0};
+    data.relative_attitude = Quaternion(0, 0, 0, 0);
     // No positions added
 
     std::ostringstream out;

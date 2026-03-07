@@ -21,27 +21,27 @@ TEST(ConvertersTest, TestEAComma) {
     std::string str = "0,45,90";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 4, angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 2, angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 4, angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL_M_PI / 2, angles.z());
 }
 
 TEST(ConvertersTest, TestEASpace) {
     std::string str = "4.2 3.9 -9.5";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(4.2)), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(3.9)), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(-9.5)), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(4.2)), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(3.9)), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(-9.5)), angles.z());
 }
 
 TEST(ConvertersTest, TestEAIncomplete) {
     std::string str = "4.2 3.9";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(4.2)), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(3.9)), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(0)), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(4.2)), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(3.9)), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(0)), angles.z());
 }
 
 TEST(ConvertersTest, TestBoolFalse) {

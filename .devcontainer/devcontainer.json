@@ -4,6 +4,6 @@
   "service": "dev",
   "workspaceFolder": "/workspace",
   "overrideCommand": true,
-  "postCreateCommand": "git config --global user.name \"${GIT_AUTHOR_NAME:-Your Name}\" && git config --global user.email \"${GIT_AUTHOR_EMAIL:-you@example.com}\" && /workspace/tools/setup-tools-envs.sh && /workspace/build.sh cmake",
+  "postCreateCommand": "git config --global user.name \"${GIT_AUTHOR_NAME:-Your Name}\" && git config --global user.email \"${GIT_AUTHOR_EMAIL:-you@example.com}\"",
   "shutdownAction": "stopCompose"
 }

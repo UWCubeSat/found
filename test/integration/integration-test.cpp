@@ -36,14 +36,22 @@ TEST_F(IntegrationTest, TestMainNothing) {
     int argc = 1;
     const char *argv[1] = {"found"};
 
+    testing::internal::CaptureStderr();  // Ignore error to pass PR test
+
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
+
+    std::string output = testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainNoOption) {
     int argc = 3;
     const char *argv[3] = {"found", "--png", "none.png"};
 
+    testing::internal::CaptureStderr();  // Ignore error to pass PR test
+
     ASSERT_EQ(EXIT_FAILURE, main(argc, const_cast<char **>(argv)));
+
+    std::string output = testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainHelp) {
@@ -74,7 +82,11 @@ TEST_F(IntegrationTest, TestMainCalibrationBadDistanceAlgorithm) {
     int argc = 4;
     const char *argv[] = {"found", "distance", "--distance-algo", "NEDDA"};
 
+    testing::internal::CaptureStderr();  // Ignore error to pass PR test
+
     ASSERT_THROW(main(argc, const_cast<char **>(argv)), std::runtime_error);
+
+    std::string output = testing::internal::GetCapturedStderr();
 }
 
 TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
@@ -108,7 +120,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 
     Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3)));
     Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6)));
-    Quaternion rel = ref * loc.Conjugate();
+    Quaternion rel = ref * loc.conjugate();
 
     DataFile expected{
         {},
@@ -188,8 +200,8 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -216,8 +228,8 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -252,8 +264,8 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -291,8 +303,8 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 
     std::remove(other_path);

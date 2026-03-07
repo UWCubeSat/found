@@ -14,14 +14,48 @@
 
 namespace found {
 
+///// SpheroidDistanceDeterminationAlgorithm ///// 
+
+PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3) return {0, 0, 0}; // If someone puts in less than 3 points, we're probably at earth's core
+
+    const Mat3 DiagAxes = {principleAxes_.x(),0,0,
+                              0,principleAxes_.y(),0,
+                              0,0,principleAxes_.z()};
+
+    const Mat3 DiagInvAxes = {1/principleAxes_.x(),0,0,
+                              0,1/principleAxes_.y(),0,
+                              0,0,1/principleAxes_.z()};
+    
+
+    // TPC_.transpose() == TCP
+    Mat3 imageToSpace = DiagInvAxes * TPC_.transpose() * cam_.GetInverseCalibrationMatrix();
+
+    int pointsSize = p.size();
+    Eigen::Matrix<decimal, Eigen::Dynamic, 4> normalizedVecsToHorizonMat;
+    for (int i = 0; i < pointsSize; i++) {
+        Vec3 pBar = {p[i].x(), p[i].y(), 1};
+        Vec3 normalizedVecToHorizon = (imageToSpace * pBar).normalized();
+        for (int j = 0; j < 3; j++){
+            normalizedVecsToHorizonMat(i, j) = normalizedVecToHorizon(j);
+        }
+        normalizedVecsToHorizonMat(i, 3) = 1;
+    }
+    
+    Vec3 vecToEarth = TLS(normalizedVecsToHorizonMat); // vecToEarth magnitude is a function of the distance and the principal axes
+    vecToEarth = (TPC_ * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth.dot(vecToEarth) - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
+
+    return vecToEarth;
+}
+
 ///// SphericalDistanceDeterminationAlgorithm /////
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
-    if (p.size() < 3) return {0, 0, 0};
+    if (p.size() < 3) return Vec3(0, 0, 0);
 
-    const Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
-                      cam_.CameraToSpatial(p[p.size() / 2]).Normalize(),
-                      cam_.CameraToSpatial(p[p.size() - 1]).Normalize()};
+    const Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).normalized(),
+                      cam_.CameraToSpatial(p[p.size() / 2]).normalized(),
+                      cam_.CameraToSpatial(p[p.size() - 1]).normalized()};
 
     return this->Run(spats[0], spats[1], spats[2]);
 }
@@ -37,7 +71,7 @@ PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Vec3 &a, const
     decimal h = this->radius_/this->r_;
 
     // You have to normalize the center vector here
-    return this->center_.Normalize() * h;
+    return this->center_.normalized() * h;
 }
 
 Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c) {
@@ -45,7 +79,7 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 &a, const Vec
     Vec3 diff2 = c - b;
 
     // Cross product to find the normal vector for points on earth
-    Vec3 circleN = diff1.CrossProduct(diff2);
+    Vec3 circleN = diff1.cross(diff2);
     Vec3 circlePt = a;
 
     // Mid point between 2 vectors
@@ -68,16 +102,17 @@ Vec3 SphericalDistanceDeterminationAlgorithm::getCenter(const Vec3 &a, const Vec
      * This becomes a systems of linear equation
      */
     Mat3 matrix;
-    matrix = {circleN.x, circleN.y, circleN.z, mid1N.x, mid1N.y,
-              mid1N.z, mid2N.x, mid2N.y, mid2N.z};
+    matrix << circleN.x(), circleN.y(), circleN.z(),
+              mid1N.x(), mid1N.y(), mid1N.z(),
+              mid2N.x(), mid2N.y(), mid2N.z();
 
-    decimal alpha = circleN*circlePt;
-    decimal beta = mid1N*mid1;
-    decimal gamma = mid2N*mid2;
+    decimal alpha = circleN.dot(circlePt);
+    decimal beta = mid1N.dot(mid1);
+    decimal gamma = mid2N.dot(mid2);
 
-    Vec3 y = {alpha, beta, gamma};
+    Vec3 y(alpha, beta, gamma);
 
-    Vec3 center = matrix.Inverse() * y;
+    Vec3 center = matrix.inverse() * y;
 
     return center;
 }
@@ -111,7 +146,7 @@ IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDete
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     // Step -1: Return zero if the number of points is less than 0
-    if (p.size() < 3) return {0, 0, 0};
+    if (p.size() < 3) return Vec3(0, 0, 0);
 
     // Step 0: Determine the number of iterations
     size_t numIterations = this->minimumIterations_ > p.size() / 3 ? this->minimumIterations_ : p.size();
@@ -125,14 +160,14 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t pointsSize = p.size();
     std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
     for (const Vec2 &point : p) {
-        projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
+        projectedPoints[i++] = this->cam_.CameraToSpatial(point).normalized();
     }
     i = 0;
     std::unique_ptr<uint64_t[]> logits(new uint64_t[pointsSize]);
 
     // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
-    decimal targetDistSq = first.MagnitudeSq();
+    decimal targetDistSq = first.squaredNorm();
     decimal referenceLoss = this->GenerateLoss(first, targetDistSq, projectedPoints, pointsSize);
     // Step 2b: Setup the cumulative loss and position. We are using softmax, normalized on the reference
     decimal totalLoss = DECIMAL_EXP(-1.0);
@@ -155,7 +190,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
         if (i % refreshFrequency == 0) {
             totalPosition = totalPosition / totalLoss;
-            targetDistSq = totalPosition.MagnitudeSq();
+            targetDistSq = totalPosition.squaredNorm();
             referenceLoss = this->GenerateLoss(totalPosition, targetDistSq, projectedPoints, pointsSize);
             totalLoss = DECIMAL_EXP(-1.0);
             totalPosition = totalPosition * totalLoss;
@@ -174,14 +209,14 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
     // error):
     decimal loss = DECIMAL(1e-3);
     // If the distance error is outside the ratio, then we add distance loss
-    decimal distance_sq_loss_ratio = DECIMAL_ABS((targetDistanceSq - position.MagnitudeSq())) / targetDistanceSq;
+    decimal distance_sq_loss_ratio = DECIMAL_ABS((targetDistanceSq - position.squaredNorm())) / targetDistanceSq;
     if (distance_sq_loss_ratio >= this->distanceRatioSq_) {
         loss += distance_sq_loss_ratio * targetDistanceSq;
     }
     // Now, we obtain the radius error
     decimal targetRadiusSq = this->r_ * this->r_;
     for (size_t k = 0; k < size; k++) {
-        decimal radius_loss_k = targetRadiusSq - (this->center_ - projectedPoints[k]).MagnitudeSq();
+        decimal radius_loss_k = targetRadiusSq - (this->center_ - projectedPoints[k]).squaredNorm();
         loss += DECIMAL_POW(radius_loss_k, this->radiusLossOrder_);
     }
 
