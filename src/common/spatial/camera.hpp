@@ -134,6 +134,8 @@ class Camera {
    */
     decimal Fov() const;
 
+    Mat3 GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix_; }
+
     // Mutator Method for Cameras
 
     /**
@@ -144,6 +146,14 @@ class Camera {
     void SetFocalLength(decimal focalLength) { this->focalLength = focalLength; }
 
  private:
+   /**
+     * Computes and initializes the calibration matrix and the inverse calibration matrix 
+     * from camera parameters.
+     * 
+     * @post calibrationMatrix and inverseCalibrationMatrix are initialized and ready to use.
+     */
+    void initializeCalibrationMatrixes();
+
     // TODO: distortion
     /// The focal length (m)
     decimal focalLength;
@@ -157,6 +167,10 @@ class Camera {
     int xResolution;
     /// The y resolution (pixels)
     int yResolution;
+    /// The camera calibration matrix
+    Mat3 calibrationMatrix_;
+    /// The inverse camera calibration matrix
+    Mat3 inverseCalibrationMatrix_;
 };
 
 ///////////////////////////////////

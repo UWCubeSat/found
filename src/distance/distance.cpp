@@ -14,6 +14,39 @@
 
 namespace found {
 
+///// SpheroidDistanceDeterminationAlgorithm ///// 
+PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3) return {0, 0, 0}; // If someone puts in less than 3 points, we're probably at earth's core
+
+    const Mat3 DiagAxes = {principleAxes_.x(),0,0,
+                              0,principleAxes_.y(),0,
+                              0,0,principleAxes_.z()};
+
+    const Mat3 DiagInvAxes = {1/principleAxes_.x(),0,0,
+                              0,1/principleAxes_.y(),0,
+                              0,0,1/principleAxes_.z()};
+    
+
+    // TPC_.transpose() = TCP
+    Mat3 imageToSpace = DiagInvAxes * TPC_.transpose() * cam_.GetInverseCalibrationMatrix();
+
+    int pointsSize = p.size();
+    Eigen::Matrix<decimal, Eigen::Dynamic, 4> normalizedVecsToHorizonMat;
+    for (int i = 0; i < pointsSize; i++) {
+        Vec3 pBar = {p[i].x(), p[i].y(), 1};
+        Vec3 normalizedVecToHorizon = (imageToSpace * pBar).normalized();
+        for (int j = 0; j < 3; j++){
+            normalizedVecsToHorizonMat(i, j) = normalizedVecToHorizon(j);
+        }
+        normalizedVecsToHorizonMat(i, 3) = 1;
+    }
+    
+    Vec3 vecToEarth = TLS(normalizedVecsToHorizonMat); // vecToEarth magnitude is a function of the distance and the principal axes
+    vecToEarth = (TPC_ * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth.dot(vecToEarth) - 1)); // I really want to use fastinvsqrt but that would probably send our satellite into the sun
+
+    return vecToEarth;
+}
+
 ///// SphericalDistanceDeterminationAlgorithm /////
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
