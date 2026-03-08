@@ -72,7 +72,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 
     DataFile expected{
         {},
-        LOSTCalibrationAlgorithm().Run({options.lclOrientation, options.refOrientation})
+        LOSTCalibrationAlgorithm().Run(options.lclOrientation, options.refOrientation)
     };
 
     std::ifstream file(temp_df);

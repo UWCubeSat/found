@@ -61,31 +61,35 @@ class Camera {
     Camera(decimal focalLength, decimal pixelSize, int xResolution, int yResolution);
 
     /**
-    * Converts from a 3D point in space expressed in the camera coordiante system
-    * to a 2D point in pixel coordinates.
+    * Uses the pinhole camera model to map a 3D vector in the camera frame to a 
+    * 2D point in pixel coordinates (row and column index of image matrix).
     * 
     * @param vector A 3D vector to convert to a vector on the camera
     * 
     * @return The 2D Vector that represents the 3D vector on the camera
     * 
-    * @note Assumes that Z is the depth direction and that it points away
-    * from the center of the sensor. Coordinate system: X=right, Y=down, Z=depth.
-    * Any vector (0, 0, z) will be at (xResolution/2, yResolution/2) on the sensor.
+    * @note Any vector (x, 0, 0), x > 0, will be projected onto the principal point of the sensor.
     */
-    Vec2 SpatialToPixelCoordinates(const Vec3 &) const;
+    Vec2 CameraToPixelCoordinates(const Vec3 &) const;
 
     /**
     * Maps a 2D point in pixel coordinates (row and column index of image matrix) to
-    * a point on the Image plane located at z=1 in 3D space.
+    * a point on the image plane. This is techinally a mapping from a 2D homogenous vector
+    * to another 2D homogenous vector, but the returned vector can be interpreted as a 3D
+    * vector where the x-componet, optical axis direction, is equal to 1. 
     * 
     * @param vector The vector on the camera to convert to a 3D vector
     * 
-    * @return A vector in 3d space corresponding to the given vector, with z-component equal to 1
+    * @return A vector in 3D space corresponding to the given vector, with x-component equal to 1
     * 
     * @note Not all vectors returned by this function will necessarily have the same magnitude.
+    * Assumes that X is the depth direction and that it points normal to the camera sensor
+    * in the direction of the scene. Coordinate system: X=out, Y=left, Z=up.
+    * This coordinate frame has the distinct advantage that there is an identity rotation into
+    * equatorial coordinates when right-ascension, declination, and roll are all zero.
     * 
     * @warning Other functions rely on the fact that returned vectors are placed one unit away 
-    * (z-component equal to 1). Don't change this behavior!
+    * (x-component equal to 1). Don't change this behavior!
     */
     Vec3 PixelToImageCoordinates(const Vec2 &) const;
 
@@ -119,7 +123,7 @@ class Camera {
      * 
      * @post calibrationMatrix and inverseCalibrationMatrix are initialized and ready to use.
      */
-    void initializeCalibrationMatrixes();
+    Mat3 initCalibrationMatrix();
 
     // TODO: distortion
     /// The focal length (m)

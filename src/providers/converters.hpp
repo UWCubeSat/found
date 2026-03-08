@@ -90,37 +90,6 @@ inline EulerAngles strtoea(const std::string &str) {
 }
 
 /**
- * Converts a string to a Quaternion.
- *
- * @param str The string to convert
- *
- * @return A Quaternion corresponding to the string, if str is valid
- *
- * @pre The string must have 4 decimal values separated by commas or
- * spaces, in x,y,z,w order
- */
-inline Quaternion strtoquat(const std::string &str) {
-    char delimiter = str.find(" ") != std::string::npos ? ' ' : ',';
-    decimal result[4];
-
-    size_t start = 0;
-    size_t end = str.find(delimiter);
-    size_t index = 0;
-
-    while (index != 3 && end != std::string::npos) {
-        result[index++] = strtodecimal(str.substr(start, end - start));
-        start = end + 1;
-        end = str.find(delimiter, start);
-    }
-
-    result[index++] = strtodecimal(str.substr(start));
-
-    while (index != 4) result[index++] = 0;
-
-    return Quaternion(result[3], result[0], result[1], result[2]);  // w, x, y, z (input is x,y,z,w)
-}
-
-/**
  * Converts the string to a bool
  * 
  * @param str The string to convert

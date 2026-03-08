@@ -18,35 +18,24 @@ Camera::Camera(decimal focalLength,
     : focalLength(focalLength),
       xResolution(xResolution), yResolution(yResolution),
       xCenter(xCenter), yCenter(yCenter),
-      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch) {
-    initializeCalibrationMatrixes();
-}
+      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch),
+      calibrationMatrix_(initCalibrationMatrix()),
+      inverseCalibrationMatrix_(calibrationMatrix_.inverse()) {}
 
 Camera::Camera(decimal focalLength, decimal pixelSize,
                int xResolution, int yResolution)
     : Camera(focalLength, xResolution, yResolution,
-             xResolution / (decimal) 2.0, yResolution / (decimal) 2.0,
+             xResolution / DECIMAL(2.0), yResolution / DECIMAL(2.0),
              pixelSize, pixelSize) {}
 
-void Camera::initializeCalibrationMatrixes() {
+Mat3 Camera::initCalibrationMatrix() {
     decimal dx = focalLength / xPixelPitch;
     decimal dy = focalLength / yPixelPitch;
 
     // Compute the calibration matrix
-    calibrationMatrix = Mat3::Zero();
-    calibrationMatrix(0, 0) = dx;
-    calibrationMatrix(1, 1) = dy;
-    calibrationMatrix(0, 2) = xCenter;
-    calibrationMatrix(1, 2) = yCenter;
-    calibrationMatrix(2, 2) = DECIMAL(1.0);
-
-    // Compute the inverse calibration matrix
-    inverseCalibrationMatrix = Mat3::Zero();
-    inverseCalibrationMatrix(0, 0) = DECIMAL(1.0) / dx;
-    inverseCalibrationMatrix(1, 1) = DECIMAL(1.0) / dy;
-    inverseCalibrationMatrix(0, 2) = -xCenter / dx;
-    inverseCalibrationMatrix(1, 2) = -yCenter / dy;
-    inverseCalibrationMatrix(2, 2) = DECIMAL(1.0);
+    return Mat3 <<  xCenter     , -dy         , DECIMAL(0.0),
+                    yCenter     , DECIMAL(0.0), -dx         ,
+                    DECIMAL(1.0), DECIMAL(0.0), DECIMAL(0.0);
 }
 
 Vec2 Camera::SpatialToPixelCoordinates(const Vec3 &vector) const {

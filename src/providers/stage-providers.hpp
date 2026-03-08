@@ -92,18 +92,15 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
         return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
-                                                               referenceOrientation,
-                                                               options.cameraEquatorialCoordinateOffset);
+                                                               referenceOrientation);
     } else {
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
-            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation,
-                                                                   options.cameraEquatorialCoordinateOffset);
+            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
         }
         Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation).conjugate();
         return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation,
-                                                               referenceOrientation,
-                                                               options.cameraEquatorialCoordinateOffset);
+                                                               referenceOrientation);
     }
 }
 

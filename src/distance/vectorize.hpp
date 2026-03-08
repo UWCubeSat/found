@@ -31,38 +31,26 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param relativeOrientation The orientation of the FOUND camera with respect to the reference orientation.
-     * This is a forwards (camera-to-equatorial) rotation quaternion.
-     * @param referenceOrientation The orientation of the reference frame relative to the equatorial frame.
-     * This is also a forwards (camera-to-equatorial) rotation quaternion.
-     * @param cameraEquatorialCoordinateOffset The difference between the camera coordinate definiont and the
-     * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
-     * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
-     * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
-     * is a 90 degree counter-clockwise rotation about the celesital norht pole.
-     * 
+     * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
+     * @param referenceOrientation The orientation of the equatorial reference frame with respect 
+     * to a reference frame L.
+     *
+     * @note orientation equals FOUND image's reference frame → reference frame L → equatorial reference frame
      */
-    explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation,
-                                           Quaternion cameraEquatorialCoordinateOffset)
-        : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation, cameraEquatorialCoordinateOffset) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
+        : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation) {}
 
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param orientation The absolute orientation of the FOUND camera — a forwards
-     * (camera-to-equatorial) rotation quaternion.
-     * @param cameraEquatorialCoordinateOffset The difference between the camera coordinate definiont and the
-     * equatorial frame when the camera boresight is point at the equatorial north pole. This is a rotation
-     * from the equatorial frame into the camera coordinate definition. Which for the current definion-- 
-     * y points to the bottom of the image, x points to the right, and z points outward along the boresight-- 
-     * is a 90 degree counter-clockwise rotation about the celesital norht pole.
+     * @param orientation The orientation of the equaotrial reference frame in terms of the FOUND 
+     * image's reference frame.
      * 
-     * @pre orientation must be a forwards rotation quaternion (camera → equatorial).
-     *      Forwards and backwards quaternions are conjugates of each other.
+     * @pre orientation must go from camera to equatorial reference frame.
      * 
      */
-    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation, Quaternion cameraEquatorialCoordinateOffset)
-        : orientation(orientation * cameraEquatorialCoordinateOffset) {}
+    explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
+        : orientation(orientation) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm() = default;

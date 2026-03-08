@@ -138,24 +138,6 @@ using AngleAxis = Eigen::AngleAxis<decimal>;
 /// Attitude Conversions
 
 /**
- * Converts a Quaternion to Euler Angles
- * 
- * @param quat A world→camera rotation quaternion
- * 
- * @return An EulerAngle representing the right ascension, declination, and roll
- * of the camera orientation, expressed in radians.
- * 
- * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
- * given by the Euler angles. The roll is the last rotation applied and
- * is counter clockwise (positive) about z-axis. 
- * 
- * @note In the case where the declination is ±90 degrees, there is a gimbal lock 
- * and only the sum (RA + roll) or difference (roll - RA) is recoverable. In this 
- * case, we set RA=0 and represent the rotation using the roll angle.
-*/
-EulerAngles QuaternionToSpherical(const Quaternion &quat);
-
-/**
  * Converts Euler Angles into a quaternion
  * 
  * @param ra The right ascension of the Euler Angles
@@ -164,9 +146,9 @@ EulerAngles QuaternionToSpherical(const Quaternion &quat);
  * 
  * @return A world→camera rotation quaternion corresponding to the given Euler angles.
  * 
- * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
+ * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
  * given by the Euler angles. The roll is the last rotation applied and
- * is counter clockwise (positive) about z-axis. 
+ * is clockwise!!! (positive) about x-axis. 
  */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
@@ -177,9 +159,9 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @return A world→camera rotation quaternion corresponding to the given Euler angles.
  * 
- * @note The z-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
+ * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
  * given by the Euler angles. The roll is the last rotation applied and
- * is counter clockwise (positive) about z-axis. 
+ * is clockwise!!! (positive) about x-axis.  
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }

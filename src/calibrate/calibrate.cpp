@@ -6,8 +6,8 @@
 
 namespace found {
 
-Quaternion LOSTCalibrationAlgorithm::Run(const std::pair<EulerAngles, EulerAngles> &orientations) {
-    return SphericalToQuaternion(orientations.first).conjugate() * SphericalToQuaternion(orientations.second);
+Quaternion LOSTCalibrationAlgorithm::Run(const EulerAngles &orientationF, const EulerAngles &orientationL) {
+    return SphericalToQuaternion(orientationF).conjugate() * SphericalToQuaternion(orientationL);
 }
 
 }  // namespace found
