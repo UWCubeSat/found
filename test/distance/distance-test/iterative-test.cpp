@@ -114,8 +114,8 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) 
     // Pick any vectors
     Vec3 p1 = {10, -26, 0};
     Vec3 p2 = {27, 93, -62};
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2)};
 
     // Run the algorithm
     IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH,
@@ -159,13 +159,13 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestMoreThan3Points) 
     Vec3 p7 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-62.4), projectionRadiusMag * DECIMAL_SIN(-62.4)};
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2),
-                cam.SpatialToCamera(p3),
-                cam.SpatialToCamera(p4),
-                cam.SpatialToCamera(p5),
-                cam.SpatialToCamera(p6),
-                cam.SpatialToCamera(p7)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2),
+                cam.CameraToPixelCoordinates(p3),
+                cam.CameraToPixelCoordinates(p4),
+                cam.CameraToPixelCoordinates(p5),
+                cam.CameraToPixelCoordinates(p6),
+                cam.CameraToPixelCoordinates(p7)};
 
     // Step IV: Run It and Test!
     IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH,
@@ -212,9 +212,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) 
     Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * DECIMAL_SIN(alpha))};
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2),
-                cam.SpatialToCamera(p3)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2),
+                cam.CameraToPixelCoordinates(p3)};
 
     // Step IV: Run It and Test!
     IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH,
@@ -255,9 +255,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) 
     Vec3 p3 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2),
-                cam.SpatialToCamera(p3)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2),
+                cam.CameraToPixelCoordinates(p3)};
 
     // Step IV: Run It and Test!
     IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH,
@@ -377,9 +377,9 @@ TEST(IterativeSphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) 
         Vec3 p3Rotated = positionDirection * p3;
 
         // Step III: Use CTS to convert to 2D vectors
-        Points pts = {cam.SpatialToCamera(p1Rotated),
-                    cam.SpatialToCamera(p2Rotated),
-                    cam.SpatialToCamera(p3Rotated)};
+        Points pts = {cam.CameraToPixelCoordinates(p1Rotated),
+                    cam.CameraToPixelCoordinates(p2Rotated),
+                    cam.CameraToPixelCoordinates(p3Rotated)};
 
         // Step IV: Run It and Test!
         IterativeSphericalDistanceDeterminationAlgorithm algo(RADIUS_OF_EARTH,

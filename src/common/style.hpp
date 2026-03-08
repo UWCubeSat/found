@@ -181,14 +181,8 @@ constexpr size_t calibration_size = 1;
 constexpr size_t distance_size = 3;
 constexpr size_t orbit_size = 2;
 
-/// Input orientations for the Calibration Pipeline
-struct Orientations {
-    EulerAngles orientationF;
-    EulerAngles orientationL;
-};
-
 /// Pipeline for Calibration
-typedef SequentialPipeline<Orientations, Quaternion, calibration_size> CalibrationPipeline;
+typedef SequentialPipeline<std::pair<EulerAngles, EulerAngles>, Quaternion, calibration_size> CalibrationPipeline;
 
 /// Pipeline for Distance Determination
 typedef SequentialPipeline<Image, PositionVector, distance_size> DistancePipeline;

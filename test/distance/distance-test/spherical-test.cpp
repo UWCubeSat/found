@@ -82,9 +82,9 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX1) {
     Vec3 p3 = {static_cast<decimal>(p * DECIMAL_COS(alpha)), 0, static_cast<decimal>(p * DECIMAL_SIN(alpha))};
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2),
-                cam.SpatialToCamera(p3)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2),
+                cam.CameraToPixelCoordinates(p3)};
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
@@ -119,9 +119,9 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthX2) {
     Vec3 p3 = {centerMag, projectionRadiusMag * -DECIMAL_COS(-0.1), projectionRadiusMag * DECIMAL_SIN(-0.1)};
 
     // Step III: Use CTS to convert to 2D vectors
-    Points pts = {cam.SpatialToCamera(p1),
-                cam.SpatialToCamera(p2),
-                cam.SpatialToCamera(p3)};
+    Points pts = {cam.CameraToPixelCoordinates(p1),
+                cam.CameraToPixelCoordinates(p2),
+                cam.CameraToPixelCoordinates(p3)};
 
     // Step IV: Run It and Test!
     SphericalDistanceDeterminationAlgorithm algo =
@@ -235,13 +235,13 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
         // LOG_INFO(ss.str());
 
         // Step III: Use CTS to convert to 2D vectors
-        Points pts = {cam.SpatialToCamera(p1Rotated),
-                    cam.SpatialToCamera(p2Rotated),
-                    cam.SpatialToCamera(p3Rotated)};
+        Points pts = {cam.CameraToPixelCoordinates(p1Rotated),
+                    cam.CameraToPixelCoordinates(p2Rotated),
+                    cam.CameraToPixelCoordinates(p3Rotated)};
 
-        // Points pts = {cam.SpatialToCamera(p1),
-        //     cam.SpatialToCamera(p2),
-        //     cam.SpatialToCamera(p3)};
+        // Points pts = {cam.CameraToPixelCoordinates(p1),
+        //     cam.CameraToPixelCoordinates(p2),
+        //     cam.CameraToPixelCoordinates(p3)};
 
 
         // Step IV: Run It and Test!

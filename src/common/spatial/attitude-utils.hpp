@@ -144,11 +144,12 @@ using AngleAxis = Eigen::AngleAxis<decimal>;
  * @param dec The declination of the Euler Angles
  * @param roll The roll of the Euler Angles
  * 
- * @return A world→camera rotation quaternion corresponding to the given Euler angles.
+ * @return A quaternion representing camera→equatorial reference frame transformation 
+ * that corresponds to the given Euler angles.
  * 
  * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
  * given by the Euler angles. The roll is the last rotation applied and
- * is clockwise!!! (positive) about x-axis. 
+ * is clockwise!!! (positive) about the camera's x-axis. 
  */
 Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 
@@ -157,11 +158,12 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @param angles The euler angles to convert
  * 
- * @return A world→camera rotation quaternion corresponding to the given Euler angles.
- * 
+ * @return A quaternion representing camera→equatorial reference frame transformation 
+ * that corresponds to the given Euler angles.
+ *
  * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
  * given by the Euler angles. The roll is the last rotation applied and
- * is clockwise!!! (positive) about x-axis.  
+ * is clockwise!!! (positive) about the camera's x-axis.  
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }

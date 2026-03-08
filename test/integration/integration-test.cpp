@@ -250,7 +250,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     DataFile actual = deserializeDataFile(file);
 
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
-    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
+    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation).conjugate(), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
               (example_earth1.position.norm() - actual.positions[0].position.norm())
                 / example_earth1.position.norm());
@@ -289,7 +289,7 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     DataFile actual = deserializeDataFile(file);
 
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
-    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
+    ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation).conjugate(), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
               (example_earth1.position.norm() - actual.positions[0].position.norm())
                 / example_earth1.position.norm());

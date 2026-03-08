@@ -122,7 +122,6 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
     // Step 1a: Get all unit vector projections of each point and setup logits
     size_t i = 0;
-    size_t j = 0;
     size_t pointsSize = p.size();
     std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
     for (const Vec2 &point : p) {
@@ -151,8 +150,6 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
             totalPosition += position * factor;
             i++;
         }
-
-        j += 3;
 
         if (i % refreshFrequency == 0) {
             totalPosition = totalPosition / totalLoss;

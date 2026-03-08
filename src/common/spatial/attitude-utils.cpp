@@ -38,20 +38,20 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     assert(roll >= DECIMAL(0.0) && roll <= 2*DECIMAL_M_PI);
     assert(ra >= DECIMAL(0.0) && ra <= 2*DECIMAL_M_PI);
     assert(dec >= -DECIMAL_M_PI/2 && dec <= DECIMAL_M_PI/2);
+    // prevent gimbal lock at the polls by only allowing roll
+    assert(DECIMAL_ABS(dec) != DECIMAL_M_PI/2 || ra == 0);
 
     // Build the camera→world rotation using intrinsic body-frame
     // rotations applied left to right:
-    //   a: yaw by RA about Z (north-pole axis)
-    //   b: pitch by (π/2 − dec) about Y
-    //   c: negate roll about X so that positive roll = CCW around boresight WARNING wrong
+    //   qRa: yaw by RA about Z gloabl (north-pole axis)
+    //   qDec: pitch by (π/2 − dec) about Y'
+    //   qRoll: negate roll about X'' so that positive roll = CCW around boresight
+    // sucessive rotations are around the new axes not the global axis.
     Quaternion qRa(AngleAxis(ra,      Vec3(0, 0, 1)));
     Quaternion qDec(AngleAxis(-dec,   Vec3(0, 1, 0)));
-    Quaternion qRoll(AngleAxis(-roll, Vec3(1, 0, 0)));
+    Quaternion qRoll(AngleAxis(roll, Vec3(1, 0, 0)));
 
-    // Conjugate gives world→camera rotation
-    Quaternion result = qRa * qDec * qRoll;
-    assert(DECIMAL_ABS(result.squaredNorm() - 1) < DECIMAL_TOLERANCE);
-    return result.conjugate();
+    return (qRa * qDec * qRoll).conjugate();
 }
 
 }  // namespace found

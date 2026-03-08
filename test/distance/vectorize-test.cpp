@@ -34,7 +34,7 @@ Vec3 ProjectVector(Vec3 &v, Quaternion &q) {
 
 TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityRotation) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0).conjugate();
+    Quaternion referenceOrientation = SphericalToQuaternion(0, 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(Quaternion::Identity(), referenceOrientation);
 
     // Create a PositionVector to test with
@@ -45,32 +45,32 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityRotation) {
     ASSERT_VEC3_EQ_DEFAULT(-x_E, actual);
 }
 
-TEST(LOSTVectorGenerationAlgorithmTest, TestAlongOpticalAxis) {
+TEST(LOSTVectorGenerationAlgorithmTest, TestRightAscensionRotation) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
-    PositionVector x_E = {0.0, 0.0, 100.0};
+    PositionVector x_E = {100.0, 0.0, 100.0};
     PositionVector actual = vectorGen.Run(x_E);
 
     // Check if the result is as expected
-    PositionVector expected = {-100.0, 0.0, 0.0};  // Negate x and y, keep z
+    PositionVector expected = {-100.0, 0.0, 100.0};  // Negate x and y, keep z
     ASSERT_VEC3_EQ_DEFAULT(-expected, actual);
 }
 
-TEST(LOSTVectorGenerationAlgorithmTest, TestPointAlongVernalEquinox) {
+TEST(LOSTVectorGenerationAlgorithmTest, TestNorthPoleRotation) {
     // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
+    Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI / 2, 0).conjugate();
     LOSTVectorGenerationAlgorithm vectorGen(referenceOrientation, Quaternion::Identity());
 
     // Create a PositionVector to test with
-    PositionVector x_E = {1.0, 1.0, 1.0};
+    PositionVector x_E = {1.0, 2.0, 3.0};
     PositionVector actual = vectorGen.Run(x_E);
 
     // Check if the result is as expected
-    PositionVector expected = -1 * PositionVector{-1.0, -1.0, -1.0};  // Negate x and y, keep z
-    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
+    PositionVector expected = {-3.0,2.0,1.0};  // Negate x and y, keep z
+    ASSERT_VEC3_EQ_DEFAULT(-expected, actual);
 }
 
 

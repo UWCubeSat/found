@@ -93,6 +93,7 @@ class Camera {
     */
     Vec3 PixelToImageCoordinates(const Vec2 &) const;
 
+    //ToDo: remove this is unecessary just use pre
     /**
      * Evaluates whether a vector can be seen in the camera
      * 

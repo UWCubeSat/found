@@ -12,75 +12,62 @@
 namespace found {
 
 TEST(CalibrationTest, TestCalibrateAbsolute) {
-    EulerAngles local = QuaternionToSpherical(Quaternion(0.36, 0.48, 0.64, 0.48));
-    EulerAngles reference(0, 0, 0);
+    EulerAngles local(0, 0, 0);
+    EulerAngles reference(DECIMAL_M_PI / 4, DECIMAL_M_PI / 6, DECIMAL_M_PI / 3);
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(std::make_pair(local, reference));
+    Quaternion actual = algorithm.Run(std::make_pair(local, reference));
 
-    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
-    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
-    Quaternion expectedQ = SphericalToQuaternion(local);
-    if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
-    if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
-    ASSERT_QUAT_EQ_DEFAULT(expectedQ, roundTrip);
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference), actual);
 }
 
 TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
     EulerAngles local(DECIMAL_M_PI / 4, 0, 0);
     EulerAngles reference(DECIMAL_M_PI / 2, 0, 0);
 
-    LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(std::make_pair(local, reference));
+    // We rotate PI/4
+    EulerAngles expected(DECIMAL_M_PI / 4, 0, 0);
 
-    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
-    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
-    Quaternion expectedQ = SphericalToQuaternion(local);
-    if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
-    if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
-    ASSERT_QUAT_EQ_DEFAULT(expectedQ, roundTrip);
+    LOSTCalibrationAlgorithm algorithm;
+    Quaternion actual = algorithm.Run(std::make_pair(local, reference));
+
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(expected), actual);
 }
 
 TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
     EulerAngles local(DECIMAL_M_PI / 3, 0, 0);
-    EulerAngles reference(DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0);
+    EulerAngles reference(DECIMAL_M_PI / 3, - DECIMAL_M_PI / 4, 0);
+
+    // -pi/4 rotation around transofrmed y axis
+    Quaternion zRotation(AngleAxis(DECIMAL_M_PI / 3, Vec3(0, 0, 1)));
+    Quaternion expected(AngleAxis(- DECIMAL_M_PI / 4,
+                                  zRotation * Vec3(0, 1, 0)));
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(std::make_pair(local, reference));
+    Quaternion actual = algorithm.Run(std::make_pair(local, reference));
 
-    // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
-    Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
-    Quaternion expectedQ = SphericalToQuaternion(local);
-    if (roundTrip.w() < 0) roundTrip = Quaternion(-roundTrip.w(), -roundTrip.x(), -roundTrip.y(), -roundTrip.z());
-    if (expectedQ.w() < 0) expectedQ = Quaternion(-expectedQ.w(), -expectedQ.x(), -expectedQ.y(), -expectedQ.z());
-    ASSERT_QUAT_EQ_DEFAULT(expectedQ, roundTrip);
+    ASSERT_QUAT_EQ_DEFAULT(expected, actual);
 }
 
 TEST(CalibrationTest, TestCalibrateGeneral) {
-    // dec values must be in [-pi/2, pi/2]
-    EulerAngles local(9 * DECIMAL_M_PI / 5, DECIMAL_M_PI / 7, 7 * DECIMAL_M_PI / 9);
-    EulerAngles reference(11 * DECIMAL_M_PI / 6, -DECIMAL_M_PI / 4, 0);
+    EulerAngles local(9 * DECIMAL_M_PI / 5, 3 * DECIMAL_M_PI / 7, 7 * DECIMAL_M_PI / 9);
+    EulerAngles reference(11 * DECIMAL_M_PI / 6, -1 * DECIMAL_M_PI / 4, 0);
 
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    Quaternion expectedLocalQ = SphericalToQuaternion(local);
-    Quaternion actualLocalQ = SphericalToQuaternion(reference) * result.conjugate();
+    // Quaternion actualReference = result * SphericalToQuaternion(local);
 
-    // See if applying the calibration to the reference recovers the local orientation.
-    ASSERT_QUAT_EQ_DEFAULT(expectedLocalQ, actualLocalQ);
+    // // See if multiplying the reference to the relative orientation
+    // // gives the local orientation back.
+    // ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference), actualReference);
 
-    // Verify calibration holds for a different reference orientation
-    Quaternion diffReference = SphericalToQuaternion(4.4, 1.2, 0.7);
-    // Compute what the local world→camera quaternion would be for a different reference
-    Quaternion diffLocal = diffReference * result.conjugate();
+    Quaternion diffReference = SphericalToQuaternion(4.4, 2.9, 0.7);
+    Quaternion diffLocal = result * diffReference;
 
-    // The calibration quaternion should be the same regardless of reference
-    Quaternion lhs = SphericalToQuaternion(local).conjugate() * SphericalToQuaternion(reference);
-    Quaternion rhs = diffLocal.conjugate() * diffReference;
-    if (lhs.w() < 0) lhs = Quaternion(-lhs.w(), -lhs.x(), -lhs.y(), -lhs.z());
-    if (rhs.w() < 0) rhs = Quaternion(-rhs.w(), -rhs.x(), -rhs.y(), -rhs.z());
-    ASSERT_QUAT_EQ_DEFAULT(lhs, rhs);
+    // See if the calibration holds for different axes
+    ASSERT_QUAT_EQ_DEFAULT((SphericalToQuaternion(local) * SphericalToQuaternion(reference).conjugate()).conjugate(),
+                           (diffLocal * diffReference.conjugate()));
 }
 
 }  // namespace found

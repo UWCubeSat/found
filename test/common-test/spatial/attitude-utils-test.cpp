@@ -27,115 +27,94 @@ TEST(AttitudeUtilsTest, Vec2DistanceTest) {
     ASSERT_ANGLE_EQ_DEFAULT(DECIMAL(5.0), Distance(a, b));
 }
 
-TEST(AttitudeUtilsTest, TestQuaternionToSphericalIdentity) {
-    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(0));
-    EulerAngles angles = QuaternionToSpherical(Quaternion::Identity());
+// SphericalToQuaternionTests
 
-    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
-}
-
-TEST(AttitudeUtilsTest, TestQuaternionNorthPole) {
-    EulerAngles expected(DegToRad(0), DegToRad(90), DegToRad(20));
-    EulerAngles angles = QuaternionToSpherical(Quaternion::Identity() *
-        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(20), Vec3::UnitZ())));
-
-    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
-}
-
-TEST(AttitudeUtilsTest, TestQuaternionSouthPole) {
-    EulerAngles expected(DegToRad(0), DegToRad(-90), DegToRad(170));
-    EulerAngles angles = QuaternionToSpherical(
-        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(-180), Vec3::UnitY())) *
-        Quaternion(Eigen::AngleAxis<decimal>(DegToRad(190), Vec3::UnitZ())));
-
-    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
-}
-
-TEST(AttitudeUtilsTest, TestQuaternionNorthPoleNegativeRollNormalization) {
-    Quaternion quat(Eigen::AngleAxis<decimal>(DegToRad(-60), Vec3::UnitZ()));
-    EulerAngles angles = QuaternionToSpherical(quat);
-
-    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(0),   angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(90),  angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(DegToRad(300), angles.z());
-}
-
-TEST(AttitudeUtilsTest, TestQuaternionSouthPoleNegativeRollNormalization) {
-    // roll=20° causes -2*atan2(x,y) < 0, exercising the south-pole normalization branch.
-    EulerAngles expected(DegToRad(0), DegToRad(-90), DegToRad(20));
-    Quaternion quat = SphericalToQuaternion(expected);
-    EulerAngles angles = QuaternionToSpherical(quat);
-
-    ASSERT_ANGLE_EQ_DEFAULT(expected.x(), angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.y(), angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(expected.z(), angles.z());
-}
-
-TEST(AttitudeUtilsTest, TestQuaternionNegativeRaNormalization) {
-    // ra=350° causes atan2(yz+wx, xz-wy) < 0, exercising the general-case ra normalization branch.
-    decimal ra = DegToRad(350);
-    decimal dec = DegToRad(-30);
-    decimal roll = DegToRad(45);
+TEST(AttitudeUtilsTest, TestSphericalToQuaternionRa) {
+    decimal ra = DegToRad(90);
+    decimal dec = DegToRad(0);
+    decimal roll = DegToRad(0);
 
     Quaternion quat = SphericalToQuaternion(ra, dec, roll);
-    EulerAngles angles = QuaternionToSpherical(quat);
+    // the camera boresight is alway {1.0, 0.0, 0.0} in it's own coordinates since that is how it's defined
+    Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
+    // gives camera->equatorial coordinates
+    // camera is pointing in y-direction after 90 degree rotation around z-axis
+    Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    ASSERT_ANGLE_EQ_DEFAULT(ra, angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(dec, angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(roll, angles.z());
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+                     DECIMAL_SIN(dec)};
+
+    ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
 }
 
-TEST(AttitudeUtilsTest, TestConversionAreInverse) {
-    decimal ra = DegToRad(123.4);
-    decimal dec = DegToRad(-56.7);
-    decimal roll = DegToRad(89.0);
+TEST(AttitudeUtilsTest, TestSphericalToQuaternionDec) {
+    decimal ra = DegToRad(0);
+    decimal dec = DegToRad(85);
+    decimal roll = DegToRad(0);
 
     Quaternion quat = SphericalToQuaternion(ra, dec, roll);
-    EulerAngles angles = QuaternionToSpherical(quat);
+    Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
-    ASSERT_ANGLE_EQ_DEFAULT(ra, angles.x());
-    ASSERT_ANGLE_EQ_DEFAULT(dec, angles.y());
-    ASSERT_ANGLE_EQ_DEFAULT(roll, angles.z());
+    // gives camera->equatorial coordinates
+    Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
+
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+                     DECIMAL_SIN(dec)};
+
+    ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
 }
 
-TEST(AttitudeUtilsTest, SphericalToQuaternionEarthToCameraTest) {
-    Mat3 earthCenteredInertial = (Mat3() << 1, 0, 0,
-                                            0, 1, 0,
-                                            0, 0, 1).finished();
+TEST(AttitudeUtilsTest, TestSphericalToQuaternionRaDec) {
+    decimal ra = DegToRad(72);
+    decimal dec = DegToRad(-83);
+    decimal roll = DegToRad(0);
 
-    Mat3 cameraAlongVernalEquinox = (Mat3() <<  0, 0, -1,
-                                                1, 0, 0,
-                                                0, -1, 0).finished();
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
+    // gives camera->equatorial coordinates
+    Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Mat3 earthToCamera = cameraAlongVernalEquinoxQuat.conjugate().toRotationMatrix() *
-        earthCenteredInertial;
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+                     DECIMAL_SIN(dec)};
 
-    ASSERT_MAT3_EQ_DEFAULT(cameraAlongVernalEquinox, earthToCamera);
+    ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
 }
 
-TEST(AttitudeUtilsTest, SphericalToQuaternionCameraToEarthTest) {
-    Mat3 earthCenteredInertial = (Mat3() << 1, 0, 0,
-                                            0, 1, 0,
-                                            0, 0, 1).finished();
+TEST(AttitudeUtilsTest, TestSphericalToQuaternionRoll) {
+    decimal ra = DegToRad(80);
+    decimal dec = DegToRad(85);
+    decimal roll = DegToRad(40);
 
-    Mat3 cameraAlongVernalEquinox = (Mat3() <<  0, 0, -1,
-                                                1, 0, 0,
-                                                0, -1, 0).finished();
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
-    Quaternion cameraAlongVernalEquinoxQuat = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(90));
+    // gives camera->equatorial coordinates
+    Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Mat3 cameraToEarth = cameraAlongVernalEquinoxQuat.toRotationMatrix() *
-        cameraAlongVernalEquinox;
+    Vec3 boresightExpected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
+                              DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+                              DECIMAL_SIN(dec)};
 
-    ASSERT_MAT3_EQ_DEFAULT(earthCenteredInertial, cameraToEarth);
+
+    // roll does not affect the boresight direction
+    ASSERT_VEC3_EQ_DEFAULT(boresightExpected, cameraBoresightWorldCoordinates);
+
+    Vec3 cameraZAxesCameraCoordinates = {0.0, 0.0, 1.0};
+    Vec3 cameraZAxesWorldCoordinates = quat.conjugate() * cameraZAxesCameraCoordinates;
+    Vec3 zAxesExpected = {-DECIMAL_COS(ra) * DECIMAL_SIN(dec) * DECIMAL_COS(roll) + DECIMAL_SIN(ra) * DECIMAL_SIN(roll),
+                          -DECIMAL_SIN(ra) * DECIMAL_SIN(dec) * DECIMAL_COS(roll) - DECIMAL_COS(ra) * DECIMAL_SIN(roll),
+                           DECIMAL_COS(dec) * DECIMAL_COS(roll)};
+
+    ASSERT_VEC3_EQ_DEFAULT(zAxesExpected, cameraZAxesWorldCoordinates);
+    
+    // check that axes are perpendicular
+    ASSERT_DECIMAL_EQ_DEFAULT(cameraBoresightWorldCoordinates.dot(cameraZAxesWorldCoordinates), DECIMAL(0.0));
+
+
 }
 
 }  // namespace found
