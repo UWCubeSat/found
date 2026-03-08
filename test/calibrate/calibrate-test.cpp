@@ -50,16 +50,16 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
 }
 
 TEST(CalibrationTest, TestCalibrateGeneral) {
-    EulerAngles local(     deg(120),    deg(20),     deg(60));
-    EulerAngles reference( deg(330),    deg(50),     deg(120));
+    EulerAngles local(     DegToRad(120),    DegToRad(20),     DegToRad(60));
+    EulerAngles reference( DegToRad(330),    DegToRad(50),     DegToRad(120));
     // same offsets different angles
-    EulerAngles local2(     deg(100),    deg(10),     deg(0));
-    EulerAngles reference2( deg(310),    deg(40),     deg(60));
+    EulerAngles local2(    DegToRad(120),    DegToRad(20),     DegToRad(60));
+    EulerAngles reference2(DegToRad(330),    DegToRad(50),     DegToRad(120));
 
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    Quaternion actualReference = result * SphericalToQuaternion(local2);
+    Quaternion actualReference = SphericalToQuaternion(local2) * result;
 
     // See if the calibration holds for different axes
     ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference2),
