@@ -41,8 +41,8 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRa) {
     // camera is pointing in y-direction after 90 degree rotation around z-axis
     Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
-                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra),
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra),
                      DECIMAL_SIN(dec)};
 
     ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
@@ -59,8 +59,8 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionDec) {
     // gives camera->equatorial coordinates
     Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
-                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra),
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra),
                      DECIMAL_SIN(dec)};
 
     ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
@@ -77,8 +77,8 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRaDec) {
     // gives camera->equatorial coordinates
     Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
-                     DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+    Vec3 expected = {DECIMAL_COS(dec) * DECIMAL_COS(ra),
+                     DECIMAL_COS(dec) * DECIMAL_SIN(ra),
                      DECIMAL_SIN(dec)};
 
     ASSERT_VEC3_EQ_DEFAULT(expected, cameraBoresightWorldCoordinates);
@@ -95,8 +95,8 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRoll) {
     // gives camera->equatorial coordinates
     Vec3 cameraBoresightWorldCoordinates = quat.conjugate() * cameraBoresightCameraCoordinates;
 
-    Vec3 boresightExpected = {DECIMAL_COS(dec) * DECIMAL_COS(ra), 
-                              DECIMAL_COS(dec) * DECIMAL_SIN(ra), 
+    Vec3 boresightExpected = {DECIMAL_COS(dec) * DECIMAL_COS(ra),
+                              DECIMAL_COS(dec) * DECIMAL_SIN(ra),
                               DECIMAL_SIN(dec)};
 
 
@@ -110,11 +110,8 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRoll) {
                            DECIMAL_COS(dec) * DECIMAL_COS(roll)};
 
     ASSERT_VEC3_EQ_DEFAULT(zAxesExpected, cameraZAxesWorldCoordinates);
-    
+
     // check that axes are perpendicular
     ASSERT_DECIMAL_EQ_DEFAULT(cameraBoresightWorldCoordinates.dot(cameraZAxesWorldCoordinates), DECIMAL(0.0));
-
-
 }
-
 }  // namespace found

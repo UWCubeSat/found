@@ -41,7 +41,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     // prevent gimbal lock at the polls by only allowing roll
     assert(DECIMAL_ABS(dec) != DECIMAL_M_PI/2 || ra == 0);
 
-    // Build the camera→world rotation using intrinsic body-frame
+    // Build the camera -> equatorial rotation using intrinsic body-frame
     // rotations applied left to right:
     //   qRa: yaw by RA about Z gloabl (north-pole axis)
     //   qDec: pitch by (π/2 − dec) about Y'
@@ -50,8 +50,10 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     Quaternion qRa(AngleAxis(ra,      Vec3(0, 0, 1)));
     Quaternion qDec(AngleAxis(-dec,   Vec3(0, 1, 0)));
     Quaternion qRoll(AngleAxis(roll, Vec3(1, 0, 0)));
+    Quaternion rotation = qRa * qDec * qRoll;
 
-    return (qRa * qDec * qRoll).conjugate();
+    // return: equatorial reference frame -> camera
+    return rotation.conjugate();
 }
 
 }  // namespace found

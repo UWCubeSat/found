@@ -46,7 +46,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * @param orientation The orientation of the equaotrial reference frame in terms of the FOUND 
      * image's reference frame.
      * 
-     * @pre orientation must go from camera to equatorial reference frame.
+     * @pre orientation must go from camera -> equatorial reference frame.
      * 
      */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)

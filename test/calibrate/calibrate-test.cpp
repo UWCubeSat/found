@@ -49,21 +49,37 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
     ASSERT_QUAT_EQ_DEFAULT(expected, actual);
 }
 
+TEST(CalibrationTest, TestCalibrateDecToRoll) {
+    EulerAngles local(DECIMAL_M_PI / 4, 0, 0);
+    EulerAngles reference(3 * DECIMAL_M_PI / 4, 0, 0);
+
+    // result: reference <- local
+    LOSTCalibrationAlgorithm algorithm;     
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
+
+    Vec3 localVector(0 , DECIMAL_COS(DECIMAL_M_PI / 4), DECIMAL_SIN(DECIMAL_M_PI / 4));
+
+    // reference <- local * localVector = referenceVector
+    Vec3 actualReferenceVector = result * localVector;
+
+    Vec3 expectedReferenceVector(DECIMAL_COS(DECIMAL_M_PI / 4), 0, DECIMAL_SIN(DECIMAL_M_PI / 4));
+    ASSERT_VEC3_EQ_DEFAULT(expectedReferenceVector, actualReferenceVector);
+}
+
 TEST(CalibrationTest, TestCalibrateGeneral) {
-    EulerAngles local(     DegToRad(120),    DegToRad(20),     DegToRad(60));
-    EulerAngles reference( DegToRad(330),    DegToRad(50),     DegToRad(120));
-    // same offsets different angles
-    EulerAngles local2(    DegToRad(120),    DegToRad(20),     DegToRad(60));
-    EulerAngles reference2(DegToRad(330),    DegToRad(50),     DegToRad(120));
+    EulerAngles local(DegToRad(120), DegToRad(20), DegToRad(60));
+    EulerAngles reference(DegToRad(330), DegToRad(50), DegToRad(120));
 
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
+    // local -> reference 
 
-    Quaternion actualReference = SphericalToQuaternion(local2) * result;
+    // world -> reference * reference -> local = world -> local
+    Quaternion actualLocal = SphericalToQuaternion(reference) * result.conjugate();
 
     // See if the calibration holds for different axes
-    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference2),
-                           actualReference);
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(local),
+                           actualLocal);
 }
 
 }  // namespace found
