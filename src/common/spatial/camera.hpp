@@ -118,10 +118,11 @@ class Camera {
     const Mat3& GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix_; }
 
  private:
-   /**
+    /**
      * Computes and initializes the calibration matrix and the inverse calibration matrix 
      * from camera parameters.
-     * 
+     *
+     * @return The camera calibration matrix
      */
     Mat3 initCalibrationMatrix();
 

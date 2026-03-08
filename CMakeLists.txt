@@ -152,7 +152,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(eigen)
 
 # Set the source libraries
-set(SRC_LIBS ${STB_IMAGE})
+set(SRC_LIBS ${STB_IMAGE} ${EIGEN})
 
 ##### FOUND Library #####
 

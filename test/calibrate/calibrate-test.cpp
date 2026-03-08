@@ -54,7 +54,7 @@ TEST(CalibrationTest, TestCalibrateDecToRoll) {
     EulerAngles reference(3 * DECIMAL_M_PI / 4, 0, 0);
 
     // result: reference <- local
-    LOSTCalibrationAlgorithm algorithm;     
+    LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     Vec3 localVector(0 , DECIMAL_COS(DECIMAL_M_PI / 4), DECIMAL_SIN(DECIMAL_M_PI / 4));
@@ -72,7 +72,7 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
 
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
-    // local -> reference 
+    // local -> reference
 
     // world -> reference * reference -> local = world -> local
     Quaternion actualLocal = SphericalToQuaternion(reference) * result.conjugate();
