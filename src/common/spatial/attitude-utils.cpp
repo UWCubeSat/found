@@ -3,7 +3,6 @@
 
 #include <math.h>
 #include <assert.h>
-#include "common/logging.hpp"
 
 namespace found {
 
@@ -58,7 +57,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
 }
 
 Eigen::VectorXd TLS(Eigen::MatrixXd data) {
-    assert(data.cols() > 2 && "TLS input must have at least 3 columns");
+    assert(data.cols() > 2);
 
     // Since the input matrix will be thin and tall, the last column of V transpose
     // will correspond to the vector with the smallest corresponding value in S,
