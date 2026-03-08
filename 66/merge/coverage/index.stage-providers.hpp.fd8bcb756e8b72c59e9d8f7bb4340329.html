@@ -26,12 +26,12 @@
                 <span>src/</span>
             </div>
             <div>File: providers/stage-providers.hpp</div>
-            <div>Date: 2026-03-03 18:58:44</div>
+            <div>Date: 2026-03-08 22:22:42</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">35/35</div>
+                <div class="mr-2" style="margin: auto;">34/34</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
@@ -833,39 +833,32 @@
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/1</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 1 taken 2 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">.</span><span class="n">calibrationData</span><span class="p">.</span><span class="n">relative_attitude</span><span class="p">,</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l95" href="#l95">95</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">                                                               </span><span class="n">referenceOrientation</span><span class="p">,</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine"><span class="w">                                                               </span><span class="n">referenceOrientation</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l96" href="#l96">96</a></td>
-                <td class="text-right src linenos ws-unset">
-                    <details class="normal details-overlay">
-                        <summary>1/1</summary>
-                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 2 times.</div>
-                        </div>
-                    </details>
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
-                <td class="src coveredLine"><span class="w">                                                               </span><span class="n">options</span><span class="p">.</span><span class="n">cameraEquatorialCoordinateOffset</span><span class="p">);</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -879,7 +872,7 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">options</span><span class="p">.</span><span class="n">refAsOrientation</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>8/8</summary>
@@ -899,14 +892,7 @@
                 <td class="src coveredLine"><span class="w">            </span><span class="n">LOG_INFO</span><span class="p">(</span><span class="s">&quot;Using provided reference orientation for calibration information&quot;</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
-                <td class="src coveredLine"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="p">(</span><span class="n">referenceOrientation</span><span class="p">,</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
@@ -916,17 +902,17 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
-                <td class="src coveredLine"><span class="w">                                                                   </span><span class="n">options</span><span class="p">.</span><span class="n">cameraEquatorialCoordinateOffset</span><span class="p">);</span></td>
+                <td class="src coveredLine"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="p">(</span><span class="n">referenceOrientation</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">        </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>3/3</summary>
@@ -941,181 +927,174 @@
                 <td class="src coveredLine"><span class="w">        </span><span class="n">Quaternion</span><span class="w"> </span><span class="n">relativeOrientation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SphericalToQuaternion</span><span class="p">(</span><span class="n">options</span><span class="p">.</span><span class="n">relOrientation</span><span class="p">).</span><span class="n">conjugate</span><span class="p">();</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
-                <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="p">(</span><span class="n">relativeOrientation</span><span class="p">,</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l105" href="#l105">105</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">                                                               </span><span class="n">referenceOrientation</span><span class="p">,</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 2 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 taken 2 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
-                <td class="src coveredLine"><span class="w">                                                               </span><span class="n">options</span><span class="p">.</span><span class="n">cameraEquatorialCoordinateOffset</span><span class="p">);</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="p">(</span><span class="n">relativeOrientation</span><span class="p">,</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l107" href="#l107">107</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine"><span class="w">                                                               </span><span class="n">referenceOrientation</span><span class="p">);</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l105" href="#l105">105</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l109" href="#l109">109</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l110" href="#l110">110</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l107" href="#l107">107</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">// TODO: Uncomment when orbit stage is implemented</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l111" href="#l111">111</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l112" href="#l112">112</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l109" href="#l109">109</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * Provides an OrbitPropagationAlgorithm</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l113" href="#l113">113</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l110" href="#l110">110</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l111" href="#l111">111</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * @param options The options to derive the orbit propagation algorithm from</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l112" href="#l112">112</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l113" href="#l113">113</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> * @return std::unique_ptr&lt;OrbitPropagationAlgorithm&gt; The orbit propagation algorithm</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm"> */</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">// std::unique_ptr&lt;OrbitPropagationAlgorithm&gt; ProvideOrbitPropagationAlgorithm(OrbitOptions &amp;&amp;options) {</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">//     return std::make_unique&lt;ApproximateOrbitPropagationAlgorithm&gt;(options.totalTime,</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">//                                                                   options.dt,</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">//                                                                   options.radius,</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l122" href="#l122">122</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">//                                                                   options.mu);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l123" href="#l123">123</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="c1">// }</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l124" href="#l124">124</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l125" href="#l125">125</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l122" href="#l122">122</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l126" href="#l126">126</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l123" href="#l123">123</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l127" href="#l127">127</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l124" href="#l124">124</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_PROVIDERS_STAGE_PROVIDERS_HPP_</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l128" href="#l128">128</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l125" href="#l125">125</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

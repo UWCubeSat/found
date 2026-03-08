@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: common/spatial/camera.hpp</div>
-            <div>Date: 2026-03-03 18:58:44</div>
+            <div>Date: 2026-03-08 22:22:42</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -60,8 +60,8 @@
       <th>Block coverage</th>
     </tr>
     <tr><td><a href="#l32">found::Camera::Camera(found::Camera const&amp;) (line 32)</a></td><td>called 39 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l106">found::Camera::GetCalibrationMatrix() const (line 106)</a></td><td>called 4 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l113">found::Camera::GetInverseCalibrationMatrix() const (line 113)</a></td><td>called 2 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l111">found::Camera::GetCalibrationMatrix() const (line 111)</a></td><td>called 4 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l118">found::Camera::GetInverseCalibrationMatrix() const (line 118)</a></td><td>called 2 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -525,14 +525,14 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * Converts from a 3D point in space expressed in the camera coordiante system</span></td>
+                <td class="src "><span class="cm">    * Uses the pinhole camera model to map a 3D vector in the camera frame to a </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * to a 2D point in pixel coordinates.</span></td>
+                <td class="src "><span class="cm">    * 2D point in pixel coordinates (row and column index of image matrix).</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l66" href="#l66">66</a></td>
@@ -574,63 +574,63 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * @note Assumes that Z is the depth direction and that it points away</span></td>
+                <td class="src "><span class="cm">    * @note Any vector (x, 0, 0), x &gt; 0, will be projected onto the principal point of the sensor.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * from the center of the sensor. Coordinate system: X=right, Y=down, Z=depth.</span></td>
+                <td class="src "><span class="cm">    */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l73" href="#l73">73</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * Any vector (0, 0, z) will be at (xResolution/2, yResolution/2) on the sensor.</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Vec2</span><span class="w"> </span><span class="nf">CameraToPixelCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec3</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l74" href="#l74">74</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    */</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l75" href="#l75">75</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Vec2</span><span class="w"> </span><span class="nf">SpatialToPixelCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec3</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l76" href="#l76">76</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">    * Maps a 2D point in pixel coordinates (row and column index of image matrix) to</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="cm">    * a point on the image plane. This is techinally a mapping from a 2D homogenous vector</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l78" href="#l78">78</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * Maps a 2D point in pixel coordinates (row and column index of image matrix) to</span></td>
+                <td class="src "><span class="cm">    * to another 2D homogenous vector, but the returned vector can be interpreted as a 3D</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l79" href="#l79">79</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * a point on the Image plane located at z=1 in 3D space.</span></td>
+                <td class="src "><span class="cm">    * vector where the x-componet, optical axis direction, is equal to 1. </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l80" href="#l80">80</a></td>
@@ -658,7 +658,7 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * @return A vector in 3d space corresponding to the given vector, with z-component equal to 1</span></td>
+                <td class="src "><span class="cm">    * @return A vector in 3D space corresponding to the given vector, with x-component equal to 1</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l84" href="#l84">84</a></td>
@@ -679,437 +679,472 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * </span></td>
+                <td class="src "><span class="cm">    * Assumes that X is the depth direction and that it points normal to the camera sensor</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l87" href="#l87">87</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * @warning Other functions rely on the fact that returned vectors are placed one unit away </span></td>
+                <td class="src "><span class="cm">    * in the direction of the scene. Coordinate system: X=out, Y=left, Z=up.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l88" href="#l88">88</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    * (z-component equal to 1). Don&#39;t change this behavior!</span></td>
+                <td class="src "><span class="cm">    * This coordinate frame has the distinct advantage that there is an identity rotation into</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l89" href="#l89">89</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">    */</span></td>
+                <td class="src "><span class="cm">    * equatorial coordinates when right-ascension, declination, and roll are all zero.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l90" href="#l90">90</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="nf">PixelToImageCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+                <td class="src "><span class="cm">    * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l91" href="#l91">91</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">    * @warning Other functions rely on the fact that returned vectors are placed one unit away </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l92" href="#l92">92</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="cm">    * (x-component equal to 1). Don&#39;t change this behavior!</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l93" href="#l93">93</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Evaluates whether a vector can be seen in the camera</span></td>
+                <td class="src "><span class="cm">    */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l94" href="#l94">94</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
+                <td class="src "><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="nf">PixelToImageCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l95" href="#l95">95</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @param vector The vector to evaluate</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l96" href="#l96">96</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
+                <td class="src "><span class="w">    </span><span class="c1">// TODO: remove this is unecessary just use pre</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l97" href="#l97">97</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @return true iff vector could be seen in this camera</span></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l98" href="#l98">98</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     */</span></td>
+                <td class="src "><span class="cm">     * Evaluates whether a vector can be seen in the camera</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l99" href="#l99">99</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">InSensor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
+                <td class="src "><span class="cm">     * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l100" href="#l100">100</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">     * @param vector The vector to evaluate</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l101" href="#l101">101</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+                <td class="src "><span class="cm">     * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l102" href="#l102">102</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Expose camera calibration matrix (intrinsic matrix) </span></td>
+                <td class="src "><span class="cm">     * @return true iff vector could be seen in this camera</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l103" href="#l103">103</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     *</span></td>
+                <td class="src "><span class="cm">     */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l104" href="#l104">104</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @return The camera calibration matrix</span></td>
+                <td class="src "><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">InSensor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l105" href="#l105">105</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     */</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Mat3</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">GetCalibrationMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">calibrationMatrix</span><span class="p">;</span><span class="w"> </span><span class="p">}</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l107" href="#l107">107</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l106" href="#l106">106</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l109" href="#l109">109</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l107" href="#l107">107</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Expose inverse camera calibration matrix (intrinsic matrix) </span></td>
+                <td class="src "><span class="cm">     * Expose camera calibration matrix (intrinsic matrix) </span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l110" href="#l110">110</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l108" href="#l108">108</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">     *</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l111" href="#l111">111</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l109" href="#l109">109</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @return The inverse camera calibration matrix</span></td>
+                <td class="src "><span class="cm">     * @return The camera calibration matrix</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l112" href="#l112">112</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     */</span><span class="w"> </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l113" href="#l113">113</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Mat3</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">GetInverseCalibrationMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">inverseCalibrationMatrix</span><span class="p">;</span><span class="w"> </span><span class="p">}</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">   </span><span class="cm">/**</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * Computes and initializes the calibration matrix and the inverse calibration matrix </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * from camera parameters.</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @post calibrationMatrix and inverseCalibrationMatrix are initialized and ready to use.</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l110" href="#l110">110</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="cm">     */</span></td>
             </tr>
             <tr>
+                <td class="text-right src linenos"><a class="normal" id="l111" href="#l111">111</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Mat3</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">GetCalibrationMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">calibrationMatrix_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l112" href="#l112">112</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l113" href="#l113">113</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l114" href="#l114">114</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm">     * Expose inverse camera calibration matrix (intrinsic matrix) </span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l115" href="#l115">115</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm">     *</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l116" href="#l116">116</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm">     * @return The inverse camera calibration matrix</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l117" href="#l117">117</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cm">     */</span><span class="w"> </span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l118" href="#l118">118</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Mat3</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">GetInverseCalibrationMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">inverseCalibrationMatrix_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l119" href="#l119">119</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l120" href="#l120">120</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l121" href="#l121">121</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="w">    </span><span class="cm">/**</span></td>
+            </tr>
+            <tr>
                 <td class="text-right src linenos"><a class="normal" id="l122" href="#l122">122</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">initializeCalibrationMatrixes</span><span class="p">();</span></td>
+                <td class="src "><span class="cm">     * Computes and initializes the calibration matrix and the inverse calibration matrix </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l123" href="#l123">123</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm">     * from camera parameters.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l124" href="#l124">124</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// TODO: distortion</span></td>
+                <td class="src "><span class="cm">     *</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l125" href="#l125">125</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The focal length (m)</span></td>
+                <td class="src "><span class="cm">     * @return The camera calibration matrix</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l126" href="#l126">126</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">focalLength</span><span class="p">;</span></td>
+                <td class="src "><span class="cm">     */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l127" href="#l127">127</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The x resolution (pixels)</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">initCalibrationMatrix</span><span class="p">();</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l128" href="#l128">128</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">xResolution</span><span class="p">;</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l129" href="#l129">129</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The y resolution (pixels)</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">// TODO: distortion</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l130" href="#l130">130</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">yResolution</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The focal length (m)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l131" href="#l131">131</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The x center (pixels)</span></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">focalLength_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l132" href="#l132">132</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">xCenter</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The x resolution (pixels)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l133" href="#l133">133</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The y center (pixels)</span></td>
+                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">xResolution_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l134" href="#l134">134</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">yCenter</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The y resolution (pixels)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l135" href="#l135">135</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The x pixel pitch (m)</span></td>
+                <td class="src "><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">yResolution_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l136" href="#l136">136</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">xPixelPitch</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The x center (pixels)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l137" href="#l137">137</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The y pixel pitch (m)</span></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">xCenter_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l138" href="#l138">138</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">yPixelPitch</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The y center (pixels)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l139" href="#l139">139</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The camera calibration matrix</span></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">yCenter_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l140" href="#l140">140</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">calibrationMatrix</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The x pixel pitch (m)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l141" href="#l141">141</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">/// The inverse camera calibration matrix</span></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">xPixelPitch_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l142" href="#l142">142</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">inverseCalibrationMatrix</span><span class="p">;</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The y pixel pitch (m)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l143" href="#l143">143</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">};</span></td>
+                <td class="src "><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">yPixelPitch_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l144" href="#l144">144</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The camera calibration matrix</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l145" href="#l145">145</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">calibrationMatrix_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l146" href="#l146">146</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="w">    </span><span class="c1">/// The inverse camera calibration matrix</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l147" href="#l147">147</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_COMMON_SPATIAL_CAMERA_HPP_</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">inverseCalibrationMatrix_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l148" href="#l148">148</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="p">};</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l149" href="#l149">149</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l150" href="#l150">150</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l151" href="#l151">151</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l152" href="#l152">152</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_COMMON_SPATIAL_CAMERA_HPP_</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l153" href="#l153">153</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

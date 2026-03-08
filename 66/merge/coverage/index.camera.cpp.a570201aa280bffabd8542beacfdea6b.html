@@ -26,12 +26,12 @@
                 <span>src/</span>
             </div>
             <div>File: common/spatial/camera.cpp</div>
-            <div>Date: 2026-03-03 18:58:44</div>
+            <div>Date: 2026-03-08 22:22:42</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">36/36</div>
+                <div class="mr-2" style="margin: auto;">28/28</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
@@ -41,7 +41,7 @@
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">27/27</div>
+                <div class="mr-2" style="margin: auto;">34/34</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
         </div>
@@ -60,11 +60,11 @@
       <th>Block coverage</th>
     </tr>
     <tr><td><a href="#l25">found::Camera::Camera(double, double, int, int) (line 25)</a></td><td>called 54 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l14">found::Camera::Camera(double, int, int, double, double, double, double) (line 14)</a></td><td>called 69 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l68">found::Camera::InSensor(Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; const&amp;) const (line 68)</a></td><td>called 682 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l63">found::Camera::PixelToImageCoordinates(Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; const&amp;) const (line 63)</a></td><td>called 678 times</td><td>73.0%</td></tr>
-    <tr><td><a href="#l52">found::Camera::SpatialToPixelCoordinates(Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; const&amp;) const (line 52)</a></td><td>called 33 times</td><td>71.0%</td></tr>
-    <tr><td><a href="#l31">found::Camera::initializeCalibrationMatrixes() (line 31)</a></td><td>called 69 times</td><td>87.0%</td></tr>
+    <tr><td><a href="#l14">found::Camera::Camera(double, int, int, double, double, double, double) (line 14)</a></td><td>called 69 times</td><td>88.0%</td></tr>
+    <tr><td><a href="#l43">found::Camera::CameraToPixelCoordinates(Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; const&amp;) const (line 43)</a></td><td>called 33 times</td><td>71.0%</td></tr>
+    <tr><td><a href="#l59">found::Camera::InSensor(Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; const&amp;) const (line 59)</a></td><td>called 682 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l54">found::Camera::PixelToImageCoordinates(Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; const&amp;) const (line 54)</a></td><td>called 678 times</td><td>73.0%</td></tr>
+    <tr><td><a href="#l31">found::Camera::initCalibrationMatrix() (line 31)</a></td><td>called 69 times</td><td>64.0%</td></tr>
   </table>
 </details>
 </div>
@@ -206,42 +206,49 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">focalLength</span><span class="p">(</span><span class="n">focalLength</span><span class="p">),</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">focalLength_</span><span class="p">(</span><span class="n">focalLength</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l19" href="#l19">19</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">      </span><span class="n">xResolution</span><span class="p">(</span><span class="n">xResolution</span><span class="p">),</span><span class="w"> </span><span class="n">yResolution</span><span class="p">(</span><span class="n">yResolution</span><span class="p">),</span></td>
+                <td class="src coveredLine"><span class="w">      </span><span class="n">xResolution_</span><span class="p">(</span><span class="n">xResolution</span><span class="p">),</span><span class="w"> </span><span class="n">yResolution_</span><span class="p">(</span><span class="n">yResolution</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l20" href="#l20">20</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">      </span><span class="n">xCenter</span><span class="p">(</span><span class="n">xCenter</span><span class="p">),</span><span class="w"> </span><span class="n">yCenter</span><span class="p">(</span><span class="n">yCenter</span><span class="p">),</span></td>
+                <td class="src coveredLine"><span class="w">      </span><span class="n">xCenter_</span><span class="p">(</span><span class="n">xCenter</span><span class="p">),</span><span class="w"> </span><span class="n">yCenter_</span><span class="p">(</span><span class="n">yCenter</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">      </span><span class="n">xPixelPitch</span><span class="p">(</span><span class="n">xPixelPitch</span><span class="p">),</span><span class="w"> </span><span class="n">yPixelPitch</span><span class="p">(</span><span class="n">yPixelPitch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+                <td class="src coveredLine"><span class="w">      </span><span class="n">xPixelPitch_</span><span class="p">(</span><span class="n">xPixelPitch</span><span class="p">),</span><span class="w"> </span><span class="n">yPixelPitch_</span><span class="p">(</span><span class="n">yPixelPitch</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">initializeCalibrationMatrixes</span><span class="p">();</span></td>
+                <td class="src coveredLine"><span class="w">      </span><span class="n">calibrationMatrix_</span><span class="p">(</span><span class="n">initCalibrationMatrix</span><span class="p">()),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l23" href="#l23">23</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>2/2</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 2 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 5 taken 69 times.</div>
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="p">}</span></td>
+                <td class="src coveredLine"><span class="w">      </span><span class="n">inverseCalibrationMatrix_</span><span class="p">(</span><span class="n">calibrationMatrix_</span><span class="p">.</span><span class="n">inverse</span><span class="p">())</span><span class="w"> </span><span class="p">{}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l24" href="#l24">24</a></td>
@@ -276,7 +283,7 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">             </span><span class="n">xResolution</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">decimal</span><span class="p">)</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="n">yResolution</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">decimal</span><span class="p">)</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span></td>
+                <td class="src "><span class="w">             </span><span class="n">xResolution</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2.0</span><span class="p">),</span><span class="w"> </span><span class="n">yResolution</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">2.0</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l29" href="#l29">29</a></td>
@@ -297,21 +304,21 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">initializeCalibrationMatrixes</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
+                <td class="src coveredLine"><span class="n">Mat3</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">initCalibrationMatrix</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l32" href="#l32">32</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">xPixelPitch</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">focalLength_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">xPixelPitch_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l33" href="#l33">33</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">yPixelPitch</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">decimal</span><span class="w"> </span><span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">focalLength_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">yPixelPitch_</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l34" href="#l34">34</a></td>
@@ -330,51 +337,68 @@
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
                 <td class="text-right src linenos ws-unset">
-                    <details class="normal details-overlay">
-                        <summary>2/2</summary>
-                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 69 times.</div>
-                            <div class="color-taken-branch">&check; Branch 5 taken 69 times.</div>
-                        </div>
-                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mat3</span><span class="o">::</span><span class="n">Zero</span><span class="p">();</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">Mat3</span><span class="w"> </span><span class="n">result</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>3/3</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 1 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 4 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 7 taken 69 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dx</span><span class="p">;</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">276</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w">  </span><span class="n">xCenter_</span><span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">dy</span><span class="w">         </span><span class="p">,</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>3/3</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 1 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 4 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 7 taken 69 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dy</span><span class="p">;</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">276</td>
+                <td class="src coveredLine"><span class="w">               </span><span class="n">yCenter_</span><span class="w">    </span><span class="p">,</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">dx</span><span class="w">         </span><span class="p">,</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>3/3</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 7 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 11 taken 69 times.</div>
+                            <div class="color-taken-branch">&check; Branch 15 taken 69 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xCenter</span><span class="p">;</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">414</td>
+                <td class="src coveredLine"><span class="w">               </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yCenter</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">calibrationMatrix</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span></td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
@@ -387,126 +411,56 @@
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// Compute the inverse calibration matrix</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
+                <td class="src coveredLine"><span class="n">Vec2</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">CameraToPixelCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec3</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
-                <td class="text-right src linenos ws-unset">
-                    <details class="normal details-overlay">
-                        <summary>2/2</summary>
-                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 69 times.</div>
-                            <div class="color-taken-branch">&check; Branch 5 taken 69 times.</div>
-                        </div>
-                    </details>
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Mat3</span><span class="o">::</span><span class="n">Zero</span><span class="p">();</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dx</span><span class="p">;</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dy</span><span class="p">;</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">xCenter</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dx</span><span class="p">;</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">yCenter</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dy</span><span class="p">;</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">inverseCalibrationMatrix</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">69</td>
-                <td class="src coveredLine"><span class="p">}</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
-                <td class="text-right src linenos ws-unset">
-                </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
-                <td class="src coveredLine"><span class="n">Vec2</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">SpatialToPixelCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec3</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
-            </tr>
-            <tr>
-                <td class="text-right src linenos"><a class="normal" id="l53" href="#l53">53</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// can&#39;t handle things behind the camera.</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l54" href="#l54">54</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
-                <td class="src excludedLine"><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">vector</span><span class="p">.</span><span class="n">z</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
+                <td class="src excludedLine"><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l55" href="#l55">55</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="c1">// use similiar triangles to get the image coordinates</span></td>
+                <td class="src "><span class="w">    </span><span class="c1">// use similar triangles to get the image coordinates</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>5/5</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 4 taken 33 times.</div>
-                            <div class="color-taken-branch">&check; Branch 7 taken 33 times.</div>
-                            <div class="color-taken-branch">&check; Branch 11 taken 33 times.</div>
-                            <div class="color-taken-branch">&check; Branch 14 taken 33 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 33 times.</div>
+                            <div class="color-taken-branch">&check; Branch 6 taken 33 times.</div>
+                            <div class="color-taken-branch">&check; Branch 10 taken 33 times.</div>
+                            <div class="color-taken-branch">&check; Branch 13 taken 33 times.</div>
                             <div class="color-taken-branch">&check; Branch 17 taken 33 times.</div>
                         </div>
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="n">homogenousImageCoordinates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vec3</span><span class="p">(</span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">z</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">z</span><span class="p">(),</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">));</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="n">homogenousImageCoordinates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Vec3</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">z</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">());</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l57" href="#l57">57</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// transform image coordinates to pixel coordinates using the calibration matrix</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -517,17 +471,17 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="n">homogenousPixelCoordinates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calibrationMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogenousImageCoordinates</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">Vec3</span><span class="w"> </span><span class="n">homogenousPixelCoordinates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calibrationMatrix_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogenousImageCoordinates</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l60" href="#l60">60</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>3/3</summary>
@@ -542,35 +496,35 @@
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Vec2</span><span class="p">(</span><span class="n">homogenousPixelCoordinates</span><span class="p">.</span><span class="n">x</span><span class="p">(),</span><span class="w"> </span><span class="n">homogenousPixelCoordinates</span><span class="p">.</span><span class="n">y</span><span class="p">());</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l53" href="#l53">53</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l63" href="#l63">63</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l54" href="#l54">54</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">678</td>
                 <td class="src coveredLine"><span class="n">Vec3</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">PixelToImageCoordinates</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l55" href="#l55">55</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
                 <td class="src excludedLine"><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">InSensor</span><span class="p">(</span><span class="n">vector</span><span class="p">));</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>5/5</summary>
@@ -584,52 +538,52 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1356</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">inverseCalibrationMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">Vec3</span><span class="p">(</span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">(),</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">));</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">inverseCalibrationMatrix_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">Vec3</span><span class="p">(</span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">(),</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">(),</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">1.0</span><span class="p">));</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l66" href="#l66">66</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l57" href="#l57">57</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l68" href="#l68">68</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">682</td>
                 <td class="src coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="n">Camera</span><span class="o">::</span><span class="n">InSensor</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Vec2</span><span class="w"> </span><span class="o">&amp;</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l69" href="#l69">69</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l60" href="#l60">60</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// if vector.x == xResolution, then it is at the rightmost point</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l70" href="#l70">70</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// of the pixel that&#39;s &quot;hanging off&quot; the edge of the image,</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l71" href="#l71">71</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="w">    </span><span class="c1">// so vector is still in the image.</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l72" href="#l72">72</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l63" href="#l63">63</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
@@ -640,10 +594,10 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1363</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">xResolution</span></td>
+                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">x</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">xResolution_</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l73" href="#l73">73</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l64" href="#l64">64</a></td>
                 <td class="text-right src linenos ws-unset">
                     <details class="normal details-overlay">
                         <summary>6/6</summary>
@@ -658,31 +612,31 @@
                     </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1363</td>
-                <td class="src coveredLine"><span class="w">        </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">yResolution</span><span class="p">;</span></td>
+                <td class="src coveredLine"><span class="w">        </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">vector</span><span class="p">.</span><span class="n">y</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">yResolution_</span><span class="p">;</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l74" href="#l74">74</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l65" href="#l65">65</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l75" href="#l75">75</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l66" href="#l66">66</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l76" href="#l76">76</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
                 <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
             </tr>
             <tr>
-                <td class="text-right src linenos"><a class="normal" id="l77" href="#l77">77</a></td>
+                <td class="text-right src linenos"><a class="normal" id="l68" href="#l68">68</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: calibrate/calibrate.hpp</div>
-            <div>Date: 2026-03-03 18:58:44</div>
+            <div>Date: 2026-03-08 22:22:42</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,9 +59,9 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l19">found::CalibrationAlgorithm::CalibrationAlgorithm() (line 19)</a></td><td>called 28 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l21">found::CalibrationAlgorithm::~CalibrationAlgorithm() (line 21)</a></td><td>called 28 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l32">found::LOSTCalibrationAlgorithm::LOSTCalibrationAlgorithm() (line 32)</a></td><td>called 28 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l19">found::CalibrationAlgorithm::CalibrationAlgorithm() (line 19)</a></td><td>called 32 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l21">found::CalibrationAlgorithm::~CalibrationAlgorithm() (line 21)</a></td><td>called 32 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l32">found::LOSTCalibrationAlgorithm::LOSTCalibrationAlgorithm() (line 32)</a></td><td>called 32 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -209,7 +209,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l19" href="#l19">19</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">28</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">CalibrationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -223,7 +223,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">56</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">64</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">CalibrationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -300,7 +300,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l32" href="#l32">32</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">28</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">32</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">LOSTCalibrationAlgorithm</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -329,108 +329,115 @@
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @param orientations The pair of orientations to use</span></td>
+                <td class="src "><span class="cm">     * @param orientations orientation.first is the reference frame F in terms of G in spherical coordinates.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
+                <td class="src "><span class="cm">     * orientation.second is the orientation of reference frame L in terms of G in spherical coordinates.</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @return The quaternion that represents the calibration</span></td>
+                <td class="src "><span class="cm">     * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
+                <td class="src "><span class="cm">     * @return The quaternion that represents the rotation from reference frame F to reference frame L</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @note Set the reference orientation to 0 to make this absolute (i.e., </span></td>
+                <td class="src "><span class="cm">     * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * the orientation of this camera becomes the relative rotation)</span></td>
+                <td class="src "><span class="cm">     * @note Set the reference orientation to 0 to make this absolute (i.e., </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * </span></td>
+                <td class="src "><span class="cm">     * the orientation of this camera becomes the relative rotation)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     * @post The resulting quaternion is a backwards quaternion</span></td>
+                <td class="src "><span class="cm">     * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">     */</span></td>
+                <td class="src "><span class="cm">     * @pre orientation.first and orientation.second must be respective to the same reference frame G</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="w">    </span><span class="n">Quaternion</span><span class="w"> </span><span class="nf">Run</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">EulerAngles</span><span class="p">,</span><span class="w"> </span><span class="n">EulerAngles</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">orientations</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span></td>
+                <td class="src "><span class="cm">     */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">};</span></td>
+                <td class="src "><span class="w">    </span><span class="n">Quaternion</span><span class="w"> </span><span class="nf">Run</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">EulerAngles</span><span class="p">,</span><span class="w"> </span><span class="n">EulerAngles</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">orientations</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="p">};</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_CALIBRATE_CALIBRATE_HPP_</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_CALIBRATE_CALIBRATE_HPP_</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
