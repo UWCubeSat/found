@@ -16,7 +16,7 @@ TEST(CalibrationTest, TestCalibrateAbsolute) {
     EulerAngles reference(0, 0, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(local, reference);
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
     Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
@@ -31,7 +31,7 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
     EulerAngles reference(DECIMAL_M_PI / 2, 0, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(local, reference);
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
     Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
@@ -46,7 +46,7 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
     EulerAngles reference(DECIMAL_M_PI / 3, -DECIMAL_M_PI / 6, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(local, reference);
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     // Round-trip: S2Q(reference) * result.conjugate() should recover S2Q(local)
     Quaternion roundTrip = SphericalToQuaternion(reference) * result.conjugate();
@@ -62,7 +62,7 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     EulerAngles reference(11 * DECIMAL_M_PI / 6, -DECIMAL_M_PI / 4, 0);
 
     LOSTCalibrationAlgorithm algorithm;
-    Quaternion result = algorithm.Run(local, reference);
+    Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
     Quaternion expectedLocalQ = SphericalToQuaternion(local);
     Quaternion actualLocalQ = SphericalToQuaternion(reference) * result.conjugate();

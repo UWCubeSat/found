@@ -24,8 +24,6 @@
 
 namespace found {
 
-using Orientations = std::pair<EulerAngles, EulerAngles>;
-
 TEST(NominalPipelineTest, TestPipelinesAsStages) {
     // skip calibration stage, because it only has 1 stage
 

@@ -33,17 +33,17 @@ class LOSTCalibrationAlgorithm : public CalibrationAlgorithm {
     /**
      * Runs the calibration algorithm
      * 
-     * @param orientationF The orientation of reference frame F in terms of G in spherical coordinates.
-     * @param orientationL The orientation of reference frame L in terms of G in spherical coordinates.
+     * @param orientations orientation.first is the reference frame F in terms of G in spherical coordinates.
+     * orientation.second is the orientation of reference frame L in terms of G in spherical coordinates.
      * 
      * @return The quaternion that represents the rotation from reference frame F to reference frame L
      * 
      * @note Set the reference orientation to 0 to make this absolute (i.e., 
      * the orientation of this camera becomes the relative rotation)
      * 
-     * @pre orientationF and orientationL must be respective to the same reference frame G
+     * @pre orientation.first and orientation.second must be respective to the same reference frame G
      */
-    Quaternion Run(const EulerAngles &orientationF, const EulerAngles &orientationL) override;
+    Quaternion Run(const std::pair<EulerAngles, EulerAngles> &orientations) override;
 };
 
 }  // namespace found

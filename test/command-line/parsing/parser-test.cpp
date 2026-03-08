@@ -84,7 +84,7 @@ TEST_F(ParserTest, TestDistanceParserBaseCase) {
 }
 
 TEST_F(ParserTest, DistanceParserGeneral) {
-    int argc = 42;
+    int argc = 40;
     const char *argv[] = {"found", "distance",
         "--image", "test/common/assets/example_image.jpg",
         "--calibration-data", "test/common/assets/empty-df.found",
@@ -104,8 +104,7 @@ TEST_F(ParserTest, DistanceParserGeneral) {
         "--isdda-discrim-ratio", "50.5",
         "--isdda-pdf-order", "9",
         "--isdda-radius-loss-order", "3",
-        "--output-file", "example.found",
-        "--camera-equatorial-coordinate-offset", "1.0,2.0,3.0,4.0"};
+        "--output-file", "example.found"};
     DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
 
     Image expectedImage = strtoimage("test/common/assets/example_image.jpg");
@@ -133,7 +132,6 @@ TEST_F(ParserTest, DistanceParserGeneral) {
     ASSERT_EQ(9, options.ISDDAPdfOrd);
     ASSERT_EQ(3, options.ISDDARadLossOrd);
     ASSERT_EQ("example.found", options.outputFile);
-    ASSERT_QUAT_EQ_DEFAULT(Quaternion(4.0, 1.0, 2.0, 3.0), options.cameraEquatorialCoordinateOffset);
 
     stbi_image_free(expectedImage.image);  // Free the image memory
     stbi_image_free(options.image.image);  // Free the image memory

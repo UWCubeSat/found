@@ -107,43 +107,42 @@ class Camera {
      *
      * @return The camera calibration matrix
      */
-    const Mat3& GetCalibrationMatrix() const { return calibrationMatrix; }
+    const Mat3& GetCalibrationMatrix() const { return calibrationMatrix_; }
 
     /**
      * Expose inverse camera calibration matrix (intrinsic matrix) 
      *
      * @return The inverse camera calibration matrix
      */ 
-    const Mat3& GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix; }
+    const Mat3& GetInverseCalibrationMatrix() const { return inverseCalibrationMatrix_; }
 
  private:
    /**
      * Computes and initializes the calibration matrix and the inverse calibration matrix 
      * from camera parameters.
      * 
-     * @post calibrationMatrix and inverseCalibrationMatrix are initialized and ready to use.
      */
     Mat3 initCalibrationMatrix();
 
     // TODO: distortion
     /// The focal length (m)
-    decimal focalLength;
+    decimal focalLength_;
     /// The x resolution (pixels)
-    int xResolution;
+    int xResolution_;
     /// The y resolution (pixels)
-    int yResolution;
+    int yResolution_;
     /// The x center (pixels)
-    decimal xCenter;
+    decimal xCenter_;
     /// The y center (pixels)
-    decimal yCenter;
+    decimal yCenter_;
     /// The x pixel pitch (m)
-    decimal xPixelPitch;
+    decimal xPixelPitch_;
     /// The y pixel pitch (m)
-    decimal yPixelPitch;
+    decimal yPixelPitch_;
     /// The camera calibration matrix
-    Mat3 calibrationMatrix;
+    Mat3 calibrationMatrix_;
     /// The inverse camera calibration matrix
-    Mat3 inverseCalibrationMatrix;
+    Mat3 inverseCalibrationMatrix_;
 };
 
 }  // namespace found

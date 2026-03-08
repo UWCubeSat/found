@@ -38,24 +38,27 @@ class CameraTest : public testing::Test {
  * Verify explicit calibration matrix values for the ideal camera.
  * With focalLength = 0.01, pixelSize = 1e-5:
  *   dx = dy = 0.01 / 1e-5 = 1000
- *   K = | 1000    0   500 |
- *       |    0 1000   500 |
- *       |    0    0     1 |
+ *   K = | 500  -1000     0 |
+ *       | 500     0   -1000 |
+ *       |   1     0      0 |
  */
 TEST_F(CameraTest, IdealCameraCalibrationMatrixValues) {
     const Mat3 &K = idealCamera.GetCalibrationMatrix();
 
-    EXPECT_NEAR(K(0, 0), 1000.0, 1e-9);
-    EXPECT_NEAR(K(1, 1), 1000.0, 1e-9);
-    EXPECT_NEAR(K(0, 2), 500.0, 1e-9);
-    EXPECT_NEAR(K(1, 2), 500.0, 1e-9);
-    EXPECT_NEAR(K(2, 2), 1.0, 1e-9);
+    // Row 0: [xCenter, -dy, 0]
+    EXPECT_NEAR(K(0, 0), 500.0, 1e-9);
+    EXPECT_NEAR(K(0, 1), -1000.0, 1e-9);
+    EXPECT_NEAR(K(0, 2), 0.0, 1e-9);
 
-    // Off-diagonal / unused entries should be zero
-    EXPECT_NEAR(K(0, 1), 0.0, 1e-9);
-    EXPECT_NEAR(K(1, 0), 0.0, 1e-9);
-    EXPECT_NEAR(K(2, 0), 0.0, 1e-9);
+    // Row 1: [yCenter, 0, -dx]
+    EXPECT_NEAR(K(1, 0), 500.0, 1e-9);
+    EXPECT_NEAR(K(1, 1), 0.0, 1e-9);
+    EXPECT_NEAR(K(1, 2), -1000.0, 1e-9);
+
+    // Row 2: [1, 0, 0]
+    EXPECT_NEAR(K(2, 0), 1.0, 1e-9);
     EXPECT_NEAR(K(2, 1), 0.0, 1e-9);
+    EXPECT_NEAR(K(2, 2), 0.0, 1e-9);
 }
 
 /**
@@ -63,24 +66,27 @@ TEST_F(CameraTest, IdealCameraCalibrationMatrixValues) {
  * focalLength = 0.05, xPixelPitch = 5e-6, yPixelPitch = 4e-6
  *   dx = 0.05 / 5e-6 = 10000
  *   dy = 0.05 / 4e-6 = 12500
- *   K = | 10000      0   640.5 |
- *       |     0  12500   360.5 |
- *       |     0      0       1 |
+ *   K = | 640.5  -12500      0 |
+ *       | 360.5       0  -10000 |
+ *       |     1       0      0 |
  */
 TEST_F(CameraTest, FullCameraCalibrationMatrixValues) {
     const Mat3 &K = fullCamera.GetCalibrationMatrix();
 
-    EXPECT_NEAR(K(0, 0), 10000.0, 1e-6);
-    EXPECT_NEAR(K(1, 1), 12500.0, 1e-6);
-    EXPECT_NEAR(K(0, 2), 640.5, 1e-9);
-    EXPECT_NEAR(K(1, 2), 360.5, 1e-9);
-    EXPECT_NEAR(K(2, 2), 1.0, 1e-9);
+    // Row 0: [xCenter, -dy, 0]
+    EXPECT_NEAR(K(0, 0), 640.5, 1e-6);
+    EXPECT_NEAR(K(0, 1), -12500.0, 1e-6);
+    EXPECT_NEAR(K(0, 2), 0.0, 1e-6);
 
-    // Off-diagonal / unused entries should be zero
-    EXPECT_NEAR(K(0, 1), 0.0, 1e-9);
-    EXPECT_NEAR(K(1, 0), 0.0, 1e-9);
-    EXPECT_NEAR(K(2, 0), 0.0, 1e-9);
-    EXPECT_NEAR(K(2, 1), 0.0, 1e-9);
+    // Row 1: [yCenter, 0, -dx]
+    EXPECT_NEAR(K(1, 0), 360.5, 1e-6);
+    EXPECT_NEAR(K(1, 1), 0.0, 1e-6);
+    EXPECT_NEAR(K(1, 2), -10000.0, 1e-6);
+
+    // Row 2: [1, 0, 0]
+    EXPECT_NEAR(K(2, 0), 1.0, 1e-6);
+    EXPECT_NEAR(K(2, 1), 0.0, 1e-6);
+    EXPECT_NEAR(K(2, 2), 0.0, 1e-6);
 }
 
 /**
@@ -121,11 +127,12 @@ TEST_F(CameraTest, FullInverseCameraCalibrationMatrixTest) {
 
 /**
  * On-axis projection should be independent of depth.
+ * In new coord system (X=depth): (1,0,0), (5,0,0), (100,0,0) all map to center.
  */
 TEST_F(CameraTest, SpatialToPixelOnAxisTest) {
-    Vec2 p1 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 1));
-    Vec2 p2 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 5));
-    Vec2 p3 = idealCamera.SpatialToPixelCoordinates(Vec3(0, 0, 100));
+    Vec2 p1 = idealCamera.CameraToPixelCoordinates(Vec3(1, 0, 0));
+    Vec2 p2 = idealCamera.CameraToPixelCoordinates(Vec3(5, 0, 0));
+    Vec2 p3 = idealCamera.CameraToPixelCoordinates(Vec3(100, 0, 0));
 
     EXPECT_NEAR(p1.x(), 500.0, 1e-9);
     EXPECT_NEAR(p1.y(), 500.0, 1e-9);
@@ -136,33 +143,34 @@ TEST_F(CameraTest, SpatialToPixelOnAxisTest) {
 }
 
 /**
- * Simple right-shift: (1, 0, 1) should project to
- *   pixel_x = dx * (1/2) + xCenter = 500 + 500 = 1000
- *   pixel_y = dy * (0/2) + yCenter = 0 + 500 = 500
+ * Simple right-shift: (2, -1, 0) in new X-depth coords (Y=left so -Y=right).
+ *   pixel_col = xCenter - dy*(y/x) = 500 - 1000*(-0.5) = 1000
+ *   pixel_row = yCenter - dx*(z/x) = 500 - 1000*0 = 500
  */
 TEST_F(CameraTest, SpatialToPixelSimpleRight) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(1, 0, 2));
+    Vec2 pixel = idealCamera.CameraToPixelCoordinates(Vec3(2, -1, 0));
     EXPECT_NEAR(pixel.x(), 1000.0, 1e-9);
     EXPECT_NEAR(pixel.y(), 500.0, 1e-9);
 }
 
 /**
- * Simple down-shift: (0, 1, 1) should project to
- *   pixel_x = 0 + 500 = 500
- *   pixel_y = 1000 * 0.5 + 500 = 1000
+ * Simple down-shift: (2, 0, -1) in new X-depth coords (Z=up so -Z=down).
+ *   pixel_col = xCenter - dy*(y/x) = 500 - 1000*0 = 500
+ *   pixel_row = yCenter - dx*(z/x) = 500 - 1000*(-0.5) = 1000
  */
 TEST_F(CameraTest, SpatialToPixelSimpleDown) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(0, 1, 2));
+    Vec2 pixel = idealCamera.CameraToPixelCoordinates(Vec3(2, 0, -1));
     EXPECT_NEAR(pixel.x(), 500.0, 1e-9);
     EXPECT_NEAR(pixel.y(), 1000.0, 1e-9);
 }
 
 /**
- * Perspective scaling: doubling z halves the offset from center.
- * (1, 1, 2) => pixel = (dx * 0.5 + 500, dy * 0.5 + 500) = (1000, 1000)
+ * Perspective scaling: (2, -1, -1) in new X-depth coords.
+ *   pixel_col = xCenter - dy*(-0.5) = 500 + 500 = 1000
+ *   pixel_row = yCenter - dx*(-0.5) = 500 + 500 = 1000
  */
 TEST_F(CameraTest, SpatialToPixelPerspective) {
-    Vec2 pixel = idealCamera.SpatialToPixelCoordinates(Vec3(1, 1, 2));
+    Vec2 pixel = idealCamera.CameraToPixelCoordinates(Vec3(2, -1, -1));
     EXPECT_NEAR(pixel.x(), 1000.0, 1e-9);
     EXPECT_NEAR(pixel.y(), 1000.0, 1e-9);
 }
@@ -170,25 +178,25 @@ TEST_F(CameraTest, SpatialToPixelPerspective) {
 TEST_F(CameraTest, PixelToImageCoordinatesCenterTest) {
     Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(500, 500));
 
-    EXPECT_NEAR(imageCoords.x(), 0.0, 1e-9);
+    EXPECT_NEAR(imageCoords.x(), 1.0, 1e-9);
     EXPECT_NEAR(imageCoords.y(), 0.0, 1e-9);
-    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), 0.0, 1e-9);
 }
 
 TEST_F(CameraTest, PixelToImageCoordinatesOffCenterPositiveTest) {
     Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(1000, 1000));
 
-    EXPECT_NEAR(imageCoords.x(), .5, 1e-9);
-    EXPECT_NEAR(imageCoords.y(), .5, 1e-9);
-    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
+    EXPECT_NEAR(imageCoords.x(), 1.0, 1e-9);
+    EXPECT_NEAR(imageCoords.y(), -0.5, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), -0.5, 1e-9);
 }
 
 TEST_F(CameraTest, PixelToImageCoordinatesOffCenterNegativeTest) {
     Vec3 imageCoords = idealCamera.PixelToImageCoordinates(Vec2(0, 0));
 
-    EXPECT_NEAR(imageCoords.x(), -.5, 1e-9);
-    EXPECT_NEAR(imageCoords.y(), -.5, 1e-9);
-    EXPECT_NEAR(imageCoords.z(), 1.0, 1e-9);
+    EXPECT_NEAR(imageCoords.x(), 1.0, 1e-9);
+    EXPECT_NEAR(imageCoords.y(), 0.5, 1e-9);
+    EXPECT_NEAR(imageCoords.z(), 0.5, 1e-9);
 }
 
 ////////////////////////////

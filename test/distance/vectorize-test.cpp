@@ -35,7 +35,7 @@ Vec3 ProjectVector(Vec3 &v, Quaternion &q) {
 TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityRotation) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(0, DECIMAL_M_PI/2, 0).conjugate();
-    LOSTVectorGenerationAlgorithm vectorGen(Quaternion::Identity(), referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(Quaternion::Identity(), referenceOrientation);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -81,7 +81,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(0, 0, 0).conjugate();
     Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL_M_PI, 0, 0).conjugate();
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -97,7 +97,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
     Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 12), 0, 0).conjugate();
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -113,7 +113,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
     Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0).conjugate();
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -145,7 +145,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoArbitraryReferenceAndRel
     // Setup Dependencies
     Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(5.9), DECIMAL(1.2), DECIMAL(4.7)).conjugate();
     Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(5.2), DECIMAL(-0.5), DECIMAL(3.4)).conjugate();
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     Quaternion newOrientation = (relativeOrientation * referenceOrientation);
 
@@ -164,7 +164,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
     // Setup Dependencies
     Quaternion referenceOrientation = Quaternion(0, 1.0, 2.0, 3.0).normalized();
     Quaternion relativeOrientation = Quaternion(0, 4.0, 5.0, 6.0).normalized();
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation, Quaternion::Identity());
+    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
 
     // Create a PositionVector to test with
     PositionVector x_E = {100.0, 200.0, 300.0};
@@ -172,27 +172,6 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestGeneral) {
 
     // Round-trip: applying the full inverse rotation chain to actual should recover x_E
     PositionVector backToX_E = referenceOrientation.conjugate() * relativeOrientation.conjugate() * actual;
-    ASSERT_VEC3_EQ_DEFAULT(x_E, backToX_E);
-}
-
-TEST(LOSTVectorGenerationAlgorithmTest, TestNonStandardCameraRotation) {
-    // Setup Dependencies
-    Quaternion referenceOrientation = Quaternion(0, 1.0, 2.0, 3.0).normalized();
-    Quaternion relativeOrientation = Quaternion(0, 4.0, 5.0, 6.0).normalized();
-    Quaternion cameraEquatorialCoordinateOffset = Quaternion(AngleAxis(DECIMAL(DECIMAL_M_PI / 4), Vec3(1, 0, 0)));
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation,
-                                            cameraEquatorialCoordinateOffset);
-
-    // Create a PositionVector to test with
-    PositionVector x_E = {100.0, 200.0, 300.0};
-    PositionVector actual = -vectorGen.Run(x_E);
-
-    // Round-trip: applying the full inverse rotation chain to actual should recover x_E
-    // orientation = relOri * refOri * camOffset, so inverse = camOffset.conj * refOri.conj * relOri.conj
-    PositionVector backToX_E = cameraEquatorialCoordinateOffset.conjugate()
-        * referenceOrientation.conjugate()
-        * relativeOrientation.conjugate()
-        * actual;
     ASSERT_VEC3_EQ_DEFAULT(x_E, backToX_E);
 }
 

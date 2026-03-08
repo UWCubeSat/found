@@ -15,10 +15,10 @@ Camera::Camera(decimal focalLength,
                int xResolution, int yResolution,
                decimal xCenter, decimal yCenter,
                decimal xPixelPitch, decimal yPixelPitch)
-    : focalLength(focalLength),
-      xResolution(xResolution), yResolution(yResolution),
-      xCenter(xCenter), yCenter(yCenter),
-      xPixelPitch(xPixelPitch), yPixelPitch(yPixelPitch),
+    : focalLength_(focalLength),
+      xResolution_(xResolution), yResolution_(yResolution),
+      xCenter_(xCenter), yCenter_(yCenter),
+      xPixelPitch_(xPixelPitch), yPixelPitch_(yPixelPitch),
       calibrationMatrix_(initCalibrationMatrix()),
       inverseCalibrationMatrix_(calibrationMatrix_.inverse()) {}
 
@@ -29,20 +29,22 @@ Camera::Camera(decimal focalLength, decimal pixelSize,
              pixelSize, pixelSize) {}
 
 Mat3 Camera::initCalibrationMatrix() {
-    decimal dx = focalLength / xPixelPitch;
-    decimal dy = focalLength / yPixelPitch;
+    decimal dx = focalLength_ / xPixelPitch_;
+    decimal dy = focalLength_ / yPixelPitch_;
 
     // Compute the calibration matrix
-    return Mat3 <<  xCenter     , -dy         , DECIMAL(0.0),
-                    yCenter     , DECIMAL(0.0), -dx         ,
-                    DECIMAL(1.0), DECIMAL(0.0), DECIMAL(0.0);
+    Mat3 result;
+    result <<  xCenter     , -dy         , DECIMAL(0.0),
+               yCenter     , DECIMAL(0.0), -dx         ,
+               DECIMAL(1.0), DECIMAL(0.0), DECIMAL(0.0);
+    return result;
 }
 
-Vec2 Camera::SpatialToPixelCoordinates(const Vec3 &vector) const {
+Vec2 Camera::CameraToPixelCoordinates(const Vec3 &vector) const {
     // can't handle things behind the camera.
-    assert(vector.z() > 0);
-    // use similiar triangles to get the image coordinates
-    Vec3 homogenousImageCoordinates = Vec3(vector.x() / vector.z(), vector.y() / vector.z(), DECIMAL(1.0));
+    assert(vector.x() > 0);
+    // use similar triangles to get the image coordinates
+    Vec3 homogenousImageCoordinates = Vec3(DECIMAL(1.0), vector.y() / vector.x(), vector.z() / vector.x());
     // transform image coordinates to pixel coordinates using the calibration matrix
     Vec3 homogenousPixelCoordinates = calibrationMatrix * homogenousImageCoordinates;
 
