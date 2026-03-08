@@ -59,7 +59,7 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    Quaterntion actualReference = result * SphericalToQuaternion(local2)
+    Quaternion actualReference = result * SphericalToQuaternion(local2);
 
     // See if the calibration holds for different axes
     ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference2),
