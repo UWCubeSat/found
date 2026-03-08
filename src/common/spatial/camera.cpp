@@ -34,8 +34,8 @@ Mat3 Camera::initCalibrationMatrix() {
 
     // Compute the calibration matrix
     Mat3 result;
-    result <<  xCenter     , -dy         , DECIMAL(0.0),
-               yCenter     , DECIMAL(0.0), -dx         ,
+    result <<  xCenter_    , -dy         , DECIMAL(0.0),
+               yCenter_    , DECIMAL(0.0), -dx         ,
                DECIMAL(1.0), DECIMAL(0.0), DECIMAL(0.0);
     return result;
 }
@@ -46,22 +46,22 @@ Vec2 Camera::CameraToPixelCoordinates(const Vec3 &vector) const {
     // use similar triangles to get the image coordinates
     Vec3 homogenousImageCoordinates = Vec3(DECIMAL(1.0), vector.y() / vector.x(), vector.z() / vector.x());
     // transform image coordinates to pixel coordinates using the calibration matrix
-    Vec3 homogenousPixelCoordinates = calibrationMatrix * homogenousImageCoordinates;
+    Vec3 homogenousPixelCoordinates = calibrationMatrix_ * homogenousImageCoordinates;
 
     return Vec2(homogenousPixelCoordinates.x(), homogenousPixelCoordinates.y());
 }
 
 Vec3 Camera::PixelToImageCoordinates(const Vec2 &vector) const {
     assert(InSensor(vector));
-    return inverseCalibrationMatrix * Vec3(vector.x(), vector.y(), DECIMAL(1.0));
+    return inverseCalibrationMatrix_ * Vec3(vector.x(), vector.y(), DECIMAL(1.0));
 }
 
 bool Camera::InSensor(const Vec2 &vector) const {
     // if vector.x == xResolution, then it is at the rightmost point
     // of the pixel that's "hanging off" the edge of the image,
     // so vector is still in the image.
-    return vector.x() >= 0 && vector.x() <= xResolution
-        && vector.y() >= 0 && vector.y() <= yResolution;
+    return vector.x() >= 0 && vector.x() <= xResolution_
+        && vector.y() >= 0 && vector.y() <= yResolution_;
 }
 
 }  // namespace found

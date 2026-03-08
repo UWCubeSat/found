@@ -50,24 +50,20 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
 }
 
 TEST(CalibrationTest, TestCalibrateGeneral) {
-    EulerAngles local(9 * DECIMAL_M_PI / 5, 3 * DECIMAL_M_PI / 7, 7 * DECIMAL_M_PI / 9);
-    EulerAngles reference(11 * DECIMAL_M_PI / 6, -1 * DECIMAL_M_PI / 4, 0);
+    EulerAngles local(     deg(120),    deg(20),     deg(60));
+    EulerAngles reference( deg(330),    deg(50),     deg(120));
+    // same offsets different angles
+    EulerAngles local2(     deg(100),    deg(10),     deg(0));
+    EulerAngles reference2( deg(310),    deg(40),     deg(60));
 
     LOSTCalibrationAlgorithm algorithm;
     Quaternion result = algorithm.Run(std::make_pair(local, reference));
 
-    // Quaternion actualReference = result * SphericalToQuaternion(local);
-
-    // // See if multiplying the reference to the relative orientation
-    // // gives the local orientation back.
-    // ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference), actualReference);
-
-    Quaternion diffReference = SphericalToQuaternion(4.4, 2.9, 0.7);
-    Quaternion diffLocal = result * diffReference;
+    Quaterntion actualReference = result * SphericalToQuaternion(local2)
 
     // See if the calibration holds for different axes
-    ASSERT_QUAT_EQ_DEFAULT((SphericalToQuaternion(local) * SphericalToQuaternion(reference).conjugate()).conjugate(),
-                           (diffLocal * diffReference.conjugate()));
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference2),
+                           actualReference);
 }
 
 }  // namespace found
