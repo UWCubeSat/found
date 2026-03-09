@@ -17,7 +17,7 @@
     EXPECT_LT(abs(vec1(0) - vec2(0)), tolerance); \
     EXPECT_LT(abs(vec1(1) - vec2(1)), tolerance);
 
-namespace found { 
+namespace found {
 
 TEST(TLSTest, vec3Test) {
     Eigen::MatrixXd data {
@@ -57,4 +57,4 @@ TEST(TLSTest, vec2PermutatedTest) {
     VECTOR2_EQUALS(actual, expected, TLS_TOLERANCE);
 }
 
-} // namespace found
+}  // namespace found

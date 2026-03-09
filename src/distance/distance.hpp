@@ -9,322 +9,387 @@
 #include "common/spatial/attitude-utils.hpp"
 #include "common/spatial/camera.hpp"
 
-namespace found {
+namespace found
+{
 
-/**
- * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
- * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
- * 
- * @note This algorithm performs optimally when the given Points is in polar order, i.e.
- * if we define the centroid of the points as P, for any
- * three consecutive points A B and C, angle APB is less than
- * angle APC
- */
-class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVector> {
- public:
-    // Constructs this
-    DistanceDeterminationAlgorithm() = default;
-    // Destroys this
-    virtual ~DistanceDeterminationAlgorithm() {}
-};
-
-/**
- * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
- * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
- * 
- * @note This class assumes that Earth is a perfect sphere
-*/
-class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
- public:
-    /**
-     * Creates a SphericalDeterminationAlgorithm, which deduces
-     * the Position vector of a sattelite from Earth by modeling
-     * Earth as a sphere
-     * 
-     * @param radius The radius of Earth
-     * @param cam The camera used to capture the picture of Earth
-     */
-    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(std::move(cam)), radius_(radius) {}
-    ~SphericalDistanceDeterminationAlgorithm() {}
-
-    /**
-     * Obtains the position of the planet relative to the camera
-     * 
-     * @param p The points on the edge of Earth (in the image taken
-     * by the camera given to this)
-     * 
-     * @return PositionVector The position vector of the Earth relative
-     * to the camera
-     * 
-     * @pre p must refer to points taken by the camera that was passed to
-     * this
-     * 
-     * @post If p.size() < 3, then the result is exactly the zero vector
-     * */
-    PositionVector Run(const Points &p) override;
-
- protected:
-    /**
-     * Returns the center of earth as a 3d Vector
-     *
-     * @param a The first point on the edge of Earth
-     * @param b The second point on the edge of Earth
-     * @param c The third point on the edge of Earth
-     * 
-     * @return The center of earth as a 3d Vector
-     * 
-     * @pre spats.size() >= 3
-     * 
-     * @pre a, b and c are normalized, projected points from the camera
+   /**
+    * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
+    * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+    *
+    * @note This algorithm performs optimally when the given Points is in polar order, i.e.
+    * if we define the centroid of the points as P, for any
+    * three consecutive points A B and C, angle APB is less than
+    * angle APC
     */
-    Vec3 getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c);
+   class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVector>
+   {
+   public:
+      // Constructs this
+      DistanceDeterminationAlgorithm() = default;
+      // Destroys this
+      virtual ~DistanceDeterminationAlgorithm() {}
+   };
 
-    /**
-     * Returns the position of the planet relative to the camera
-     * 
-     * @param a The first point on the edge of Earth
-     * @param b The second point on the edge of Earth
-     * @param c The third point on the edge of Earth
-     * 
-     * @return PositionVector The position vector of the Earth relative
-     * to the camera
-     * 
-     * @pre p must refer to points taken by the camera that was passed to
-     * this
-     * 
-     * @pre p.size() >= 3
-     * 
-     * @pre a, b and c are normalized, projected points from the camera
-     */
-    PositionVector Run(const Vec3 &a, const Vec3 &b, const Vec3 &c);
-
-    /**
-     * cam_ field instance describes the camera settings used for the photo taken
+   /**
+    * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
+    * algorithm calculates the distance from Earth based on the pixels of Earth's edge found in the image.
+    *
+    * @note This class treats Earth as a spheroid (accurate for most bodies in our solar system)
     */
-    Camera cam_;
+   class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm
+   {
+   public:
+      /**
+       * Creates a SpheroidDistanceDeterminationAlgorithm, which deduces
+       * the position vector of a sattelite from Earth by modeling
+       * Earth as a spheroid
+       *
+       * @param principleAxes The principle axes that define Earth's spheroid
+       * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+       * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+       * @param cam The camera used to capture the picture of Earth
+       * @param attitude  The global to local transformation matrix
+       * converts a vector defined in global coordinates
+       * to one defined in local coordinates
+       **/
+      SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Mat3 globalToLocalMat) : cam_(cam), principleAxes_(principleAxes), TPC_(globalToLocalMat) {}
+      SpheroidDistanceDeterminationAlgorithm(Camera &&cam) : cam_(cam) {}
+      ~SpheroidDistanceDeterminationAlgorithm() {}
 
-    /**
-     * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
+      /**
+       * Obtains the position of the planet relative to the camera
+       *
+       * @param p The points on the edge of Earth (in the image taken
+       * by the camera given to this)
+       *
+       * @return PositionVector The position vector of the Earth relative
+       * to the camera
+       *
+       *
+       * */
+      PositionVector Run(const Points &p) override;
+
+   protected:
+      // cam_ field instance describes the camera settings used for the photo taken
+      Camera cam_;
+
+      /**
+       * describes the principle axes that define Earth's spheroid
+       * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+       * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+       */
+      Vec3 principleAxes_;
+
+      // The global to local transformation matrix
+      // converts a vector defined in global coordinates
+      // to one defined in local coordinates
+      // NOTE the transpose of this gives TCP (local to global)
+      Mat3 TPC_;
+   };
+
+   /**
+    * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
+    * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+    *
+    * @note This class assumes that Earth is a perfect sphere
     */
-    decimal radius_;
+   class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm
+   {
+   public:
+      /**
+       * Creates a SphericalDeterminationAlgorithm, which deduces
+       * the Position vector of a sattelite from Earth by modeling
+       * Earth as a sphere
+       *
+       * @param radius The radius of Earth
+       * @param cam The camera used to capture the picture of Earth
+       */
+      SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(cam), radius_(radius) {}
+      ~SphericalDistanceDeterminationAlgorithm() {}
 
-    /**
-     * Calculated center vector
-     */
-    Vec3 center_;
+      /**
+       * Obtains the position of the planet relative to the camera
+       *
+       * @param p The points on the edge of Earth (in the image taken
+       * by the camera given to this)
+       *
+       * @return PositionVector The position vector of the Earth relative
+       * to the camera
+       *
+       * @pre p must refer to points taken by the camera that was passed to
+       * this
+       *
+       * @post If p.size() < 3, then the result is exactly the zero vector
+       * */
+      PositionVector Run(const Points &p) override;
 
-    /**
-     * Calculated radius
-     */
-    decimal r_;
-};
+   protected:
+      /**
+       * Returns the center of earth as a 3d Vector
+       *
+       * @param a The first point on the edge of Earth
+       * @param b The second point on the edge of Earth
+       * @param c The third point on the edge of Earth
+       *
+       * @return The center of earth as a 3d Vector
+       *
+       * @pre spats.size() >= 3
+       *
+       * @pre a, b and c are normalized, projected points from the camera
+       */
+      Vec3 getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
-/**
- * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
- * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
- * to use all the points given to it.
- * 
- * It uses
- * - selective randomization of Points, using a even polynomial
- *   distributions to prioritize points farther from selected
- *   points within triplets
- * - loss criterion to evaluate each guess
- * - softmax activation to figure out the plausibility of each guess
- * 
- * @note Testing data on `test/common/assets/example_earth1.png`:
- * 
- * SDDA -> (1.0456e+07, -67903.8, -972.935) m
- * - Distance Error: 0.752384891562%
- * - Angle Error: 1339.6805912772 arcseconds
- * - Execution Time: < 1 sec
- * 
- * ISDDA(100000, 0.8, INF, Quadratic Radius Loss AND Randomization) -> (1.0384e+07, -12571.3, -1057.05) m
- * - Distance Error: 0.0565676042517%
- * - Angle Error: 250.59497104116 arcseconds
- * - Execution Time: 11 sec
- * 
- * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) -> (1.03781e+07, -11536.7, -927.331) m
- * - Distance Error: 0.000294332681557%
- * - Angle Error: 230.031583013 arcseconds
- * - Execution Time: 11 sec
- * 
- * In optimized mode (-O3), all algorithms are less than 1 second.
- */
-class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanceDeterminationAlgorithm {
- public:
-    /**
-     * Creates a IterativeSphericalDistanceDeterminationAlgorithm
-     * 
-     * @param radius The radius of Earth
-     * @param cam The camera used to capture the picture of Earth
-     * @param minimumIterations The minimum number of iterations to perform
-     * @param maximumRefreshes The maximum number of times to refresh the reference position
-     * @param distanceRatio The maximum distance error between the evaluated and reference
-     * positions to be considered "the same" distance 
-     * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
-     * to accept for data
-     * @param pdfOrder The Shuffle Randomization Distribution Order
-     * @param radiusLossOrder The Loss Radius Error Order
-     * 
-     * @note Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss
-     * calculations
-     * 
-     * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
-     * in the final point
-     * 
-     * @post If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if
-     * they are odd, they will be incremented
-     */
-    IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
-                                                     Camera &&cam,
-                                                     size_t minimumIterations,
-                                                     size_t maximumRefreshes,
-                                                     decimal distanceRatio,
-                                                     decimal discriminatorRatio,
-                                                     int pdfOrder,
-                                                     int radiusLossOrder);
-    ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
+      /**
+       * Returns the position of the planet relative to the camera
+       *
+       * @param a The first point on the edge of Earth
+       * @param b The second point on the edge of Earth
+       * @param c The third point on the edge of Earth
+       *
+       * @return PositionVector The position vector of the Earth relative
+       * to the camera
+       *
+       * @pre p must refer to points taken by the camera that was passed to
+       * this
+       *
+       * @pre p.size() >= 3
+       *
+       * @pre a, b and c are normalized, projected points from the camera
+       */
+      PositionVector Run(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
-    /**
-     * Obtains the position of the planet relative to the camera
-     * 
-     * @param p The points on the edge of Earth (in the image taken
-     * by the camera given to this)
-     * 
-     * @return PositionVector The position vector of the Earth relative
-     * to the camera
-     * 
-     * @pre p must refer to points taken by the camera that was passed to
-     * this
-     * @pre p is radially sorted, i.e.
-     * if we define the centroid of the points as P, for any
-     * three consecutive points A B and C, angle APB is less than
-     * angle APC
-     * 
-     * @post If p.size() < 3, then the result is exactly the zero vector
-     * 
-     * @note If minimumIterations (from constructor) is less than the size of
-     * p, then it will increase the number of iterations to cover all of p
-     * */
-    PositionVector Run(const Points &p) override;
+      /**
+       * cam_ field instance describes the camera settings used for the photo taken
+       */
+      Camera cam_;
 
- private:
-    /**
-     * Generates a loss on a position vector
-     * 
-     * @param position The vector to evaluate
-     * @param targetDistanceSq The target distance squared of the position
-     * @param projectedPoints The projected points to evaluate against
-     * @param size The size of the projected points
-     * 
-     * @return The loss of position
-     * 
-     * @pre targetRadiusSq is not the true radius, but rather the
-     * distance obtained between the radius vector and a circle
-     * point when projected onto the unit sphere (normalized).
-     * It still functions the same way.
-     */
-    decimal GenerateLoss(PositionVector &position,
-                         decimal targetDistanceSq,
-                         std::unique_ptr<Vec3[]> &projectedPoints,
-                         size_t size);
+      /**
+       * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
+       */
+      decimal radius_;
 
-    /**
-     * Calls SphericalDistanceDeterminationAlgorithm::Run with
-     * randomized triplets of indicies from source
-     * 
-     * @param source The source of Vec3 objects
-     * @param n The number of elements in source
-     * @param logits The logits array to use for randomization
-     * 
-     * @return The resulting PositionVector from the 3 randomized
-     * points
-     * 
-     * @pre Any precondition from this->Run
-     * @pre source.size() >= 3
-     * @pre source[i] is normalized for all i in [0, source.size())
-     * 
-     * @note This algorithm uses a even polynomial distribution to
-     * prioritize points far away from a given index. We like that
-     * because it helps deal with noise. To exaggerate the difference
-     * in probability between points, you can use a function that grows
-     * much faster by changing the macro PDF which is defined within.
-     * Make sure the distribution function though is zero where you
-     * need it to be (i.e. At points already generated within a triplet
-     * so that you do not draw those points again)
-     * 
-     * @note The assumption of p from this->Run(p) being in polar
-     * order is quite important in this algorithm. Should that not
-     * be true, instead of using index differences in our polynomial
-     * distribution, we'd need to instead use the distance between
-     * the pixels corresponding to those indicies. This is not a
-     * terrible change in terms of code, but is more compuationally
-     * complex
-     */
-    PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n, std::unique_ptr<uint64_t[]> &logits);
+      /**
+       * Calculated center vector
+       */
+      Vec3 center_;
 
-    /**
-     * Performs exponentiation for uint64_t
-     * 
-     * @param base The base
-     * @param power The power
-     * 
-     * @return base ^ power
-     */
-    inline uint64_t Pow(uint64_t base, uint64_t power) {
-        uint64_t result = 1;
-        while (power > 0) {
-           if (power % 2 == 1)
-                 result *= base;
-           base *= base;
-           power /= 2;
-        }
-        return result;
-    }
+      /**
+       * Calculated radius
+       */
+      decimal r_;
+   };
 
-    /// The minimum number of iterations to use
-    size_t minimumIterations_;
-    /// The maximum number of times to refresh the reference position
-    size_t maximumRefreshes_;
-    /// The maximum distance ratio to accept
-    decimal distanceRatioSq_;
-    /// The maximum loss ratio to accept
-    decimal discriminatorRatio_;
-    /// The Shuffle randomization order
-    uint64_t pdfOrder_;
-    /// The Loss Radius error order
-    uint64_t radiusLossOrder_;
-};
+   /**
+    * The IterativeSphericalDistanceDeterminationAlgorithm is a variation of the
+    * SphericalDistanceDeterminationAlgorithm algorithm in that it runs it repeatedly
+    * to use all the points given to it.
+    *
+    * It uses
+    * - selective randomization of Points, using a even polynomial
+    *   distributions to prioritize points farther from selected
+    *   points within triplets
+    * - loss criterion to evaluate each guess
+    * - softmax activation to figure out the plausibility of each guess
+    *
+    * @note Testing data on `test/common/assets/example_earth1.png`:
+    *
+    * SDDA -> (1.0456e+07, -67903.8, -972.935) m
+    * - Distance Error: 0.752384891562%
+    * - Angle Error: 1339.6805912772 arcseconds
+    * - Execution Time: < 1 sec
+    *
+    * ISDDA(100000, 0.8, INF, Quadratic Radius Loss AND Randomization) -> (1.0384e+07, -12571.3, -1057.05) m
+    * - Distance Error: 0.0565676042517%
+    * - Angle Error: 250.59497104116 arcseconds
+    * - Execution Time: 11 sec
+    *
+    * ISDDA(100000, 0.8, INF, Quartic Radius Loss OR Randomization) -> (1.03781e+07, -11536.7, -927.331) m
+    * - Distance Error: 0.000294332681557%
+    * - Angle Error: 230.031583013 arcseconds
+    * - Execution Time: 11 sec
+    *
+    * In optimized mode (-O3), all algorithms are less than 1 second.
+    */
+   class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanceDeterminationAlgorithm
+   {
+   public:
+      /**
+       * Creates a IterativeSphericalDistanceDeterminationAlgorithm
+       *
+       * @param radius The radius of Earth
+       * @param cam The camera used to capture the picture of Earth
+       * @param minimumIterations The minimum number of iterations to perform
+       * @param maximumRefreshes The maximum number of times to refresh the reference position
+       * @param distanceRatio The maximum distance error between the evaluated and reference
+       * positions to be considered "the same" distance
+       * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
+       * to accept for data
+       * @param pdfOrder The Shuffle Randomization Distribution Order
+       * @param radiusLossOrder The Loss Radius Error Order
+       *
+       * @note Setting distanceRatio to DECIMAL_INF will exclude distance loss from loss
+       * calculations
+       *
+       * @note Setting discriminatorRatio to DECIMAL_INF will include all generated points
+       * in the final point
+       *
+       * @post If pdfOrder or radiusLossOrder less than 2, they will be made 2. Then if
+       * they are odd, they will be incremented
+       */
+      IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
+                                                       Camera &&cam,
+                                                       size_t minimumIterations,
+                                                       size_t maximumRefreshes,
+                                                       decimal distanceRatio,
+                                                       decimal discriminatorRatio,
+                                                       int pdfOrder,
+                                                       int radiusLossOrder);
+      ~IterativeSphericalDistanceDeterminationAlgorithm() = default;
 
-/**
- * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
- * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
- * 
- * @note This class assumes that Earth is a perfect ellipse
-*/
-class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
- public:
-    /**
-     * Initializes an EllipticDistanceDeterminationAlgorithm
-     * 
-     * @param radius The distance from Earth to use
-     */
-    explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
-    ~EllipticDistanceDeterminationAlgorithm();
+      /**
+       * Obtains the position of the planet relative to the camera
+       *
+       * @param p The points on the edge of Earth (in the image taken
+       * by the camera given to this)
+       *
+       * @return PositionVector The position vector of the Earth relative
+       * to the camera
+       *
+       * @pre p must refer to points taken by the camera that was passed to
+       * this
+       * @pre p is radially sorted, i.e.
+       * if we define the centroid of the points as P, for any
+       * three consecutive points A B and C, angle APB is less than
+       * angle APC
+       *
+       * @post If p.size() < 3, then the result is exactly the zero vector
+       *
+       * @note If minimumIterations (from constructor) is less than the size of
+       * p, then it will increase the number of iterations to cover all of p
+       * */
+      PositionVector Run(const Points &p) override;
 
-    /**
-    * Place documentation here. Press enter to automatically make a new line
-    * 
-    * @param p The points in the image on Earth's horizon
-    * 
-    * @return The position vector of the satellite with respect
-    * to the camera's coordinate system
-    * */
-    PositionVector Run(const Points &p) override;
- private:
-    // Fields specific to this algorithm, and helper methods
-};
+   private:
+      /**
+       * Generates a loss on a position vector
+       *
+       * @param position The vector to evaluate
+       * @param targetDistanceSq The target distance squared of the position
+       * @param projectedPoints The projected points to evaluate against
+       * @param size The size of the projected points
+       *
+       * @return The loss of position
+       *
+       * @pre targetRadiusSq is not the true radius, but rather the
+       * distance obtained between the radius vector and a circle
+       * point when projected onto the unit sphere (normalized).
+       * It still functions the same way.
+       */
+      decimal GenerateLoss(PositionVector &position,
+                           decimal targetDistanceSq,
+                           std::unique_ptr<Vec3[]> &projectedPoints,
+                           size_t size);
 
-}  // namespace found
+      /**
+       * Calls SphericalDistanceDeterminationAlgorithm::Run with
+       * randomized triplets of indicies from source
+       *
+       * @param source The source of Vec3 objects
+       * @param n The number of elements in source
+       * @param logits The logits array to use for randomization
+       *
+       * @return The resulting PositionVector from the 3 randomized
+       * points
+       *
+       * @pre Any precondition from this->Run
+       * @pre source.size() >= 3
+       * @pre source[i] is normalized for all i in [0, source.size())
+       *
+       * @note This algorithm uses a even polynomial distribution to
+       * prioritize points far away from a given index. We like that
+       * because it helps deal with noise. To exaggerate the difference
+       * in probability between points, you can use a function that grows
+       * much faster by changing the macro PDF which is defined within.
+       * Make sure the distribution function though is zero where you
+       * need it to be (i.e. At points already generated within a triplet
+       * so that you do not draw those points again)
+       *
+       * @note The assumption of p from this->Run(p) being in polar
+       * order is quite important in this algorithm. Should that not
+       * be true, instead of using index differences in our polynomial
+       * distribution, we'd need to instead use the distance between
+       * the pixels corresponding to those indicies. This is not a
+       * terrible change in terms of code, but is more compuationally
+       * complex
+       */
+      PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n, std::unique_ptr<uint64_t[]> &logits);
 
-#endif  // SRC_DISTANCE_DISTANCE_HPP_
+      /**
+       * Performs exponentiation for uint64_t
+       *
+       * @param base The base
+       * @param power The power
+       *
+       * @return base ^ power
+       */
+      inline uint64_t Pow(uint64_t base, uint64_t power)
+      {
+         uint64_t result = 1;
+         while (power > 0)
+         {
+            if (power % 2 == 1)
+               result *= base;
+            base *= base;
+            power /= 2;
+         }
+         return result;
+      }
+
+      /// The minimum number of iterations to use
+      size_t minimumIterations_;
+      /// The maximum number of times to refresh the reference position
+      size_t maximumRefreshes_;
+      /// The maximum distance ratio to accept
+      decimal distanceRatioSq_;
+      /// The maximum loss ratio to accept
+      decimal discriminatorRatio_;
+      /// The Shuffle randomization order
+      uint64_t pdfOrder_;
+      /// The Loss Radius error order
+      uint64_t radiusLossOrder_;
+   };
+
+   /**
+    * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
+    * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
+    *
+    * @note This class assumes that Earth is a perfect ellipse
+    */
+   class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm
+   {
+   public:
+      /**
+       * Initializes an EllipticDistanceDeterminationAlgorithm
+       *
+       * @param radius The distance from Earth to use
+       */
+      explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
+      ~EllipticDistanceDeterminationAlgorithm();
+
+      /**
+       * Place documentation here. Press enter to automatically make a new line
+       *
+       * @param p The points in the image on Earth's horizon
+       *
+       * @return The position vector of the satellite with respect
+       * to the camera's coordinate system
+       * */
+      PositionVector Run(const Points &p) override;
+
+   private:
+      // Fields specific to this algorithm, and helper methods
+   };
+
+} // namespace found
+
+#endif // SRC_DISTANCE_DISTANCE_HPP_
