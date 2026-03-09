@@ -20,7 +20,7 @@
 namespace found {
 
 TEST(TLSTest, vec3Test) {
-    Eigen::MatrixXd data {
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> data {
         {1.0,1.0,1.0,3.0},
         {1.0,2.0,3.0,6.0},
         {0.0,0.0,0.0,0.0},
@@ -34,7 +34,7 @@ TEST(TLSTest, vec3Test) {
 }
 
 TEST(TLSTest, vec2Test) {
-    Eigen::MatrixXd data {
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> data {
         {0.239794,0.0,0.719382},
         {1.0,2.0,5.0},
         {0.0,0.0,0.0},
@@ -46,7 +46,7 @@ TEST(TLSTest, vec2Test) {
 }
 
 TEST(TLSTest, vec2PermutatedTest) {
-    Eigen::MatrixXd data {
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> data {
         {0.239793,0.0,0.719383},
         {1.02,2.0,5.002},
         {0.001,0.0004,0.005},

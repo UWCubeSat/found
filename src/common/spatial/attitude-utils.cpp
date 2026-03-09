@@ -56,25 +56,25 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     return rotation.conjugate();
 }
 
-Eigen::VectorXd TLS(Eigen::MatrixXd data) {
+Eigen::Matrix<decimal, Eigen::Dynamic, 1> TLS(const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &data) {
     assert(data.cols() > 2);
 
     // Since the input matrix will be thin and tall, the last column of V transpose
     // will correspond to the vector with the smallest corresponding value in S,
     // meaning it is the closest vector to the null space of the input
     // We leave out Eigen::ComputeFullU so U will not be computed
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd(data, Eigen::ComputeFullV);
-    Eigen::MatrixXd VT = svd.matrixV();
+    Eigen::JacobiSVD<Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>> svd(data, Eigen::ComputeFullV);
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> VT = svd.matrixV();
 
     // rows and cols are the same size here but I clarify so that it's more readable
-    Eigen::VectorXd finalCol = VT.col(VT.cols()-1);
+    Eigen::Matrix<decimal, Eigen::Dynamic, 1> finalCol = VT.col(VT.cols()-1);
 
     // We do head(rows - 1) because the function asks for the number numbers in the vector
     // not the index. Since we're just looking for a vector in the null space, it can have
     // arbitrary scaling. We therefore divide by the final entry (and negate) so that
     // the result dots to the output as we expect.
     // note we do *1/[] rather than /[] because division isn't defined for the vector class
-    return finalCol.head(VT.rows()-1) * (-1/(finalCol(VT.rows()-1)));
+    return finalCol.head(VT.rows()-1) * (-decimal(1) / finalCol(VT.rows()-1));
 }
 
 }  // namespace found
