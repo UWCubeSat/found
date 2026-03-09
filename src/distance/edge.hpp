@@ -110,6 +110,9 @@ class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     Points Run(const Image &image) override;
 
   private:
+    static constexpr std::array<decimal, 8> MASK = { 0, 0, 0, 0, 1, 1, 1, 1 };
+
+  private:
     uint8_t grayThreshold_;
     int lineCount_;
     decimal lineEpsilon_;

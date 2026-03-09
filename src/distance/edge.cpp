@@ -291,6 +291,10 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     Vec2 offset = wminHat * estimatedRadius / lineCount_;
 
     // Step 3: Placing edge points
+
+    // Two sets of points to choose between with a simple fit.
+    Points red;
+    Points blue;
     for (int i = -lineCount_; i <= lineCount_; i++) {
         // First, find the lines by getting the points that intersect the image
         // bounds.
@@ -305,14 +309,66 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
             -wmaxHat
         );
 
-        decimal length = (start - end).Magnitude();
+        decimal length = (end - start).Magnitude();
 
         // Skip lines that are too short.
         if (length < lineEpsilon_)
             continue;
 
-        Vec2 dir = (start - end) / length;
+        // Direction vector of pixel length one.
+        Vec2 dir = (end - start) / length;
 
+        // Correlate the points on the line with a mask.
+        // Both signals are zero-padded.
+        constexpr int maskSize = MASK.size();
+        int maxLength = maskSize <= length ? (int) length : maskSize;
+        int minLength = maskSize > length ? (int) length : maskSize;
+
+        // Number of points where both signals overlap completely, to minimize
+        // boundary problems.
+        int validLength = maxLength - minLength + 1;
+
+        // This array is, where f is the samples on the line and g is
+        // the mask, equal to (f * g)(-n); importantly, NOT (f * g)(n).
+        std::vector<decimal> correlation(validLength);
+        decimal maxCorrelation = 0;
+        for (int n = 0; n < length; n++) {
+            Vec2 point = start + dir * n;
+            decimal sample = SampleImageBilinear(
+                image.width,
+                image.height,
+                pixels,
+                point
+            );
+            for (int k = 0; k < validLength; k++) {
+                int index = n - k;
+                if (index >= 0 && index < maskSize) {
+                    correlation[k] += MASK[n - k] * sample;
+                    if (correlation[k] > maxCorrelation)
+                        maxCorrelation = correlation[k];
+                }
+                // Else, either signal is zero, and thus nothing is added.
+            }
+        }
+
+        // Get the first index that passes the halfway point of correlation.
+        int i0;
+        for (i0 = 0; i0 < validLength; i0++)
+            if (correlation[i0] >= maxCorrelation / 2)
+                break;
+       
+        // Get the last index that passes the halfway point of correlation.
+        int i1;
+        for (i1 = validLength - 1; i1 >= 0; i1--)
+            if (correlation[i1] >= maxCorrelation / 2)
+                break;
+
+        // Get the points on the line corresponding to the indices.
+        Vec2 p0 = start + dir * i0;
+        Vec2 p1 = start + dir * i1;
+
+        red.push_back(p0);
+        blue.push_back(p1);
     }
     
     return Points();
