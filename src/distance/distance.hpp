@@ -47,9 +47,11 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
      * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
      * @param cam The camera used to capture the picture of Earth
-     * @param attitude  The global to local transformation matrix
-     * converts a vector defined in global coordinates
-     * to one defined in local coordinates
+     * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
+     * @param referenceOrientation The equatorial to L reference frame rotation.
+     * 
+     * @note orientation equals equatorial reference frame -> L * (F -> L)* = 
+     * equatorial reference frame -> FOUND image's reference frame
      */
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes,
                                            Quaternion relativeOrientation,
@@ -64,7 +66,7 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
      * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
      * @param cam The camera used to capture the picture of Earth
-     * @param attitude  The global to local transformation matrix
+     * @param orientation The global to local transformation matrix
      * converts a vector defined in global coordinates
      * to one defined in local coordinates
      */
@@ -85,7 +87,9 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     PositionVector Run(const Points &p) override;
 
  protected:
-    // cam_ field instance describes the camera settings used for the photo taken
+   /**
+    * cam_ field instance describes the camera settings used for the photo taken
+    */
     Camera cam_;
 
     /**
@@ -95,10 +99,12 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      */
     Vec3 principleAxes_;
 
-    // The global to local transformation matrix
-    // converts a vector defined in global coordinates
-    // to one defined in local coordinates
-    // NOTE the transpose of this gives TCP (local to global)
+   /**
+    * The global to local transformation matrix.
+    * Converts a vector defined in global coordinates
+    * to one defined in local coordinates.
+    * NOTE the transpose of this gives TCP (local to global).
+    */
     Mat3 TPC_;
 };
 
