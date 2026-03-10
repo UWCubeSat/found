@@ -63,19 +63,19 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 /**
  * The LoGEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture by employing a 
- * Laplacian of Gaussian (LoC) filter to the image.
+ * Laplacian of Gaussian (LoG) filter to the image.
 */
-class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+class LoGEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  public:
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+    LoGEdgeDetectionAlgorithm(/*Put more fields here!*/);
 
     /**
      * Place documentation here. Press enter to automatically make a new line
      * */
-    virtual ~LoCEdgeDetectionAlgorithm(/*Put more fields here!*/);
+    virtual ~LoGEdgeDetectionAlgorithm(/*Put more fields here!*/);
 
     /**
      * Place documentation here. Press enter to automatically make a new line

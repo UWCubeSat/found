@@ -134,13 +134,30 @@ add_library(${STB_IMAGE} STATIC ${STB_IMAGE_SRC})
 target_compile_definitions(${STB_IMAGE} PRIVATE STB_IMAGE_IMPLEMENTATION)
 target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
+##### Eigen #####
+
+set(EIGEN Eigen3::Eigen)
+# Disable Eigen's own tests and docs to speed up configuration
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(EIGEN_BUILD_PKGCONFIG OFF CACHE BOOL "" FORCE)
+
+FetchContent_Declare(
+    eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+    GIT_TAG 3.4.0
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+)
+FetchContent_MakeAvailable(eigen)
+
 # Set the source libraries
-set(SRC_LIBS ${STB_IMAGE})
+set(SRC_LIBS ${STB_IMAGE} ${EIGEN})
 
 ##### FOUND Library #####
 
 add_library(found_lib STATIC ${FILTERED_SRC})
-target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
+target_link_libraries(found_lib PUBLIC ${EIGEN} PRIVATE ${STB_IMAGE})
 target_include_directories(found_lib
         PUBLIC
         $<BUILD_INTERFACE:${SRC_DIR}>
@@ -171,7 +188,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS})
+set(TEST_LIBS ${GTEST_LIBS} ${SRC_LIBS} ${EIGEN})
 
 ##### Documentation Libraries #####
 
@@ -220,6 +237,7 @@ add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
 target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
                                                 LOGGING_LEVEL=INFO)
 target_compile_options(found-test PRIVATE
+    -Wdouble-promotion -Werror
     --coverage
     -pthread
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>

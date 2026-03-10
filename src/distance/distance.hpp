@@ -44,7 +44,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      */
-    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(cam), radius_(radius) {}
+    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(std::move(cam)), radius_(radius) {}
     ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**

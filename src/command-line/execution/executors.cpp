@@ -1,8 +1,8 @@
 #include "command-line/execution/executors.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <utility>
-#include <cstring>
 
 #include "common/logging.hpp"
 #include "common/time/time.hpp"
@@ -26,10 +26,10 @@ void CalibrationPipelineExecutor::ExecutePipeline() {
 void CalibrationPipelineExecutor::OutputResults() {
     // Output the results of the calibration
     Quaternion *&calibrationQuaternion = this->pipeline_.GetProduct();
-    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->real << ", "
-                                         << calibrationQuaternion->i << ", "
-                                         << calibrationQuaternion->j << ", "
-                                         << calibrationQuaternion->k << ")");
+    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->w() << ", "
+                                         << calibrationQuaternion->x() << ", "
+                                         << calibrationQuaternion->y() << ", "
+                                         << calibrationQuaternion->z() << ")");
     DataFile outputDF{};
     outputDF.relative_attitude = *calibrationQuaternion;
     std::ofstream outputFile(this->options_.outputFile);
@@ -61,10 +61,10 @@ void DistancePipelineExecutor::ExecutePipeline() {
 
 void DistancePipelineExecutor::OutputResults() {
     PositionVector *&positionVector = this->pipeline_.GetProduct();
-    LOG_INFO("Calculated Position: (" << positionVector->x << ", "
-                                      << positionVector->y << ", "
-                                      << positionVector->z << ") m");
-    LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
+    LOG_INFO("Calculated Position: (" << positionVector->x() << ", "
+                                      << positionVector->y() << ", "
+                                      << positionVector->z() << ") m");
+    LOG_INFO("Distance from Earth: " << positionVector->norm() << " m");
     // TODO: Figure out a much more optimized way of doing this please, especially
     // since we're saving it into the exact same file, there should be an easy way
     // to simply modify the file directly instead of this mess.
@@ -73,11 +73,13 @@ void DistancePipelineExecutor::OutputResults() {
         outputDF.header = this->options_.calibrationData.header;
         outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
         outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
-        std::memcpy(outputDF.positions.get(),
-                    this->options_.calibrationData.positions.get(),
-                    outputDF.header.num_positions);
+        std::copy(this->options_.calibrationData.positions.get(),
+                  this->options_.calibrationData.positions.get() + outputDF.header.num_positions,
+                  outputDF.positions.get());
     } else {
-        outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
+        outputDF.relative_attitude = this->options_.refAsOrientation
+            ? Quaternion::Identity()  // GCOVR_EXCL_BR_LINE
+            : SphericalToQuaternion(this->options_.relOrientation);  // GCOVR_EXCL_LINE
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
     outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
@@ -106,9 +108,9 @@ void OrbitPipelineExecutor::ExecutePipeline() {
 void OrbitPipelineExecutor::OutputResults() {
     // TODO: Output this somewhere
     [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
-    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
-                                             << futurePosition.position.y << ", "
-                                             << futurePosition.position.z << ") m"
+    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x() << ", "
+                                             << futurePosition.position.y() << ", "
+                                             << futurePosition.position.z() << ") m"
                                              << " at time "
                                              << futurePosition.timestamp << " s");
 }
