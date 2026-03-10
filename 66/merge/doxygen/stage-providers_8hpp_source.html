@@ -160,7 +160,7 @@ $(document).ready(function(){initNavTree('stage-providers_8hpp_source.html','');
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>std::unique_ptr&lt;VectorGenerationAlgorithm&gt; ProvideVectorGenerationAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="comment">// flips the world to camera roation quaternion to a camera to world rotation quaternion,</span></div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="comment">// which is the convention used by the LOSTVectorGenerationAlgorithm</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation).conjugate();</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordflow">if</span> (options.calibrationData.header.version != emptyDFVer) {</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        LOG_INFO(<span class="stringliteral">&quot;Using DataFile for calibration information&quot;</span>);</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(options.calibrationData.relative_attitude,</div>
@@ -170,7 +170,7 @@ $(document).ready(function(){initNavTree('stage-providers_8hpp_source.html','');
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            LOG_INFO(<span class="stringliteral">&quot;Using provided reference orientation for calibration information&quot;</span>);</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(referenceOrientation);</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        }</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation).conjugate();</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        <span class="keywordflow">return</span> std::make_unique&lt;LOSTVectorGenerationAlgorithm&gt;(relativeOrientation,</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                                                               referenceOrientation);</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    }</div>
