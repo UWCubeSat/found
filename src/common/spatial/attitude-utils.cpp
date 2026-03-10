@@ -53,7 +53,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll) {
     Quaternion rotation = qRa * qDec * qRoll;
 
     // return: equatorial reference frame -> camera
-    return rotation.conjugate();
+    return rotation;
 }
 
 }  // namespace found

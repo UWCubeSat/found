@@ -34,7 +34,7 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRa) {
     decimal dec = DegToRad(0);
     decimal roll = DegToRad(0);
 
-    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll).conjugate();
     // the camera boresight is alway {1.0, 0.0, 0.0} in it's own coordinates since that is how it's defined
     Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
     // gives camera->equatorial coordinates
@@ -53,7 +53,7 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionDec) {
     decimal dec = DegToRad(85);
     decimal roll = DegToRad(0);
 
-    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll).conjugate();
     Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
     // gives camera->equatorial coordinates
@@ -71,7 +71,7 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRaDec) {
     decimal dec = DegToRad(-83);
     decimal roll = DegToRad(0);
 
-    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll).conjugate();
     Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
     // gives camera->equatorial coordinates
@@ -89,7 +89,7 @@ TEST(AttitudeUtilsTest, TestSphericalToQuaternionRoll) {
     decimal dec = DegToRad(85);
     decimal roll = DegToRad(40);
 
-    Quaternion quat = SphericalToQuaternion(ra, dec, roll);
+    Quaternion quat = SphericalToQuaternion(ra, dec, roll).conjugate();
     Vec3 cameraBoresightCameraCoordinates = {1.0, 0.0, 0.0};
 
     // gives camera->equatorial coordinates

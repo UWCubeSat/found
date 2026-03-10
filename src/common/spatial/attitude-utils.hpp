@@ -92,6 +92,16 @@ decimal Distance(const Vec3 &, const Vec3 &);
 ///////////////////////////////////
 
 /**
+ * A Mat2 is a 2x2 Matrix
+ *
+ * @note Backed by Eigen::Matrix<decimal, 2, 2>.
+ * Access entries via (i, j). Key methods: .col(j), .row(i), .trace(),
+ * .determinant(), .transpose(), .inverse(), +, * (Mat2, Vec2, scalar),
+ * Mat2::Identity()
+ */
+typedef Eigen::Matrix<decimal, 2, 2> Mat2;
+
+/**
  * A Mat3 is a 3x3 Matrix
  *
  * @note Backed by Eigen::Matrix<decimal, 3, 3>.
@@ -99,7 +109,7 @@ decimal Distance(const Vec3 &, const Vec3 &);
  * .determinant(), .transpose(), .inverse(), +, * (Mat3, Vec3, scalar),
  * Mat3::Identity()
  */
-using Mat3 = Eigen::Matrix<decimal, 3, 3>;
+typedef Eigen::Matrix<decimal, 3, 3> Mat3;
 
 /**
  * EulerAngles represents a 3D orientation via right ascension, declination, and roll.
@@ -108,7 +118,7 @@ using Mat3 = Eigen::Matrix<decimal, 3, 3>;
  * Components: .x() = right ascension (ra), .y() = declination (de), .z() = roll.
  * We use z-y'-z'' Euler angles (yaw-pitch-roll order).
  */
-using EulerAngles = Vec3;
+typedef Vec3 EulerAngles;
 
 ///////////////////////////////////
 ///////// QUATERNION CLASS ////////
@@ -125,10 +135,10 @@ using EulerAngles = Vec3;
  * Constructor: Quaternion(w, x, y, z) where w is the real/scalar part.
  * Create from axis-angle: Quaternion(Eigen::AngleAxis<decimal>(angle, axis))
  */
-using Quaternion = Eigen::Quaternion<decimal>;
+typedef Eigen::Quaternion<decimal> Quaternion;
 
 /// Convenience alias for Eigen::AngleAxis<decimal>
-using AngleAxis = Eigen::AngleAxis<decimal>;
+typedef Eigen::AngleAxis<decimal> AngleAxis;
 
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
@@ -144,7 +154,7 @@ using AngleAxis = Eigen::AngleAxis<decimal>;
  * @param dec The declination of the Euler Angles
  * @param roll The roll of the Euler Angles
  * 
- * @return A quaternion representing equatorial->camera reference frame transformation 
+ * @return A quaternion representing camera -> equatorial reference frame transformation 
  * that corresponds to the given Euler angles.
  * 
  * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 
@@ -158,7 +168,7 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
  * 
  * @param angles The euler angles to convert
  * 
- * @return A quaternion representing equatorial->camera reference frame transformation 
+ * @return A quaternion representing camera -> equatorial reference frame transformation 
  * that corresponds to the given Euler angles.
  *
  * @note The x-axis (optical axis) points to the equatorial coordinates (RA, Dec) 

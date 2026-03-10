@@ -14,7 +14,7 @@ EarthSphericalVec3 GetEarthCoordinates(Vec3 &equatorialVector, decimal gmst) {
     // are positive, so we don't need it (GMST > 0 after Jan 1st, 2000).
     decimal GMST = std::fmod(DECIMAL_M_PI * gmst / DECIMAL(180.0), 2 * DECIMAL_M_PI);
     // Figure out Earth's Rotating Frame and express the position in that frame
-    Quaternion toEarthRotatingFrame = SphericalToQuaternion(GMST, 0, 0);
+    Quaternion toEarthRotatingFrame = SphericalToQuaternion(GMST, 0, 0).conjugate();
     Vec3 position = toEarthRotatingFrame * equatorialVector;
 
     // Figure out the right ascension and declination of the vector

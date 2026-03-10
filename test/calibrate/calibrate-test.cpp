@@ -18,7 +18,7 @@ TEST(CalibrationTest, TestCalibrateAbsolute) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion actual = algorithm.Run(std::make_pair(local, reference));
 
-    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference), actual);
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(reference).conjugate(), actual);
 }
 
 TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
@@ -31,7 +31,7 @@ TEST(CalibrationTest, TestCalibrateRelativeSimple1) {
     LOSTCalibrationAlgorithm algorithm;
     Quaternion actual = algorithm.Run(std::make_pair(local, reference));
 
-    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(expected), actual);
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(expected).conjugate(), actual);
 }
 
 TEST(CalibrationTest, TestCalibrateRelativeSimple2) {
@@ -75,10 +75,10 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     // local -> reference
 
     // world -> reference * reference -> local = world -> local
-    Quaternion actualLocal = SphericalToQuaternion(reference) * result.conjugate();
+    Quaternion actualLocal = SphericalToQuaternion(reference).conjugate() * result.conjugate();
 
     // See if the calibration holds for different axes
-    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(local),
+    ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(local).conjugate(),
                            actualLocal);
 }
 

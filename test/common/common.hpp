@@ -85,8 +85,8 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
 
 #define ASSERT_EA_EQ(val1, val2, tolerance) \
     { \
-        Quaternion quat1 = SphericalToQuaternion(val1); \
-        Quaternion quat2 = SphericalToQuaternion(val2); \
+        Quaternion quat1 = SphericalToQuaternion(val1).conjugate(); \
+        Quaternion quat2 = SphericalToQuaternion(val2).conjugate(); \
         if (quat1.w() < 0) quat1 = Quaternion(-quat1.w(), -quat1.x(), -quat1.y(), -quat1.z()); \
         if (quat2.w() < 0) quat2 = Quaternion(-quat2.w(), -quat2.x(), -quat2.y(), -quat2.z()); \
         ASSERT_QUAT_EQ(quat1, quat2, tolerance); \
