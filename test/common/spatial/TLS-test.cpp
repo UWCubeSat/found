@@ -13,7 +13,7 @@
 using namespace std;
 #define MAX_COLS_TO_TEST 10
 #define MONTE_CARLO_ITERATIONS 10
-#define MAX_NOISE_TO_TEST 0.05
+#define MAX_NOISE_TO_TEST 0.5
 #define MAX_COEFFICIENT 1000
 #define DECIMAL_PLACES 100 // 1/DECIMAL_PLACES is used to determine how many decimal places we go to i.e 100 would be x.xx, 1000 would be x.xxx
 #define ERROR_STEPS 30
@@ -91,9 +91,6 @@ void TestPermuations(int rows, int cols, std::default_random_engine rando, ofstr
                     //noisyMatrix(i, cols-1) = testMat(i, cols-1);
                 }
                 Eigen::Vector<decimal, Eigen::Dynamic> actual = found::TLS(noisyMatrix);
-                std::stringstream ss1;
-                ss1 << noisyMatrix-testMat << "\n";
-                LOG_INFO(ss1.str());
                 if ((actual-expected).norm() < DEFAULT_TOLERANCE) continue;
                 averageError += abs((actual-expected).norm())/expected.norm();
             }
