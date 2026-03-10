@@ -48,52 +48,36 @@ TEST(SpheroidDistanceDeterminationAlgorithmTest, TestNotEnoughPoints) {
     PositionVector expected = {0, 0, 0};
     ASSERT_VEC2_EQ(actual, expected, DEFAULT_TOLERANCE);
 }
-// TEST(SpheroidDistanceDeterminationAlgorithmTest, TestRandomEarth1) {
-//     Vec3 principleAxisDimensions(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
-//     int imageWidth = 700;
-//     int imageHeight = 600;
-//     Camera cam(0.05, .0000514, imageWidth, imageHeight);
-//     Quaternion attitude = SphericalToQuaternion(DegToRad(180-36.3387), DegToRad(90-151.885), DegToRad(279.474));
-//     Points edge_pts = {
-//         {DECIMAL(611.7877295393952),  DECIMAL(264.09276117927675)},
-//         {DECIMAL(573.8922119671513),  DECIMAL(325.3968742337466)},
-//         {DECIMAL(350.4939091109065),  DECIMAL(589.3274589318719)},
-//         {DECIMAL(391.14346133188616), DECIMAL(550.233909535328)},
-//         {DECIMAL(464.0968679643527),  DECIMAL(471.5734768209798)},
-//         {DECIMAL(454.4893660268322),  DECIMAL(482.63970990423604)},
-//         {DECIMAL(658.5589230687222),  DECIMAL(177.48386735439033)},
-//         {DECIMAL(373.4109900481945),  DECIMAL(567.6612715009444)},
-//         {DECIMAL(684.6437823193647),  DECIMAL(122.43996936965047)},
-//         {DECIMAL(479.9742150253835),  DECIMAL(452.75848062170667)},
-//         {DECIMAL(518.2721763857571),  DECIMAL(404.41735985920894)},
-//         {DECIMAL(491.85561942267265), DECIMAL(438.2265392379015)},
-//         {DECIMAL(639.7657274333935),  DECIMAL(213.9521877859907)},
-//         {DECIMAL(694.1329604135699),  DECIMAL(100.94348878568302)},
-//         {DECIMAL(571.5349509252572),  DECIMAL(328.99120144536215)},
-//         {DECIMAL(379.6326629337276),  DECIMAL(561.6146678003332)},
-//         {DECIMAL(513.780424677385),   DECIMAL(410.31951218219683)},
-//         {DECIMAL(655.9153967653705),  DECIMAL(182.76347341186144)},
-//         {DECIMAL(340.53686956204075), DECIMAL(598.4563901280716)},
-//         {DECIMAL(392.5920815577219),  DECIMAL(548.783429938299)},
-//         {DECIMAL(443.72986548528297), DECIMAL(494.76101854907455)},
-//         {DECIMAL(470.3974489413311),  DECIMAL(464.18744060291704)},
-//         {DECIMAL(482.12392335127174), DECIMAL(450.15862072244306)},
-//     };
-//     SpheroidDistanceDeterminationAlgorithm algo(std::move(cam), principleAxisDimensions, attitude);
 
-//     Vec3 actual = algo.Run(edge_pts);
-//     Vec3 expected = {4211.974212862954, 3307.209203472482, -5616.06183322837};
+TEST(SpheroidDistanceDeterminationAlgorithmTest, TestRandomEarth1) {
+    Vec3 principleAxisDimensions(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
+    int imageWidth = 700;
+    int imageHeight = 600;
+    Camera cam(DECIMAL(0.0494546), DECIMAL(0.0000514286), imageWidth, imageHeight);
+    Quaternion attitude = SphericalToQuaternion(DegToRad(180), DegToRad(0), DegToRad(0));
+    Points edge_pts = {
+        {DECIMAL(31.772727272727273),  DECIMAL(241.6907247305747)},
+        {DECIMAL(63.54545454545455),   DECIMAL(150.05418664653905)},
+        {DECIMAL(95.31818181818181),   DECIMAL(101.09794885083511)},
+        {DECIMAL(127.0909090909091),   DECIMAL(66.25909940751106)},
+        {DECIMAL(158.86363636363637),  DECIMAL(39.803737694871366)},
+        {DECIMAL(190.63636363636363),  DECIMAL(19.350957823370518)},
+        {DECIMAL(222.4090909090909),   DECIMAL(3.655304617935572)},
+        {DECIMAL(476.5909090909091),   DECIMAL(3.2296195568791637)},
+        {DECIMAL(508.3636363636364),   DECIMAL(18.789251345646008)},
+        {DECIMAL(540.1363636363636),   DECIMAL(39.076993619844835)},
+        {DECIMAL(571.9090909090909),   DECIMAL(65.31585267107718)},
+        {DECIMAL(603.6818181818182),   DECIMAL(99.83260403882633)},
+        {DECIMAL(635.4545454545455),   DECIMAL(148.17171721454616)},
+        {DECIMAL(667.2272727272727),   DECIMAL(236.50848757029866)},
+    };
+    SpheroidDistanceDeterminationAlgorithm algo(std::move(cam), principleAxisDimensions, attitude);
 
-//     // Vec3 trueRp = {-5875.0, 4366.0, 2577.0};
-//     // Vec3 computedRp = TPC.transpose() * actual;
-//     // const Mat3 Ap = principleAxes_.cwiseInverse().asDiagonal();
-//     // const Mat3 Ac = TPC.transpose() * Ap * TPC;
-//     // decimal expectedDist = trueRp.norm();
-//     // decimal actualDist = computedRp.norm();
-//     // ASSERT_DECIMAL_EQ_DEFAULT(expectedDist, actualDist);
+    Vec3 actual = algo.Run(edge_pts);
+    Vec3 expected = {DECIMAL(20000.0), DECIMAL(0.0), DECIMAL(0.0)};
 
-//     ASSERT_VEC2_EQ(actual, expected, 2000);
-// }
+    ASSERT_VEC3_EQ(actual, expected, DEFAULT_TOLERANCE * DECIMAL(10.0));
+}
 
 // Circular spheroid (a = b = c) tests — orientation left as identity for now
 
