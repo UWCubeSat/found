@@ -9,7 +9,4 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
-      - micromamba-data:/opt/micromamba
     command: sleep infinity
-volumes:
-  micromamba-data:
