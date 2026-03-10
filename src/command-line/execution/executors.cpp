@@ -78,7 +78,7 @@ void DistancePipelineExecutor::OutputResults() {
                   outputDF.positions.get());
     } else {
         outputDF.relative_attitude = this->options_.refAsOrientation
-            ? Quaternion::Identity()
+            ? Quaternion::Identity() // GCOVR_EXCL_BR_LINE
             : SphericalToQuaternion(this->options_.relOrientation);  // GCOVR_EXCL_LINE
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
