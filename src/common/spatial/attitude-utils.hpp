@@ -3,6 +3,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <Eigen/SVD>
 
 #include <memory>
 
@@ -177,6 +178,30 @@ Quaternion SphericalToQuaternion(decimal ra, decimal dec, decimal roll);
 */
 inline Quaternion SphericalToQuaternion(EulerAngles angles)
     { return SphericalToQuaternion(angles.x(), angles.y(), angles.z()); }
+
+
+///////////////////////////////////
+///// LEAST SQUARES FUNCTIONS /////
+///////////////////////////////////
+
+/**
+ * Performs total least squares on the given matrix
+ * using SVD
+ *   
+ * @param data An NxM matrix with each row corresponding to a vector and an expected dot product output
+ * 
+ * i.e rows enumerated by j may contain [position[j].x, position[j].y, position[j].z, 1]
+ * and the algorithm will output a Vec3 that dots with each of the positions to 1 with as little
+ * error as possible
+ * 
+ * @note the expected output must NOT be negated, as is convention in some implementations.
+ * I personally find it more intuitive this way, but if it's confusing people I can change it
+ * 
+ * @return The vector of length (M-1) that minimizes the error
+ * Notice the vector is M-1 because it must dot with the vector formed by the M-1 entries of a row
+ * to get the result in the M'th entry
+*/
+Eigen::Matrix<decimal, Eigen::Dynamic, 1> TLS(const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &data);
 
 
 /// Angle Conversions

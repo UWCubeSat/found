@@ -1,6 +1,8 @@
 #ifndef SRC_DISTANCE_DISTANCE_HPP_
 #define SRC_DISTANCE_DISTANCE_HPP_
 
+#include <Eigen/Core>
+
 #include <utility>
 #include <memory>
 
@@ -29,11 +31,89 @@ class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVect
 };
 
 /**
+ * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
+ * algorithm calculates the distance from Earth based on the pixels of Earth's edge found in the image.
+ *
+ * @note This class treats Earth as a spheroid (accurate for most bodies in our solar system)
+ */
+class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
+ public:
+    /**
+     * Creates a SpheroidDistanceDeterminationAlgorithm, which deduces
+     * the position vector of a sattelite from Earth by modeling
+     * Earth as a spheroid
+     *
+     * @param principleAxes The principle axes that define Earth's spheroid
+     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+     * @param cam The camera used to capture the picture of Earth
+     * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
+     * @param referenceOrientation The equatorial to L reference frame rotation.
+     * 
+     * @note orientation equals equatorial reference frame -> L * (F -> L)* = 
+     * equatorial reference frame -> FOUND image's reference frame
+     */
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes,
+                                           Quaternion relativeOrientation,
+                                           Quaternion referenceOrientation);
+
+    /**
+     * Creates a SpheroidDistanceDeterminationAlgorithm, which deduces
+     * the position vector of a sattelite from Earth by modeling
+     * Earth as a spheroid
+     *
+     * @param principleAxes The principle axes that define Earth's spheroid
+     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+     * @param cam The camera used to capture the picture of Earth
+     * @param orientation The global to local transformation matrix
+     * converts a vector defined in global coordinates
+     * to one defined in local coordinates
+     */
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Quaternion orientation);
+    ~SpheroidDistanceDeterminationAlgorithm() {}
+
+    /**
+     * Obtains the position of the planet relative to the camera
+     *
+     * @param p The points on the edge of Earth (in the image taken
+     * by the camera given to this)
+     *
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
+     *
+     *
+     */
+    PositionVector Run(const Points &p) override;
+
+ protected:
+   /**
+    * cam_ field instance describes the camera settings used for the photo taken
+    */
+    Camera cam_;
+
+    /**
+     * describes the principle axes that define Earth's spheroid
+     * This vector [a, b, c] provides the parameters for the equation X^2/a^2 + Y^2/b^2 + Z^2/c^2 = 1
+     * where [X, Y, Z] is a point that lies on the Earth's surface, in Earth's frame of reference.
+     */
+    Vec3 principleAxes_;
+
+   /**
+    * The global to local transformation matrix.
+    * Converts a vector defined in global coordinates
+    * to one defined in local coordinates.
+    * NOTE the transpose of this gives TCP (local to global).
+    */
+    Mat3 TPC_;
+};
+
+/**
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
  * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
  * 
  * @note This class assumes that Earth is a perfect sphere
-*/
+ */
 class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
     /**
@@ -44,7 +124,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      */
-    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(std::move(cam)), radius_(radius) {}
+    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(cam), radius_(radius) {}
     ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**
@@ -60,7 +140,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * this
      * 
      * @post If p.size() < 3, then the result is exactly the zero vector
-     * */
+     */
     PositionVector Run(const Points &p) override;
 
  protected:
@@ -76,7 +156,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @pre spats.size() >= 3
      * 
      * @pre a, b and c are normalized, projected points from the camera
-    */
+     */
     Vec3 getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
     /**
@@ -294,35 +374,6 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
     uint64_t pdfOrder_;
     /// The Loss Radius error order
     uint64_t radiusLossOrder_;
-};
-
-/**
- * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This 
- * algorithm calculates the distance from Earth based on the pixels of Earth's Edge found in the image.
- * 
- * @note This class assumes that Earth is a perfect ellipse
-*/
-class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
- public:
-    /**
-     * Initializes an EllipticDistanceDeterminationAlgorithm
-     * 
-     * @param radius The distance from Earth to use
-     */
-    explicit EllipticDistanceDeterminationAlgorithm(PositionVector radius);
-    ~EllipticDistanceDeterminationAlgorithm();
-
-    /**
-    * Place documentation here. Press enter to automatically make a new line
-    * 
-    * @param p The points in the image on Earth's horizon
-    * 
-    * @return The position vector of the satellite with respect
-    * to the camera's coordinate system
-    * */
-    PositionVector Run(const Points &p) override;
- private:
-    // Fields specific to this algorithm, and helper methods
 };
 
 }  // namespace found

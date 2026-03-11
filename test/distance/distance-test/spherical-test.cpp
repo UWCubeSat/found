@@ -194,7 +194,7 @@ TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY2) {
     TEST(SphericalDistanceDeterminationAlgorithmTest, TestCenteredEarthY3) {
         // Step 0: Determine Quaterion rotation
         found::Quaternion positionDirection = found::SphericalToQuaternion(
-            DECIMAL(M_PI / 2), DECIMAL(0), DECIMAL(0));
+            DECIMAL(M_PI / 2), DECIMAL(0), DECIMAL(0)).conjugate();
 
         // Step I: Pick some distance (m) and a Camera
         decimal y_E = RADIUS_OF_EARTH + 10000000;

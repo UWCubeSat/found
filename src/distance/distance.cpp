@@ -14,6 +14,40 @@
 
 namespace found {
 
+///// SpheroidDistanceDeterminationAlgorithm /////
+
+SpheroidDistanceDeterminationAlgorithm::SpheroidDistanceDeterminationAlgorithm(
+        Camera &&cam, Vec3 principleAxes, Quaternion relativeOrientation, Quaternion referenceOrientation)
+    : SpheroidDistanceDeterminationAlgorithm(std::move(cam), principleAxes,
+        referenceOrientation * relativeOrientation.conjugate()) {}
+
+SpheroidDistanceDeterminationAlgorithm::SpheroidDistanceDeterminationAlgorithm(
+        Camera &&cam, Vec3 principleAxes, Quaternion orientation)
+    : cam_(cam), principleAxes_(principleAxes), TPC_(orientation.toRotationMatrix()) {}
+
+PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3) return {0, 0, 0};
+
+    const Mat3 DiagAxes = principleAxes_.asDiagonal();
+    const Mat3 DiagInvAxes = principleAxes_.cwiseInverse().asDiagonal();
+
+    // TPC_.transpose() == TCP
+    Mat3 imageToSpace = DiagInvAxes * TPC_.transpose();
+
+    int pointsSize = p.size();
+    Eigen::Matrix<decimal, Eigen::Dynamic, 4> normalizedVecsToHorizonMat(pointsSize, 4);
+    for (int i = 0; i < pointsSize; i++) {
+        Vec3 v = (imageToSpace * cam_.PixelToImageCoordinates(p[i])).normalized();
+        normalizedVecsToHorizonMat.row(i) << v.x(), v.y(), v.z(), decimal(1);
+    }
+
+    Vec3 vecToEarth = TLS(normalizedVecsToHorizonMat);
+    // TODO: I really want to use fastinvsqrt but that would probably send our satellite into the sun
+    vecToEarth = (TPC_ * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth.dot(vecToEarth) - 1));
+
+    return vecToEarth;
+}
+
 ///// SphericalDistanceDeterminationAlgorithm /////
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
