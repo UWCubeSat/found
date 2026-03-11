@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <unordered_set>
+#include <Eigen/Dense>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -142,7 +143,6 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 
 ////// Inertial Symmetry Edge Detection Algorithm //////
-
 // Using a start point and a direction of a given ray, finds the point of
 // intersection at the edge of the image canvas.
 static Vec2 FindImageEdge(int imageWidth, 
@@ -155,36 +155,36 @@ static Vec2 FindImageEdge(int imageWidth,
     imageHeight -= 1;
 
     // Edge case: no direction given.
-    if (direction.x == 0 && direction.y == 0)
+    if (direction.x() == 0 && direction.y() == 0)
         return start;
 
     // Edge case: one component is zero.
-    if (direction.x == 0)
-        return direction.x < 0 ? Vec2(0, start.y) : Vec2(imageWidth, start.y);
-    else if (direction.y == 0)
-        return direction.y < 0 ? Vec2(start.x, 0) : Vec2(start.x, imageHeight);
+    if (direction.x() == 0)
+        return direction.x() < 0 ? Vec2(0, start.y()) : Vec2(imageWidth, start.y());
+    else if (direction.y() == 0)
+        return direction.y() < 0 ? Vec2(start.x(), 0) : Vec2(start.x(), imageHeight);
 
-    decimal slope = direction.y / direction.x;
+    decimal slope = direction.y() / direction.x();
     
     // Intersection with y = 0
-    decimal x1 = start.x - start.y / slope;
-    if (x1 >= 0 && x1 <= imageWidth && direction.y < 0)
+    decimal x1 = start.x() - start.y() / slope;
+    if (x1 >= 0 && x1 <= imageWidth && direction.y() < 0)
         return Vec2(0, x1);
     
     // Intersection with y = imageHeight
-    decimal x2 = start.x - (start.y - imageHeight) / slope;
-    if (x2 >= 0 && x2 <= imageWidth && direction.y > 0) {
+    decimal x2 = start.x() - (start.y() - imageHeight) / slope;
+    if (x2 >= 0 && x2 <= imageWidth && direction.y() > 0) {
         return Vec2(imageHeight, x2);
     }
 
     // Intersection with x = 0
-    decimal y1 = start.y - start.x * slope;
-    if (y1 >= 0 && y1 <= imageHeight && direction.x < 0) {
+    decimal y1 = start.y() - start.x() * slope;
+    if (y1 >= 0 && y1 <= imageHeight && direction.x() < 0) {
         return Vec2(y1, 0);
     }
 
     // Intersection with x = imageWidth
-    decimal y2 = start.y - (start.x - imageWidth) * slope;
+    decimal y2 = start.y() - (start.x() - imageWidth) * slope;
     return Vec2(y2, imageWidth);
 }
 
@@ -194,16 +194,16 @@ static decimal SampleImageBilinear(int imageWidth,
                                    int imageHeight,
                                    std::vector<bool> &pixels, 
                                    Vec2 position) {
-    int ix = (int) position.x;
-    int iy = (int) position.y;
+    int ix = (int) position.x();
+    int iy = (int) position.y();
     
     // Assume black when out of bounds of the image.
     if (ix + 1 >= imageWidth || iy + 1 >= imageHeight)
         return 0;
 
     // Get a coordinate relative to the pixel in the image
-    decimal px = position.x - ix;
-    decimal py = position.y - iy;
+    decimal px = position.x() - ix;
+    decimal py = position.y() - iy;
 
     // Implicit cast here from bool to decimal
     decimal v0 = pixels[iy * imageWidth + ix];
@@ -214,6 +214,37 @@ static decimal SampleImageBilinear(int imageWidth,
     return (DECIMAL(1.0) - py) * 
         (v0 * (DECIMAL(1.0) - px) + v1 * px) + 
         py * (v2 * (DECIMAL(1.0) - px) + v3 * px);
+}
+
+// Fits a set of points to an ellipse and reports an error value.
+static decimal EllipseFit(Points points) {
+    auto ellipseEquations = Eigen::Matrix<decimal, Eigen::Dynamic, 6>(points.size(), 6);
+
+    for (size_t i = 0; i < points.size(); i++) {
+        const Vec2 &point = points[i];
+
+        // ellipses are in the form ax^2 + bxy + cy^2 + dx + ey + f = 0
+        ellipseEquations.row(i) = Eigen::Vector<decimal, 6>(
+            point.x() * point.x(), // corresponding to ax^2
+            point.x() * point.y(), // corresponding to bxy
+            point.y() * point.y(), // corresponding to cy^2
+            point.x(), // corresponding to dx
+            point.y(), // corresponding to ey
+            1 // corresponding to f
+        );
+    }
+
+    Eigen::JacobiSVD<Eigen::Matrix<decimal, Eigen::Dynamic, 6>> svd(ellipseEquations, Eigen::ComputeFullV);
+
+    // TODO: When points.size() < 6, the last few rows here are zero. This makes
+    // the output error less.
+    Eigen::Matrix<decimal, 6, 6> VT = svd.matrixV();
+
+    // The final column is the coefficients of the final ellipse fit.
+    Eigen::Vector<decimal, 6> finalCol = VT.col(VT.cols() - 1);
+
+    // The least-squares error will be the singular values dot the coefficients.
+    return svd.singularValues().dot(finalCol);
 }
 
 Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
@@ -229,8 +260,6 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     // To simplify the next step, the "mass" and centroid of the thresholded
     // area is also calculated in this step.
     int averagedChannels = std::min(image.channels, 3);
-    int mass = 0;
-    Vec2 centroid;
     for (int x = 0; x < image.width; x++) {
         for (int y = 0; y < image.height; y++) {
             int sum = 0;
@@ -238,57 +267,63 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
                 sum += image.image[(y * image.width + x) * image.channels + k];
             int value = sum / averagedChannels;
             pixels[y * image.width + x] = value > grayThreshold_;
-            if (value > grayThreshold_) {
-                mass++;
-                centroid.x += x;
-                centroid.y += y;
-            }
         }
     }
-    centroid = centroid * (DECIMAL(1.0) / DECIMAL(mass));
     
     // Step 2: Calculating inertial properties
-    // Calculate the moment and product of inertia of the thresholded area. This
-    // allows us to guess the radius and best line of symmetry with some
-    // eigenanalysis of its inertia tensor.
-    decimal Ix = 0, Iy = 0, Ixy = 0;
-    for (int x = 0; x < image.width; x++) {
-        for (int y = 0; y < image.height; y++) {
-            if (pixels[y * image.width + x]) {
-                decimal dx = DECIMAL(x) - centroid.x;
-                decimal dy = DECIMAL(y) - centroid.y;
-                Ix += dx * dx;
-                Iy += dy * dy;
-                Ixy -= dx * dy;
+
+    int mass = 0;
+    Vec2 centroid, wmax, wmin;
+    decimal estimatedRadius;
+    
+    {
+        // This scope is just so this points std::vector/Eigen::Matrix doesn't
+        // last for the entire scope of the function.
+        Points points;
+
+        // Guess that about 50% are going to be on.
+        points.reserve(image.width * image.height / 2);
+
+        // While this loop is O(rows*cols), we only do it once.
+        for (int y = 0; y < image.width; ++y) {
+            for (int x = 0; x < image.height; ++x) {
+                if (pixels[y * image.width + x]) {
+                    points.emplace_back(x, y);
+                    mass++;
+                }
             }
         }
+
+        // If all pixels are off, return no edge points.
+        if (points.empty())
+            return Points();
+
+        auto P = Eigen::Matrix<decimal, Eigen::Dynamic, 2>(points.size(), 2);
+        for (size_t i = 0; i < points.size(); ++i) {
+            P.row(i) = points[i];
+        }
+
+        centroid = P.colwise().mean();
+        P.rowwise() -= centroid;
+
+        // Calculate the inertia tensor.
+        Mat2 tensor = P.transpose() * P;
+
+        // Eigenvalues of the inertia tensor.
+        Eigen::JacobiSVD<Mat2> svd(tensor, Eigen::ComputeThinU);
+
+        // The vectors are sorted by largest associated eigenvalue to the smallest
+        // associated eigenvalue.
+        wmax = svd.matrixU().col(0);
+        wmin = svd.matrixU().col(1);
+
+        // Really rough estimate of the radius of the celestial body in the frame.
+        estimatedRadius = 2 * DECIMAL_SQRT(svd.singularValues()(0) / mass);
     }
-    
-    // Trace and determinant of the inertia tensor.
-    decimal trace = Ix + Iy;
-    decimal determinant = Ix * Iy - Ixy * Ixy;
-    
-    // Eigenvalues of the inertia tensor.
-    decimal Lmax = DECIMAL(0.5) * (trace + DECIMAL_SQRT(trace * trace - 4 * determinant));
-    decimal Lmin = DECIMAL(0.5) * (trace - DECIMAL_SQRT(trace * trace - 4 * determinant));
-
-    // Eigenvectors of the inertia tensor, and normalizations of each.
-    // The eigenvector associated with the larger eigenvalue is the minor axis
-    // of the thresholded area.
-    Vec2 wmax{ 1, (Lmax - Ix) / Ixy };
-    Vec2 wmaxHat = wmax.Normalize();
-
-    // The eigenvector associated with the smaller eigenvalue is the major axis
-    // of the thresholded area.
-    Vec2 wmin{ 1, (Lmin - Ix) / Ixy };
-    Vec2 wminHat = wmin.Normalize();
-
-    // Really rough estimate of the radius of the celestial body in the frame.
-    decimal estimatedRadius = 2 * DECIMAL_SQRT(Lmax / mass);
     
     // Offset betwen the lines of correlation. Tries to split the radius evenly
     // with the number of lines.
-    Vec2 offset = wminHat * estimatedRadius / lineCount_;
+    Vec2 offset = wmin * estimatedRadius / lineCount_;
 
     // Step 3: Placing edge points
 
@@ -301,15 +336,15 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
         Vec2 start = FindImageEdge(
             image.width, image.height,
             centroid + (offset * i),
-            wmaxHat
+            wmax
         );
         Vec2 end = FindImageEdge(
             image.width, image.height,
             centroid + (offset * i),
-            -wmaxHat
+            -wmax
         );
 
-        decimal length = (end - start).Magnitude();
+        decimal length = (end - start).norm();
 
         // Skip lines that are too short.
         if (length < lineEpsilon_)
@@ -327,6 +362,7 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
         // Number of points where both signals overlap completely, to minimize
         // boundary problems.
         int validLength = maxLength - minLength + 1;
+
 
         // This array is, where f is the samples on the line and g is
         // the mask, equal to (f * g)(-n); importantly, NOT (f * g)(n).
@@ -370,8 +406,17 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
         red.push_back(p0);
         blue.push_back(p1);
     }
-    
-    return Points();
+
+    // Calculate the errors of an ellipse fit to both sets of points.
+    decimal redError = EllipseFit(red);
+    decimal blueError = EllipseFit(blue);
+
+    // Compare the error.
+    if (redError < blueError) {
+        return red;
+    } else {
+        return blue;
+    }
 }
 
 ////// Connected Components Algorithm //////
