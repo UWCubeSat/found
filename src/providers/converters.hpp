@@ -160,7 +160,7 @@ inline LocationRecords strtolr(const std::string &str) {
     while (std::getline(file, line)) {
         std::istringstream iss(line);
         LocationRecord record;
-        if (!(iss >> record.timestamp >> record.position.x >> record.position.y >> record.position.z)) {
+        if (!(iss >> record.timestamp >> record.position.x() >> record.position.y() >> record.position.z())) {
             file.close();
             throw std::runtime_error("Invalid format for file " + str + ": " + line);
         }

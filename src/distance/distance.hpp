@@ -44,7 +44,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      */
-    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(cam), radius_(radius) {}
+    SphericalDistanceDeterminationAlgorithm(decimal radius, Camera &&cam) : cam_(std::move(cam)), radius_(radius) {}
     ~SphericalDistanceDeterminationAlgorithm() {}
 
     /**
@@ -65,33 +65,38 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
 
  protected:
     /**
-     *Returns the center of earth as a 3d Vector
+     * Returns the center of earth as a 3d Vector
      *
-     * @param spats The normalized spatial coordinates used to find the center 
+     * @param a The first point on the edge of Earth
+     * @param b The second point on the edge of Earth
+     * @param c The third point on the edge of Earth
      * 
      * @return The center of earth as a 3d Vector
+     * 
+     * @pre spats.size() >= 3
+     * 
+     * @pre a, b and c are normalized, projected points from the camera
     */
-    Vec3 getCenter(Vec3* spats);
+    Vec3 getCenter(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
     /**
-     * Returns the radius of the calculated "earth" (normalized)
+     * Returns the position of the planet relative to the camera
      * 
-     * @param spats The normalized spatial coordinates
-     * @param center The center of the earth as a 3d Vector
+     * @param a The first point on the edge of Earth
+     * @param b The second point on the edge of Earth
+     * @param c The third point on the edge of Earth
      * 
-     * @return The radius of earth normalized
-    */
-    PreciseDecimal getRadius(Vec3* spats, Vec3 center);
-
-    /**
-     * Returns the scaled distance from earth
+     * @return PositionVector The position vector of the Earth relative
+     * to the camera
      * 
-     * @param r The normalized radius
-     * @param c The distance to the center of the small circle
+     * @pre p must refer to points taken by the camera that was passed to
+     * this
      * 
-     * @return The distance from earth as a Scalar
-    */
-    PreciseDecimal getDistance(PreciseDecimal r, PreciseDecimal c);
+     * @pre p.size() >= 3
+     * 
+     * @pre a, b and c are normalized, projected points from the camera
+     */
+    PositionVector Run(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 
     /**
      * cam_ field instance describes the camera settings used for the photo taken
@@ -102,6 +107,16 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * radius_ field instance describes the defined radius of earth. Should be 6378.0 (km)
     */
     decimal radius_;
+
+    /**
+     * Calculated center vector
+     */
+    Vec3 center_;
+
+    /**
+     * Calculated radius
+     */
+    decimal r_;
 };
 
 /**
@@ -143,6 +158,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @param radius The radius of Earth
      * @param cam The camera used to capture the picture of Earth
      * @param minimumIterations The minimum number of iterations to perform
+     * @param maximumRefreshes The maximum number of times to refresh the reference position
      * @param distanceRatio The maximum distance error between the evaluated and reference
      * positions to be considered "the same" distance 
      * @param discriminatorRatio The maximum ratio between the evaluated and reference loss
@@ -162,6 +178,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
     IterativeSphericalDistanceDeterminationAlgorithm(decimal radius,
                                                      Camera &&cam,
                                                      size_t minimumIterations,
+                                                     size_t maximumRefreshes,
                                                      decimal distanceRatio,
                                                      decimal discriminatorRatio,
                                                      int pdfOrder,
@@ -197,7 +214,6 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * 
      * @param position The vector to evaluate
      * @param targetDistanceSq The target distance squared of the position
-     * @param targetRadiusSq The target "radius" squared
      * @param projectedPoints The projected points to evaluate against
      * @param size The size of the projected points
      * 
@@ -210,23 +226,23 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      */
     decimal GenerateLoss(PositionVector &position,
                          decimal targetDistanceSq,
-                         decimal targetRadiusSq,
                          std::unique_ptr<Vec3[]> &projectedPoints,
                          size_t size);
 
     /**
-     * Shuffles the indexes into triplets, attempting to create
-     * triplets whose indicies are far from each other.
+     * Calls SphericalDistanceDeterminationAlgorithm::Run with
+     * randomized triplets of indicies from source
      * 
-     * @param size The size of indicies, or how many indicies
-     * to generate
-     * @param n The end of the range to generate indicies for
-     * @param indicies The array to write into
+     * @param source The source of Vec3 objects
+     * @param n The number of elements in source
+     * @param logits The logits array to use for randomization
+     * 
+     * @return The resulting PositionVector from the 3 randomized
+     * points
      * 
      * @pre Any precondition from this->Run
-     * @pre size > 0 && size % 3 == 0
-     * 
-     * @post for any i, 0 <= indicies[i] < n
+     * @pre source.size() >= 3
+     * @pre source[i] is normalized for all i in [0, source.size())
      * 
      * @note This algorithm uses a even polynomial distribution to
      * prioritize points far away from a given index. We like that
@@ -245,7 +261,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    void Shuffle(size_t size, size_t n, std::unique_ptr<size_t[]> &indicies);
+    PositionVector ShuffledCall(std::unique_ptr<Vec3[]> &source, size_t n, std::unique_ptr<uint64_t[]> &logits);
 
     /**
      * Performs exponentiation for uint64_t
@@ -268,6 +284,8 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
 
     /// The minimum number of iterations to use
     size_t minimumIterations_;
+    /// The maximum number of times to refresh the reference position
+    size_t maximumRefreshes_;
     /// The maximum distance ratio to accept
     decimal distanceRatioSq_;
     /// The maximum loss ratio to accept

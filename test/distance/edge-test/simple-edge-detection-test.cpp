@@ -14,8 +14,8 @@
 namespace found {
 
 MATCHER_P(Vec2Equal, expected, "") {
-    return abs(expected.x - arg.x) < DEFAULT_TOLERANCE &&
-           abs(expected.y - arg.y) < DEFAULT_TOLERANCE;
+    return abs(expected.x() - arg.x()) < DEFAULT_TOLERANCE &&
+           abs(expected.y() - arg.y()) < DEFAULT_TOLERANCE;
 }
 
 TEST(SimpleEdgeDetectionTest, TestNoEdgeAllSpace) {

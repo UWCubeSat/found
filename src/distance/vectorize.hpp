@@ -2,6 +2,7 @@
 #define SRC_DISTANCE_VECTORIZE_HPP_
 
 #include "common/spatial/attitude-utils.hpp"
+#include "common/spatial/camera.hpp"
 #include "common/style.hpp"
 #include "common/pipeline/stages.hpp"
 
@@ -30,25 +31,29 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param relativeOrientation The orientation of the FOUND camera with respect to the reference Orientation
-     * @param referenceOrientation The orientation of the reference orientation
-     * 
-     * @pre You must use a backwards rotation quaternion here. Remember that
-     * forwards and backwards quaternions are conjugates.
-    */
+     * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
+     * @param referenceOrientation The orientation of the equatorial reference frame with respect 
+     * to a reference frame L.
+     *
+     * @pre relativeOrientation must go from FOUND image's reference frame → reference frame L and
+     * referenceOrientation must go from reference frame L → equatorial reference frame.
+     *
+     * @note orientation equals FOUND image's reference frame → reference frame L → equatorial reference frame
+     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
-        : orientation(relativeOrientation * referenceOrientation) {}
+        : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation) {}
 
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param orientation The absolute orientation of the FOUND camera
+     * @param orientation The orientation of the equaotrial reference frame in terms of the FOUND 
+     * image's reference frame.
      * 
-     * @pre You must use a backwards rotation quaternion here. Remember that
-     * forwards and backwards quaternions are conjugates.
-    */
+     * @pre orientation must go from camera -> equatorial reference frame.
+     * 
+     */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)
-    : orientation(orientation) {}
+        : orientation(orientation) {}
 
     // Destroys this
     ~LOSTVectorGenerationAlgorithm() = default;
@@ -57,7 +62,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Runs the Vector Assembly Algorithm, which finds the vector of the satellite with respect
      * to Earth's center using information from LOST
      * 
-     * @pre This class was initialized by backwards quaternion(s)
+     * @pre This class was initialized by forwards quaternion(s)
      * 
      * @param x_E The distance from Earth
      * 
@@ -67,9 +72,7 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     PositionVector Run(const PositionVector &x_E) override;
 
  private:
-    // Fields specific to this algorithm go here, and helper methods
-
-    /// Orientation from LOST
+    /// Complete rotation from camera coordinate definition to equatorial frame
     Quaternion orientation;
 };
 

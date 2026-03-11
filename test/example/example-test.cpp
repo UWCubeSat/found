@@ -99,16 +99,16 @@ TEST_F(ExampleTest, MySecondTest) {
 
     // Now, we test if the result of our
     // function matched our expectation
-    ASSERT_EQ(expectedPoint1.x, p.at(0).x);
-    ASSERT_EQ(expectedPoint1.y, p.at(0).y);
+    ASSERT_EQ(expectedPoint1.x(), p.at(0).x());
+    ASSERT_EQ(expectedPoint1.y(), p.at(0).y());
 
     // This is EXPECT_*. It parallels ASSERT_*
     // statments, but unlike ASSERT_*, EXPECT_*
     // continues the test case even if the condition
     // inside fails. However, this will still fail
     // the entire test case
-    EXPECT_EQ(expectedPoint2.x, p.at(1).x);
-    EXPECT_EQ(expectedPoint2.y, p.at(1).y);
+    EXPECT_EQ(expectedPoint2.x(), p.at(1).x());
+    EXPECT_EQ(expectedPoint2.y(), p.at(1).y());
 
     ASSERT_EQ(expectedSize, p.size());
 }

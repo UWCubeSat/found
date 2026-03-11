@@ -58,12 +58,13 @@ FOUND_CLI_OPTION("seda-threshold"          , unsigned char     , SEDAThreshold  
 FOUND_CLI_OPTION("seda-border-len"         , int               , SEDABorderLen   , 1                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The border thickness for SEDA (pixels)"                       ) \
 FOUND_CLI_OPTION("seda-offset"             , decimal           , SEDAOffset      , 0.0                        , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The edge offset for SEDA (pixels)"                            ) \
 FOUND_CLI_OPTION("distance-algo"           , std::string       , distanceAlgo    , SDDA                       , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The distance algorithm to use (SDDA or ISDDA)"                ) \
-FOUND_CLI_OPTION("isdda-min-iterations"    , size_t            , ISDDAMinIters   , 0                          , found::strtosize(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The number of iterations for ISDDA"                           ) \
+FOUND_CLI_OPTION("isdda-min-iterations"    , size_t            , ISDDAMinIters   , 0                          , found::strtosize(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The minimum number of iterations for ISDDA"                   ) \
+FOUND_CLI_OPTION("isdda-max-refreshes"     , size_t            , ISDDAMaxRefresh , 0                          , found::strtosize(optarg)   , kNoDefaultArgument, REQ_ASSIGN, "The maximum number of reference refreshes for ISDDA"          ) \
 FOUND_CLI_OPTION("isdda-dist-ratio"        , decimal           , ISDDADistRatio  , DECIMAL_INF                , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The distance ratio for calculated positions for ISDDA (m)"    ) \
 FOUND_CLI_OPTION("isdda-discrim-ratio"     , decimal           , ISDDADiscimRatio, DECIMAL_INF                , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The loss discrimination ratio for ISSDA"                      ) \
 FOUND_CLI_OPTION("isdda-pdf-order"         , int               , ISDDAPdfOrd     , 2                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Probability Density Function Order for ISSDA (even int)"  ) \
 FOUND_CLI_OPTION("isdda-radius-loss-order" , int               , ISDDARadLossOrd , 4                          , atoi(optarg)               , kNoDefaultArgument, REQ_ASSIGN, "The Radius Loss Order ISSDA (even int)"                       ) \
-FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    ) \
+FOUND_CLI_OPTION("output-file"             , std::string       , outputFile      , ""                         , optarg                     , kNoDefaultArgument, REQ_ASSIGN, "The output file (*.found)"                                    )
 
 
 // Orbit Flags

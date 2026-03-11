@@ -34,7 +34,7 @@ class ApproximateOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
     * 
     * @param totalTime The total time to predict over
     * @param dt The time step for integration (seconds)
-    * @param radius The radius of the celestial body (default is for Earth, in km)
+    * @param radius The radius of the equatorial body (default is for Earth, in km)
     * @param mu The gravitational parameter (default is for Earth in km^3/s^2)
     */
     explicit ApproximateOrbitPropagationAlgorithm(decimal totalTime, decimal dt, decimal radius, decimal mu)
@@ -57,7 +57,7 @@ class ApproximateOrbitPropagationAlgorithm : public OrbitPropagationAlgorithm {
     decimal totalTime_;
     /// The time step for integration (seconds)
     decimal dt_;
-    /// The radius of the celestial body (default is for Earth, in km)
+    /// The radius of the equatorial body (default is for Earth, in km)
     decimal radius_;
     /// The gravitational parameter (default is for Earth in km^3/s^2)
     decimal mu_;

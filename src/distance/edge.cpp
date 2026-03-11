@@ -31,10 +31,10 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     for (auto &component : spaces) {
         // Basically, if the component touches the border, and its the biggest one,
         // we assume it is space
-        if ((component.upperLeft.x < this->borderLength_ ||
-            component.upperLeft.y < this->borderLength_ ||
-            component.lowerRight.x >= image.width - this->borderLength_ ||
-            component.lowerRight.y >= image.height - this->borderLength_)) {
+        if ((component.upperLeft.x() < this->borderLength_ ||
+            component.upperLeft.y() < this->borderLength_ ||
+            component.lowerRight.x() >= image.width - this->borderLength_ ||
+            component.lowerRight.y() >= image.height - this->borderLength_)) {
             if (!space || component.points.size() > space->points.size())
             space = &component;
         }
@@ -45,61 +45,61 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 2: Identify the edge as the edge of space
 
     // Step 2a: Figure out the centroids of space and the planet
-    Vec2 planetCentroid{0, 0};
-    Vec2 spaceCentroid{0, 0};
+    Vec2 planetCentroid(0, 0);
+    Vec2 spaceCentroid(0, 0);
     int64_t planetSize = 0;
     int64_t spaceSize = 0;
     for (uint64_t i = 0; i < imageSize; i++) {
         if (points.find(i) == points.end()) {
-            planetCentroid.x += i % image.width;
-            planetCentroid.y += i / image.width;
+            planetCentroid.x() += i % image.width;
+            planetCentroid.y() += i / image.width;
             planetSize++;
         } else {
-            spaceCentroid.x += i % image.width;
-            spaceCentroid.y += i / image.width;
+            spaceCentroid.x() += i % image.width;
+            spaceCentroid.y() += i / image.width;
             spaceSize++;
         }
     }
-    planetCentroid.x /= planetSize;
-    planetCentroid.y /= planetSize;
-    spaceCentroid.x /= spaceSize;
-    spaceCentroid.y /= spaceSize;
+    planetCentroid.x() /= planetSize;
+    planetCentroid.y() /= planetSize;
+    spaceCentroid.x() /= spaceSize;
+    spaceCentroid.y() /= spaceSize;
 
     Vec2 itrDirection = spaceCentroid - planetCentroid;
 
     // Step 2b: Figure out how to iterate through the image,
     // iterating from the planet into space
     Points result;
-    if (std::abs(itrDirection.y) > std::abs(itrDirection.x)) {
+    if (std::abs(itrDirection.y()) > std::abs(itrDirection.x())) {
         // Determine which direction we want to iterate,
         // (we want to iterate into the space)
         uint64_t update;
         uint64_t start;
         decimal offset;
         uint64_t edge_condition;
-        if (itrDirection.y < 0) {
+        if (itrDirection.y() < 0) {
             // Iterate up, and start at the bottom left corner
             update = -image.width;
-            start = static_cast<uint64_t>(space->lowerRight.y * image.width + space->upperLeft.x);
+            start = static_cast<uint64_t>(space->lowerRight.y() * image.width + space->upperLeft.x());
             offset = -this->offset_;
             edge_condition = image.height - 1;
         } else {
             // Iterate down, and start at the top left corner
             update = image.width;
-            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            start = static_cast<uint64_t>(space->upperLeft.y() * image.width + space->upperLeft.x());
             offset = this->offset_;
             edge_condition = 0;
         }
         // Step 2c: Get all edge points along the edge, identifying the edge
         // as the first point that is found inside space
-        for (int col = space->upperLeft.x; col <= space->lowerRight.x; col++) {
+        for (int col = space->upperLeft.x(); col <= space->lowerRight.x(); col++) {
             // because index is uint64_t, going below zero will overflow, and it will indeed be past the dimensions
             uint64_t index = start;
             while (points.find(index) == points.end()) index += update;
             if (index / image.width != edge_condition) {
                 index -= update;
-                result.push_back({DECIMAL(index % image.width),
-                                    DECIMAL(index / image.width) - offset});
+                result.push_back(Vec2(DECIMAL(index % image.width),
+                                    DECIMAL(index / image.width) - offset));
             }
             start++;
         }
@@ -109,28 +109,28 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
         uint64_t start;
         decimal offset;
         uint64_t edge_condition;
-        if (itrDirection.x < 0) {
+        if (itrDirection.x() < 0) {
             // Iterate left, and start at the top right corner
             update = -1;
-            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->lowerRight.x);
+            start = static_cast<uint64_t>(space->upperLeft.y() * image.width + space->lowerRight.x());
             offset = -this->offset_;
             edge_condition = image.width - 1;
         } else {
             // Iterate right, and start at the top left corner
             update = 1;
-            start = static_cast<uint64_t>(space->upperLeft.y * image.width + space->upperLeft.x);
+            start = static_cast<uint64_t>(space->upperLeft.y() * image.width + space->upperLeft.x());
             offset = this->offset_;
             edge_condition = 0;
         }
         // Step 2c: Get all edge points along the edge, identifying the edge
         // as the first point that is found inside space
-        for (int row = space->upperLeft.y; row <= space->lowerRight.y; row++) {
+        for (int row = space->upperLeft.y(); row <= space->lowerRight.y(); row++) {
             uint64_t index = start;
             while (points.find(index) == points.end()) index += update;
             if (index % image.width != edge_condition) {
                 index -= update;
-                result.push_back({DECIMAL(index % image.width) - offset,
-                                    DECIMAL(index / image.width)});
+                result.push_back(Vec2(DECIMAL(index % image.width) - offset,
+                                    DECIMAL(index / image.width)));
             }
             start += image.width;
         }
@@ -406,11 +406,11 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
  */
 inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
     component.points.insert(index);
-    if (component.upperLeft.x > pixel.x) component.upperLeft.x = pixel.x;
-    else if (component.lowerRight.x < pixel.x) component.lowerRight.x = pixel.x;
+    if (component.upperLeft.x() > pixel.x()) component.upperLeft.x() = pixel.x();
+    else if (component.lowerRight.x() < pixel.x()) component.lowerRight.x() = pixel.x();
     // We skip this statement, since its impossible:
-    // if (component.upperLeft.y > pixel.y) component.upperLeft.y = pixel.y;
-    if (component.lowerRight.y < pixel.y) component.lowerRight.y = pixel.y;
+    // if (component.upperLeft.y() > pixel.y()) component.upperLeft.y() = pixel.y();
+    if (component.lowerRight.y() < pixel.y()) component.lowerRight.y() = pixel.y();
 }
 
 /**
@@ -584,11 +584,16 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         auto &compToMerge = compIt->second;
         auto &lowestComp = components[lowestLabel];
         lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
-        if (compToMerge.upperLeft.x < lowestComp.upperLeft.x) lowestComp.upperLeft.x = compToMerge.upperLeft.x;
-        if (compToMerge.lowerRight.x > lowestComp.lowerRight.x) lowestComp.lowerRight.x = compToMerge.lowerRight.x;
-        // We skip this statement, because its impossible (a higher component is level or lower than a lower component):
-        // if (compToMerge.upperLeft.y < lowestComp.upperLeft.y) lowestComp.upperLeft.y = compToMerge.upperLeft.y;
-        if (compToMerge.lowerRight.y > lowestComp.lowerRight.y) lowestComp.lowerRight.y = compToMerge.lowerRight.y;
+        if (compToMerge.upperLeft.x() < lowestComp.upperLeft.x())
+            lowestComp.upperLeft.x() = compToMerge.upperLeft.x();
+        if (compToMerge.lowerRight.x() > lowestComp.lowerRight.x())
+            lowestComp.lowerRight.x() = compToMerge.lowerRight.x();
+        // We skip this statement, because its impossible
+        // (a higher component is level or lower than a lower component):
+        // if (compToMerge.upperLeft.y() < lowestComp.upperLeft.y())
+        //     lowestComp.upperLeft.y() = compToMerge.upperLeft.y();
+        if (compToMerge.lowerRight.y() > lowestComp.lowerRight.y())
+            lowestComp.lowerRight.y() = compToMerge.lowerRight.y();
 
         components.erase(compIt);
     }

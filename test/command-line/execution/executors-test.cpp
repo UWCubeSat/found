@@ -38,12 +38,12 @@ MATCHER_P(ImageMatcher, expected, "") {
 MATCHER_P(PointsMatcher, expected, "") {
     return arg.size() == expected.size() && std::equal(arg.begin(), arg.end(), expected.begin(), expected.end(),
         [](const Vec2& a, const Vec2& b) {
-            return a.x == b.x && a.y == b.y;
+            return a.x() == b.x() && a.y() == b.y();
         });
 }
 
 MATCHER_P(PositionVectorMatcher, expected, "") {
-    return arg.x == expected.x && arg.y == expected.y && arg.z == expected.z;
+    return arg.x() == expected.x() && arg.y() == expected.y() && arg.z() == expected.z();
 }
 
 TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
@@ -99,6 +99,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         92,
         300,
         2.0,
+        0,
         10,
         12,
         temp_df
