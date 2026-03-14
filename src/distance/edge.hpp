@@ -92,6 +92,36 @@ class LoGEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
+ * This class represents the Inertial Symmetry Edge Detection Algorithm, which
+ * uses an approximation of the Earth's inertial parameters to guess the radius
+ * before finding the points on the horizon.
+ */
+class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+  public:
+    /**
+     * Instantiates a new instance of this algorithm using the given
+     * grayThreshold value and a lineCount (equal to the maximum number of
+     * points that can be emitted). A line must be greater than lineEpsilon
+     * length.
+     */
+    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold, 
+                                           int lineCount, 
+                                           decimal lineEpsilon) : grayThreshold_(grayThreshold),
+        lineCount_(lineCount), lineEpsilon_(lineEpsilon) {}
+
+    Points Run(const Image &image) override;
+
+  private:
+    static constexpr std::array<decimal, 8> MASK = { 0, 0, 0, 0, 1, 1, 1, 1 };
+
+  private:
+    uint8_t grayThreshold_;
+    int lineCount_;
+    decimal lineEpsilon_;
+
+};
+
+/**
  * The ZernikeEdgeDetectionAlgorithm class uses Zernike moments for sub-pixel edge detection.
  * It refines edge positions to sub-pixel accuracy by computing Zernike moments A_11 and A_20
  * in small windows around initial edge points.
