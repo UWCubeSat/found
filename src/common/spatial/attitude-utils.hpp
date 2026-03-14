@@ -93,6 +93,16 @@ decimal Distance(const Vec3 &, const Vec3 &);
 ///////////////////////////////////
 
 /**
+ * A Mat2 is a 2x2 Matrix
+ *
+ * @note Backed by Eigen::Matrix<decimal, 2, 2>.
+ * Access entries via (i, j). Key methods: .col(j), .row(i), .trace(),
+ * .determinant(), .transpose(), .inverse(), +, * (Mat2, Vec2, scalar),
+ * Mat2::Identity()
+ */
+using Mat2 = Eigen::Matrix<decimal, 2, 2>;
+
+/**
  * A Mat3 is a 3x3 Matrix
  *
  * @note Backed by Eigen::Matrix<decimal, 3, 3>.

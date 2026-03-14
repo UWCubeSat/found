@@ -97,28 +97,91 @@ class LoGEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  * before finding the points on the horizon.
  */
 class InertialSymmetryEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
-  public:
+ public:
     /**
      * Instantiates a new instance of this algorithm using the given
      * grayThreshold value and a lineCount (equal to the maximum number of
      * points that can be emitted). A line must be greater than lineEpsilon
      * length.
+     *
+     * @param grayThreshold Threshold for binarizing the image
+     * @param lineCount Maximum number of scan lines (and approximate point count).
+     *        For accuracy, use an odd value greater than 3.
+     * @param lineEpsilon Minimum line length to consider
+     * @param mask Correlation mask for edge detection along each scan line.
+     *        If empty (size 0), the default half-plane mask (0,0,0,0,1,1,1,1)
+     *        is used.
+     * @param sparseness Estimated fraction of pixels that are active (on), in
+     *        [0, 1]. Used for allocation strategy; default 1 (assume dense).
      */
-    InertialSymmetryEdgeDetectionAlgorithm(uint8_t grayThreshold, 
-                                           int lineCount, 
-                                           decimal lineEpsilon) : grayThreshold_(grayThreshold),
-        lineCount_(lineCount), lineEpsilon_(lineEpsilon) {}
+    InertialSymmetryEdgeDetectionAlgorithm(
+        uint8_t grayThreshold,
+        int lineCount,
+        decimal lineEpsilon,
+        const Eigen::Matrix<decimal, Eigen::Dynamic, 1>& mask,
+        decimal sparseness = DECIMAL(1.0));
 
+    /// @brief Destroys the algorithm
+    virtual ~InertialSymmetryEdgeDetectionAlgorithm() {}
+
+    /**
+     * Provides an estimate of the edge points of Earth, as
+     * the shared edge between space and Earth.
+     *
+     * @param image The image of Earth
+     *
+     * @return The points on Earth's edge in image
+     */
     Points Run(const Image &image) override;
 
-  private:
-    static constexpr std::array<decimal, 8> MASK = { 0, 0, 0, 0, 1, 1, 1, 1 };
+ private:
+    /**
+     * Finds the intersection of the ray from start in direction with the image
+     * rectangle [0, imageWidth] x [0, imageHeight].
+     *
+     * @param imageWidth Image width in pixels
+     * @param imageHeight Image height in pixels
+     * @param start Ray start point
+     * @param direction Ray direction (need not be normalized)
+     * @return Intersection point on the image boundary
+     */
+    Vec2 findImageEdge(int imageWidth, int imageHeight,
+                      const Vec2& start, const Vec2& direction) const;
 
-  private:
+    /**
+     * Bilinear sample of the binary pixel array at the given position.
+     *
+     * @param imageWidth Image width
+     * @param imageHeight Image height
+     * @param pixels Binary thresholded image (Eigen vector, row-major index; values 0 or 1)
+     * @param position Sub-pixel position (x, y)
+     * @return Value in [0, 1]
+     */
+    decimal sampleImageBilinear(int imageWidth, int imageHeight,
+                                const Eigen::Matrix<decimal, Eigen::Dynamic, 1>& pixels,
+                                const Vec2& position) const;
+
+    /**
+     * Fits points to an ellipse and returns the least-squares error.
+     *
+     * @param points Rows are (x, y) points
+     * @return Ellipse fit error (singular values dot coefficients)
+     */
+    decimal ellipseFit(const Eigen::Matrix<decimal, Eigen::Dynamic, 2>& points) const;
+
+    /**
+     * Converts an N x 2 matrix of (x, y) rows into a Points vector.
+     *
+     * @param M Matrix with rows (x, y)
+     * @return Points vector
+     */
+    Points matrixToPoints(const Eigen::Matrix<decimal, Eigen::Dynamic, 2>& M) const;
+
     uint8_t grayThreshold_;
     int lineCount_;
     decimal lineEpsilon_;
-
+    decimal sparseness_;
+    Eigen::Matrix<decimal, Eigen::Dynamic, 1> mask_;
 };
 
 /**

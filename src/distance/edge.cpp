@@ -145,235 +145,245 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
 ////// Inertial Symmetry Edge Detection Algorithm //////
 
-// Using a start point and a direction of a given ray, finds the point of
-// intersection at the edge of the image canvas.
-static Vec2 FindImageEdge(int imageWidth, 
-                          int imageHeight, 
-                          Vec2 start,
-                          Vec2 direction) {
-    // Remove one from the width and height to ensure that we only get valid
-    // indices in the image.
+InertialSymmetryEdgeDetectionAlgorithm::InertialSymmetryEdgeDetectionAlgorithm(
+    uint8_t grayThreshold,
+    int lineCount,
+    decimal lineEpsilon,
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 1>& mask,
+    decimal sparseness)
+    : grayThreshold_(grayThreshold),
+      lineCount_(lineCount),
+      lineEpsilon_(lineEpsilon),
+      sparseness_(sparseness) {
+    if (mask.size() == 0) {
+        mask_.resize(8);
+        mask_ << 0, 0, 0, 0, 1, 1, 1, 1;
+    } else {
+        mask_ = mask;
+    }
+}
+
+Vec2 InertialSymmetryEdgeDetectionAlgorithm::findImageEdge(
+    int imageWidth, int imageHeight,
+    const Vec2& start, const Vec2& direction) const {
     imageWidth -= 1;
     imageHeight -= 1;
 
-    // Edge case: no direction given.
-    if (direction.x == 0 && direction.y == 0)
+    if (direction.x() == 0 && direction.y() == 0) {
         return start;
-
-    // Edge case: one component is zero.
-    if (direction.x == 0)
-        return direction.x < 0 ? Vec2(0, start.y) : Vec2(imageWidth, start.y);
-    else if (direction.y == 0)
-        return direction.y < 0 ? Vec2(start.x, 0) : Vec2(start.x, imageHeight);
-
-    decimal slope = direction.y / direction.x;
-    
-    // Intersection with y = 0
-    decimal x1 = start.x - start.y / slope;
-    if (x1 >= 0 && x1 <= imageWidth && direction.y < 0)
-        return Vec2(0, x1);
-    
-    // Intersection with y = imageHeight
-    decimal x2 = start.x - (start.y - imageHeight) / slope;
-    if (x2 >= 0 && x2 <= imageWidth && direction.y > 0) {
-        return Vec2(imageHeight, x2);
     }
 
-    // Intersection with x = 0
-    decimal y1 = start.y - start.x * slope;
-    if (y1 >= 0 && y1 <= imageHeight && direction.x < 0) {
-        return Vec2(y1, 0);
+    if (direction.x() == 0) {
+        return direction.y() < 0 ? Vec2(start.x(), 0) : Vec2(start.x(), imageHeight);
+    }
+    if (direction.y() == 0) {
+        return direction.x() < 0 ? Vec2(0, start.y()) : Vec2(imageWidth, start.y());
     }
 
-    // Intersection with x = imageWidth
-    decimal y2 = start.y - (start.x - imageWidth) * slope;
-    return Vec2(y2, imageWidth);
+    decimal slope = direction.y() / direction.x();
+
+    decimal x1 = start.x() - start.y() / slope;
+    if (x1 >= 0 && x1 <= imageWidth && direction.y() < 0) {
+        return Vec2(x1, 0);
+    }
+
+    decimal x2 = start.x() - (start.y() - imageHeight) / slope;
+    if (x2 >= 0 && x2 <= imageWidth && direction.y() > 0) {
+        return Vec2(x2, imageHeight);
+    }
+
+    decimal y1 = start.y() - start.x() * slope;
+    if (y1 >= 0 && y1 <= imageHeight && direction.x() < 0) {
+        return Vec2(0, y1);
+    }
+
+    decimal y2 = start.y() - (start.x() - imageWidth) * slope;
+    return Vec2(imageWidth, y2);
 }
 
-// Using a binary image, give a value in [0,1] using a bilinear sample at the
-// given image coordinate.
-static decimal SampleImageBilinear(int imageWidth, 
-                                   int imageHeight,
-                                   std::vector<bool> &pixels, 
-                                   Vec2 position) {
-    int ix = (int) position.x;
-    int iy = (int) position.y;
-    
-    // Assume black when out of bounds of the image.
-    if (ix + 1 >= imageWidth || iy + 1 >= imageHeight)
-        return 0;
+decimal InertialSymmetryEdgeDetectionAlgorithm::sampleImageBilinear(
+    int imageWidth, int imageHeight,
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 1>& pixels,
+    const Vec2& position) const {
+    int ix = static_cast<int>(position.x());
+    int iy = static_cast<int>(position.y());
 
-    // Get a coordinate relative to the pixel in the image
-    decimal px = position.x - ix;
-    decimal py = position.y - iy;
+    if (ix + 1 >= imageWidth || iy + 1 >= imageHeight) {
+        return DECIMAL(0.0);
+    }
 
-    // Implicit cast here from bool to decimal
-    decimal v0 = pixels[iy * imageWidth + ix];
-    decimal v1 = pixels[iy * imageWidth + (ix + 1)];
-    decimal v2 = pixels[(iy + 1) * imageWidth + ix];
-    decimal v3 = pixels[(iy + 1) * imageWidth + (ix + 1)];
-    
-    return (DECIMAL(1.0) - py) * 
-        (v0 * (DECIMAL(1.0) - px) + v1 * px) + 
+    decimal px = position.x() - ix;
+    decimal py = position.y() - iy;
+
+    decimal v0 = pixels(iy * imageWidth + ix);
+    decimal v1 = pixels(iy * imageWidth + (ix + 1));
+    decimal v2 = pixels((iy + 1) * imageWidth + ix);
+    decimal v3 = pixels((iy + 1) * imageWidth + (ix + 1));
+
+    return (DECIMAL(1.0) - py) *
+        (v0 * (DECIMAL(1.0) - px) + v1 * px) +
         py * (v2 * (DECIMAL(1.0) - px) + v3 * px);
 }
 
+decimal InertialSymmetryEdgeDetectionAlgorithm::ellipseFit(
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 2>& points) const {
+    if (points.rows() == 0) {
+        return DECIMAL(0.0);
+    }
+    Eigen::Matrix<decimal, Eigen::Dynamic, 6> ellipseEquations(points.rows(), 6);
+    for (Eigen::Index i = 0; i < points.rows(); ++i) {
+        decimal x = points(i, 0);
+        decimal y = points(i, 1);
+        ellipseEquations.row(i) << x * x, x * y, y * y, x, y, 1;
+    }
+
+    Eigen::JacobiSVD<Eigen::Matrix<decimal, Eigen::Dynamic, 6>> svd(
+        ellipseEquations, Eigen::ComputeFullV);
+    Eigen::Matrix<decimal, 6, 6> VT = svd.matrixV();
+    Eigen::Matrix<decimal, 6, 1> finalCol = VT.col(VT.cols() - 1);
+    return svd.singularValues().dot(finalCol);
+}
+
+Points InertialSymmetryEdgeDetectionAlgorithm::matrixToPoints(
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 2>& M) const {
+    Points out;
+    out.reserve(static_cast<size_t>(M.rows()));
+    for (Eigen::Index i = 0; i < M.rows(); ++i) {
+        out.push_back(Vec2(M(i, 0), M(i, 1)));
+    }
+    return out;
+}
+
+
+
 Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
-    // Step 1: Image processing
-    // A std::vector<bool> is used here as C++ allows storing bool vectors as
-    // bitsets; this is all the size we need.
-    std::vector<bool> pixels(image.width * image.height);
+    // Assumes image has a single channel (grayscale); index as image.image[i].
+    const int npixels = image.width * image.height;
+    Eigen::Matrix<decimal, Eigen::Dynamic, 1> binary_image(npixels);
+    const Eigen::Index bodyCapacity = static_cast<Eigen::Index>(std::max(
+        DECIMAL(1.0), std::min(DECIMAL(npixels), npixels * sparseness_)));
+    Eigen::Matrix<decimal, Eigen::Dynamic, 2> body_index(bodyCapacity, 2);
+    int rowCount = 0;
 
-    // First, average the channels into one value, then threshold the values.
-    // A max of three channels are averaged, just so we don't include the alpha
-    // channel in calculations.
-    //
-    // To simplify the next step, the "mass" and centroid of the thresholded
-    // area is also calculated in this step.
-    int averagedChannels = std::min(image.channels, 3);
-    int mass = 0;
-    Vec2 centroid;
-    for (int x = 0; x < image.width; x++) {
-        for (int y = 0; y < image.height; y++) {
-            int sum = 0;
-            for (int k = 0; k < averagedChannels; k++)
-                sum += image.image[(y * image.width + x) * image.channels + k];
-            int value = sum / averagedChannels;
-            pixels[y * image.width + x] = value > grayThreshold_;
-            if (value > grayThreshold_) {
-                mass++;
-                centroid.x += x;
-                centroid.y += y;
+    for (int y = 0; y < image.height; ++y) {
+        for (int x = 0; x < image.width; ++x) {
+            decimal value = DECIMAL(image.image[y * image.width + x]);
+            const bool on = (value > grayThreshold_);
+            binary_image(y * image.width + x) = on ? DECIMAL(1.0) : DECIMAL(0.0);
+            if (on) {
+                body_index(rowCount, 0) = DECIMAL(x);
+                body_index(rowCount, 1) = DECIMAL(y);
+                rowCount++;
             }
         }
     }
-    centroid = centroid * (DECIMAL(1.0) / DECIMAL(mass));
-    
-    // Step 2: Calculating inertial properties
-    // Calculate the moment and product of inertia of the thresholded area. This
-    // allows us to guess the radius and best line of symmetry with some
-    // eigenanalysis of its inertia tensor.
-    decimal Ix = 0, Iy = 0, Ixy = 0;
-    for (int x = 0; x < image.width; x++) {
-        for (int y = 0; y < image.height; y++) {
-            if (pixels[y * image.width + x]) {
-                decimal dx = DECIMAL(x) - centroid.x;
-                decimal dy = DECIMAL(y) - centroid.y;
-                Ix += dx * dx;
-                Iy += dy * dy;
-                Ixy -= dx * dy;
-            }
-        }
+
+    if (rowCount == 0) {
+        return Points();
     }
-    
-    // Trace and determinant of the inertia tensor.
-    decimal trace = Ix + Iy;
-    decimal determinant = Ix * Iy - Ixy * Ixy;
-    
-    // Eigenvalues of the inertia tensor.
-    decimal Lmax = DECIMAL(0.5) * (trace + DECIMAL_SQRT(trace * trace - 4 * determinant));
-    decimal Lmin = DECIMAL(0.5) * (trace - DECIMAL_SQRT(trace * trace - 4 * determinant));
+    body_index.resize(rowCount, 2);
 
-    // Eigenvectors of the inertia tensor, and normalizations of each.
-    // The eigenvector associated with the larger eigenvalue is the minor axis
-    // of the thresholded area.
-    Vec2 wmax{ 1, (Lmax - Ix) / Ixy };
-    Vec2 wmaxHat = wmax.Normalize();
+    // Step 2: Centroid
+    Eigen::Matrix<decimal, 1, 2> centroidRow = body_index.colwise().mean();
 
-    // The eigenvector associated with the smaller eigenvalue is the major axis
-    // of the thresholded area.
-    Vec2 wmin{ 1, (Lmin - Ix) / Ixy };
-    Vec2 wminHat = wmin.Normalize();
+    // Step 4: Centralize (shift coordinates to origin)
+    body_index.rowwise() -= centroidRow;
 
-    // Really rough estimate of the radius of the celestial body in the frame.
-    decimal estimatedRadius = 2 * DECIMAL_SQRT(Lmax / mass);
-    
-    // Offset betwen the lines of correlation. Tries to split the radius evenly
-    // with the number of lines.
-    Vec2 offset = wminHat * estimatedRadius / lineCount_;
+    // Step 5: Inertia tensor (scatter matrix) body_index^T * body_index
+    Mat2 tensor = body_index.transpose() * body_index;
 
-    // Step 3: Placing edge points
+    Eigen::JacobiSVD<Mat2> svd(tensor, Eigen::ComputeThinU);
+    Vec2 wmax = svd.matrixU().col(0);
+    Vec2 wmin = svd.matrixU().col(1);
+    int mass = rowCount;
+    decimal estimatedRadius = 2 * DECIMAL_SQRT(svd.singularValues()(0) / mass);
+    Vec2 centroid = centroidRow.transpose();
 
-    // Two sets of points to choose between with a simple fit.
-    Points red;
-    Points blue;
-    for (int i = -lineCount_; i <= lineCount_; i++) {
-        // First, find the lines by getting the points that intersect the image
-        // bounds.
-        Vec2 start = FindImageEdge(
+    // Offset between scan lines. We use lineCount_/2 as the half-extent so the
+    // number of lines is approximately lineCount_. The count is always odd
+    // because of the center line at i = 0.
+    const int halfCount = std::max(1, lineCount_ / 2);
+    Vec2 offset = wmin * estimatedRadius / halfCount;
+
+    const Eigen::Index maskSize = mask_.size();
+    const int numLines = 2 * halfCount + 1;
+    Eigen::Matrix<decimal, Eigen::Dynamic, 2> redMat(numLines, 2);
+    Eigen::Matrix<decimal, Eigen::Dynamic, 2> blueMat(numLines, 2);
+    int lineRows = 0;
+
+    for (int i = -halfCount; i <= halfCount; i++) {
+        Vec2 start = findImageEdge(
             image.width, image.height,
             centroid + (offset * i),
-            wmaxHat
-        );
-        Vec2 end = FindImageEdge(
+            wmax);
+        Vec2 end = findImageEdge(
             image.width, image.height,
             centroid + (offset * i),
-            -wmaxHat
-        );
+            -wmax);
 
-        decimal length = (end - start).Magnitude();
-
-        // Skip lines that are too short.
-        if (length < lineEpsilon_)
+        decimal length = (end - start).norm();
+        if (length < lineEpsilon_) {
             continue;
+        }
 
-        // Direction vector of pixel length one.
         Vec2 dir = (end - start) / length;
 
-        // Correlate the points on the line with a mask.
-        // Both signals are zero-padded.
-        constexpr int maskSize = MASK.size();
-        int maxLength = maskSize <= length ? (int) length : maskSize;
-        int minLength = maskSize > length ? (int) length : maskSize;
-
-        // Number of points where both signals overlap completely, to minimize
-        // boundary problems.
+        int maxLength = maskSize <= length ? static_cast<int>(length) : static_cast<int>(maskSize);
+        int minLength = maskSize > length ? static_cast<int>(length) : static_cast<int>(maskSize);
         int validLength = maxLength - minLength + 1;
 
-        // This array is, where f is the samples on the line and g is
-        // the mask, equal to (f * g)(-n); importantly, NOT (f * g)(n).
-        std::vector<decimal> correlation(validLength);
+        Eigen::Matrix<decimal, Eigen::Dynamic, 1> correlation(validLength);
+        correlation.setZero();
         decimal maxCorrelation = 0;
         for (int n = 0; n < length; n++) {
             Vec2 point = start + dir * n;
-            decimal sample = SampleImageBilinear(
-                image.width,
-                image.height,
-                pixels,
-                point
-            );
+            decimal sample = sampleImageBilinear(image.width, image.height, binary_image, point);
             for (int k = 0; k < validLength; k++) {
                 int index = n - k;
                 if (index >= 0 && index < maskSize) {
-                    correlation[k] += MASK[n - k] * sample;
-                    if (correlation[k] > maxCorrelation)
-                        maxCorrelation = correlation[k];
+                    correlation(k) += mask_(index) * sample;
+                    if (correlation(k) > maxCorrelation) {
+                        maxCorrelation = correlation(k);
+                    }
                 }
-                // Else, either signal is zero, and thus nothing is added.
             }
         }
 
-        // Get the first index that passes the halfway point of correlation.
-        int i0;
-        for (i0 = 0; i0 < validLength; i0++)
-            if (correlation[i0] >= maxCorrelation / 2)
+        int i0 = 0;
+        for (; i0 < validLength; i0++) {
+            if (correlation(i0) >= maxCorrelation / 2) {
                 break;
-       
-        // Get the last index that passes the halfway point of correlation.
-        int i1;
-        for (i1 = validLength - 1; i1 >= 0; i1--)
-            if (correlation[i1] >= maxCorrelation / 2)
+            }
+        }
+        int i1 = validLength - 1;
+        for (; i1 >= 0; i1--) {
+            if (correlation(i1) >= maxCorrelation / 2) {
                 break;
+            }
+        }
 
-        // Get the points on the line corresponding to the indices.
         Vec2 p0 = start + dir * i0;
         Vec2 p1 = start + dir * i1;
 
-        red.push_back(p0);
-        blue.push_back(p1);
+        redMat.row(lineRows) << p0.x(), p0.y();
+        blueMat.row(lineRows) << p1.x(), p1.y();
+        lineRows++;
     }
-    
-    return Points();
+
+    if (lineRows == 0) {
+        return Points();
+    }
+
+    redMat.conservativeResize(lineRows, 2);
+    blueMat.conservativeResize(lineRows, 2);
+
+    decimal redError = ellipseFit(redMat);
+    decimal blueError = ellipseFit(blueMat);
+
+    if (redError < blueError) {
+        return matrixToPoints(redMat);
+    }
+    return matrixToPoints(blueMat);
 }
 
 ////// Connected Components Algorithm //////
@@ -615,8 +625,8 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
     int halfWindow = windowSize / 2;
 
     // Window is entered around edge pixel
-    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x));
-    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y));
+    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x()));
+    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y()));
 
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
@@ -628,7 +638,7 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
             imgY = std::max(0, std::min(imgY, image.height - 1));
 
             uint64_t imgIndex = static_cast<uint64_t>(imgY * image.width + imgX);
-            window[i * windowSize + j] = static_cast<decimal>(image.image[imgIndex * image.channels]);
+            window[i * windowSize + j] = DECIMAL(image.image[imgIndex * image.channels]);
         }
     }
 
@@ -737,7 +747,7 @@ Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter
     decimal offsetX = scale * l * DECIMAL_COS(psi);
     decimal offsetY = scale * l * DECIMAL_SIN(psi);
 
-    return Vec2{windowCenter.x + offsetX, windowCenter.y + offsetY};
+    return Vec2{windowCenter.x() + offsetX, windowCenter.y() + offsetY};
 }
 
 Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
@@ -786,8 +796,8 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
 
         // Step 2f: Convert back to pixel coordinates
         Vec2 refinedPoint = convertPolarToPixel(initialPoint, l, psi);
-        if (!std::isfinite(static_cast<double>(refinedPoint.x)) ||
-            !std::isfinite(static_cast<double>(refinedPoint.y))) {
+        if (!std::isfinite(static_cast<double>(refinedPoint.x())) ||
+            !std::isfinite(static_cast<double>(refinedPoint.y()))) {
             refinedPoints.push_back(initialPoint);
             continue;
         }
