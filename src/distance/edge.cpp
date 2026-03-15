@@ -292,7 +292,7 @@ Points InertialSymmetryEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 5: Inertia tensor (scatter matrix) body_index^T * body_index
     Mat2 tensor = body_index.transpose() * body_index;
 
-    Eigen::JacobiSVD<Mat2> svd(tensor, Eigen::ComputeThinU);
+    Eigen::JacobiSVD<Mat2> svd(tensor, Eigen::ComputeFullU);
     Vec2 wmax = svd.matrixU().col(0);
     Vec2 wmin = svd.matrixU().col(1);
     int mass = rowCount;
