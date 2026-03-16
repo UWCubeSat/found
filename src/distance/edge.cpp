@@ -10,6 +10,7 @@
 #include <cmath>
 
 #include <Eigen/Core>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -144,23 +145,49 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     return result;
 }
 
+////// Kernel Edge Detection Algorithm //////
+
+Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>
+    KernelEdgeDetectionAlgorithm::Convolve3x3(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gray,
+        const Eigen::Tensor<decimal, 2> &kernel) const {
+    const Eigen::Index rows = gray.rows();
+    const Eigen::Index cols = gray.cols();
+    Eigen::TensorMap<const Eigen::Tensor<decimal, 2>> image_tensor(gray.data(),
+                                                                   rows, cols);
+    Eigen::Tensor<decimal, 2> kernel_3x3(3, 3);
+    for (int r = 0; r < 3; r++)
+        for (int c = 0; c < 3; c++)
+            kernel_3x3(r, c) = kernel(r * 3 + c, 0);
+    Eigen::array<Eigen::Index, 2> dims = {{0, 1}};
+    Eigen::Tensor<decimal, 2> result =
+        image_tensor.convolve(kernel_3x3, dims).eval();
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> out(rows - 2,
+                                                                cols - 2);
+    for (Eigen::Index r = 0; r < result.dimension(0); r++)
+        for (Eigen::Index c = 0; c < result.dimension(1); c++)
+            out(r, c) = result(r, c);
+    return out;
+}
+
 ////// Sobel Edge Detection Algorithm //////
 
-namespace {
+SobelEdgeDetectionAlgorithm::SobelEdgeDetectionAlgorithm(decimal highThreshold)
+    : highThreshold_(highThreshold) {
+    gxKernel_.resize(9, 1);
+    gyKernel_.resize(9, 1);
+    const decimal gx_vals[] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
+    const decimal gy_vals[] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
+    for (int i = 0; i < 9; i++) {
+        gxKernel_(i, 0) = DECIMAL(gx_vals[i]);
+        gyKernel_(i, 0) = DECIMAL(gy_vals[i]);
+    }
+}
 
-// Sobel 3x3 kernels (row-major)
-constexpr decimal SOBEL_GX[] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
-constexpr decimal SOBEL_GY[] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
-
-}  // namespace
-
-Points SobelEdgeDetectionAlgorithm::Run(const Image &image) {
+Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>
+    SobelEdgeDetectionAlgorithm::ToGrayscaleMatrix(const Image &image) const {
     const int rows = image.height;
     const int cols = image.width;
-
-    if (rows < 3 || cols < 3) return Points();
-
-    // Step 1: Grayscale float matrix [0, 1]
     Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gray(rows, cols);
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
@@ -171,74 +198,81 @@ Points SobelEdgeDetectionAlgorithm::Run(const Image &image) {
             gray(r, c) = sum / (image.channels * 255);
         }
     }
+    return gray;
+}
 
-    const int inner_r = rows - 2;
-    const int inner_c = cols - 2;
-
-    // Step 2: Sobel convolution -> Gx, Gy (inner region only)
-    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gx(inner_r, inner_c);
-    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gy(inner_r, inner_c);
-
-    for (int r = 0; r < inner_r; r++) {
-        for (int c = 0; c < inner_c; c++) {
-            decimal gx_val = 0, gy_val = 0;
-            for (int ki = 0; ki < 3; ki++) {
-                for (int kj = 0; kj < 3; kj++) {
-                    decimal v = gray(r + ki, c + kj);
-                    gx_val += v * SOBEL_GX[ki * 3 + kj];
-                    gy_val += v * SOBEL_GY[ki * 3 + kj];
-                }
-            }
-            gx(r, c) = gx_val;
-            gy(r, c) = gy_val;
-        }
-    }
-
-    // Step 3: Magnitude and direction ratio (avoid atan2 for sector)
-    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag =
-        (gx.array().square() + gy.array().square()).sqrt();
-    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gx = gx.array().abs();
-    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gy = gy.array().abs();
+void SobelEdgeDetectionAlgorithm::ComputeMagnitudeAndDirection(
+    const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gx,
+    const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gy,
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> *mag,
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> *ratio) const {
+    *mag = (gx.array().square() + gy.array().square()).sqrt();
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gx =
+        gx.array().abs();
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gy =
+        gy.array().abs();
     const decimal eps = DECIMAL(1e-5);
-    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> ratio =
-        abs_gy / (abs_gx + eps);
+    *ratio = abs_gy / (abs_gx + eps);
+}
 
-    // Step 4: Non-maximum suppression (inner 2 rows/cols of inner region)
-    const int nms_r = inner_r - 2;
-    const int nms_c = inner_c - 2;
-    if (nms_r <= 0 || nms_c <= 0) return Points();
-
+Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic>
+    SobelEdgeDetectionAlgorithm::NonMaxSuppression(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gx,
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gy,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &mag,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &ratio)
+    const {
+    const int nms_r = mag.rows() - 2;
+    const int nms_c = mag.cols() - 2;
     auto mask_h = (ratio.block(1, 1, nms_r, nms_c) < DECIMAL(0.414)).eval();
     auto mask_v = (ratio.block(1, 1, nms_r, nms_c) > DECIMAL(2.414)).eval();
     auto sign_match = (gx.block(1, 1, nms_r, nms_c).array() *
                        gy.block(1, 1, nms_r, nms_c).array()) > 0;
     auto ratio_mid = (ratio.block(1, 1, nms_r, nms_c) >= DECIMAL(0.414) &&
-                     ratio.block(1, 1, nms_r, nms_c) <= DECIMAL(2.414));
+                      ratio.block(1, 1, nms_r, nms_c) <= DECIMAL(2.414));
     auto mask_d45 = (ratio_mid && sign_match).eval();
     auto mask_d135 = (ratio_mid && !sign_match).eval();
 
     Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag_center =
         mag.block(1, 1, nms_r, nms_c);
-    auto is_max = (mask_h && (mag_center > mag.block(1, 0, nms_r, nms_c)) &&
-                          (mag_center > mag.block(1, 2, nms_r, nms_c))) ||
-                  (mask_v && (mag_center > mag.block(0, 1, nms_r, nms_c)) &&
-                          (mag_center > mag.block(2, 1, nms_r, nms_c))) ||
-                  (mask_d45 && (mag_center > mag.block(0, 0, nms_r, nms_c)) &&
-                          (mag_center > mag.block(2, 2, nms_r, nms_c))) ||
-                  (mask_d135 && (mag_center > mag.block(0, 2, nms_r, nms_c)) &&
-                           (mag_center > mag.block(2, 0, nms_r, nms_c)));
+    return (mask_h && (mag_center > mag.block(1, 0, nms_r, nms_c)) &&
+                    (mag_center > mag.block(1, 2, nms_r, nms_c))) ||
+           (mask_v && (mag_center > mag.block(0, 1, nms_r, nms_c)) &&
+                    (mag_center > mag.block(2, 1, nms_r, nms_c))) ||
+           (mask_d45 && (mag_center > mag.block(0, 0, nms_r, nms_c)) &&
+                    (mag_center > mag.block(2, 2, nms_r, nms_c))) ||
+           (mask_d135 && (mag_center > mag.block(0, 2, nms_r, nms_c)) &&
+                    (mag_center > mag.block(2, 0, nms_r, nms_c)));
+}
 
-    // Step 5: Hysteresis — keep only NMS peaks above high threshold
+Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>
+    SobelEdgeDetectionAlgorithm::HysteresisThreshold(
+        const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> &is_max,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &mag)
+    const {
+    const int inner_r = mag.rows();
+    const int inner_c = mag.cols();
+    const int nms_r = inner_r - 2;
+    const int nms_c = inner_c - 2;
     Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> nms_result =
-        Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>::Zero(inner_r, inner_c);
+        Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>::Zero(inner_r,
+                                                                      inner_c);
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag_center =
+        mag.block(1, 1, nms_r, nms_c);
     for (int i = 0; i < nms_r; i++) {
         for (int j = 0; j < nms_c; j++) {
             if (is_max(i, j) && mag_center(i, j) > highThreshold_)
                 nms_result(i + 1, j + 1) = mag_center(i, j);
         }
     }
+    return nms_result;
+}
 
-    // Step 6: Collect edge points (pixel coords of inner region: offset 1,1)
+Points SobelEdgeDetectionAlgorithm::CollectPointsAndSortPolar(
+    const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &nms_result)
+    const {
+    const int inner_r = static_cast<int>(nms_result.rows());
+    const int inner_c = static_cast<int>(nms_result.cols());
     Points result;
     for (int r = 0; r < inner_r; r++) {
         for (int c = 0; c < inner_c; c++) {
@@ -246,18 +280,43 @@ Points SobelEdgeDetectionAlgorithm::Run(const Image &image) {
                 result.push_back(Vec2(DECIMAL(c + 1), DECIMAL(r + 1)));
         }
     }
-
-    // Sort in polar order around centroid (required by distance pipeline)
     if (result.size() < 2) return result;
     Vec2 centroid(0, 0);
     for (const Vec2 &p : result) centroid += p;
     centroid /= static_cast<decimal>(result.size());
-    std::sort(result.begin(), result.end(), [&centroid](const Vec2 &a, const Vec2 &b) {
-        return DECIMAL_ATAN2(a.y() - centroid.y(), a.x() - centroid.x()) <
-               DECIMAL_ATAN2(b.y() - centroid.y(), b.x() - centroid.x());
-    });
-
+    std::sort(result.begin(), result.end(),
+              [&centroid](const Vec2 &a, const Vec2 &b) {
+                  return DECIMAL_ATAN2(a.y() - centroid.y(), a.x() - centroid.x()) <
+                         DECIMAL_ATAN2(b.y() - centroid.y(), b.x() - centroid.x());
+              });
     return result;
+}
+
+Points SobelEdgeDetectionAlgorithm::Run(const Image &image) {
+    const int rows = image.height;
+    const int cols = image.width;
+    if (rows < 3 || cols < 3) return Points();
+
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gray =
+        ToGrayscaleMatrix(image);
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gx =
+        Convolve3x3(gray, gxKernel_);
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gy =
+        Convolve3x3(gray, gyKernel_);
+
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag, ratio;
+    ComputeMagnitudeAndDirection(gx, gy, &mag, &ratio);
+
+    const int inner_r = rows - 2;
+    const int inner_c = cols - 2;
+    if (inner_r < 3 || inner_c < 3) return Points();
+
+    Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> is_max =
+        NonMaxSuppression(gx, gy, mag, ratio);
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> nms_result =
+        HysteresisThreshold(is_max, mag);
+
+    return CollectPointsAndSortPolar(nms_result);
 }
 
 ////// Connected Components Algorithm //////
@@ -519,10 +578,10 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
     return window;
 }
 
-std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
-        ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
-    std::unique_ptr<ComplexNumber[]> kernelZ11(new ComplexNumber[windowSize * windowSize]);
-    std::unique_ptr<ComplexNumber[]> kernelZ20(new ComplexNumber[windowSize * windowSize]);
+Eigen::Matrix<decimal, Eigen::Dynamic, 3>
+    ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
+    const int N = windowSize * windowSize;
+    Eigen::Matrix<decimal, Eigen::Dynamic, 3> K(N, 3);
 
     decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
     decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
@@ -541,63 +600,47 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
 
             for (int si = 0; si < SUB; si++) {
                 for (int sj = 0; sj < SUB; sj++) {
-                    decimal u = uCenter - pixelWidth/DECIMAL(2.0)
-                                + DECIMAL(sj)*subStep + subOffset;
-                    decimal v = vCenter - pixelWidth/DECIMAL(2.0)
-                                + DECIMAL(si)*subStep + subOffset;
+                    decimal u = uCenter - pixelWidth / DECIMAL(2.0) +
+                               DECIMAL(sj) * subStep + subOffset;
+                    decimal v = vCenter - pixelWidth / DECIMAL(2.0) +
+                               DECIMAL(si) * subStep + subOffset;
 
-                    decimal rSquared = u*u + v*v;
+                    decimal rSquared = u * u + v * v;
 
                     if (rSquared <= DECIMAL(1.0)) {
                         sum11 += u;
-                        sum20 += DECIMAL(2.0)*rSquared - DECIMAL(1.0);
+                        sum20 += DECIMAL(2.0) * rSquared - DECIMAL(1.0);
                     }
                 }
             }
 
-            decimal areaWeight =
-                pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
+            decimal areaWeight = pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
 
             int idx = i * windowSize + j;
-
-            kernelZ11[idx].real = areaWeight * sum11;
-            kernelZ11[idx].imag = DECIMAL(0.0);  // filled later
-
-            kernelZ20[idx].real = areaWeight * sum20;
-            kernelZ20[idx].imag = DECIMAL(0.0);
+            K(idx, 0) = areaWeight * sum11;   // Z_11 real
+            K(idx, 2) = areaWeight * sum20;  // Z_20 real
         }
     }
 
-    // transpose → imaginary component
+    // Z_11 imag = transpose of Z_11 real
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
-            kernelZ11[i*windowSize + j].imag =
-                kernelZ11[j*windowSize + i].real;
+            K(i * windowSize + j, 1) = K(j * windowSize + i, 0);
         }
     }
 
-    return {std::move(kernelZ11), std::move(kernelZ20)};
+    return K;
 }
 
 std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
-    const decimal* window, const ComplexNumber* kernelZ11, const ComplexNumber* kernelZ20) {
-    decimal A11Real = DECIMAL(0.0);
-    decimal A11Imag = DECIMAL(0.0);
-    decimal A20Val = DECIMAL(0.0);
+    const decimal* window,
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 3> &kernelMatrix) {
+    const int N = windowSize * windowSize;
+    Eigen::Map<const Eigen::Matrix<decimal, Eigen::Dynamic, 1>> w(window, N, 1);
+    Eigen::Matrix<decimal, 3, 1> r = kernelMatrix.transpose() * w;
 
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            int idx = i * windowSize + j;
-            decimal intensity = window[idx];
-
-            A11Real += intensity * kernelZ11[idx].real;
-            A11Imag += intensity * kernelZ11[idx].imag;
-            A20Val += intensity * kernelZ20[idx].real;
-        }
-    }
-
-    ComplexNumber A11 = {A11Real, A11Imag};
-    ComplexNumber A20 = {A20Val, DECIMAL(0.0)};  // A_20 is real-only
+    ComplexNumber A11 = {r(0), r(1)};
+    ComplexNumber A20 = {r(2), DECIMAL(0.0)};  // A_20 is real-only
     return {A11, A20};
 }
 
@@ -635,8 +678,8 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         return initialPoints;
     }
 
-    // Step 1: Compute Zernike kernels
-    auto [kernelZ11, kernelZ20] = computeZernikeKernels();
+    // Step 1: Compute Zernike kernels (single matrix for efficient K^T * w)
+    Eigen::Matrix<decimal, Eigen::Dynamic, 3> kernelMatrix = computeZernikeKernels();
 
     // Step 2: Process each initial edge point
     Points refinedPoints;
@@ -645,13 +688,10 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         // Step 2a: Extract window around the point
         std::unique_ptr<decimal[]> window = extractWindow(image, initialPoint);
 
-        // Step 2b: Compute Zernike moments for this window
+        // Step 2b: Compute Zernike moments via one matrix-vector multiply
         ComplexNumber A11;
         ComplexNumber A20;
-        std::tie(A11, A20) = computeZernikeMoments(
-            window.get(),
-            kernelZ11.get(),
-            kernelZ20.get());
+        std::tie(A11, A20) = computeZernikeMoments(window.get(), kernelMatrix);
 
         // Step 2c: Extract edge angle ψ from A_11
         decimal psi = extractEdgeAngle(A11);

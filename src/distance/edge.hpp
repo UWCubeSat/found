@@ -5,6 +5,9 @@
 #include <functional>
 #include <utility>
 
+#include <Eigen/Core>
+#include <unsupported/Eigen/CXX11/Tensor>
+
 #include "common/style.hpp"
 #include "common/decimal.hpp"
 #include "common/pipeline/stages.hpp"
@@ -92,10 +95,28 @@ class LoGEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
+ * Base class for kernel-based edge detection with optimized 3x3 convolution
+ * (im2col + GEMM).
+ */
+class KernelEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+ protected:
+    /**
+     * Optimized 3x3 convolution via im2col + GEMM.
+     *
+     * @param gray Grayscale image (rows x cols), normalized [0, 1]
+     * @param kernel Flattened 3x3 kernel as Tensor of shape (9, 1), row-major order
+     * @return Convolved output of size (rows - 2, cols - 2)
+     */
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> Convolve3x3(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gray,
+        const Eigen::Tensor<decimal, 2> &kernel) const;
+};
+
+/**
  * The SobelEdgeDetectionAlgorithm class finds horizon edge points using Sobel gradients,
  * non-maximum suppression, and hysteresis thresholding.
  */
-class SobelEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+class SobelEdgeDetectionAlgorithm : public KernelEdgeDetectionAlgorithm {
  public:
     /**
      * Constructs a new SobelEdgeDetectionAlgorithm.
@@ -103,8 +124,7 @@ class SobelEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * @param highThreshold Threshold for strong edges in hysteresis (e.g. 0.1–0.3 for
      *        normalized [0,1] grayscale)
      */
-    explicit SobelEdgeDetectionAlgorithm(decimal highThreshold)
-        : highThreshold_(highThreshold) {}
+    explicit SobelEdgeDetectionAlgorithm(decimal highThreshold);
 
     virtual ~SobelEdgeDetectionAlgorithm() {}
 
@@ -118,7 +138,31 @@ class SobelEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     Points Run(const Image &image) override;
 
  private:
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> ToGrayscaleMatrix(
+        const Image &image) const;
+
+    void ComputeMagnitudeAndDirection(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gx,
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gy,
+        Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> *mag,
+        Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> *ratio) const;
+
+    Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> NonMaxSuppression(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gx,
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &gy,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &mag,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &ratio) const;
+
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> HysteresisThreshold(
+        const Eigen::Array<bool, Eigen::Dynamic, Eigen::Dynamic> &is_max,
+        const Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> &mag) const;
+
+    Points CollectPointsAndSortPolar(
+        const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &nms_result) const;
+
     decimal highThreshold_;
+    Eigen::Tensor<decimal, 2> gxKernel_;
+    Eigen::Tensor<decimal, 2> gyKernel_;
 };
 
 /**
@@ -185,29 +229,24 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     std::unique_ptr<decimal[]> extractWindow(const Image &image, const Vec2 &center);
 
     /**
-     * Computes the Zernike polynomial convolution kernels Z_11 and Z_20 for a square unit disk 
-     * mapped to the given window size.
+     * Computes the Zernike polynomial convolution kernels as a single matrix for efficient
+     * moment computation. Columns are [Z_11 real, Z_11 imag, Z_20 real].
      *
-     * @return std::pair contains Z_11 and Z_20 convolution kernels
-     *
-     * @post Each kernel is stored in row-major order with windowSize * windowSize elements.
+     * @return Matrix of size (windowSize^2, 3) in column-major order for one K^T * w multiply
      */
-    std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>> computeZernikeKernels();
+    Eigen::Matrix<decimal, Eigen::Dynamic, 3> computeZernikeKernels();
 
     /**
-     * Computes the Zernike moments A_11 and A_20 for a window by convolving the window
-     * with the precomputed Z_11 and Z_20 kernels.
+     * Computes the Zernike moments A_11 and A_20 via one matrix-vector multiply (K^T * window).
      *
      * @param window Grayscale window data in row-major order (windowSize * windowSize elements).
-     * @param kernelZ11 Z_11 kernel at each position in a windowSize * windowSize array
-     * @param kernelZ20 Z_20 kernel at each position in a windowSize * windowSize array
+     * @param kernelMatrix Matrix from computeZernikeKernels(), size (windowSize^2, 3)
      *
      * @return std::pair of (A_11, A_20), each represented as a ComplexNumber
      */
     std::pair<ComplexNumber, ComplexNumber> computeZernikeMoments(
         const decimal* window,
-        const ComplexNumber* kernelZ11,
-        const ComplexNumber* kernelZ20);
+        const Eigen::Matrix<decimal, Eigen::Dynamic, 3> &kernelMatrix);
 
     /**
      * Extracts the edge orientation angle from the complex Zernike moment A_11.

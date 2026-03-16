@@ -1,0 +1,27 @@
+--------------------------------------------------------------------------------
+Profile data file 'callgrind.zernike.out' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 3698958474
+Trigger: Program termination
+Profiled target:  ./build/bin/found-test --gtest_filter=*Zernike* (PID 75699, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       0.05
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      
+--------------------------------------------------------------------------------
+27,321,891,971 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                      file:function
+--------------------------------------------------------------------------------
+1,303,516,032 ( 4.77%)  ???:Eigen::CommaInitializer<Eigen::Block<Eigen::Matrix<double, 9, -1, 0, 9, -1>, 9, 1, true> >::operator,(double const&) [/home/lando/Documents/GitHub/found/build/bin/found-test]
+
