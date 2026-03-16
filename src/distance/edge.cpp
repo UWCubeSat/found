@@ -9,6 +9,8 @@
 #include <unordered_set>
 #include <cmath>
 
+#include <Eigen/Core>
+
 #include "common/style.hpp"
 #include "common/decimal.hpp"
 
@@ -139,6 +141,122 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     }
 
     // Step 4: Return the points
+    return result;
+}
+
+////// Sobel Edge Detection Algorithm //////
+
+namespace {
+
+// Sobel 3x3 kernels (row-major)
+constexpr decimal SOBEL_GX[] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
+constexpr decimal SOBEL_GY[] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
+
+}  // namespace
+
+Points SobelEdgeDetectionAlgorithm::Run(const Image &image) {
+    const int rows = image.height;
+    const int cols = image.width;
+
+    if (rows < 3 || cols < 3) return Points();
+
+    // Step 1: Grayscale float matrix [0, 1]
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gray(rows, cols);
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            uint64_t idx = static_cast<uint64_t>(r * cols + c) * image.channels;
+            decimal sum = 0;
+            for (int ch = 0; ch < image.channels; ch++)
+                sum += static_cast<decimal>(image.image[idx + ch]);
+            gray(r, c) = sum / (image.channels * 255);
+        }
+    }
+
+    const int inner_r = rows - 2;
+    const int inner_c = cols - 2;
+
+    // Step 2: Sobel convolution -> Gx, Gy (inner region only)
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gx(inner_r, inner_c);
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> gy(inner_r, inner_c);
+
+    for (int r = 0; r < inner_r; r++) {
+        for (int c = 0; c < inner_c; c++) {
+            decimal gx_val = 0, gy_val = 0;
+            for (int ki = 0; ki < 3; ki++) {
+                for (int kj = 0; kj < 3; kj++) {
+                    decimal v = gray(r + ki, c + kj);
+                    gx_val += v * SOBEL_GX[ki * 3 + kj];
+                    gy_val += v * SOBEL_GY[ki * 3 + kj];
+                }
+            }
+            gx(r, c) = gx_val;
+            gy(r, c) = gy_val;
+        }
+    }
+
+    // Step 3: Magnitude and direction ratio (avoid atan2 for sector)
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag =
+        (gx.array().square() + gy.array().square()).sqrt();
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gx = gx.array().abs();
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> abs_gy = gy.array().abs();
+    const decimal eps = DECIMAL(1e-5);
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> ratio =
+        abs_gy / (abs_gx + eps);
+
+    // Step 4: Non-maximum suppression (inner 2 rows/cols of inner region)
+    const int nms_r = inner_r - 2;
+    const int nms_c = inner_c - 2;
+    if (nms_r <= 0 || nms_c <= 0) return Points();
+
+    auto mask_h = (ratio.block(1, 1, nms_r, nms_c) < DECIMAL(0.414)).eval();
+    auto mask_v = (ratio.block(1, 1, nms_r, nms_c) > DECIMAL(2.414)).eval();
+    auto sign_match = (gx.block(1, 1, nms_r, nms_c).array() *
+                       gy.block(1, 1, nms_r, nms_c).array()) > 0;
+    auto ratio_mid = (ratio.block(1, 1, nms_r, nms_c) >= DECIMAL(0.414) &&
+                     ratio.block(1, 1, nms_r, nms_c) <= DECIMAL(2.414));
+    auto mask_d45 = (ratio_mid && sign_match).eval();
+    auto mask_d135 = (ratio_mid && !sign_match).eval();
+
+    Eigen::Array<decimal, Eigen::Dynamic, Eigen::Dynamic> mag_center =
+        mag.block(1, 1, nms_r, nms_c);
+    auto is_max = (mask_h && (mag_center > mag.block(1, 0, nms_r, nms_c)) &&
+                          (mag_center > mag.block(1, 2, nms_r, nms_c))) ||
+                  (mask_v && (mag_center > mag.block(0, 1, nms_r, nms_c)) &&
+                          (mag_center > mag.block(2, 1, nms_r, nms_c))) ||
+                  (mask_d45 && (mag_center > mag.block(0, 0, nms_r, nms_c)) &&
+                          (mag_center > mag.block(2, 2, nms_r, nms_c))) ||
+                  (mask_d135 && (mag_center > mag.block(0, 2, nms_r, nms_c)) &&
+                           (mag_center > mag.block(2, 0, nms_r, nms_c)));
+
+    // Step 5: Hysteresis — keep only NMS peaks above high threshold
+    Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> nms_result =
+        Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic>::Zero(inner_r, inner_c);
+    for (int i = 0; i < nms_r; i++) {
+        for (int j = 0; j < nms_c; j++) {
+            if (is_max(i, j) && mag_center(i, j) > highThreshold_)
+                nms_result(i + 1, j + 1) = mag_center(i, j);
+        }
+    }
+
+    // Step 6: Collect edge points (pixel coords of inner region: offset 1,1)
+    Points result;
+    for (int r = 0; r < inner_r; r++) {
+        for (int c = 0; c < inner_c; c++) {
+            if (nms_result(r, c) > highThreshold_)
+                result.push_back(Vec2(DECIMAL(c + 1), DECIMAL(r + 1)));
+        }
+    }
+
+    // Sort in polar order around centroid (required by distance pipeline)
+    if (result.size() < 2) return result;
+    Vec2 centroid(0, 0);
+    for (const Vec2 &p : result) centroid += p;
+    centroid /= static_cast<decimal>(result.size());
+    std::sort(result.begin(), result.end(), [&centroid](const Vec2 &a, const Vec2 &b) {
+        return DECIMAL_ATAN2(a.y() - centroid.y(), a.x() - centroid.x()) <
+               DECIMAL_ATAN2(b.y() - centroid.y(), b.x() - centroid.x());
+    });
+
     return result;
 }
 
@@ -381,8 +499,8 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
     int halfWindow = windowSize / 2;
 
     // Window is entered around edge pixel
-    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x));
-    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y));
+    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x()));
+    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y()));
 
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
@@ -503,7 +621,7 @@ Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter
     decimal offsetX = scale * l * DECIMAL_COS(psi);
     decimal offsetY = scale * l * DECIMAL_SIN(psi);
 
-    return Vec2{windowCenter.x + offsetX, windowCenter.y + offsetY};
+    return Vec2{windowCenter.x() + offsetX, windowCenter.y() + offsetY};
 }
 
 Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
@@ -552,8 +670,8 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
 
         // Step 2f: Convert back to pixel coordinates
         Vec2 refinedPoint = convertPolarToPixel(initialPoint, l, psi);
-        if (!std::isfinite(static_cast<double>(refinedPoint.x)) ||
-            !std::isfinite(static_cast<double>(refinedPoint.y))) {
+        if (!std::isfinite(static_cast<double>(refinedPoint.x())) ||
+            !std::isfinite(static_cast<double>(refinedPoint.y()))) {
             refinedPoints.push_back(initialPoint);
             continue;
         }

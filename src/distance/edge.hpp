@@ -92,6 +92,36 @@ class LoGEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
+ * The SobelEdgeDetectionAlgorithm class finds horizon edge points using Sobel gradients,
+ * non-maximum suppression, and hysteresis thresholding.
+ */
+class SobelEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
+ public:
+    /**
+     * Constructs a new SobelEdgeDetectionAlgorithm.
+     *
+     * @param highThreshold Threshold for strong edges in hysteresis (e.g. 0.1–0.3 for
+     *        normalized [0,1] grayscale)
+     */
+    explicit SobelEdgeDetectionAlgorithm(decimal highThreshold)
+        : highThreshold_(highThreshold) {}
+
+    virtual ~SobelEdgeDetectionAlgorithm() {}
+
+    /**
+     * Detects edge points via Sobel -> NMS -> Hysteresis.
+     *
+     * @param image Grayscale or multi-channel image (uses first channel if multi-channel)
+     *
+     * @return Points on the detected edges (pixel coordinates)
+     */
+    Points Run(const Image &image) override;
+
+ private:
+    decimal highThreshold_;
+};
+
+/**
  * The ZernikeEdgeDetectionAlgorithm class uses Zernike moments for sub-pixel edge detection.
  * It refines edge positions to sub-pixel accuracy by computing Zernike moments A_11 and A_20
  * in small windows around initial edge points.
