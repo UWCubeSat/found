@@ -1,8 +1,10 @@
 #ifndef SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 #define SRC_COMMON_SPATIAL_ATTITUDE_UTILS_HPP_
 
+#include <Eigen/Cholesky>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <Eigen/QR>
 #include <Eigen/SVD>
 
 #include <memory>
@@ -22,7 +24,7 @@ namespace found {
  * Access components via .x(), .y(). Key methods: .norm(), .squaredNorm(),
  * .normalized(), .dot(), +, -, * (scalar)
  */
-using Vec2 = Eigen::Matrix<decimal, 2, 1>;
+typedef Eigen::Matrix<decimal, 2, 1> Vec2;
 
 /**
  * A Vec3 is a 3D Vector
@@ -31,7 +33,7 @@ using Vec2 = Eigen::Matrix<decimal, 2, 1>;
  * Access components via .x(), .y(), .z(). Key methods: .norm(), .squaredNorm(),
  * .normalized(), .dot(), .cross(), +, -, * (scalar), / (scalar)
  */
-using Vec3 = Eigen::Matrix<decimal, 3, 1>;
+typedef Eigen::Matrix<decimal, 3, 1> Vec3;
 
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
@@ -100,7 +102,13 @@ decimal Distance(const Vec3 &, const Vec3 &);
  * .determinant(), .transpose(), .inverse(), +, * (Mat3, Vec3, scalar),
  * Mat3::Identity()
  */
-using Mat3 = Eigen::Matrix<decimal, 3, 3>;
+typedef Eigen::Matrix<decimal, 3, 3> Mat3;
+
+/** Dynamic-size column vector (Nx1). */
+typedef Eigen::Matrix<decimal, Eigen::Dynamic, 1> VecX;
+
+/** Dynamic-size matrix (NxM). */
+typedef Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> MatXX;
 
 /**
  * EulerAngles represents a 3D orientation via right ascension, declination, and roll.
@@ -109,7 +117,7 @@ using Mat3 = Eigen::Matrix<decimal, 3, 3>;
  * Components: .x() = right ascension (ra), .y() = declination (de), .z() = roll.
  * We use z-y'-z'' Euler angles (yaw-pitch-roll order).
  */
-using EulerAngles = Vec3;
+typedef Vec3 EulerAngles;
 
 ///////////////////////////////////
 ///////// QUATERNION CLASS ////////
@@ -126,10 +134,10 @@ using EulerAngles = Vec3;
  * Constructor: Quaternion(w, x, y, z) where w is the real/scalar part.
  * Create from axis-angle: Quaternion(Eigen::AngleAxis<decimal>(angle, axis))
  */
-using Quaternion = Eigen::Quaternion<decimal>;
+typedef Eigen::Quaternion<decimal> Quaternion;
 
-/// Convenience alias for Eigen::AngleAxis<decimal>
-using AngleAxis = Eigen::AngleAxis<decimal>;
+/** Convenience alias for Eigen::AngleAxis<decimal> */
+typedef Eigen::AngleAxis<decimal> AngleAxis;
 
 ///////////////////////////////////
 ////// CONVERSION FUNCTIONS ///////
@@ -191,7 +199,37 @@ inline Quaternion SphericalToQuaternion(EulerAngles angles)
  * Notice the vector is M-1 because it must dot with the vector formed by the M-1 entries of a row
  * to get the result in the M'th entry
 */
-Eigen::Matrix<decimal, Eigen::Dynamic, 1> TLS(const Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> &data);
+VecX TLS(const MatXX &data);
+
+/**
+ * Ordinary least squares: minimizes ||A*x - b||^2 over x.
+ * Same data layout as TLS: rows are [position[j].x, position[j].y, ..., 1] with the last column
+ * the target; returns the (M-1)-vector x such that A*x ≈ b.
+ *
+ * @param data NxM matrix; columns 0..M-2 are the design matrix A, column M-1 is b
+ * @return The vector of length (M-1) that minimizes ||A*x - b||^2
+ */
+VecX OLS(const MatXX &data);
+
+/**
+ * Weighted least squares: minimizes sum_j w_j * (row_j · x - target_j)^2.
+ * Same data layout as TLS; weights are per-row (observation weights).
+ *
+ * @param data NxM matrix; columns 0..M-2 are the design matrix, column M-1 is the target
+ * @param weights N-vector of non-negative weights (one per row)
+ * @return The vector of length (M-1) that minimizes the weighted residual sum of squares
+ */
+VecX WLS(const MatXX &data, const VecX &weights);
+
+/**
+ * Ridge regression: minimizes ||A*x - b||^2 + lambda*||x||^2.
+ * Same data layout as TLS; lambda is the L2 regularization strength.
+ *
+ * @param data NxM matrix; columns 0..M-2 are the design matrix, column M-1 is the target
+ * @param lambda Non-negative regularization parameter
+ * @return The vector of length (M-1) that minimizes the ridge objective
+ */
+VecX Ridge(const MatXX &data, decimal lambda);
 
 
 /// Angle Conversions
