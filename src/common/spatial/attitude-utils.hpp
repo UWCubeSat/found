@@ -110,6 +110,9 @@ typedef Eigen::Matrix<decimal, Eigen::Dynamic, 1> VecX;
 /** Dynamic-size matrix (NxM). */
 typedef Eigen::Matrix<decimal, Eigen::Dynamic, Eigen::Dynamic> MatXX;
 
+/** Dynamic-size index vector (e.g. row/column indices). */
+typedef Eigen::Matrix<Eigen::Index, Eigen::Dynamic, 1> VecI;
+
 /**
  * EulerAngles represents a 3D orientation via right ascension, declination, and roll.
  *
@@ -230,6 +233,21 @@ VecX WLS(const MatXX &data, const VecX &weights);
  * @return The vector of length (M-1) that minimizes the ridge objective
  */
 VecX Ridge(const MatXX &data, decimal lambda);
+
+/**
+ * RANSAC regression: fit a linear model by repeatedly sampling a minimal set,
+ * fitting OLS on the sample, and choosing the model with the most inliers.
+ * Final model is OLS refit on all inliers of the best sample.
+ * Same data layout as TLS; residual_threshold is the max absolute residual for an inlier.
+ *
+ * @param data NxM matrix; columns 0..M-2 are the design matrix, column M-1 is the target
+ * @param residual_threshold Max absolute residual for a row to count as an inlier
+ * @param max_iterations Number of RANSAC trials
+ * @param min_samples Minimum number of rows to fit per trial (default 0 = use M-1 for unique OLS)
+ * @return The vector of length (M-1) from OLS on the inliers of the best trial
+ */
+VecX RANSAC(const MatXX &data, decimal residual_threshold, int max_iterations,
+            Eigen::Index min_samples = 0);
 
 
 /// Angle Conversions

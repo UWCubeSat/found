@@ -17,13 +17,15 @@ namespace found {
 ///// SpheroidDistanceDeterminationAlgorithm /////
 
 SpheroidDistanceDeterminationAlgorithm::SpheroidDistanceDeterminationAlgorithm(
-        Camera &&cam, Vec3 principleAxes, Quaternion relativeOrientation, Quaternion referenceOrientation)
+        Camera &&cam, Vec3 principleAxes, Quaternion relativeOrientation, Quaternion referenceOrientation,
+        RegressionFunc regression)
     : SpheroidDistanceDeterminationAlgorithm(std::move(cam), principleAxes,
-        referenceOrientation * relativeOrientation.conjugate()) {}
+        referenceOrientation * relativeOrientation.conjugate(), std::move(regression)) {}
 
 SpheroidDistanceDeterminationAlgorithm::SpheroidDistanceDeterminationAlgorithm(
-        Camera &&cam, Vec3 principleAxes, Quaternion orientation)
-    : cam_(cam), principleAxes_(principleAxes), TPC_(orientation.toRotationMatrix()) {}
+        Camera &&cam, Vec3 principleAxes, Quaternion orientation, RegressionFunc regression)
+    : cam_(std::move(cam)), principleAxes_(principleAxes), TPC_(orientation.toRotationMatrix()),
+      regression_(std::move(regression)) {}
 
 PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
@@ -41,7 +43,8 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
         normalizedVecsToHorizonMat.row(i) << v.x(), v.y(), v.z(), decimal(1);
     }
 
-    Vec3 vecToEarth = TLS(normalizedVecsToHorizonMat);
+    VecX coeffs = regression_ ? regression_(normalizedVecsToHorizonMat) : TLS(normalizedVecsToHorizonMat);
+    Vec3 vecToEarth(coeffs(0), coeffs(1), coeffs(2));
     // TODO: I really want to use fastinvsqrt but that would probably send our satellite into the sun
     vecToEarth = (TPC_ * DiagAxes * vecToEarth) * (1/sqrt(vecToEarth.dot(vecToEarth) - 1));
 

@@ -1,8 +1,11 @@
 
 #include "common/spatial/attitude-utils.hpp"
 
-#include <math.h>
+#include <algorithm>
 #include <assert.h>
+#include <math.h>
+#include <random>
+#include <utility>
 
 namespace found {
 
@@ -106,6 +109,74 @@ VecX Ridge(const MatXX &data, decimal lambda) {
     MatXX AtA = A.transpose() * A;
     AtA.diagonal().array() += lambda;
     return AtA.ldlt().solve(A.transpose() * b);
+}
+
+VecX RANSAC(const MatXX &data, decimal residual_threshold, int max_iterations,
+            Eigen::Index min_samples) {
+    assert(data.cols() >= 2);
+    assert(data.rows() >= 1);
+    const Eigen::Index n = data.rows();
+    const Eigen::Index m = data.cols();
+    if (min_samples <= 0) {
+        min_samples = m - 1;
+    }
+    min_samples = std::min(min_samples, n);
+    if (n < min_samples) {
+        return OLS(data);
+    }
+    MatXX A = data.leftCols(m - 1);
+    VecX b = data.col(m - 1);
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    VecI indices(n);
+    for (Eigen::Index i = 0; i < n; ++i) {
+        indices(i) = i;
+    }
+
+    int best_inlier_count = -1;
+    VecI best_inliers(n);
+    Eigen::Index best_num_inliers = 0;
+
+    for (int iter = 0; iter < max_iterations; ++iter) {
+        for (Eigen::Index i = 0; i < n - 1; ++i) {
+            std::uniform_int_distribution<Eigen::Index> dist(i, n - 1);
+            Eigen::Index j = dist(rng);
+            std::swap(indices(i), indices(j));
+        }
+        MatXX Asub(min_samples, m - 1);
+        VecX bsub(min_samples);
+        for (Eigen::Index i = 0; i < min_samples; ++i) {
+            Asub.row(i) = A.row(indices(i));
+            bsub(i) = b(indices(i));
+        }
+        VecX x = Asub.householderQr().solve(bsub);
+        VecX residuals = (A * x - b).cwiseAbs();
+        VecI inliers(n);
+        Eigen::Index num_inliers = 0;
+        for (Eigen::Index i = 0; i < n; ++i) {
+            if (residuals(i) <= residual_threshold) {
+                inliers(num_inliers++) = i;
+            }
+        }
+        if (num_inliers > best_inlier_count) {
+            best_inlier_count = static_cast<int>(num_inliers);
+            best_num_inliers = num_inliers;
+            best_inliers.head(num_inliers) = inliers.head(num_inliers);
+        }
+    }
+
+    if (best_num_inliers < min_samples) {
+        return OLS(data);
+    }
+    Eigen::Index n_in = best_num_inliers;
+    MatXX A_in(n_in, m - 1);
+    VecX b_in(n_in);
+    for (Eigen::Index i = 0; i < n_in; ++i) {
+        A_in.row(i) = A.row(best_inliers(i));
+        b_in(i) = b(best_inliers(i));
+    }
+    return A_in.householderQr().solve(b_in);
 }
 
 }  // namespace found

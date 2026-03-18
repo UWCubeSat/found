@@ -3,6 +3,7 @@
 
 #include <Eigen/Core>
 
+#include <functional>
 #include <utility>
 #include <memory>
 
@@ -30,6 +31,9 @@ class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVect
     virtual ~DistanceDeterminationAlgorithm() {}
 };
 
+/** Callable regression: NxM data matrix (design + target column) -> (M-1)-vector of coefficients. */
+using RegressionFunc = std::function<VecX(const MatXX &)>;
+
 /**
  * The DistanceDeterminationAlgorithm class houses the Distance Determination Algorithm. This
  * algorithm calculates the distance from Earth based on the pixels of Earth's edge found in the image.
@@ -49,13 +53,15 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * @param cam The camera used to capture the picture of Earth
      * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
      * @param referenceOrientation The equatorial to L reference frame rotation.
-     * 
+     * @param regression Optional regression to fit [v.x, v.y, v.z, 1] -> coeffs; if empty, TLS is used.
+     *
      * @note orientation equals equatorial reference frame -> L * (F -> L)* = 
      * equatorial reference frame -> FOUND image's reference frame
      */
     SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes,
                                            Quaternion relativeOrientation,
-                                           Quaternion referenceOrientation);
+                                           Quaternion referenceOrientation,
+                                           RegressionFunc regression = nullptr);
 
     /**
      * Creates a SpheroidDistanceDeterminationAlgorithm, which deduces
@@ -69,8 +75,10 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      * @param orientation The global to local transformation matrix
      * converts a vector defined in global coordinates
      * to one defined in local coordinates
+     * @param regression Optional regression to fit [v.x, v.y, v.z, 1] -> coeffs; if empty, TLS is used.
      */
-    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Quaternion orientation);
+    SpheroidDistanceDeterminationAlgorithm(Camera &&cam, Vec3 principleAxes, Quaternion orientation,
+                                           RegressionFunc regression = nullptr);
     ~SpheroidDistanceDeterminationAlgorithm() {}
 
     /**
@@ -106,6 +114,9 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * NOTE the transpose of this gives TCP (local to global).
     */
     Mat3 TPC_;
+
+    /** Injected regression: data (Nx4) -> 3-vector; if empty, TLS is used. */
+    RegressionFunc regression_;
 };
 
 /**
