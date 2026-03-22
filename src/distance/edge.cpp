@@ -370,102 +370,81 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
 ////// Zernike Edge Detection Algorithm //////
 
-std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
-    const Image &image, const Vec2 &center) {
-    std::unique_ptr<decimal[]> window(new decimal[windowSize * windowSize]);
-    int halfWindow = windowSize / 2;
-
-    // Window is entered around edge pixel
-    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x));
-    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y));
-
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            int imgX = centerXInt + (j - halfWindow);
-            int imgY = centerYInt + (i - halfWindow);
-
-            // Handle boundaries: use edge values
-            imgX = std::max(0, std::min(imgX, image.width - 1));
-            imgY = std::max(0, std::min(imgY, image.height - 1));
-
-            uint64_t imgIndex = static_cast<uint64_t>(imgY * image.width + imgX);
-            window[i * windowSize + j] = static_cast<decimal>(image.image[imgIndex * image.channels]);
-        }
-    }
-
-    return window;
-}
-
 std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
         ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
-    std::unique_ptr<ComplexNumber[]> kernelZ11(new ComplexNumber[windowSize * windowSize]);
-    std::unique_ptr<ComplexNumber[]> kernelZ20(new ComplexNumber[windowSize * windowSize]);
+    std::unique_ptr<ComplexNumber[]> kernelZ11 =
+        std::make_unique<ComplexNumber[]>(static_cast<size_t>(maskSize_ * maskSize_));
+    std::unique_ptr<ComplexNumber[]> kernelZ20 =
+        std::make_unique<ComplexNumber[]>(static_cast<size_t>(maskSize_ * maskSize_));
 
-    decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
-    decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
+    decimal pixelWidth = DECIMAL(2.0) / maskSize_;
+    decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / maskSize_;
 
-    constexpr int SUB = 16;
-    decimal subStep   = pixelWidth / DECIMAL(SUB);
-    decimal subOffset = subStep / DECIMAL(2.0);
+    // Utilizing midpoint rule to approximate the integral with a Riemann sum with 64 samples per pixel
+    constexpr int samplesPerPixel = 64;
+    decimal subStep   = pixelWidth / samplesPerPixel;
+    decimal subOffset = subStep / 2;
 
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            decimal uCenter = DECIMAL(2.0) * DECIMAL(j) / DECIMAL(windowSize) - offset;
-            decimal vCenter = DECIMAL(2.0) * DECIMAL(i) / DECIMAL(windowSize) - offset;
+    for (int i = 0; i < maskSize_; i++) {
+        for (int j = 0; j < maskSize_; j++) {
+            decimal uCenter = ((DECIMAL(2.0) * j) / maskSize_) - offset;
+            decimal vCenter = ((DECIMAL(2.0) * i) / maskSize_) - offset;
 
-            decimal sum11 = DECIMAL(0.0);
-            decimal sum20 = DECIMAL(0.0);
+            decimal sum11 = 0;
+            decimal sum20 = 0;
 
-            for (int si = 0; si < SUB; si++) {
-                for (int sj = 0; sj < SUB; sj++) {
-                    decimal u = uCenter - pixelWidth/DECIMAL(2.0)
-                                + DECIMAL(sj)*subStep + subOffset;
-                    decimal v = vCenter - pixelWidth/DECIMAL(2.0)
-                                + DECIMAL(si)*subStep + subOffset;
+            for (int si = 0; si < samplesPerPixel; si++) {
+                for (int sj = 0; sj < samplesPerPixel; sj++) {
+                    decimal u = uCenter - pixelWidth / 2 + DECIMAL(sj)*subStep + subOffset;
+                    decimal v = vCenter - pixelWidth / 2 + DECIMAL(si)*subStep + subOffset;
 
                     decimal rSquared = u*u + v*v;
 
-                    if (rSquared <= DECIMAL(1.0)) {
+                    if (rSquared <= 1) {
                         sum11 += u;
-                        sum20 += DECIMAL(2.0)*rSquared - DECIMAL(1.0);
+                        sum20 += DECIMAL(2.0)*rSquared - 1;
                     }
                 }
             }
 
-            decimal areaWeight =
-                pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
-
-            int idx = i * windowSize + j;
+            decimal areaWeight = (pixelWidth * pixelWidth) / (samplesPerPixel * samplesPerPixel);
+            int idx = i * maskSize_ + j;
 
             kernelZ11[idx].real = areaWeight * sum11;
-            kernelZ11[idx].imag = DECIMAL(0.0);  // filled later
+            kernelZ11[idx].imag = 0;
 
             kernelZ20[idx].real = areaWeight * sum20;
-            kernelZ20[idx].imag = DECIMAL(0.0);
+            kernelZ20[idx].imag = 0;
         }
     }
 
     // transpose → imaginary component
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            kernelZ11[i*windowSize + j].imag =
-                kernelZ11[j*windowSize + i].real;
+    for (int i = 0; i < maskSize_; i++) {
+        for (int j = 0; j < maskSize_; j++) {
+            kernelZ11[i * maskSize_ + j].imag = kernelZ11[j * maskSize_ + i].real;
         }
     }
 
     return {std::move(kernelZ11), std::move(kernelZ20)};
 }
 
-std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
-    const decimal* window, const ComplexNumber* kernelZ11, const ComplexNumber* kernelZ20) {
-    decimal A11Real = DECIMAL(0.0);
-    decimal A11Imag = DECIMAL(0.0);
-    decimal A20Val = DECIMAL(0.0);
+std::unique_ptr<std::pair<ComplexNumber, ComplexNumber>> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
+    const Image &image,
+    const Vec2<int> &center,
+    const std::unique_ptr<ComplexNumber[]> &kernelZ11,
+    const std::unique_ptr<ComplexNumber[]> &kernelZ20) {
+    decimal A11Real = 0;
+    decimal A11Imag = 0;
+    decimal A20Val = 0;
+    int halfMask = maskSize_ / 2;
 
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            int idx = i * windowSize + j;
-            decimal intensity = window[idx];
+    for (int i = 0; i < maskSize_; i++) {
+        for (int j = 0; j < maskSize_; j++) {
+            int idx = i * maskSize_ + j;
+            int imgX = center.x + (j - halfMask);
+            int imgY = center.y + (i - halfMask);
+            int imgIndex = imgY * image.width + imgX;
+            decimal intensity = DECIMAL(image.image[imgIndex * image.channels]);
 
             A11Real += intensity * kernelZ11[idx].real;
             A11Imag += intensity * kernelZ11[idx].imag;
@@ -473,40 +452,53 @@ std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZe
         }
     }
 
-    ComplexNumber A11 = {A11Real, A11Imag};
-    ComplexNumber A20 = {A20Val, DECIMAL(0.0)};  // A_20 is real-only
-    return {A11, A20};
+    return std::make_unique<std::pair<ComplexNumber, ComplexNumber>>(
+        ComplexNumber{A11Real, A11Imag},
+        ComplexNumber{A20Val, 0});  // A_20 is real-only
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ComplexNumber& A11) {
-    return DECIMAL_ATAN2(A11.imag, A11.real);
+decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const std::unique_ptr<ComplexNumber> &A11) {
+    return DECIMAL_ATAN2(A11->imag, A11->real);
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(decimal A11Prime, decimal A20, decimal transitionWidth) {
+decimal ZernikeEdgeDetectionAlgorithm::extractEdgeOffset(decimal A11Prime, decimal A20) {
     if (DECIMAL_ABS(A11Prime) < DECIMAL(1e-10)) {
-        return DECIMAL(0.0);
+        return 0;
     }
-    decimal w = transitionWidth;
-    decimal wSqu = w * w;
+    
+    decimal wSqu = this->transitionWidth_ * this->transitionWidth_;
 
     decimal discriminant = ((wSqu - DECIMAL(1.0)) * (wSqu - DECIMAL(1.0)) - DECIMAL(2.0) * wSqu * (A20 / A11Prime));
-    return (DECIMAL(1.0) - wSqu - sqrt(discriminant)) / wSqu;
+
+    if (discriminant < 0) {
+        discriminant = 0;
+    }
+
+    decimal l = (DECIMAL(1.0) - wSqu - DECIMAL_SQRT(discriminant)) / wSqu;
+
+    if (l < -1) {
+        l = -1;
+    } else if (l > 1) {
+        l = 1;
+    }
+    
+    return l;
 }
 
-Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter, decimal l, decimal psi) {
-    decimal scale = DECIMAL(windowSize) / DECIMAL(2.0);
-    decimal offsetX = scale * l * DECIMAL_COS(psi);
-    decimal offsetY = scale * l * DECIMAL_SIN(psi);
+Vec2<int> ZernikeEdgeDetectionAlgorithm::applyEdgeCorrection(const Vec2<int>& maskCenter, decimal l, decimal psi) {
+    decimal scale = DECIMAL(maskSize_) / DECIMAL(2.0);
+    int offsetX = static_cast<int>(scale * l * DECIMAL_COS(psi));
+    int offsetY = static_cast<int>(scale * l * DECIMAL_SIN(psi));
 
-    return Vec2{windowCenter.x + offsetX, windowCenter.y + offsetY};
+    return Vec2<int>{maskCenter.x + offsetX, maskCenter.y + offsetY};
 }
 
 Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
-    if (windowSize <= 0 || windowSize % 2 == 0) {
-        throw std::invalid_argument("windowSize must be a positive odd integer");
+    if (maskSize_ <= 0 || maskSize_ % 2 == 0) {
+        throw std::invalid_argument("Mask size must be a positive odd integer");
     }
 
-    Points initialPoints = initialEdgeAlgorithm->Run(image);
+    Points initialPoints = initialEdgeAlgorithm_->Run(image);
 
     if (initialPoints.empty()) {
         return initialPoints;
@@ -519,16 +511,21 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
     Points refinedPoints;
 
     for (const Vec2& initialPoint : initialPoints) {
-        // Step 2a: Extract window around the point
-        std::unique_ptr<decimal[]> window = extractWindow(image, initialPoint);
+        Vec2<int> center{
+            static_cast<int>(std::lround(initialPoint.x)),
+            static_cast<int>(std::lround(initialPoint.y))};
 
-        // Step 2b: Compute Zernike moments for this window
-        ComplexNumber A11;
-        ComplexNumber A20;
-        std::tie(A11, A20) = computeZernikeMoments(
-            window.get(),
-            kernelZ11.get(),
-            kernelZ20.get());
+        int halfMask = maskSize_ / 2;
+        if (center.x < halfMask || center.y < halfMask || center.x + halfMask >= image.width
+            || center.y + halfMask >= image.height) {
+            refinedPoints.push_back(initialPoint);
+            continue;
+        }
+
+        // Step 2b: Compute Zernike moments for the mask around center
+        auto moments = computeZernikeMoments(image, center, kernelZ11, kernelZ20);
+        std::unique_ptr<ComplexNumber> A11 =
+            std::make_unique<ComplexNumber>(moments->first);
 
         // Step 2c: Extract edge angle ψ from A_11
         decimal psi = extractEdgeAngle(A11);
@@ -536,23 +533,13 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         // Step 2d: Rotate A_11 to align with edge direction
         decimal cosPsi = DECIMAL_COS(psi);
         decimal sinPsi = DECIMAL_SIN(psi);
-        decimal A11Prime = A11.real * cosPsi + A11.imag * sinPsi;
+        decimal A11Prime = A11->real * cosPsi + A11->imag * sinPsi;
 
         // Step 2e: Solve for edge distance l using Christian's equations
-        decimal l = solveEdgeDistance(A11Prime, A20.real, transitionWidth);
-        if (!std::isfinite(static_cast<double>(l))) {
-            refinedPoints.push_back(initialPoint);
-            continue;
-        }
+        decimal l = extractEdgeOffset(A11Prime, moments->second.real);
 
         // Step 2f: Convert back to pixel coordinates
-        Vec2 refinedPoint = convertPolarToPixel(initialPoint, l, psi);
-        if (!std::isfinite(static_cast<double>(refinedPoint.x)) ||
-            !std::isfinite(static_cast<double>(refinedPoint.y))) {
-            refinedPoints.push_back(initialPoint);
-            continue;
-        }
-
+        Vec2<int> refinedPoint = applyEdgeCorrection(center, l, psi);
         refinedPoints.push_back(refinedPoint);
     }
 

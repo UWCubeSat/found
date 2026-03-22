@@ -92,126 +92,118 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 };
 
 /**
- * The ZernikeEdgeDetectionAlgorithm class uses Zernike moments for sub-pixel edge detection.
- * It refines edge positions to sub-pixel accuracy by computing Zernike moments A_11 and A_20
- * in small windows around initial edge points.
+ * The ZernikeEdgeDetectionAlgorithm class ingests a pixel level edge detection algorithm to
+ * obtain a pixel level approximation of the edge of earth and then performs a sub-pixel edge
+ * correction using the moment based edge-orientation and offset.
  *
  * Based on: Christian (2017) "Accurate Planetary Limb Localization"
+ * https://www.researchgate.net/publication/317742756_Accurate_Planetary_
+ * Limb_Localization_for_Image-Based_Spacecraft_Navigation
  */
 class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  public:
     /**
     * Constructs a new ZernikeEdgeDetectionAlgorithm
     * 
-    * @param initialEdgeAlgorithm_ The algorithm to use for initial edge detection
-    * @param windowSize_ Size of window around each point
+    * @param initialEdgeAlgorithm The algorithm to use for initial pixel level edge detection
+    * @param maskSize_ Size of the square mask around each point
     * @param transitionWidth_ Width of edge transition zone (default: 1.66)
     *
-    * @pre windowSize must be a positive odd integer.
+    * @pre maskSize_ must be a positive odd integer.
+    * @pre transitionWidth_ must be greater than 0
     */
     ZernikeEdgeDetectionAlgorithm(
-        std::unique_ptr<EdgeDetectionAlgorithm> initialEdgeAlgorithm_,
-        int windowSize_ = 7,
-        decimal transitionWidth_ = DECIMAL(1.66))
-        : initialEdgeAlgorithm(std::move(initialEdgeAlgorithm_)),
-        windowSize(windowSize_),
-        transitionWidth(transitionWidth_) {}
+        std::unique_ptr<EdgeDetectionAlgorithm> &initialEdgeAlgorithm,
+        int maskSize = 7,
+        decimal transitionWidth = DECIMAL(1.66))
+        : initialEdgeAlgorithm_(std::move(initialEdgeAlgorithm)),
+        maskSize_(maskSize),
+        transitionWidth_(transitionWidth) {}
 
     // Destroys the algorithm
     virtual ~ZernikeEdgeDetectionAlgorithm() {}
 
     /**
-     * Refines edge positions using Zernike moments sub-pixel detection.
+     * Ingests a pixel level edge detection algorithm to obtain a pixel level
+     * approximation of the edge of earth and then performs a sub-pixel edge
+     * correction using the moment based edge-orientation and offset.
      *
      * @param image The image of Earth
      *
      * @return The refined points on Earth's edge in image
      *
-     * @throws std::invalid_argument if windowSize is not a positive odd integer
+     * @throws std::invalid_argument if maskSize_ is not a positive odd integer
      *
      * @pre image must only contain one channel
      */
     Points Run(const Image &image) override;
 
- private:
-    /// The initial edge detection algorithm
-    std::unique_ptr<EdgeDetectionAlgorithm> initialEdgeAlgorithm;
-    /// Size of window around each point (must be odd)
-    int windowSize;
-    /// Width of edge transition zone
-    decimal transitionWidth;
-
-    /**
-     * Extracts a square window of pixels centered at the given point for Zernike moment computation.
-     * Out-of-bounds coordinates are clamped to the image edges.
-     *
-     * @param image The image of the Earth.
-     * @param center The center of the window.
-     *
-     * @return A newly allocated window of size windowSize * windowSize in row-major order.
-     *
-     * @pre image must only contain one channel
-     */
-    std::unique_ptr<decimal[]> extractWindow(const Image &image, const Vec2 &center);
-
     /**
      * Computes the Zernike polynomial convolution kernels Z_11 and Z_20 for a square unit disk 
-     * mapped to the given window size.
+     * mapped to the given mask size.
      *
-     * @return std::pair contains Z_11 and Z_20 convolution kernels
+     * @return std::pair of Z_11 and Z_20 convolution kernels
      *
-     * @post Each kernel is stored in row-major order with windowSize * windowSize elements.
+     * @post Each kernel is stored in row-major order with maskSize_ * maskSize_ elements.
      */
     std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>> computeZernikeKernels();
 
     /**
-     * Computes the Zernike moments A_11 and A_20 for a window by convolving the window
-     * with the precomputed Z_11 and Z_20 kernels.
+     * Extracts a square mask of pixels centered at the given point for Zernike moment computation.
      *
-     * @param window Grayscale window data in row-major order (windowSize * windowSize elements).
-     * @param kernelZ11 Z_11 kernel at each position in a windowSize * windowSize array
-     * @param kernelZ20 Z_20 kernel at each position in a windowSize * windowSize array
+     * @param image The image of the Earth.
+     * @param center The center of the mask.
+     * @param kernelZ11 Z_11 kernel in row-major order (maskSize_ * maskSize_).
+     * @param kernelZ20 Z_20 kernel in row-major order (maskSize_ * maskSize_).
      *
-     * @return std::pair of (A_11, A_20), each represented as a ComplexNumber
+     * @return std::unique_ptr to a pair (A_11, A_20)
      */
-    std::pair<ComplexNumber, ComplexNumber> computeZernikeMoments(
-        const decimal* window,
-        const ComplexNumber* kernelZ11,
-        const ComplexNumber* kernelZ20);
+    std::unique_ptr<std::pair<ComplexNumber, ComplexNumber>> computeZernikeMoments(
+        const Image &image,
+        const Vec2<int> &center,
+        const std::unique_ptr<ComplexNumber[]> &kernelZ11,
+        const std::unique_ptr<ComplexNumber[]> &kernelZ20);
 
     /**
      * Extracts the edge orientation angle from the complex Zernike moment A_11.
-     * The angle corresponds to the direction perpendicular to the edge in the window.
+     * The angle corresponds to the direction perpendicular to the edge in the mask.
      *
      * @param A11 The complex Zernike moment A_11 (real and imaginary parts).
      *
      * @return The edge angle in radians.
      */
-    decimal extractEdgeAngle(const ComplexNumber& A11);
+    decimal extractEdgeAngle(const std::unique_ptr<ComplexNumber> &A11);
 
     /**
      * Solves for the normalized edge distance l in [-1, 1] using the analytical relations
      * between A'_11, A_20, and l.
      *
      * @param A11Prime The rotated Zernike moment A_11 (aligned with the edge direction).
-     * @param A20 The Zernike moment A_20 for the window.
-     * @param transitionWidth The normalized transition width w of the edge model.
+     * @param A20 The Zernike moment A_20 for the mask.
      *
      * @return The estimated normalized edge distance l
      */
-    decimal solveEdgeDistance(decimal A11Prime, decimal A20, decimal transitionWidth);
+    decimal extractEdgeOffset(decimal A11Prime, decimal A20);
 
     /**
      * Converts the refined edge position from normalized polar coordinates (l, psi) relative
-     * to the window center into image pixel coordinates.
+     * to the mask center into image pixel coordinates.
      *
-     * @param windowCenter Center of the window in image coordinates (sub-pixel).
+     * @param maskCenter Center of the mask in image coordinates (sub-pixel).
      * @param l Normalized edge distance in [-1, 1] along the edge normal.
      * @param psi Edge angle in radians.
      *
      * @return The refined edge point in image coordinates (sub-pixel).
      */
-    Vec2 convertPolarToPixel(const Vec2& windowCenter, decimal l, decimal psi);
+    Vec2<int> applyEdgeCorrection(const Vec2<int>& maskCenter, decimal l, decimal psi);
+
+ private:
+    /// The initial edge detection algorithm
+    std::unique_ptr<EdgeDetectionAlgorithm> initialEdgeAlgorithm_;
+    /// Size of the square mask around each point (must be odd)
+    int maskSize_;
+    /// Width of edge transition zone
+    decimal transitionWidth_;
 };
 
 /**
