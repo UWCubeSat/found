@@ -34,7 +34,7 @@ class MockEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     // erase any existing behavior of this method so that we can tell
     // this method what to do when its called. More information can
     // be found here: https://google.github.io/googletest/gmock_for_dummies.html
-    MOCK_METHOD(Points, Run, (const Image &), (override));
+    MOCK_METHOD((Points<>), Run, (const Image &), (override));
 };
 
 }  // namespace found

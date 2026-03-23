@@ -241,7 +241,7 @@ class Vec3 {
  *
  * @return The midpoint vector
 */
-Vec2 Midpoint(const Vec2 &, const Vec2 &);
+Vec2<> Midpoint(const Vec2<> &, const Vec2<> &);
 
 /**
  * Finds the midpoint between two different vectors
@@ -272,7 +272,7 @@ Vec3 Midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
  * 
  * @return The distance between v1 and v2
 */
-decimal Distance(const Vec2 &, const Vec2 &);
+decimal Distance(const Vec2<> &, const Vec2<> &);
 
 /**
  * Determines the Distance between two vectors

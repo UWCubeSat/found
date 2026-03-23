@@ -85,7 +85,7 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     std::unique_ptr<MockEdgeDetectionAlgorithm>
         edgeDetectionStage(new MockEdgeDetectionAlgorithm());
     EXPECT_CALL(*edgeDetectionStage, Run(testing::_))
-        .WillOnce(testing::Return(Points()));
+        .WillOnce(testing::Return(Points<>()));
 
     std::unique_ptr<MockDistanceDeterminationAlgorithm>
         distanceStage(new MockDistanceDeterminationAlgorithm());

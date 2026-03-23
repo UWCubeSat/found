@@ -3,6 +3,7 @@
 #include <cmath>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "src/distance/edge.hpp"
 #include "test/common/mocks/distance-mocks.hpp"
@@ -14,254 +15,165 @@ constexpr decimal TOL = 1e-5;
 
 // Helper: create ZernikeEdgeDetectionAlgorithm with given mask size
 static ZernikeEdgeDetectionAlgorithm makeAlgo(int maskSize, decimal transitionWidth = DECIMAL(1.66)) {
-    return ZernikeEdgeDetectionAlgorithm(
-        std::make_unique<SimpleEdgeDetectionAlgorithm>(0, 1, DECIMAL(0)),
-        maskSize,
-        transitionWidth);
+    std::unique_ptr<EdgeDetectionAlgorithm> initial =
+        std::make_unique<SimpleEdgeDetectionAlgorithm>(0, 1, DECIMAL(0));
+    return ZernikeEdgeDetectionAlgorithm(initial, maskSize, transitionWidth);
 }
 
 // ---- computeZernikeKernels ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeKernels_HardcodedValues) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeKernels) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-    auto [kernelZ11, kernelZ20] = algo.computeZernikeKernels();
+    const auto kernels = algo.computeZernikeKernels();
+    const std::vector<ComplexNumber> &kernelM11 = kernels.first;
+    const std::vector<ComplexNumber> &kernelM20 = kernels.second;
 
-    const double expectedZ11Real[9] = {
-        -0.04984,  0.00000,  0.04984,
-        -0.33333,  0.00000,  0.33333,
-        -0.04984,  0.00000,  0.04984
+    const double expectedM11Real[9] = {
+        0,  0, 0,
+        -1, 0, 1,
+        0,  0, 0
     };
-    const double expectedZ11Imag[9] = {
-        -0.04984, -0.33333, -0.04984,
-        0.00000,  0.00000,  0.00000,
-        0.04984,  0.33333,  0.04984
+    const double expectedM11Imag[9] = {
+        0,  1, 0,
+        0,  0, 0,
+        0, -1, 0
     };
-    const double expectedZ20[9] = {
-        0.04984,  0.11683,  0.04984,
-        0.11683, -0.66667,  0.11683,
-        0.04984,  0.11683,  0.04984
+    const double expectedM20[9] = {
+        0, 1, 0,
+        1, 0, 1,
+        0, 1, 0
     };
 
     for (int i = 0; i < 9; i++) {
-        EXPECT_NEAR(static_cast<double>(kernelZ11[i].real), expectedZ11Real[i], TOL);
-        EXPECT_NEAR(static_cast<double>(kernelZ11[i].imag), expectedZ11Imag[i], TOL);
-        EXPECT_DOUBLE_EQ(static_cast<double>(kernelZ20[i].imag), 0.0);
-        EXPECT_NEAR(static_cast<double>(kernelZ20[i].real), expectedZ20[i], TOL);
+        EXPECT_DOUBLE_EQ(kernelM11[i].real, expectedM11Real[i]);
+        EXPECT_DOUBLE_EQ(kernelM11[i].imag, expectedM11Imag[i]);
+        EXPECT_DOUBLE_EQ(kernelM20[i].imag, 0.0);
+        EXPECT_DOUBLE_EQ(kernelM20[i].real, expectedM20[i]);
     }
 }
 
 // ---- computeZernikeMoments ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeMoments_HardcodedValues) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeMoments) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-    unsigned char data[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    unsigned char data[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
     Image img{3, 3, 1, data};
-    auto [kernelZ11, kernelZ20] = algo.computeZernikeKernels();
-    auto [A11, A20] = algo.computeZernikeMoments(
-        img, Vec2<int>{1, 1}, kernelZ11.get(), kernelZ20.get());
 
-    EXPECT_NEAR(static_cast<double>(A11.real),  2.5981, TOL);
-    EXPECT_NEAR(static_cast<double>(A11.imag),  0.8660, TOL);
-    EXPECT_NEAR(static_cast<double>(A20.real),  0.0,    TOL);
-    EXPECT_DOUBLE_EQ(static_cast<double>(A20.imag), 0.0);
+    const auto kernels = algo.computeZernikeKernels();
+    const std::vector<ComplexNumber> &kernelM11 = kernels.first;
+    const std::vector<ComplexNumber> &kernelM20 = kernels.second;
+    const std::pair<ComplexNumber, ComplexNumber> moments =
+        algo.computeZernikeMoments(img, Vec2<int>{1, 1}, kernelM11, kernelM20);
+
+    EXPECT_NEAR(moments.first.real,       4.0,   TOL);
+    EXPECT_NEAR(moments.first.imag,       -12.0, TOL);
+    EXPECT_NEAR(moments.second.real,      40.0,  TOL);
+    EXPECT_DOUBLE_EQ(moments.second.imag, 0.0);
 }
 
 // ---- extractEdgeAngle ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeAngle_45Degrees) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeAngle) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-    ComplexNumber A11{DECIMAL(1.0), DECIMAL(1.0)};
+    const ComplexNumber A11{4.0, -12.0};
 
     decimal angle = algo.extractEdgeAngle(A11);
 
-    EXPECT_NEAR(static_cast<double>(angle), M_PI / 4.0, static_cast<double>(TOL));
+    EXPECT_NEAR(angle, -1.249045772398, TOL);
 }
 
-// ---- solveEdgeDistance ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, SolveEdgeDistance_ZeroA11Prime_ReturnsZero) {
+// ---- extractEdgeOffset ----
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-
-    decimal l = algo.solveEdgeDistance(DECIMAL(0.0), DECIMAL(0.25), DECIMAL(1.0));
-
-    EXPECT_DOUBLE_EQ(static_cast<double>(l), 0.0);
+    decimal l = algo.extractEdgeOffset(20.0, 10.0);
+    EXPECT_DOUBLE_EQ(l, -0.84447279202);
 }
 
-TEST(ZernikeEdgeDetectionAlgorithmTest, SolveEdgeDistance_Normal_ReturnsFinite) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_ZeroA11Prime) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-    // Use A20 < 0 so discriminant = (wSqu-1)^2 - 2*wSqu*(A20/A11Prime) is non-negative for w=1
-    decimal l = algo.solveEdgeDistance(DECIMAL(0.5), DECIMAL(-0.1), DECIMAL(1.0));
-
-    EXPECT_TRUE(std::isfinite(static_cast<double>(l)));
+    decimal l = algo.extractEdgeOffset(DECIMAL(0.0), DECIMAL(0.25));
+    EXPECT_DOUBLE_EQ(l, 0.0);
 }
 
-TEST(ZernikeEdgeDetectionAlgorithmTest, SolveEdgeDistance_SmallA11Prime_ReturnsFinite) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_NegativeDiscriminant) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-
-    decimal l = algo.solveEdgeDistance(DECIMAL(1e-11), DECIMAL(0.25), DECIMAL(1.0));
-
-    EXPECT_DOUBLE_EQ(static_cast<double>(l), 0.0);
+    decimal l = algo.extractEdgeOffset(DECIMAL(0.5), DECIMAL(-0.1));
+    EXPECT_DOUBLE_EQ(l, 0.0);
 }
 
-TEST(ZernikeEdgeDetectionAlgorithmTest, SolveEdgeDistance_NegativeDiscriminant_ReturnsNonFinite) {
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_LLessthanNegOne) {
     ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
-    // Large A20 / A11Prime makes discriminant negative -> sqrt(discriminant) NaN
-    decimal l = algo.solveEdgeDistance(DECIMAL(0.5), DECIMAL(100.0), DECIMAL(1.66));
-
-    EXPECT_FALSE(std::isfinite(static_cast<double>(l)));
+    decimal l = algo.extractEdgeOffset(20.0, 5.0);
+    EXPECT_DOUBLE_EQ(l, -1.0);
 }
 
-// ---- convertPolarToPixel ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, ConvertPolarToPixel_90Degrees) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(4);
-    Vec2 center{DECIMAL(1.0), DECIMAL(1.0)};
+TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_LGreaterthanOne) {
+    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    decimal l = algo.extractEdgeOffset(20.0, -20.0);
+    EXPECT_DOUBLE_EQ(l, 1.0);
+}
+
+// ---- applyEdgeCorrection ----
+TEST(ZernikeEdgeDetectionAlgorithmTest, ApplyEdgeCorrection) {
+    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    Vec2<int> maskCenter{1, 1};
     decimal l = DECIMAL(1.0);
     decimal psi = DECIMAL(M_PI / 2.0);
 
-    Vec2 result = algo.convertPolarToPixel(center, l, psi);
+    Vec2<int> result = algo.applyEdgeCorrection(maskCenter, l, psi);
 
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.x), 1.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.y), 3.0);
-}
-
-TEST(ZernikeEdgeDetectionAlgorithmTest, ConvertPolarToPixel_ZeroAngle) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(4);
-    Vec2 center{DECIMAL(0.0), DECIMAL(0.0)};
-    decimal l = DECIMAL(1.0);
-    decimal psi = DECIMAL(0.0);
-
-    Vec2 result = algo.convertPolarToPixel(center, l, psi);
-
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.x), 2.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.y), 0.0);
-}
-
-TEST(ZernikeEdgeDetectionAlgorithmTest, ConvertPolarToPixel_ZeroDistance) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(4);
-    Vec2 center{DECIMAL(5.0), DECIMAL(7.0)};
-    decimal l = DECIMAL(0.0);
-    decimal psi = DECIMAL(M_PI / 4.0);
-
-    Vec2 result = algo.convertPolarToPixel(center, l, psi);
-
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.x), 5.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result.y), 7.0);
+    EXPECT_DOUBLE_EQ(result.x, 1.0);
+    EXPECT_DOUBLE_EQ(result.y, 2.0);
 }
 
 // ---- Run ----
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_MaskDoesNotFit_KeepsInitialPoint) {
-    auto mockPtr = std::make_unique<MockEdgeDetectionAlgorithm>();
-    EXPECT_CALL(*mockPtr, Run(testing::_))
-        .WillRepeatedly(testing::Return(Points{Vec2{DECIMAL(0), DECIMAL(0)}}));
+TEST(ZernikeEdgeDetectionAlgorithmTest, Run) {
+    unsigned char imageData[25] = {
+        0, 0, 5, 5, 5,
+        0, 0, 5, 5, 5,
+        0, 0, 5, 5, 5,
+        0, 0, 5, 5, 5,
+        0, 0, 5, 5, 5
+    };
+    Image image = {
+        5,
+        5,
+        1,
+        imageData
+    };
 
+    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+
+    Points expected = {
+        {2, 0},
+        {2, 1},
+        {2, 2},
+        {2, 3},
+        {2, 4}
+    };
+
+    Points actual = algo.Run(image);
+
+    std::vector<testing::Matcher<Vec2>> matchers;
+    std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
+        [](const Vec2& val) {
+            return Vec2Equal(val);
+        });
+
+    ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
+}
+
+TEST(ZernikeEdgeDetectionAlgorithmTest, Run_NegativeWindow) {
     unsigned char data[4] = {1, 2, 3, 4};
     Image img{2, 2, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo(std::move(mockPtr), 3, DECIMAL(1.66));
+    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(-2);
 
-    Points result = algo.Run(img);
-
-    ASSERT_EQ(result.size(), 1u);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].x), 0.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].y), 0.0);
+    ASSERT_THROW(result = algo.Run(img), std::invalid_argument);
 }
 
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_EmptyInitialPoints_ReturnsEmpty) {
-    ZernikeEdgeDetectionAlgorithm algo(
-        std::make_unique<SimpleEdgeDetectionAlgorithm>(255, 1, DECIMAL(0)),
-        7,
-        DECIMAL(1.66));
-    unsigned char data[49] = {0};
-    Image img{7, 7, 1, data};
-
+TEST(ZernikeEdgeDetectionAlgorithmTest, Run_InitialPointsEmpty) {
+    unsigned char data[4] = {0, 0, 0, 0};
+    Image img{2, 2, 1, data};
+    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
     Points result = algo.Run(img);
-
     EXPECT_TRUE(result.empty());
-}
-
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_InvalidMaskSizeNegative_Throws) {
-    ZernikeEdgeDetectionAlgorithm algo(
-        std::make_unique<SimpleEdgeDetectionAlgorithm>(0, 1, DECIMAL(0)),
-        -1,
-        DECIMAL(1.66));
-    unsigned char data[1] = {0};
-    Image img{1, 1, 1, data};
-
-    EXPECT_THROW(algo.Run(img), std::invalid_argument);
-}
-
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_RefinesInitialEdges_ReturnsNonEmpty) {
-    unsigned char data[25] = {0, 0, 5, 5, 5,
-                              0, 0, 5, 5, 5,
-                              0, 0, 5, 5, 5,
-                              0, 0, 5, 5, 5,
-                              0, 0, 5, 5, 5};
-    Image img{5, 5, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo(
-        std::make_unique<SimpleEdgeDetectionAlgorithm>(2, 1, DECIMAL(0)),
-        5,
-        DECIMAL(1.66));
-
-    Points result = algo.Run(img);
-
-    EXPECT_FALSE(result.empty());
-}
-
-// Covers Run() fallback when solveEdgeDistance returns non-finite (e.g. negative discriminant).
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_NonFiniteL_FallbackToInitialPoint) {
-    auto mockPtr = std::make_unique<MockEdgeDetectionAlgorithm>();
-    EXPECT_CALL(*mockPtr, Run(testing::_))
-        .WillRepeatedly(testing::Return(Points{Vec2{DECIMAL(1.0), DECIMAL(1.0)}}));
-
-    // Bright top row, hollow center, dark bottom: gives A20/A11prime > 0.56,
-    // which makes the discriminant in solveEdgeDistance negative -> l = NaN.
-    unsigned char data[9] = {255, 255, 255,
-                             128,   0, 128,
-                               0,   0,   0};
-    Image img{3, 3, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo(std::move(mockPtr), 3, DECIMAL(1.66));
-
-    Points result = algo.Run(img);
-
-    ASSERT_FALSE(result.empty());
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].x), 1.0);
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].y), 1.0);
-}
-
-
-// Edge case: initial point with NaN in y. Uniform image -> finite l; refinedPoint
-// then has NaN in y, so algorithm falls back to initial point
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_NonFiniteRefinedPointY_FallbackToInitialPoint) {
-    const decimal qNaN = static_cast<decimal>(std::nan(""));
-    auto mockPtr = std::make_unique<MockEdgeDetectionAlgorithm>();
-    MockEdgeDetectionAlgorithm* rawMock = mockPtr.get();
-    EXPECT_CALL(*rawMock, Run(testing::_))
-        .WillRepeatedly(testing::Return(Points{Vec2{DECIMAL(1.0), qNaN}}));
-
-    unsigned char data[9] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
-    Image img{3, 3, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo(std::move(mockPtr), 3, DECIMAL(1.0));
-
-    Points result = algo.Run(img);
-
-    ASSERT_FALSE(result.empty());
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].x), 1.0);
-    EXPECT_FALSE(std::isfinite(static_cast<double>(result[0].y)));
-}
-
-// Edge case: initial point with NaN in x. Uniform image -> finite l; refinedPoint
-// then has NaN in x, so algorithm falls back to initial point
-TEST(ZernikeEdgeDetectionAlgorithmTest, Run_NonFiniteRefinedPointX_FallbackToInitialPoint) {
-    const decimal qNaN = static_cast<decimal>(std::nan(""));
-    auto mockPtr = std::make_unique<MockEdgeDetectionAlgorithm>();
-    MockEdgeDetectionAlgorithm* rawMock = mockPtr.get();
-    EXPECT_CALL(*rawMock, Run(testing::_))
-        .WillRepeatedly(testing::Return(Points{Vec2{qNaN, DECIMAL(1.0)}}));
-
-    unsigned char data[9] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
-    Image img{3, 3, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo(std::move(mockPtr), 3, DECIMAL(1.0));
-
-    Points result = algo.Run(img);
-
-    ASSERT_FALSE(result.empty());
-    EXPECT_FALSE(std::isfinite(static_cast<double>(result[0].x)));
-    EXPECT_DOUBLE_EQ(static_cast<double>(result[0].y), 1.0);
 }
 
 }  // namespace found

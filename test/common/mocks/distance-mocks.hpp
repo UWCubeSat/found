@@ -11,12 +11,12 @@ namespace found {
 
 class MockEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  public:
-    MOCK_METHOD(Points, Run, (const Image& image), (override));
+    MOCK_METHOD((Points<>), Run, (const Image& image), (override));
 };
 
 class MockDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
-    MOCK_METHOD(PositionVector, Run, (const Points& points), (override));
+    MOCK_METHOD(PositionVector, Run, (const Points<> &points), (override));
 };
 
 class MockVectorGenerationAlgorithm : public VectorGenerationAlgorithm {

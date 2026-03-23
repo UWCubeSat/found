@@ -1,9 +1,10 @@
 #ifndef SRC_DISTANCE_EDGE_HPP_
 #define SRC_DISTANCE_EDGE_HPP_
 
-#include <memory>
 #include <functional>
+#include <memory>
 #include <utility>
+#include <vector>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -15,7 +16,7 @@ namespace found {
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture.
 */
-class EdgeDetectionAlgorithm : public FunctionStage<Image, Points> {};
+class EdgeDetectionAlgorithm : public FunctionStage<Image, Points<>> {};
 
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
@@ -51,7 +52,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * three consecutive points A B and C, angle APB is less than
      * angle APC
      */
-    Points Run(const Image &image) override;
+    Points<> Run(const Image &image) override;
 
  private:
     /// The space-ether threshold to use
@@ -86,7 +87,7 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @return The edge points in the image most closely resembling that of earth
      * */
-    Points Run(const Image &image) override;
+    Points<> Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
 };
@@ -113,12 +114,12 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     * @pre transitionWidth_ must be greater than 0
     */
     ZernikeEdgeDetectionAlgorithm(
-        std::unique_ptr<EdgeDetectionAlgorithm> &initialEdgeAlgorithm,
+        EdgeDetectionAlgorithm &initialEdgeAlgorithm,
         int maskSize = 7,
         decimal transitionWidth = DECIMAL(1.66))
-        : initialEdgeAlgorithm_(std::move(initialEdgeAlgorithm)),
-        maskSize_(maskSize),
-        transitionWidth_(transitionWidth) {}
+        : initialEdgeAlgorithm_(initialEdgeAlgorithm),
+          maskSize_(maskSize),
+          transitionWidth_(transitionWidth) {}
 
     // Destroys the algorithm
     virtual ~ZernikeEdgeDetectionAlgorithm() {}
@@ -136,33 +137,31 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      *
      * @pre image must only contain one channel
      */
-    Points Run(const Image &image) override;
+    Points<> Run(const Image &image) override;
 
     /**
-     * Computes the Zernike polynomial convolution kernels Z_11 and Z_20 for a square unit disk 
+     * Computes the Zernike polynomial convolution kernels M_11 and M_20 for a square unit disk 
      * mapped to the given mask size.
      *
-     * @return std::pair of Z_11 and Z_20 convolution kernels
-     *
-     * @post Each kernel is stored in row-major order with maskSize_ * maskSize_ elements.
+     * @return std::pair of M_11 and M_20 convolution kernels (row-major, maskSize_² elements each)
      */
-    std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>> computeZernikeKernels();
+    std::pair<std::vector<ComplexNumber>, std::vector<ComplexNumber>> computeZernikeKernels();
 
     /**
      * Extracts a square mask of pixels centered at the given point for Zernike moment computation.
      *
      * @param image The image of the Earth.
      * @param center The center of the mask.
-     * @param kernelZ11 Z_11 kernel in row-major order (maskSize_ * maskSize_).
-     * @param kernelZ20 Z_20 kernel in row-major order (maskSize_ * maskSize_).
+     * @param kernelM11 M_11 kernel in row-major order (maskSize_ * maskSize_).
+     * @param kernelM20 M_20 kernel in row-major order (maskSize_ * maskSize_).
      *
-     * @return std::unique_ptr to a pair (A_11, A_20)
+     * @return a pair of ComplexNumbers (A_11, A_20)
      */
-    std::unique_ptr<std::pair<ComplexNumber, ComplexNumber>> computeZernikeMoments(
+    std::pair<ComplexNumber, ComplexNumber> computeZernikeMoments(
         const Image &image,
         const Vec2<int> &center,
-        const std::unique_ptr<ComplexNumber[]> &kernelZ11,
-        const std::unique_ptr<ComplexNumber[]> &kernelZ20);
+        const std::vector<ComplexNumber> &kernelM11,
+        const std::vector<ComplexNumber> &kernelM20);
 
     /**
      * Extracts the edge orientation angle from the complex Zernike moment A_11.
@@ -172,7 +171,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      *
      * @return The edge angle in radians.
      */
-    decimal extractEdgeAngle(const std::unique_ptr<ComplexNumber> &A11);
+    decimal extractEdgeAngle(const ComplexNumber &A11);
 
     /**
      * Solves for the normalized edge distance l in [-1, 1] using the analytical relations
@@ -199,7 +198,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
 
  private:
     /// The initial edge detection algorithm
-    std::unique_ptr<EdgeDetectionAlgorithm> initialEdgeAlgorithm_;
+    EdgeDetectionAlgorithm& initialEdgeAlgorithm_;
     /// Size of the square mask around each point (must be odd)
     int maskSize_;
     /// Width of edge transition zone
@@ -219,7 +218,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  * as 2D, not 3D. You must program Criteria correctly to handle cases where there 
  * are multiple channels (i.e. This algorithm doesn't know how many channels are involved).
  */
-Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
+Components<> ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
 
 }  // namespace found
 

@@ -18,18 +18,18 @@ namespace found {
 
 // TODO: Investigate if the use of the DECIMAL(x) cast is taking up too much time
 
-Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
+Points<> SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 0: Define Common Variables
     uint64_t imageSize = image.width * image.height;
 
     // Step 1: Obtain the component that represents space
-    Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
+    Components<> spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
         // Average the pixel, then threshold it
         int sum = 0;
         for (int i = 0; i < image.channels; i++) sum += image.image[image.channels * index + i];
         return sum / image.channels < this->threshold_;
     });
-    Component *space = nullptr;
+    Component<> *space = nullptr;
     for (auto &component : spaces) {
         // Basically, if the component touches the border, and its the biggest one,
         // we assume it is space
@@ -41,14 +41,14 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             space = &component;
         }
     }
-    if (space == nullptr || space->points.size() == imageSize) return Points();
+    if (space == nullptr || space->points.size() == imageSize) return Points<>();
     std::unordered_set<uint64_t> &points = space->points;
 
     // Step 2: Identify the edge as the edge of space
 
     // Step 2a: Figure out the centroids of space and the planet
-    Vec2 planetCentroid{0, 0};
-    Vec2 spaceCentroid{0, 0};
+    Vec2<> planetCentroid{0, 0};
+    Vec2<> spaceCentroid{0, 0};
     int64_t planetSize = 0;
     int64_t spaceSize = 0;
     for (uint64_t i = 0; i < imageSize; i++) {
@@ -67,11 +67,11 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     spaceCentroid.x /= spaceSize;
     spaceCentroid.y /= spaceSize;
 
-    Vec2 itrDirection = spaceCentroid - planetCentroid;
+    Vec2<> itrDirection = spaceCentroid - planetCentroid;
 
     // Step 2b: Figure out how to iterate through the image,
     // iterating from the planet into space
-    Points result;
+    Points<> result;
     if (std::abs(itrDirection.y) > std::abs(itrDirection.x)) {
         // Determine which direction we want to iterate,
         // (we want to iterate into the space)
@@ -172,7 +172,7 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
  * 
  * @pre Must be called in order of increasing index
  */
-inline void UpdateComponent(Component &component, uint64_t index, Vec2 &pixel) {
+inline void UpdateComponent(Component<> &component, uint64_t index, Vec2<> &pixel) {
     component.points.insert(index);
     if (component.upperLeft.x > pixel.x) component.upperLeft.x = pixel.x;
     else if (component.lowerRight.x < pixel.x) component.lowerRight.x = pixel.x;
@@ -201,9 +201,9 @@ inline int NWayEquivalenceAdd(const Image &image,
                               int &L,
                               int adjacentLabels[4],
                               int size,
-                              std::unordered_map<int, Component> &components,
+                              std::unordered_map<int, Component<>> &components,
                               std::unordered_map<int, int> &equivalencies) {
-    Vec2 pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
+    Vec2<> pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
     if (size == 0) {
         // No adjacent labels
         components.insert({++L, {{index}, pixel, pixel}});
@@ -252,9 +252,9 @@ inline int NWayEquivalenceAdd(const Image &image,
     return minLabel;
 }
 
-Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
+Components<> ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
     // Step 0: Setup the Problem
-    std::unordered_map<int, Component> components;
+    std::unordered_map<int, Component<>> components;
     std::unordered_map<int, int> equivalencies;
     std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
 
@@ -362,7 +362,7 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     }
 
     // Step 3: Return the components
-    Components result;
+    Components<> result;
     for (const auto &[label, component] : components) result.push_back(component);
 
     return result;
@@ -370,12 +370,11 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
 ////// Zernike Edge Detection Algorithm //////
 
-std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
+std::pair<std::vector<ComplexNumber>, std::vector<ComplexNumber>>
         ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
-    std::unique_ptr<ComplexNumber[]> kernelZ11 =
-        std::make_unique<ComplexNumber[]>(static_cast<size_t>(maskSize_ * maskSize_));
-    std::unique_ptr<ComplexNumber[]> kernelZ20 =
-        std::make_unique<ComplexNumber[]>(static_cast<size_t>(maskSize_ * maskSize_));
+    const std::size_t n = static_cast<std::size_t>(maskSize_ * maskSize_);
+    std::vector<ComplexNumber> kernelM11(n);
+    std::vector<ComplexNumber> kernelM20(n);
 
     decimal pixelWidth = DECIMAL(2.0) / maskSize_;
     decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / maskSize_;
@@ -400,7 +399,7 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
 
                     decimal rSquared = u*u + v*v;
 
-                    if (rSquared <= 1) {
+                    if (rSquared <= 1) { // check whether this part of pixel is inside the unit disk
                         sum11 += u;
                         sum20 += DECIMAL(2.0)*rSquared - 1;
                     }
@@ -410,29 +409,27 @@ std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>>
             decimal areaWeight = (pixelWidth * pixelWidth) / (samplesPerPixel * samplesPerPixel);
             int idx = i * maskSize_ + j;
 
-            kernelZ11[idx].real = areaWeight * sum11;
-            kernelZ11[idx].imag = 0;
+            kernelM11[idx].real = areaWeight * sum11;
+            kernelM11[idx].imag = 0;
 
-            kernelZ20[idx].real = areaWeight * sum20;
-            kernelZ20[idx].imag = 0;
+            kernelM20[idx].real = areaWeight * sum20;
+            kernelM20[idx].imag = 0;
         }
     }
 
-    // transpose → imaginary component
+    // transpose of real component of M11 kernel is the imaginary component of M11 kernel
     for (int i = 0; i < maskSize_; i++) {
         for (int j = 0; j < maskSize_; j++) {
-            kernelZ11[i * maskSize_ + j].imag = kernelZ11[j * maskSize_ + i].real;
+            kernelM11[i * maskSize_ + j].imag = kernelM11[j * maskSize_ + i].real;
         }
     }
 
-    return {std::move(kernelZ11), std::move(kernelZ20)};
+    return {std::move(kernelM11), std::move(kernelM20)};
 }
 
-std::unique_ptr<std::pair<ComplexNumber, ComplexNumber>> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
-    const Image &image,
-    const Vec2<int> &center,
-    const std::unique_ptr<ComplexNumber[]> &kernelZ11,
-    const std::unique_ptr<ComplexNumber[]> &kernelZ20) {
+std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
+        const Image &image, const Vec2<int> &center, const std::vector<ComplexNumber> &kernelM11,
+        const std::vector<ComplexNumber> &kernelM20) {
     decimal A11Real = 0;
     decimal A11Imag = 0;
     decimal A20Val = 0;
@@ -446,23 +443,21 @@ std::unique_ptr<std::pair<ComplexNumber, ComplexNumber>> ZernikeEdgeDetectionAlg
             int imgIndex = imgY * image.width + imgX;
             decimal intensity = DECIMAL(image.image[imgIndex * image.channels]);
 
-            A11Real += intensity * kernelZ11[idx].real;
-            A11Imag += intensity * kernelZ11[idx].imag;
-            A20Val += intensity * kernelZ20[idx].real;
+            A11Real += intensity * kernelM11[idx].real;
+            A11Imag += intensity * kernelM11[idx].imag;
+            A20Val += intensity * kernelM20[idx].real;
         }
     }
 
-    return std::make_unique<std::pair<ComplexNumber, ComplexNumber>>(
-        ComplexNumber{A11Real, A11Imag},
-        ComplexNumber{A20Val, 0});  // A_20 is real-only
+    return {ComplexNumber{A11Real, A11Imag}, ComplexNumber{A20Val, 0}};  // A_20 is real-only
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const std::unique_ptr<ComplexNumber> &A11) {
-    return DECIMAL_ATAN2(A11->imag, A11->real);
+decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ComplexNumber &A11) {
+    return DECIMAL_ATAN2(A11.imag, A11.real);
 }
 
 decimal ZernikeEdgeDetectionAlgorithm::extractEdgeOffset(decimal A11Prime, decimal A20) {
-    if (DECIMAL_ABS(A11Prime) < DECIMAL(1e-10)) {
+    if (DECIMAL_ABS(A11Prime) < DECIMAL(1e-10)) { // Avoid division by zero
         return 0;
     }
     
@@ -493,28 +488,32 @@ Vec2<int> ZernikeEdgeDetectionAlgorithm::applyEdgeCorrection(const Vec2<int>& ma
     return Vec2<int>{maskCenter.x + offsetX, maskCenter.y + offsetY};
 }
 
-Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
+Points<> ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
     if (maskSize_ <= 0 || maskSize_ % 2 == 0) {
         throw std::invalid_argument("Mask size must be a positive odd integer");
     }
 
-    Points initialPoints = initialEdgeAlgorithm_->Run(image);
+    Points<> initialPoints = initialEdgeAlgorithm_.Run(image);
 
     if (initialPoints.empty()) {
         return initialPoints;
     }
 
     // Step 1: Compute Zernike kernels
-    auto [kernelZ11, kernelZ20] = computeZernikeKernels();
+    const std::pair<std::vector<ComplexNumber>, std::vector<ComplexNumber>> kernels =
+        computeZernikeKernels();
+    const std::vector<ComplexNumber> &kernelM11 = kernels.first;
+    const std::vector<ComplexNumber> &kernelM20 = kernels.second;
 
-    // Step 2: Process each initial edge point
-    Points refinedPoints;
+    // Step 2: Process each initial edge point and refine it using Zernike moments
+    Points<int> refinedPoints;
 
-    for (const Vec2& initialPoint : initialPoints) {
+    for (const Vec2<> &initialPoint : initialPoints) {
         Vec2<int> center{
             static_cast<int>(std::lround(initialPoint.x)),
             static_cast<int>(std::lround(initialPoint.y))};
 
+        // Step 2a: Check if the mask is within the image and if not, keep the initial point
         int halfMask = maskSize_ / 2;
         if (center.x < halfMask || center.y < halfMask || center.x + halfMask >= image.width
             || center.y + halfMask >= image.height) {
@@ -523,20 +522,18 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         }
 
         // Step 2b: Compute Zernike moments for the mask around center
-        auto moments = computeZernikeMoments(image, center, kernelZ11, kernelZ20);
-        std::unique_ptr<ComplexNumber> A11 =
-            std::make_unique<ComplexNumber>(moments->first);
+        const std::pair<ComplexNumber, ComplexNumber> moments =
+                computeZernikeMoments(image, center, kernelM11, kernelM20);
+        const ComplexNumber &A11 = moments.first;
 
         // Step 2c: Extract edge angle ψ from A_11
-        decimal psi = extractEdgeAngle(A11);
+        const decimal psi = extractEdgeAngle(A11);
 
         // Step 2d: Rotate A_11 to align with edge direction
-        decimal cosPsi = DECIMAL_COS(psi);
-        decimal sinPsi = DECIMAL_SIN(psi);
-        decimal A11Prime = A11->real * cosPsi + A11->imag * sinPsi;
+        decimal A11Prime = A11.real * DECIMAL_COS(psi) + A11.imag * DECIMAL_SIN(psi);
 
-        // Step 2e: Solve for edge distance l using Christian's equations
-        decimal l = extractEdgeOffset(A11Prime, moments->second.real);
+        // Step 2e: Solve for edge distance l
+        decimal l = extractEdgeOffset(A11Prime, moments.second.real);
 
         // Step 2f: Convert back to pixel coordinates
         Vec2<int> refinedPoint = applyEdgeCorrection(center, l, psi);
