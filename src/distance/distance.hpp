@@ -20,7 +20,7 @@ namespace found {
  * three consecutive points A B and C, angle APB is less than
  * angle APC
  */
-class DistanceDeterminationAlgorithm : public FunctionStage<Points<>, PositionVector> {
+class DistanceDeterminationAlgorithm : public FunctionStage<Points, PositionVector> {
  public:
     // Constructs this
     DistanceDeterminationAlgorithm() = default;
@@ -61,7 +61,7 @@ class SphericalDistanceDeterminationAlgorithm : public DistanceDeterminationAlgo
      * 
      * @post If p.size() < 3, then the result is exactly the zero vector
      * */
-    PositionVector Run(const Points<> &p) override;
+    PositionVector Run(const Points &p) override;
 
  protected:
     /**
@@ -206,7 +206,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * @note If minimumIterations (from constructor) is less than the size of
      * p, then it will increase the number of iterations to cover all of p
      * */
-    PositionVector Run(const Points<> &p) override;
+    PositionVector Run(const Points &p) override;
 
  private:
     /**
@@ -320,7 +320,7 @@ class EllipticDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     * @return The position vector of the satellite with respect
     * to the camera's coordinate system
     * */
-    PositionVector Run(const Points<> &p) override;
+    PositionVector Run(const Points &p) override;
  private:
     // Fields specific to this algorithm, and helper methods
 };

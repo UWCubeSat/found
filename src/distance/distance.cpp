@@ -16,7 +16,7 @@ namespace found {
 
 ///// SphericalDistanceDeterminationAlgorithm /////
 
-PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points<> &p) {
+PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     if (p.size() < 3) return {0, 0, 0};
 
     const Vec3 spats[3] = {cam_.CameraToSpatial(p[0]).Normalize(),
@@ -109,7 +109,7 @@ IterativeSphericalDistanceDeterminationAlgorithm::IterativeSphericalDistanceDete
     assert(this->radiusLossOrder_ % 2 == 0);
 }
 
-PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points<> &p) {
+PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
     // Step -1: Return zero if the number of points is less than 0
     if (p.size() < 3) return {0, 0, 0};
 

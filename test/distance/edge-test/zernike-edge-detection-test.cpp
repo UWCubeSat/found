@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "src/distance/edge.hpp"
+#include "test/common/common.hpp"
 #include "test/common/mocks/distance-mocks.hpp"
 
 namespace found {
@@ -13,16 +14,16 @@ namespace found {
 // Tolerance for floating-point comparison
 constexpr decimal TOL = 1e-5;
 
-// Helper: create ZernikeEdgeDetectionAlgorithm with given mask size
-static ZernikeEdgeDetectionAlgorithm makeAlgo(int maskSize, decimal transitionWidth = DECIMAL(1.66)) {
-    std::unique_ptr<EdgeDetectionAlgorithm> initial =
-        std::make_unique<SimpleEdgeDetectionAlgorithm>(0, 1, DECIMAL(0));
-    return ZernikeEdgeDetectionAlgorithm(initial, maskSize, transitionWidth);
+testing::Matcher<Vec2<>> Vec2Equal(const Vec2<> &expected) {
+    return testing::Truly([expected](const Vec2<> &arg) {
+        return vectorEqual(arg, expected);
+    });
 }
 
 // ---- computeZernikeKernels ----
 TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeKernels) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     const auto kernels = algo.computeZernikeKernels();
     const std::vector<ComplexNumber> &kernelM11 = kernels.first;
     const std::vector<ComplexNumber> &kernelM20 = kernels.second;
@@ -53,7 +54,8 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeKernels) {
 
 // ---- computeZernikeMoments ----
 TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeMoments) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     unsigned char data[9] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
     Image img{3, 3, 1, data};
 
@@ -71,7 +73,8 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, ComputeZernikeMoments) {
 
 // ---- extractEdgeAngle ----
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeAngle) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     const ComplexNumber A11{4.0, -12.0};
 
     decimal angle = algo.extractEdgeAngle(A11);
@@ -81,38 +84,44 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeAngle) {
 
 // ---- extractEdgeOffset ----
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     decimal l = algo.extractEdgeOffset(20.0, 10.0);
     EXPECT_DOUBLE_EQ(l, -0.84447279202);
 }
 
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_ZeroA11Prime) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     decimal l = algo.extractEdgeOffset(DECIMAL(0.0), DECIMAL(0.25));
     EXPECT_DOUBLE_EQ(l, 0.0);
 }
 
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_NegativeDiscriminant) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     decimal l = algo.extractEdgeOffset(DECIMAL(0.5), DECIMAL(-0.1));
     EXPECT_DOUBLE_EQ(l, 0.0);
 }
 
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_LLessthanNegOne) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     decimal l = algo.extractEdgeOffset(20.0, 5.0);
     EXPECT_DOUBLE_EQ(l, -1.0);
 }
 
 TEST(ZernikeEdgeDetectionAlgorithmTest, ExtractEdgeOffset_LGreaterthanOne) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     decimal l = algo.extractEdgeOffset(20.0, -20.0);
     EXPECT_DOUBLE_EQ(l, 1.0);
 }
 
 // ---- applyEdgeCorrection ----
 TEST(ZernikeEdgeDetectionAlgorithmTest, ApplyEdgeCorrection) {
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     Vec2<int> maskCenter{1, 1};
     decimal l = DECIMAL(1.0);
     decimal psi = DECIMAL(M_PI / 2.0);
@@ -139,7 +148,8 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, Run) {
         imageData
     };
 
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
 
     Points expected = {
         {2, 0},
@@ -151,9 +161,9 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, Run) {
 
     Points actual = algo.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-        [](const Vec2& val) {
+        [](const Vec2<> &val) {
             return Vec2Equal(val);
         });
 
@@ -163,15 +173,17 @@ TEST(ZernikeEdgeDetectionAlgorithmTest, Run) {
 TEST(ZernikeEdgeDetectionAlgorithmTest, Run_NegativeWindow) {
     unsigned char data[4] = {1, 2, 3, 4};
     Image img{2, 2, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(-2);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, -2);
 
-    ASSERT_THROW(result = algo.Run(img), std::invalid_argument);
+    ASSERT_THROW(algo.Run(img), std::invalid_argument);
 }
 
 TEST(ZernikeEdgeDetectionAlgorithmTest, Run_InitialPointsEmpty) {
     unsigned char data[4] = {0, 0, 0, 0};
     Image img{2, 2, 1, data};
-    ZernikeEdgeDetectionAlgorithm algo = makeAlgo(3);
+    SimpleEdgeDetectionAlgorithm initial(0, 1, DECIMAL(0));
+    ZernikeEdgeDetectionAlgorithm algo(initial, 3);
     Points result = algo.Run(img);
     EXPECT_TRUE(result.empty());
 }

@@ -16,7 +16,7 @@ namespace found {
  * The EdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
  * a picture of Earth and finds all points on the horizon within the picture.
 */
-class EdgeDetectionAlgorithm : public FunctionStage<Image, Points<>> {};
+class EdgeDetectionAlgorithm : public FunctionStage<Image, Points> {};
 
 /**
  * The SimpleEdgeDetection Algorithm class houses the Edge Detection Algorithm. This algorithm uses 
@@ -52,7 +52,7 @@ class SimpleEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * three consecutive points A B and C, angle APB is less than
      * angle APC
      */
-    Points<> Run(const Image &image) override;
+    Points Run(const Image &image) override;
 
  private:
     /// The space-ether threshold to use
@@ -87,7 +87,7 @@ class LoCEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      * 
      * @return The edge points in the image most closely resembling that of earth
      * */
-    Points<> Run(const Image &image) override;
+    Points Run(const Image &image) override;
  private:
     // useful fields specific to this algorithm and helper methods
 };
@@ -137,7 +137,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      *
      * @pre image must only contain one channel
      */
-    Points<> Run(const Image &image) override;
+    Points Run(const Image &image) override;
 
     /**
      * Computes the Zernike polynomial convolution kernels M_11 and M_20 for a square unit disk 
@@ -218,7 +218,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
  * as 2D, not 3D. You must program Criteria correctly to handle cases where there 
  * are multiple channels (i.e. This algorithm doesn't know how many channels are involved).
  */
-Components<> ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
+Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria);
 
 }  // namespace found
 

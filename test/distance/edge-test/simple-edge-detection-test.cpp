@@ -34,9 +34,9 @@ TEST(SimpleEdgeDetectionTest, TestNoEdgeAllSpace) {
     Points expected;
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -60,9 +60,9 @@ TEST(SimpleEdgeDetectionTest, TestNoEdgeAllEarth) {
     Points expected;
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -85,9 +85,9 @@ TEST(SimpleEdgeDetectionTest, TestNoEdgeAllSpaceWithNoise) {
     Points expected;
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -116,9 +116,9 @@ TEST(SimpleEdgeDetectionTest, TestLeftStraightEdge) {
     };
     Points actual = thickerBorderSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -147,9 +147,9 @@ TEST(SimpleEdgeDetectionTest, TestRightStraightEdge) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -178,9 +178,9 @@ TEST(SimpleEdgeDetectionTest, TestUpStraightEdge) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -209,9 +209,9 @@ TEST(SimpleEdgeDetectionTest, TestDownStraightEdge) {
     };
     Points actual = thickerBorderSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -240,9 +240,9 @@ TEST(SimpleEdgeDetectionTest, TestTopTriangleEdge) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -307,9 +307,9 @@ TEST(SimpleEdgeDetectionTest, TestCornerQuarterEdge2) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -336,9 +336,9 @@ TEST(SimpleEdgeDetectionTest, TestSpaceBarelyVisible) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -365,9 +365,9 @@ TEST(SimpleEdgeDetectionTest, TestPlanetBarelyVisible) {
     };
     Points actual = thickerBorderSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -396,9 +396,9 @@ TEST(SimpleEdgeDetectionTest, TestNoiseInPlanet1) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -427,9 +427,9 @@ TEST(SimpleEdgeDetectionTest, TestNoiseInPlanet2) {
     };
     Points actual = minimalSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -458,9 +458,9 @@ TEST(SimpleEdgeDetectionTest, TestNoiseInSpace) {
     };
     Points actual = thickerBorderSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -489,9 +489,9 @@ TEST(SimpleEdgeDetectionTest, TestHorizontalOffset) {
     };
     Points actual = offsetSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 
@@ -520,9 +520,9 @@ TEST(SimpleEdgeDetectionTest, TestVerticalOffset) {
     };
     Points actual = offsetSEDA.Run(image);
 
-    std::vector<testing::Matcher<Vec2>> matchers;
+    std::vector<testing::Matcher<Vec2<>>> matchers;
     std::transform(expected.begin(), expected.end(), std::back_inserter(matchers),
-                [](const Vec2& val) {
+                [](const Vec2<> &val) {
                     return Vec2Equal(val);
                 });
 

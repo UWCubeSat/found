@@ -18,18 +18,18 @@ namespace found {
 
 // TODO: Investigate if the use of the DECIMAL(x) cast is taking up too much time
 
-Points<> SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
+Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 0: Define Common Variables
     uint64_t imageSize = image.width * image.height;
 
     // Step 1: Obtain the component that represents space
-    Components<> spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
+    Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
         // Average the pixel, then threshold it
         int sum = 0;
         for (int i = 0; i < image.channels; i++) sum += image.image[image.channels * index + i];
         return sum / image.channels < this->threshold_;
     });
-    Component<> *space = nullptr;
+    Component *space = nullptr;
     for (auto &component : spaces) {
         // Basically, if the component touches the border, and its the biggest one,
         // we assume it is space
@@ -41,7 +41,7 @@ Points<> SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             space = &component;
         }
     }
-    if (space == nullptr || space->points.size() == imageSize) return Points<>();
+    if (space == nullptr || space->points.size() == imageSize) return Points();
     std::unordered_set<uint64_t> &points = space->points;
 
     // Step 2: Identify the edge as the edge of space
@@ -71,7 +71,7 @@ Points<> SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
 
     // Step 2b: Figure out how to iterate through the image,
     // iterating from the planet into space
-    Points<> result;
+    Points result;
     if (std::abs(itrDirection.y) > std::abs(itrDirection.x)) {
         // Determine which direction we want to iterate,
         // (we want to iterate into the space)
@@ -172,7 +172,7 @@ inline bool LabelPresent(int label, int *adjacentLabels, int size) {
  * 
  * @pre Must be called in order of increasing index
  */
-inline void UpdateComponent(Component<> &component, uint64_t index, Vec2<> &pixel) {
+inline void UpdateComponent(Component &component, uint64_t index, Vec2<> &pixel) {
     component.points.insert(index);
     if (component.upperLeft.x > pixel.x) component.upperLeft.x = pixel.x;
     else if (component.lowerRight.x < pixel.x) component.lowerRight.x = pixel.x;
@@ -201,7 +201,7 @@ inline int NWayEquivalenceAdd(const Image &image,
                               int &L,
                               int adjacentLabels[4],
                               int size,
-                              std::unordered_map<int, Component<>> &components,
+                              std::unordered_map<int, Component> &components,
                               std::unordered_map<int, int> &equivalencies) {
     Vec2<> pixel = {DECIMAL(index % image.width), DECIMAL(index / image.width)};
     if (size == 0) {
@@ -252,9 +252,9 @@ inline int NWayEquivalenceAdd(const Image &image,
     return minLabel;
 }
 
-Components<> ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
+Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
     // Step 0: Setup the Problem
-    std::unordered_map<int, Component<>> components;
+    std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
     std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
 
@@ -362,7 +362,7 @@ Components<> ConnectedComponentsAlgorithm(const Image &image, std::function<bool
     }
 
     // Step 3: Return the components
-    Components<> result;
+    Components result;
     for (const auto &[label, component] : components) result.push_back(component);
 
     return result;
@@ -488,12 +488,12 @@ Vec2<int> ZernikeEdgeDetectionAlgorithm::applyEdgeCorrection(const Vec2<int>& ma
     return Vec2<int>{maskCenter.x + offsetX, maskCenter.y + offsetY};
 }
 
-Points<> ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
+Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
     if (maskSize_ <= 0 || maskSize_ % 2 == 0) {
         throw std::invalid_argument("Mask size must be a positive odd integer");
     }
 
-    Points<> initialPoints = initialEdgeAlgorithm_.Run(image);
+    Points initialPoints = initialEdgeAlgorithm_.Run(image);
 
     if (initialPoints.empty()) {
         return initialPoints;
@@ -506,7 +506,7 @@ Points<> ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
     const std::vector<ComplexNumber> &kernelM20 = kernels.second;
 
     // Step 2: Process each initial edge point and refine it using Zernike moments
-    Points<int> refinedPoints;
+    Points refinedPoints;
 
     for (const Vec2<> &initialPoint : initialPoints) {
         Vec2<int> center{
@@ -537,7 +537,7 @@ Points<> ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
 
         // Step 2f: Convert back to pixel coordinates
         Vec2<int> refinedPoint = applyEdgeCorrection(center, l, psi);
-        refinedPoints.push_back(refinedPoint);
+        refinedPoints.push_back({DECIMAL(refinedPoint.x), DECIMAL(refinedPoint.y)});
     }
 
     return refinedPoints;

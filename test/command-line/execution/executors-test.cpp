@@ -104,7 +104,7 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
         12,
         temp_df
     };
-    Points<> points = {
+    Points points = {
         {0, 0},
         {1, 1},
         {2, 2}

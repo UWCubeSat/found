@@ -15,8 +15,7 @@ namespace found {
 
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 /// to a vector of 2D points on the image, according to image coordinate systems
-template<typename T = decimal>
-using Points = std::vector<Vec2<T>>;
+using Points = std::vector<Vec2<>>;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -53,19 +52,17 @@ struct Image {
  * @note This must be carried with the original
  * image, as there's no such field in this struct
  */
-template<typename T = decimal>
 struct Edge {
     /// The edge points
-    Points<T> points;
+    Points points;
     /// The lowest point (left upper edge)
-    Vec2<T> upperLeft;
+    Vec2<> upperLeft;
     /// The highest point (right lower edge)
-    Vec2<T> lowerRight;
+    Vec2<> lowerRight;
 };
 
 /// A collection of Edges
-template<typename T = decimal>
-using Edges = std::vector<Edge<T>>;
+using Edges = std::vector<Edge>;
 
 /**
  * Holds the real and imaginary parts of a complex number.
@@ -83,19 +80,17 @@ struct ComplexNumber {
  * @note This must be carried with the original
  * image, as there's no such field in this struct
  */
-template<typename T = decimal>
 struct Component {
     /// The points in this component
     std::unordered_set<uint64_t> points;
     /// The lowest point (left upper edge)
-    Vec2<T> upperLeft;
+    Vec2<> upperLeft;
     /// The highest point (right lower edge)
-    Vec2<T> lowerRight;
+    Vec2<> lowerRight;
 };
 
 /// A collection of Image Pixels
-template<typename T = decimal>
-using Components = std::vector<Component<T>>;
+using Components = std::vector<Component>;
 
 /**
  * @brief Represents a single spatial data point with position and timestamp.
