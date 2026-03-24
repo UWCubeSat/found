@@ -8,6 +8,8 @@
 #include <functional>
 #include <unordered_set>
 #include <cmath>
+#include <utility>
+#include <algorithm>
 
 #include "common/style.hpp"
 #include "common/decimal.hpp"

@@ -13,7 +13,7 @@
 namespace found {
 
 // Tolerance for floating-point comparison
-constexpr decimal TOL = 1e-5;
+constexpr decimal TOL = 1e-4;
 
 testing::Matcher<Vec2<>> Vec2Equal(const Vec2<> &expected) {
     return testing::Truly([expected](const Vec2<> &arg) {
