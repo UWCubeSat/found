@@ -145,7 +145,7 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
      *
      * @return std::pair of M_11 and M_20 convolution kernels (row-major, maskSize_² elements each)
      */
-    std::pair<std::vector<ComplexNumber>, std::vector<ComplexNumber>> computeZernikeKernels();
+    std::pair<std::unique_ptr<ComplexNumber[]>, std::unique_ptr<ComplexNumber[]>> computeZernikeKernels();
 
     /**
      * Extracts a square mask of pixels centered at the given point for Zernike moment computation.
@@ -160,8 +160,8 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     std::pair<ComplexNumber, ComplexNumber> computeZernikeMoments(
         const Image &image,
         const Vec2<int> &center,
-        const std::vector<ComplexNumber> &kernelM11,
-        const std::vector<ComplexNumber> &kernelM20);
+        const std::unique_ptr<ComplexNumber[]> &kernelM11,
+        const std::unique_ptr<ComplexNumber[]> &kernelM20);
 
     /**
      * Extracts the edge orientation angle from the complex Zernike moment A_11.
