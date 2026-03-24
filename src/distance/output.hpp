@@ -24,8 +24,7 @@ struct EarthSphericalVec3 {
     /**
      * Converts a celestial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
      * 
-     * @param celestialVector The celestial vector to convert (in meters), must be in the
-     *                        celestial (inertial) coordinate system
+     * @param celestialVector The celestial vector to convert (in meters)
      * @param gmst The current Greenwich Mean Sidereal Time value, in degrees
      * 
      * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters.

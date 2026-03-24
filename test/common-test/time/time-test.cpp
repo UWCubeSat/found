@@ -36,42 +36,42 @@ TEST(TimeTest, TestGetUTCTime) {
                  static_cast<uint64_t>(epoch_ns.count()),
                  static_cast<uint64_t>(epoch_ns.count() + 5 * NS_PER_SEC));  // 5 seconds tolerance
     // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
-    ASSERT_EQ(static_cast<int>(expected->tm_year + 1900), actual.year);
+    ASSERT_EQ(static_cast<uint64_t>(expected->tm_year + 1900), actual.year);
     // NOTE: In the rare case you run this when the month changes in UTC, this may fail
-    ASSERT_EQ(static_cast<int>(expected->tm_mon + 1), actual.month);
+    ASSERT_EQ(static_cast<uint64_t>(expected->tm_mon + 1), actual.month);
     if (expected->tm_hour == 23 &&
             (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
             (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
         ASSERT_RANGE(actual.day,
-                     static_cast<int>(expected->tm_mday),
-                     static_cast<int>(expected->tm_mday + 1));
+                     static_cast<uint64_t>(expected->tm_mday),
+                     static_cast<uint64_t>(expected->tm_mday + 1));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_mday), actual.day);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_mday), actual.day);
     }
 
     // Check the hour with tolerance if warranted
     if ((expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
         (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
         ASSERT_RANGE(actual.hour,
-                     static_cast<int>(expected->tm_hour),
-                     static_cast<int>(expected->tm_hour + HOURS_TOLERANCE));
+                     static_cast<uint64_t>(expected->tm_hour),
+                     static_cast<uint64_t>(expected->tm_hour + HOURS_TOLERANCE));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_hour), actual.hour);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_hour), actual.hour);
     }
 
     // Check the minute with tolerance if warranted
     if (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE) {
         ASSERT_RANGE(actual.minute,
-                     static_cast<int>(expected->tm_min),
-                     static_cast<int>(expected->tm_min + MINUTES_TOLERANCE));
+                     static_cast<uint64_t>(expected->tm_min),
+                     static_cast<uint64_t>(expected->tm_min + MINUTES_TOLERANCE));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_min), actual.minute);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_min), actual.minute);
     }
 
     // Check the second with tolerance
     ASSERT_RANGE(actual.second,
-                 static_cast<int>(expected->tm_sec),
-                 static_cast<int>(expected->tm_sec + SECONDS_TOLERANCE));
+                 static_cast<uint64_t>(expected->tm_sec),
+                 static_cast<uint64_t>(expected->tm_sec + SECONDS_TOLERANCE));
 }
 
 TEST(TimeTest, TestGetUT1Time) {
@@ -96,42 +96,42 @@ TEST(TimeTest, TestGetUT1Time) {
                  static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns,
                  static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns + 5 * NS_PER_SEC);  // 5 seconds tolerance
     // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
-    ASSERT_EQ(static_cast<int>(expected->tm_year + 1900), actual.year);
+    ASSERT_EQ(static_cast<uint64_t>(expected->tm_year + 1900), actual.year);
     // NOTE: In the rare case you run this when the month changes in UTC, this may fail
-    ASSERT_EQ(static_cast<int>(expected->tm_mon + 1), actual.month);
+    ASSERT_EQ(static_cast<uint64_t>(expected->tm_mon + 1), actual.month);
     if (expected->tm_hour == 23 &&
             (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
             (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
         ASSERT_RANGE(actual.day,
-                     static_cast<int>(expected->tm_mday),
-                     static_cast<int>(expected->tm_mday + 1));
+                     static_cast<uint64_t>(expected->tm_mday),
+                     static_cast<uint64_t>(expected->tm_mday + 1));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_mday), actual.day);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_mday), actual.day);
     }
 
     // Check the hour with tolerance if warranted
     if ((expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
         (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
         ASSERT_RANGE(actual.hour,
-                     static_cast<int>(expected->tm_hour),
-                     static_cast<int>(expected->tm_hour + HOURS_TOLERANCE));
+                     static_cast<uint64_t>(expected->tm_hour),
+                     static_cast<uint64_t>(expected->tm_hour + HOURS_TOLERANCE));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_hour), actual.hour);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_hour), actual.hour);
     }
 
     // Check the minute with tolerance if warranted
     if (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE) {
         ASSERT_RANGE(actual.minute,
-                     static_cast<int>(expected->tm_min),
-                     static_cast<int>(expected->tm_min + MINUTES_TOLERANCE));
+                     static_cast<uint64_t>(expected->tm_min),
+                     static_cast<uint64_t>(expected->tm_min + MINUTES_TOLERANCE));
     } else {
-        ASSERT_EQ(static_cast<int>(expected->tm_min), actual.minute);
+        ASSERT_EQ(static_cast<uint64_t>(expected->tm_min), actual.minute);
     }
 
     // Check the second with tolerance
     ASSERT_RANGE(actual.second,
-                 static_cast<int>(expected->tm_sec + AVG_DELTA_UT1),
-                 static_cast<int>(expected->tm_sec + + AVG_DELTA_UT1 + SECONDS_TOLERANCE));
+                 static_cast<uint64_t>(expected->tm_sec + AVG_DELTA_UT1),
+                 static_cast<uint64_t>(expected->tm_sec + + AVG_DELTA_UT1 + SECONDS_TOLERANCE));
 }
 
 TEST(TimeTest, TestGetJulianDateNow) {
@@ -143,12 +143,7 @@ TEST(TimeTest, TestGetJulianDateNow) {
     // epochs is in nanoseconds, divide by nanoseconds per day
     decimal expectedJulianDate = time.epochs / NS_PER_DAY + 2440587.5;
 
-    // Use tolerance to account for floating-point precision
-    #ifndef FOUND_FLOAT_MODE
-        ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
-    #else
-        ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
-    #endif
+    ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
 }
 
 TEST(TimeTest, TestGetJulianDateJ2000) {

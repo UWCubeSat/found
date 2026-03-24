@@ -12,24 +12,26 @@ namespace found {
 #define AVG_DELTA_UT1 0.087497
 
 /// Nanoseconds per second
-constexpr double NS_PER_SEC = 1000000000ULL;
+#define NS_PER_SEC 1000000000ULL
 /// Average Delta UT1 in nanoseconds (pre-computed for efficiency)
-constexpr double AVG_DELTA_UT1_NS = AVG_DELTA_UT1 * NS_PER_SEC;
+#define AVG_DELTA_UT1_NS (DECIMAL(AVG_DELTA_UT1) * NS_PER_SEC)
 /// Nanoseconds per day (86400 seconds)
-constexpr double NS_PER_DAY = 86400.0 * NS_PER_SEC;
+#define NS_PER_DAY (DECIMAL(86400.0) * NS_PER_SEC)
 /// Seconds per day
-constexpr double SEC_PER_DAY = 86400.0;
+#define SEC_PER_DAY DECIMAL(86400.0)
 /// Minutes per day
-constexpr double MIN_PER_DAY = 1440.0;
+#define MIN_PER_DAY DECIMAL(1440.0)
 /// Hours per day
-constexpr double HOURS_PER_DAY = 24.0;
+#define HOURS_PER_DAY DECIMAL(24.0)
 
 /// Julian date at Unix epoch (January 1, 1970 00:00:00 UTC)
-constexpr double JULIAN_UNIX_EPOCH = 2440587.5;
+#define JULIAN_UNIX_EPOCH DECIMAL(2440587.5)
 /// J2000.0 epoch Julian date (January 1, 2000 12:00:00 TT)
-constexpr double J2000_JULIAN_DATE = 2451545.0;
+#define J2000_JULIAN_DATE DECIMAL(2451545.0)
 /// Days per Julian century
-constexpr double DAYS_PER_JULIAN_CENTURY = 36525.0;
+#define DAYS_PER_JULIAN_CENTURY DECIMAL(36525.0)
+/// Defines Feb 28, 1990 for the Julian date calculation
+#define JD_CONSTANT_FEB_1990 DECIMAL(190002.5)
 
 /**
  * DateTime represents
@@ -39,19 +41,19 @@ struct DateTime {
     /// Nanoseconds since epoch
     uint64_t epochs;
     /// Year (e.g., 2023)
-    int year;
+    uint64_t year;
     /// Month (1-12)
-    int month;
+    uint64_t month;
     /// Day of the month (1-31)
-    int day;
+    uint64_t day;
     /// Hour of the day (0-23)
-    int hour;
+    uint64_t hour;
     /// Minute of the hour (0-59)
-    int minute;
+    uint64_t minute;
     /// Second of the minute (0-60)
-    int second;
+    uint64_t second;
     /// Nanosecond of the second (0-999999999)
-    int nanosecond = 0;
+    uint64_t nanosecond = 0;
 };
 
 /**

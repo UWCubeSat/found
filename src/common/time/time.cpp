@@ -32,16 +32,17 @@ DateTime getUTCTime() {
 
     // Calculate nanoseconds within the current second
     std::chrono::seconds secs = std::chrono::duration_cast<std::chrono::seconds>(duration);
-    int nanosecond = static_cast<int>((nanos - std::chrono::duration_cast<std::chrono::nanoseconds>(secs)).count());
+    uint64_t nanosecond = static_cast<uint64_t>((nanos -
+            std::chrono::duration_cast<std::chrono::nanoseconds>(secs)).count());
 
     return {
         epochs_ns,
-        static_cast<int>(utc_time->tm_year + 1900),  // tm_year is years since 1900
-        static_cast<int>(utc_time->tm_mon + 1),      // tm_mon is months since January (0-11)
-        static_cast<int>(utc_time->tm_mday),         // tm_mday is day of the month (1-31)
-        static_cast<int>(utc_time->tm_hour),         // tm_hour is hours since midnight (0-23)
-        static_cast<int>(utc_time->tm_min),          // tm_min is minutes after the hour (0-59)
-        static_cast<int>(utc_time->tm_sec),          // tm_sec is seconds after the minute (0-60)
+        static_cast<uint64_t>(utc_time->tm_year + 1900),  // tm_year is years since 1900
+        static_cast<uint64_t>(utc_time->tm_mon + 1),      // tm_mon is months since January (0-11)
+        static_cast<uint64_t>(utc_time->tm_mday),         // tm_mday is day of the month (1-31)
+        static_cast<uint64_t>(utc_time->tm_hour),         // tm_hour is hours since midnight (0-23)
+        static_cast<uint64_t>(utc_time->tm_min),          // tm_min is minutes after the hour (0-59)
+        static_cast<uint64_t>(utc_time->tm_sec),          // tm_sec is seconds after the minute (0-60)
         nanosecond                                   // nanoseconds within current second
     };
 }
@@ -57,7 +58,7 @@ DateTime getUT1Time() {
     DateTime now = getUTCTime();
     // Add AVG_DELTA_UT1 in nanoseconds
     now.epochs += AVG_DELTA_UT1_NS;
-    now.nanosecond += static_cast<int>((AVG_DELTA_UT1 - static_cast<int>(AVG_DELTA_UT1)) * NS_PER_SEC);
+    now.nanosecond += static_cast<uint64_t>((AVG_DELTA_UT1 - static_cast<uint64_t>(AVG_DELTA_UT1)) * NS_PER_SEC);
     return now;
 }
 
@@ -73,10 +74,10 @@ decimal getJulianDateTime(DateTime &time) {
     decimal D = time.day + 1721013.5;
     decimal julianDate = A - B + C + D;
 
-    return julianDate + time.hour / DECIMAL(HOURS_PER_DAY) +
-           time.minute / DECIMAL(MIN_PER_DAY) + time.second / DECIMAL(SEC_PER_DAY) +
-           time.nanosecond / DECIMAL(NS_PER_DAY) -
-           DECIMAL(0.5) * (100 * time.year + time.month > 190002.5 ? 1 : -1) +
+    return julianDate + time.hour / HOURS_PER_DAY +
+           time.minute / MIN_PER_DAY + time.second / SEC_PER_DAY +
+           time.nanosecond / NS_PER_DAY -
+           DECIMAL(0.5) * (100 * time.year + time.month > JD_CONSTANT_FEB_1990 ? 1 : -1) +
            DECIMAL(0.5);
 }
 
@@ -104,8 +105,8 @@ decimal getGreenwichMeanSiderealTime(DateTime &time) {
 
     // The below formula is from http://tiny.cc/4wal001
     decimal JDT = getJulianDateTime(time);
-    decimal D_tt = JDT - DECIMAL(J2000_JULIAN_DATE);  // Julian date - J2000.0
-    decimal t = D_tt / DECIMAL(DAYS_PER_JULIAN_CENTURY);  // Julian centuries since J2000.0
+    decimal D_tt = JDT - J2000_JULIAN_DATE;  // Julian date - J2000.0
+    decimal t = D_tt / DAYS_PER_JULIAN_CENTURY;  // Julian centuries since J2000.0
 
     return DECIMAL(280.46061837) +
            DECIMAL(360.98564736629) * D_tt +
@@ -127,7 +128,7 @@ decimal getCurrentGreenwichMeanSiderealTime() {
 
 decimal getGreenwichMeanSiderealTime(uint64_t epochs) {
     return 15 * (DECIMAL(18.697374558) + DECIMAL(24.06570982441908) *
-            (getJulianDateTime(epochs) - DECIMAL(J2000_JULIAN_DATE)));
+            (getJulianDateTime(epochs) - J2000_JULIAN_DATE));
 }
 
 }  // namespace found

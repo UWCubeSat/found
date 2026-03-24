@@ -142,12 +142,12 @@ inline DateTime strtodatetime(const std::string &str) {
     }
 
     // Store original values for validation
-    int year = tm.tm_year + 1900;
-    int month = tm.tm_mon + 1;
-    int day = tm.tm_mday;
-    int hour = tm.tm_hour;
-    int minute = tm.tm_min;
-    int second = tm.tm_sec;
+    uint64_t year = static_cast<uint64_t>(tm.tm_year + 1900);
+    uint64_t month = static_cast<uint64_t>(tm.tm_mon + 1);
+    uint64_t day = static_cast<uint64_t>(tm.tm_mday);
+    uint64_t hour = static_cast<uint64_t>(tm.tm_hour);
+    uint64_t minute = static_cast<uint64_t>(tm.tm_min);
+    uint64_t second = static_cast<uint64_t>(tm.tm_sec);
 
     if (second > 59) {
         throw std::invalid_argument("Invalid second in datetime: " + str);
@@ -155,7 +155,7 @@ inline DateTime strtodatetime(const std::string &str) {
 
     // Validate day of month (considering leap years)
     bool is_leap_year = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-    int max_days = days_in_month[month - 1];
+    uint64_t max_days = static_cast<uint64_t>(days_in_month[month - 1]);
     if (is_leap_year && month == 2) {
         max_days = 29;
     }
@@ -165,16 +165,16 @@ inline DateTime strtodatetime(const std::string &str) {
 
     std::time_t t = timegm(&tm);
 
-    int nanosecond = 0;
+    uint64_t nanosecond = 0;
     std::string nanos_str;
     if (std::getline(ss, nanos_str) && nanos_str.size() > 1 && nanos_str[0] == '.') {
         nanos_str = nanos_str.substr(1);
         nanos_str.resize(9, '0');  // pad or truncate to 9 digits
-        nanosecond = std::stoi(nanos_str);
+        nanosecond = static_cast<uint64_t>(std::stoul(nanos_str));
     }
 
     // Convert to nanoseconds: seconds * NS_PER_SEC + nanoseconds
-    uint64_t epochs_ns = static_cast<uint64_t>(t) * NS_PER_SEC + static_cast<uint64_t>(nanosecond);
+    uint64_t epochs_ns = static_cast<uint64_t>(t) * NS_PER_SEC + nanosecond;
 
     return {
         epochs_ns,
