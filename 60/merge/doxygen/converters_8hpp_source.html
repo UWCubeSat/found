@@ -184,12 +184,12 @@ $(document).ready(function(){initNavTree('converters_8hpp_source.html',''); init
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    }</div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="comment">// Store original values for validation</span></div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    <span class="keywordtype">int</span> year = tm.tm_year + 1900;</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordtype">int</span> month = tm.tm_mon + 1;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordtype">int</span> day = tm.tm_mday;</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordtype">int</span> hour = tm.tm_hour;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keywordtype">int</span> minute = tm.tm_min;</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keywordtype">int</span> second = tm.tm_sec;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    uint64_t year = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_year + 1900);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    uint64_t month = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_mon + 1);</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    uint64_t day = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_mday);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    uint64_t hour = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_hour);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    uint64_t minute = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_min);</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    uint64_t second = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(tm.tm_sec);</div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordflow">if</span> (second &gt; 59) {</div>
 <div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Invalid second in datetime: &quot;</span> + str);</div>
@@ -197,7 +197,7 @@ $(document).ready(function(){initNavTree('converters_8hpp_source.html',''); init
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="comment">// Validate day of month (considering leap years)</span></div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordtype">bool</span> is_leap_year = (year % 4 == 0 &amp;&amp; year % 100 != 0) || (year % 400 == 0);</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordtype">int</span> max_days = days_in_month[month - 1];</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    uint64_t max_days = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(days_in_month[month - 1]);</div>
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="keywordflow">if</span> (is_leap_year &amp;&amp; month == 2) {</div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        max_days = 29;</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    }</div>
@@ -207,16 +207,16 @@ $(document).ready(function(){initNavTree('converters_8hpp_source.html',''); init
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    std::time_t t = timegm(&amp;tm);</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="keywordtype">int</span> nanosecond = 0;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    uint64_t nanosecond = 0;</div>
 <div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    std::string nanos_str;</div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <span class="keywordflow">if</span> (std::getline(ss, nanos_str) &amp;&amp; nanos_str.size() &gt; 1 &amp;&amp; nanos_str[0] == <span class="charliteral">&#39;.&#39;</span>) {</div>
 <div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        nanos_str = nanos_str.substr(1);</div>
 <div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        nanos_str.resize(9, <span class="charliteral">&#39;0&#39;</span>);  <span class="comment">// pad or truncate to 9 digits</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        nanosecond = std::stoi(nanos_str);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        nanosecond = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(std::stoul(nanos_str));</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    }</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="comment">// Convert to nanoseconds: seconds * NS_PER_SEC + nanoseconds</span></div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    uint64_t epochs_ns = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(t) * NS_PER_SEC + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(nanosecond);</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    uint64_t epochs_ns = <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(t) * NS_PER_SEC + nanosecond;</div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordflow">return</span> {</div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        epochs_ns,</div>
