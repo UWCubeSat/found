@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <utility>
+#include <algorithm>
 
 #include "src/distance/edge.hpp"
 #include "test/common/constants/edge-constants.hpp"
@@ -13,7 +15,11 @@
 namespace found {
 
 // Tolerance for floating-point comparison
-constexpr decimal TOL = 1e-4;
+#ifdef FOUND_FLOAT_MODE
+    #define TOL DECIMAL(1e-3)
+#else
+    #define TOL DECIMAL(1e-5)
+#endif
 
 testing::Matcher<Vec2<>> Vec2Equal(const Vec2<> &expected) {
     return testing::Truly([expected](const Vec2<> &arg) {
