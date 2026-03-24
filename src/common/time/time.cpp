@@ -58,7 +58,7 @@ DateTime getUT1Time() {
     DateTime now = getUTCTime();
     // Add AVG_DELTA_UT1 in nanoseconds
     now.epochs += AVG_DELTA_UT1_NS;
-    now.nanosecond += static_cast<uint64_t>((AVG_DELTA_UT1 - static_cast<uint64_t>(AVG_DELTA_UT1)) * NS_PER_SEC);
+    now.nanosecond = now.epochs % NS_PER_SEC;
     return now;
 }
 

@@ -14,7 +14,7 @@ namespace found {
 /// Nanoseconds per second
 #define NS_PER_SEC 1000000000ULL
 /// Average Delta UT1 in nanoseconds (pre-computed for efficiency)
-#define AVG_DELTA_UT1_NS (DECIMAL(AVG_DELTA_UT1) * NS_PER_SEC)
+#define AVG_DELTA_UT1_NS (static_cast<uint64_t>(AVG_DELTA_UT1 * NS_PER_SEC))
 /// Nanoseconds per day (86400 seconds)
 #define NS_PER_DAY (DECIMAL(86400.0) * NS_PER_SEC)
 /// Seconds per day
