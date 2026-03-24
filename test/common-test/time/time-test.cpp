@@ -141,7 +141,7 @@ TEST(TimeTest, TestGetJulianDateNow) {
     #endif
     decimal julianDate = getCurrentJulianDateTime();
     // epochs is in nanoseconds, divide by nanoseconds per day
-    decimal expectedJulianDate = time.epochs / NS_PER_DAY + 2440587.5;
+    decimal expectedJulianDate = time.epochs / NS_PER_DAY + JULIAN_UNIX_EPOCH;
 
     ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
 }
@@ -201,7 +201,7 @@ TEST(TimeTest, TestGetJulianDate) {
     };
 
     decimal julianDate = getJulianDateTime(time);
-    decimal expectedJulianDate = time.epochs / NS_PER_DAY + 2440587.5;
+    decimal expectedJulianDate = time.epochs / NS_PER_DAY + JULIAN_UNIX_EPOCH;
 
     ASSERT_DECIMAL_EQ_DEFAULT(expectedJulianDate, julianDate);
 }
