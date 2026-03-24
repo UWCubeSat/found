@@ -228,6 +228,19 @@ class Vec3 {
     Mat3 OuterProduct(const Vec3 &) const;
 };
 
+/**
+ * Represents Earth-Centered, Earth-Fixed (ECEF) coordinates.
+ * 
+ * ECEF is a Cartesian coordinate system with its origin at Earth's center.
+ * The axes are:
+ * - x-axis: Points to the intersection of the equator and prime meridian (0° latitude, 0° longitude)
+ * - y-axis: Points to 90°E longitude on the equator (0° latitude, 90°E longitude)
+ * - z-axis: Points to the North Pole (90°N latitude)
+ * 
+ * All coordinates are in meters.
+ */
+typedef Vec3 ECEFCoordinates;
+
 ///////////////////////////////////
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////

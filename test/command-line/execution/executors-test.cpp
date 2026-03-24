@@ -85,6 +85,7 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     DistanceOptions options = {
         strtoimage("test/common/assets/example_image.jpg"),
+        strtodatetime("2025-11-11 19:30:00"),
         strtodf("test/common/assets/empty-df.found"),
         false,
         0.012,
@@ -204,7 +205,7 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
                    << "Calculated Future Position: \\(" << NUMBER_REGEX << ", " << NUMBER_REGEX << ", "
-                   << NUMBER_REGEX << "\\) m at time " << NUMBER_REGEX << " s\\s*";
+                   << NUMBER_REGEX << "\\) m at time " << NUMBER_REGEX << " ns\\s*";
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }

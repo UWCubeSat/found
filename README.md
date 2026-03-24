@@ -75,18 +75,20 @@ We can then use this calibration information to now make some position estimates
 ```bash
 ./build/bin/found distance                         \
     --image test/common/assets/example_earth1.png  \
+    --image-time "2025-11-11 19:30:00.00"          \
     --calibration-data example-df.found            \
     --camera-focal-length 85e-3                    \
     --camera-pixel-size 20e-6                      \
-    --reference-orientation 110,0,0
+    --reference-orientation 110,0,0                \
 ```
 
 For the distance flags:
 1. The image is just the path to the image we want to use. In this case, we reference an image we use in our test cases
-2. We then specify our calibration data, which we generated from `tools.generator` (check out [our tools folder](tools) for more information)
-3. We can specify camera parameters, like the focal length (m)
-4. Or the pixel size (m)
-5. We then have our reference orientation, which we need to use in conjunction with our calibration data
+2. The time that the image was taken in UT1 time in the format YYYY-MM-DD HH:MM:SS.NS
+3. We then specify our calibration data, which we generated from `tools.generator` (check out [our tools folder](tools) for more information)
+4. We can specify camera parameters, like the focal length (m)
+5. Or the pixel size (m)
+6. We then have our reference orientation, which we need to use in conjunction with our calibration data
 
 Feeding all this information, the program now analyzes the image, the calibration data and the rest of the parameters to give us its estimate, which is seen below:
 
@@ -103,6 +105,7 @@ Another thing to point out is the reference orientation, which was `{110,0,0}`. 
 ```bash
 ./build/bin/found distance                           \
     --image "test/common/assets/example_earth1.png"  \
+    --image-time "2025-11-11 19:30:00.00"            \
     --reference-as-orientation                       \
     --camera-focal-length 85e-3                      \
     --camera-pixel-size 20e-6                        \
@@ -115,6 +118,7 @@ Lastly, one thing you will not notice is that the `temp.found` file has changed.
 ```bash
 ./build/bin/found distance                         \
     --image test/common/assets/example_earth1.png  \
+    --image-time "2025-11-11 19:30:00.00"          \
     --calibration-data example-df.found            \
     --camera-focal-length 85e-3                    \
     --camera-pixel-size 20e-6                      \

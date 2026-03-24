@@ -105,6 +105,16 @@ MATCHER_P(LocationRecordsEqual, expected, "") {
     ASSERT_GE(num, lo) << "Value " << num << " is less than lower bound " << lo; \
     ASSERT_LE(num, hi) << "Value " << num << " is greater than upper bound " << hi;
 
+#define ASSERT_DATETIME_EQ(expected, actual) \
+    ASSERT_EQ((expected).year, (actual).year); \
+    ASSERT_EQ((expected).month, (actual).month); \
+    ASSERT_EQ((expected).day, (actual).day); \
+    ASSERT_EQ((expected).hour, (actual).hour); \
+    ASSERT_EQ((expected).minute, (actual).minute); \
+    ASSERT_EQ((expected).second, (actual).second); \
+    ASSERT_EQ((expected).nanosecond, (actual).nanosecond); \
+    ASSERT_EQ((expected).epochs, (actual).epochs)
+
 
 ///// Matchers for gmock /////
 

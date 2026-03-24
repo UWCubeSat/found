@@ -7,9 +7,11 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
+#include <ctime>
 
 #include "common/logging.hpp"
-
+#include "common/time/time.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -21,6 +23,8 @@
 // If they fail, the pipeline should not be run, and an exception should be thrown.
 // This is preferable than continuing with invalid data and outputting an unintended
 // result.
+
+constexpr int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 namespace found {
 
@@ -119,6 +123,69 @@ inline Image strtoimage(const std::string &str) {
         throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());
     }
     return image;
+}
+
+/**
+ * Converts a string to time
+ * 
+ * @param str The string to convert
+ * 
+ * @return The time from epoch that the string represents (epochs in nanoseconds)
+ */
+inline DateTime strtodatetime(const std::string &str) {
+    std::tm tm = {};
+    std::istringstream ss(str);
+
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+    if (ss.fail()) {
+        throw std::invalid_argument("Invalid datetime format: " + str);
+    }
+
+    // Store original values for validation
+    uint64_t year = static_cast<uint64_t>(tm.tm_year + 1900);
+    uint64_t month = static_cast<uint64_t>(tm.tm_mon + 1);
+    uint64_t day = static_cast<uint64_t>(tm.tm_mday);
+    uint64_t hour = static_cast<uint64_t>(tm.tm_hour);
+    uint64_t minute = static_cast<uint64_t>(tm.tm_min);
+    uint64_t second = static_cast<uint64_t>(tm.tm_sec);
+
+    if (second > 59) {
+        throw std::invalid_argument("Invalid second in datetime: " + str);
+    }
+
+    // Validate day of month (considering leap years)
+    bool is_leap_year = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    uint64_t max_days = static_cast<uint64_t>(days_in_month[month - 1]);
+    if (is_leap_year && month == 2) {
+        max_days = 29;
+    }
+    if (day > max_days) {
+        throw std::invalid_argument("Invalid day in datetime: " + str);
+    }
+
+    std::time_t t = timegm(&tm);
+
+    uint64_t nanosecond = 0;
+    std::string nanos_str;
+    if (std::getline(ss, nanos_str) && nanos_str.size() > 1 && nanos_str[0] == '.') {
+        nanos_str = nanos_str.substr(1);
+        nanos_str.resize(9, '0');  // pad or truncate to 9 digits
+        nanosecond = static_cast<uint64_t>(std::stoul(nanos_str));
+    }
+
+    // Convert to nanoseconds: seconds * NS_PER_SEC + nanoseconds
+    uint64_t epochs_ns = static_cast<uint64_t>(t) * NS_PER_SEC + nanosecond;
+
+    return {
+        epochs_ns,
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+        nanosecond
+    };
 }
 
 /**
