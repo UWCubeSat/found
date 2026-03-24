@@ -107,11 +107,11 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     * Constructs a new ZernikeEdgeDetectionAlgorithm
     * 
     * @param initialEdgeAlgorithm The algorithm to use for initial pixel level edge detection
-    * @param maskSize_ Size of the square mask around each point
-    * @param transitionWidth_ Width of edge transition zone (default: 1.66)
+    * @param maskSize Size of the square mask around each point
+    * @param transitionWidth Width of edge transition zone (default: 1.66)
     *
-    * @pre maskSize_ must be a positive odd integer.
-    * @pre transitionWidth_ must be greater than 0
+    * @pre maskSize must be a positive odd integer.
+    * @pre transitionWidth must be greater than 0
     */
     ZernikeEdgeDetectionAlgorithm(
         EdgeDetectionAlgorithm &initialEdgeAlgorithm,
