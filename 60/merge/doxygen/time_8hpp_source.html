@@ -112,7 +112,7 @@ $(document).ready(function(){initNavTree('time_8hpp_source.html',''); initResiza
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#define AVG_DELTA_UT1 0.087497</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#define NS_PER_SEC 1000000000ULL</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define AVG_DELTA_UT1_NS (DECIMAL(AVG_DELTA_UT1) * NS_PER_SEC)</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define AVG_DELTA_UT1_NS (static_cast&lt;uint64_t&gt;(AVG_DELTA_UT1 * NS_PER_SEC))</span></div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#define NS_PER_DAY (DECIMAL(86400.0) * NS_PER_SEC)</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#define SEC_PER_DAY DECIMAL(86400.0)</span></div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#define MIN_PER_DAY DECIMAL(1440.0)</span></div>
