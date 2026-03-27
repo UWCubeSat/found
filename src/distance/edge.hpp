@@ -271,6 +271,15 @@ class ZernikeEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     decimal solveEdgeDistance(decimal A11Prime, decimal A20, decimal transitionWidth);
 
     /**
+     * Computes edge strength from A_11 magnitude for weak-edge rejection.
+     *
+     * @param A11 The complex Zernike moment A_11.
+     *
+     * @return Non-negative edge strength.
+     */
+    decimal computeEdgeStrength(const ComplexNumber& A11);
+
+    /**
      * Converts the refined edge position from normalized polar coordinates (l, psi) relative
      * to the window center into image pixel coordinates.
      *
