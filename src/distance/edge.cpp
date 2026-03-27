@@ -552,26 +552,27 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
 ////// Zernike Edge Detection Algorithm //////
 
+////// Zernike Sub-Pixel Edge Detection Algorithm //////
+
 std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
     const Image &image, const Vec2 &center) {
     std::unique_ptr<decimal[]> window(new decimal[windowSize * windowSize]);
-    int halfWindow = windowSize / 2;
+    const int halfWindow = windowSize / 2;
 
-    // Window is entered around edge pixel
-    int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x()));
-    int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y()));
+    const int centerXInt = static_cast<int>(DECIMAL_ROUND(center.x()));
+    const int centerYInt = static_cast<int>(DECIMAL_ROUND(center.y()));
 
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
             int imgX = centerXInt + (j - halfWindow);
             int imgY = centerYInt + (i - halfWindow);
 
-            // Handle boundaries: use edge values
             imgX = std::max(0, std::min(imgX, image.width - 1));
             imgY = std::max(0, std::min(imgY, image.height - 1));
 
-            uint64_t imgIndex = static_cast<uint64_t>(imgY * image.width + imgX);
-            window[i * windowSize + j] = static_cast<decimal>(image.image[imgIndex * image.channels]);
+            const uint64_t imgIndex = static_cast<uint64_t>(imgY * image.width + imgX);
+            window[i * windowSize + j] =
+                static_cast<decimal>(image.image[imgIndex * image.channels]);
         }
     }
 
@@ -579,101 +580,132 @@ std::unique_ptr<decimal[]> ZernikeEdgeDetectionAlgorithm::extractWindow(
 }
 
 Eigen::Matrix<decimal, Eigen::Dynamic, 3>
-    ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
-    const int N = windowSize * windowSize;
+ZernikeEdgeDetectionAlgorithm::computeZernikeKernels() {
+    const int N        = windowSize * windowSize;
+
+    // Zernike normalization factors: (n+1)/pi for order n
+    // Z_11: n=1 -> 2/pi,  Z_20: n=2 -> 3/pi
+    const decimal norm11 = DECIMAL(2.0) / DECIMAL_M_PI;
+    const decimal norm20 = DECIMAL(3.0) / DECIMAL_M_PI;
+
     Eigen::Matrix<decimal, Eigen::Dynamic, 3> K(N, 3);
 
-    decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
-    decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
+    const decimal pixelWidth = DECIMAL(2.0) / DECIMAL(windowSize);
+    const decimal offset     = DECIMAL(1.0) - DECIMAL(1.0) / DECIMAL(windowSize);
 
-    constexpr int SUB = 16;
-    decimal subStep   = pixelWidth / DECIMAL(SUB);
-    decimal subOffset = subStep / DECIMAL(2.0);
+    constexpr int SUB       = 16;
+    const decimal subStep   = pixelWidth / DECIMAL(SUB);
+    const decimal subOffset = subStep / DECIMAL(2.0);
 
     for (int i = 0; i < windowSize; i++) {
         for (int j = 0; j < windowSize; j++) {
-            decimal uCenter = DECIMAL(2.0) * DECIMAL(j) / DECIMAL(windowSize) - offset;
-            decimal vCenter = DECIMAL(2.0) * DECIMAL(i) / DECIMAL(windowSize) - offset;
+            const decimal uCenter = DECIMAL(2.0) * DECIMAL(j) / DECIMAL(windowSize) - offset;
+            const decimal vCenter = DECIMAL(2.0) * DECIMAL(i) / DECIMAL(windowSize) - offset;
 
-            decimal sum11 = DECIMAL(0.0);
-            decimal sum20 = DECIMAL(0.0);
+            decimal sum11real = DECIMAL(0.0);
+            decimal sum11imag = DECIMAL(0.0);
+            decimal sum20     = DECIMAL(0.0);
+            int     inCount   = 0;
 
             for (int si = 0; si < SUB; si++) {
                 for (int sj = 0; sj < SUB; sj++) {
-                    decimal u = uCenter - pixelWidth / DECIMAL(2.0) +
-                               DECIMAL(sj) * subStep + subOffset;
-                    decimal v = vCenter - pixelWidth / DECIMAL(2.0) +
-                               DECIMAL(si) * subStep + subOffset;
+                    const decimal u = uCenter - pixelWidth / DECIMAL(2.0) +
+                                      DECIMAL(sj) * subStep + subOffset;
+                    const decimal v = vCenter - pixelWidth / DECIMAL(2.0) +
+                                      DECIMAL(si) * subStep + subOffset;
 
-                    decimal rSquared = u * u + v * v;
+                    const decimal rSquared = u * u + v * v;
 
                     if (rSquared <= DECIMAL(1.0)) {
-                        sum11 += u;
+                        // Z_11 real part = r*cos(theta) = u
+                        // Z_11 imag part = r*sin(theta) = v
+                        sum11real += u;
+                        sum11imag += v;
+                        // Z_20 = 2r^2 - 1  (real Zernike radial, m=0)
                         sum20 += DECIMAL(2.0) * rSquared - DECIMAL(1.0);
+                        inCount++;
                     }
                 }
             }
 
-            decimal areaWeight = pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
+            const decimal areaWeight = pixelWidth * pixelWidth / DECIMAL(SUB * SUB);
+            const int idx = i * windowSize + j;
 
-            int idx = i * windowSize + j;
-            K(idx, 0) = areaWeight * sum11;   // Z_11 real
-            K(idx, 2) = areaWeight * sum20;  // Z_20 real
+            // Apply normalization factors here so moments are correctly scaled
+            K(idx, 0) = norm11 * areaWeight * sum11real;  // Z_11 real
+            K(idx, 1) = norm11 * areaWeight * sum11imag;  // Z_11 imag
+            K(idx, 2) = norm20 * areaWeight * sum20;      // Z_20
         }
-    }
-
-    // Z_11 imag = transpose of Z_11 real
-    for (int i = 0; i < windowSize; i++) {
-        for (int j = 0; j < windowSize; j++) {
-            K(i * windowSize + j, 1) = K(j * windowSize + i, 0);
-        }
-    }
-
-    // Apply Zernike normalization factors: (n + 1) / pi.
-    const decimal norm11 = DECIMAL(2.0) / DECIMAL_M_PI;
-    const decimal norm20 = DECIMAL(3.0) / DECIMAL_M_PI;
-    for (int idx = 0; idx < windowSize * windowSize; idx++) {
-        K(idx, 0) *= norm11;
-        K(idx, 1) *= norm11;
-        K(idx, 2) *= norm20;
     }
 
     return K;
 }
 
-std::pair<ComplexNumber, ComplexNumber> ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
-    const decimal* window,
+std::pair<ComplexNumber, ComplexNumber>
+ZernikeEdgeDetectionAlgorithm::computeZernikeMoments(
+    const decimal *window,
     const Eigen::Matrix<decimal, Eigen::Dynamic, 3> &kernelMatrix) {
     const int N = windowSize * windowSize;
     Eigen::Map<const Eigen::Matrix<decimal, Eigen::Dynamic, 1>> w(window, N, 1);
-    Eigen::Matrix<decimal, 3, 1> r = kernelMatrix.transpose() * w;
+    const Eigen::Matrix<decimal, 3, 1> r = kernelMatrix.transpose() * w;
 
     ComplexNumber A11 = {r(0), r(1)};
-    ComplexNumber A20 = {r(2), DECIMAL(0.0)};  // A_20 is real-only
+    ComplexNumber A20 = {r(2), DECIMAL(0.0)};
     return {A11, A20};
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ComplexNumber& A11) {
+decimal ZernikeEdgeDetectionAlgorithm::extractEdgeAngle(const ComplexNumber &A11) {
+    // atan2(imag, real) gives the angle of A11, which encodes the edge normal direction.
+    // The sign of A11 points from dark to bright across the edge.
     return DECIMAL_ATAN2(A11.imag, A11.real);
 }
 
-decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(decimal A11Prime, decimal A20, decimal transitionWidth) {
+decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(
+    decimal A11Prime, decimal A20, decimal tw) {
+    // Closed-form solution for sub-pixel edge displacement l in normalised [-1,1] coords.
+    // Derived from the two-region step-edge model (Ghosal & Mehrotra, 1993):
+    //
+    //   A11' = (2/pi) * [ (1 - l^2)^(3/2) / (3/2) - l*(1-l^2)^(1/2)*(pi/4 - ...) ]
+    //
+    // For the transition-width parameterisation with blur width w:
+    //   discriminant = (1 - w^2)^2 - 2*w^2*(A20 / A11')
+    //   l = [ (1 - w^2) - sqrt(discriminant) ] / (2 * w^2)
+    //
+    // Note the denominator is 2*w^2, not w^2.
+
     if (DECIMAL_ABS(A11Prime) < DECIMAL(1e-10)) {
         return DECIMAL(0.0);
     }
-    decimal w = transitionWidth;
-    decimal wSqu = w * w;
 
-    decimal discriminant = ((wSqu - DECIMAL(1.0)) * (wSqu - DECIMAL(1.0)) - DECIMAL(2.0) * wSqu * (A20 / A11Prime));
-    return (DECIMAL(1.0) - wSqu - sqrt(discriminant)) / (DECIMAL(2.0) * wSqu);
+    const decimal wSqu        = tw * tw;
+    const decimal oneMinusWSq = DECIMAL(1.0) - wSqu;
+    const decimal ratio       = A20 / A11Prime;
+    const decimal discriminant =
+        oneMinusWSq * oneMinusWSq - DECIMAL(2.0) * wSqu * ratio;
+
+    if (discriminant < DECIMAL(0.0)) {
+        // Discriminant can go negative near image noise; clamp and return no shift
+        return DECIMAL(0.0);
+    }
+
+    // Correct denominator: 2*w^2
+    return (oneMinusWSq - DECIMAL_SQRT(discriminant)) / (DECIMAL(2.0) * wSqu);
 }
 
-Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter, decimal l, decimal psi) {
-    decimal scale = DECIMAL(windowSize) / DECIMAL(2.0);
-    decimal offsetX = scale * l * DECIMAL_COS(psi);
-    decimal offsetY = scale * l * DECIMAL_SIN(psi);
+Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(
+    const Vec2 &windowCenter, decimal l, decimal psi) {
+    // l is in normalised window coords [-1,1]; scale to pixels via windowSize/2
+    const decimal scale   = DECIMAL(windowSize) / DECIMAL(2.0);
+    const decimal offsetX = scale * l * DECIMAL_COS(psi);
+    const decimal offsetY = scale * l * DECIMAL_SIN(psi);
 
     return Vec2{windowCenter.x() + offsetX, windowCenter.y() + offsetY};
+}
+
+decimal ZernikeEdgeDetectionAlgorithm::computeEdgeStrength(const ComplexNumber &A11) {
+    // Magnitude of A11 is proportional to the step height across the edge.
+    // Used to reject weak/noisy detections before solving for l.
+    return DECIMAL_SQRT(A11.real * A11.real + A11.imag * A11.imag);
 }
 
 Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
@@ -681,44 +713,62 @@ Points ZernikeEdgeDetectionAlgorithm::Run(const Image &image) {
         throw std::invalid_argument("windowSize must be a positive odd integer");
     }
 
-    Points initialPoints = initialEdgeAlgorithm->Run(image);
-
+    const Points initialPoints = initialEdgeAlgorithm->Run(image);
     if (initialPoints.empty()) {
         return initialPoints;
     }
 
-    // Step 1: Compute Zernike kernels (single matrix for efficient K^T * w)
-    Eigen::Matrix<decimal, Eigen::Dynamic, 3> kernelMatrix = computeZernikeKernels();
+    // Precompute kernel matrix once — reused for every edge point
+    const Eigen::Matrix<decimal, Eigen::Dynamic, 3> kernelMatrix =
+        computeZernikeKernels();
 
-    // Step 2: Process each initial edge point
+    // Minimum edge strength to attempt sub-pixel refinement.
+    // Below this threshold the step contrast is too low to trust the
+    // Zernike displacement estimate; we fall back to the initial point.
+    const decimal strengthThreshold = DECIMAL(1e-3);
+
     Points refinedPoints;
+    refinedPoints.reserve(initialPoints.size());
 
-    for (const Vec2& initialPoint : initialPoints) {
-        // Step 2a: Extract window around the point
+    for (const Vec2 &initialPoint : initialPoints) {
+        // Extract intensity window centred on the initial edge pixel
         std::unique_ptr<decimal[]> window = extractWindow(image, initialPoint);
 
-        // Step 2b: Compute Zernike moments via one matrix-vector multiply
-        ComplexNumber A11;
-        ComplexNumber A20;
+        // Project window onto Zernike basis via a single matrix-vector multiply
+        ComplexNumber A11, A20;
         std::tie(A11, A20) = computeZernikeMoments(window.get(), kernelMatrix);
 
-        // Step 2c: Extract edge angle ψ from A_11
-        decimal psi = extractEdgeAngle(A11);
+        // Reject detections where the edge contrast is below threshold
+        const decimal strength = computeEdgeStrength(A11);
+        if (strength < strengthThreshold) {
+            refinedPoints.push_back(initialPoint);
+            continue;
+        }
 
-        // Step 2d: Rotate A_11 to align with edge direction
-        decimal cosPsi = DECIMAL_COS(psi);
-        decimal sinPsi = DECIMAL_SIN(psi);
-        decimal A11Prime = A11.real * cosPsi + A11.imag * sinPsi;
+        // psi: angle of A11 in the complex plane = direction of edge normal
+        const decimal psi    = extractEdgeAngle(A11);
+        const decimal cosPsi = DECIMAL_COS(psi);
+        const decimal sinPsi = DECIMAL_SIN(psi);
 
-        // Step 2e: Solve for edge distance l using Christian's equations
-        decimal l = solveEdgeDistance(A11Prime, A20.real, transitionWidth);
+        // Project A11 onto the edge normal to get the signed magnitude A11'
+        // A11' = Re(A11 * e^{-i*psi}) = |A11|
+        const decimal A11Prime = A11.real * cosPsi + A11.imag * sinPsi;
+
+        // Solve for sub-pixel displacement l along the edge normal
+        const decimal l = solveEdgeDistance(A11Prime, A20.real, transitionWidth);
+
         if (!std::isfinite(static_cast<double>(l))) {
             refinedPoints.push_back(initialPoint);
             continue;
         }
 
-        // Step 2f: Convert back to pixel coordinates
-        Vec2 refinedPoint = convertPolarToPixel(initialPoint, l, psi);
+        // Clamp l to the unit disc — displacements beyond the window radius
+        // are unphysical and indicate a degenerate moment solve
+        const decimal lClamped = std::max(DECIMAL(-1.0), std::min(l, DECIMAL(1.0)));
+
+        // Map normalised displacement back to pixel coordinates
+        const Vec2 refinedPoint = convertPolarToPixel(initialPoint, lClamped, psi);
+
         if (!std::isfinite(static_cast<double>(refinedPoint.x())) ||
             !std::isfinite(static_cast<double>(refinedPoint.y()))) {
             refinedPoints.push_back(initialPoint);
