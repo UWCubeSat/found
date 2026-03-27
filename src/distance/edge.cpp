@@ -629,6 +629,15 @@ Eigen::Matrix<decimal, Eigen::Dynamic, 3>
         }
     }
 
+    // Apply Zernike normalization factors: (n + 1) / pi.
+    const decimal norm11 = DECIMAL(2.0) / DECIMAL_M_PI;
+    const decimal norm20 = DECIMAL(3.0) / DECIMAL_M_PI;
+    for (int idx = 0; idx < windowSize * windowSize; idx++) {
+        K(idx, 0) *= norm11;
+        K(idx, 1) *= norm11;
+        K(idx, 2) *= norm20;
+    }
+
     return K;
 }
 
@@ -656,7 +665,7 @@ decimal ZernikeEdgeDetectionAlgorithm::solveEdgeDistance(decimal A11Prime, decim
     decimal wSqu = w * w;
 
     decimal discriminant = ((wSqu - DECIMAL(1.0)) * (wSqu - DECIMAL(1.0)) - DECIMAL(2.0) * wSqu * (A20 / A11Prime));
-    return (DECIMAL(1.0) - wSqu - sqrt(discriminant)) / wSqu;
+    return (DECIMAL(1.0) - wSqu - sqrt(discriminant)) / (DECIMAL(2.0) * wSqu);
 }
 
 Vec2 ZernikeEdgeDetectionAlgorithm::convertPolarToPixel(const Vec2& windowCenter, decimal l, decimal psi) {
