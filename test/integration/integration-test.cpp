@@ -336,30 +336,4 @@ TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterEnabled) {
     std::remove(temp_df);
 }
 
-// TODO: Remove/replace when noop-edge-filter is not needed.
-TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterDisabled) {
-    int argc = 13;
-    const char *argv[] = {"found", "distance",
-                        "--image", example_earth1.path,
-                        "--reference-as-orientation",
-                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
-                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
-                        "--reference-orientation", "140,0,0",
-                        "--output-file", temp_df};
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::ifstream file(temp_df);
-    DataFile actual = deserializeDataFile(file);
-
-    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
-    ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
-    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
-    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
-
-    std::remove(temp_df);
-}
-
 }  // namespace found

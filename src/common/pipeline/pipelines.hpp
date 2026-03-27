@@ -64,7 +64,7 @@ class Pipeline : public FunctionStage<Input, Output> {
 
  protected:
     /// Ownership storage for the stages
-    std::unique_ptr<Action> ownedStages[N];
+    std::unique_ptr<Action> stages[N];
     /// The number of stages
     size_t size = 0;
     /// Whether we're complete
@@ -75,40 +75,40 @@ class Pipeline : public FunctionStage<Input, Output> {
     /**
      * Adds a stage to this pipeline, taking ownership of the provided stage.
      *
-     * @param stage The stage to add to the pipeline (ownership transferred via unique_ptr)
+     * @param stage The stage to add to this
      *
-     * @throw std::invalid_argument iff this pipeline has already been completed
+     * @throw std::invalid_argument iff this has already been completed
      *
      * @pre This method is called when the number of registered stages is
-     *       less than N - 1
+     *      less than N - 1
      *
-     * @post The pipeline stores the stage internally, extending its lifetime to match
-     *       the pipeline's lifetime.
+     * @post stage is stored inside this such that stage and this share the same
+     *       lifetime. Ownership of stage is transferred to this
      */
     inline void AddStageHelper(std::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->ownedStages[size++] = std::move(stage);
+        this->stages[size++] = std::move(stage);
     }
 
     /**
      * Completes a pipeline with a final stage, taking ownership of it.
      *
-     * @param stage The final stage to add (ownership transferred via unique_ptr)
+     * @param stage The final stage to add
      *
-     * @throw std::invalid_argument iff this pipeline has already been completed
+     * @throw std::invalid_argument iff this has already been completed
      *
      * @pre This method is called when the number of
      *       registered stages is less than N
-     * @pre The pipeline is not ready yet (this->ready == false)
+     * @pre This is not ready yet
      *
-     * @post The pipeline is ready (this->ready == true) and retains the stage
-     *       for the remainder of its lifetime.
+     * @post This is now ready. Ownership of stage is transferred to this. The
+     *       lifetime of stage matches this 
      */
     inline void CompleteHelper(std::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->ownedStages[size++] = std::move(stage);
+        this->stages[size++] = std::move(stage);
         this->ready = true;
     }
 
@@ -119,7 +119,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      */
     inline void DoActionHelper() {
         for (size_t i = 0; i < this->size; i++) {
-            this->ownedStages[i]->DoAction();
+            this->stages[i]->DoAction();
         }
     }
 };
@@ -168,17 +168,13 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * @pre This method is called when the number of registered stages is
      * less than N - 1
      */
-    template<typename StageType>
-    SequentialPipeline &AddStage(std::unique_ptr<StageType> stage) {
-        static_assert(std::is_base_of<FunctionStage<typename StageType::InputType,
-                                                    typename StageType::OutputType>, StageType>::value,
-                      "Stage must derive from FunctionStage");
-        StageType *stagePtr = stage.get();
+    template<typename I, typename O> SequentialPipeline &AddStage(std::unique_ptr<FunctionStage<I, O>> stage) {
+        FunctionStage<I, O> *stagePtr = stage.get();
         if (this->size == 0) {
-            if (!std::is_same<Input, typename StageType::InputType>::value) {
+            if (!std::is_same<Input, I>::value) {
                 throw std::invalid_argument("The initial input type is not correct");
             }
-           this->firstResource = reinterpret_cast<Input *>(&stagePtr->GetResource());
+            this->firstResource = reinterpret_cast<Input *>(&stagePtr->GetResource());
         } else {
             // Chain here, and blindly trust the user
             *this->lastProduct = static_cast<void *>(&stagePtr->GetResource());
@@ -197,19 +193,15 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * 
      * @param stage The stage to add
      * 
-     * @return this, with the last stage added (to run this::Run)
+     * @return this, with the last stage added
      * 
-     * @throws invalid_argument iff this is the first time this
-     * method is called, and I does not match Input OR if the SequentialPipeline
-     * is already complete (aka this::Complete was called successfully)
+     * @throws invalid_argument iff this is the first time Complete
+     *         is called on this, and I does not match Input OR 
+     *         if this is already complete
      * 
-     * @pre This method is called when the number of registered stages is less
-     * than N
+     * @pre The number of registered stages is less than N
      */
-    template<typename StageType>
-    SequentialPipeline &Complete(std::unique_ptr<StageType> stage) {
-        static_assert(std::is_same<Output, typename StageType::OutputType>::value,
-                      "Final stage output must match pipeline output");
+    template<typename I> SequentialPipeline &Complete(std::unique_ptr<FunctionStage<I, Output>> stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
         this->AddStage(std::move(stage));
@@ -319,14 +311,14 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
             throw std::runtime_error("This is an illegal action: the pipeline is not ready yet");
         // Construct here if there is no next product,
         // or construct there if there is
-        if (this->product == nullptr) {
+        if (this->product == nullptr) {  // GCOVR_EXCL_BR_LINE
             // engage our finalProduct
             this->finalProduct.emplace();
             this->product = &this->finalProduct.value();
         }
         *this->product = input;
         for (size_t i = 0; i < this->size; i++) {
-            dynamic_cast<ModifyingStage<T> *>(this->ownedStages[i].get())
+            dynamic_cast<ModifyingStage<T> *>(this->stages[i].get())
                                               ->SetResource(*this->product);  // GCOVR_EXCL_LINE
         }
         Pipeline<T, T, N>::DoActionHelper();

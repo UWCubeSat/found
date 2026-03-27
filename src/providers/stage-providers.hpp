@@ -33,7 +33,7 @@ namespace found {
  * @return A pointer to the CalibrationAlgorithm
  */
 inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
-    [[maybe_unused]] CalibrationOptions &&options) {
+    [[maybe_unused]] const CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -44,7 +44,7 @@ inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &&options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -58,7 +58,7 @@ inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(Dis
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
 inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
-    DistanceOptions &&options) {
+    const DistanceOptions &&options) {
     if (options.distanceAlgo == SDDA) {
         return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, Camera(options.focalLength,
             options.pixelSize, options.image.width, options.image.height));
@@ -87,7 +87,7 @@ inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminat
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
@@ -111,7 +111,7 @@ inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorit
  * 
  * @return std::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
  */
-inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &&options) {
     std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
     bool added = false;
 
@@ -132,7 +132,7 @@ inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(Di
  * 
  * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
  */
-// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
+// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(const OrbitOptions &options) {
 //     return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
 //                                                                   options.dt,
 //                                                                   options.radius,

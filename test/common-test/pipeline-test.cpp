@@ -46,8 +46,8 @@ TEST(SequentialPipelineTest, TestSequentialPipelineAddStageAfterComplete) {
 
     std::unique_ptr<MockFunctionStage<int, double>> stage2(new MockFunctionStage<int, double>());
 
-    pipeline.Complete(std::move(stage1));
-    ASSERT_THROW(pipeline.AddStage(std::move(stage2)), std::invalid_argument);
+    pipeline.Complete(ToFunctionStage<char, double>(std::move(stage1)));
+    ASSERT_THROW(pipeline.AddStage(ToFunctionStage<int, double>(std::move(stage2))), std::invalid_argument);
 }
 
 /**
@@ -60,8 +60,8 @@ TEST(SequentialPipelineTest, TestSequentialPipelineCompleteAfterComplete) {
 
     std::unique_ptr<MockFunctionStage<int, double>> stage2(new MockFunctionStage<int, double>());
 
-    pipeline.Complete(std::move(stage1));
-    ASSERT_THROW(pipeline.Complete(std::move(stage2)), std::invalid_argument);
+    pipeline.Complete(ToFunctionStage<char, double>(std::move(stage1)));
+    ASSERT_THROW(pipeline.Complete(ToFunctionStage<int, double>(std::move(stage2))), std::invalid_argument);
 }
 
 /**
@@ -72,7 +72,7 @@ TEST(SequentialPipelineTest, TestSequentialPipelineInvalidFirstStage) {
 
     std::unique_ptr<MockFunctionStage<double, int>> stage1(new MockFunctionStage<double, int>());
 
-    ASSERT_THROW(pipeline.AddStage(std::move(stage1)), std::invalid_argument);
+    ASSERT_THROW(pipeline.AddStage(ToFunctionStage<double, int>(std::move(stage1))), std::invalid_argument);
 }
 
 /**
@@ -87,7 +87,7 @@ TEST(SequentialPipelineTest, TestSequentialPipelineSingleStage) {
     EXPECT_CALL(*stage1, Run(integers[test_set]))
         .WillOnce(testing::Return(characters[test_set]));
 
-    char result = pipeline.Complete(std::move(stage1))
+    char result = pipeline.Complete(ToFunctionStage<int, char>(std::move(stage1)))
                           .Run(integers[test_set]);
 
     ASSERT_EQ(characters[test_set], result);
@@ -124,8 +124,8 @@ TEST(SequentialPipelineTest, TestSequentialPipelineTwoStage) {
         .WillOnce(testing::Return(characters[test_set]));
 
     // Now, we construct the pipeline and run it
-    char result = pipeline.AddStage(std::move(stage1))
-                          .Complete(std::move(stage2))
+    char result = pipeline.AddStage(ToFunctionStage<int, std::string>(std::move(stage1)))
+                          .Complete(ToFunctionStage<std::string, char>(std::move(stage2)))
                           .Run(integers[test_set]);
     // And we verify the result
     ASSERT_EQ(characters[test_set], result);
@@ -147,8 +147,8 @@ TEST(SequentialPipelineTest, TestSequentialPipelineTwoStageOther) {
     EXPECT_CALL(*stage2, Run(floats[test_set]))
         .WillOnce(testing::Return(strings[test_set]));
 
-    std::string result = pipeline.AddStage(std::move(stage1))
-                          .Complete(std::move(stage2))
+    std::string result = pipeline.AddStage(ToFunctionStage<double, float>(std::move(stage1)))
+                          .Complete(ToFunctionStage<float, std::string>(std::move(stage2)))
                           .Run(doubles[test_set]);
     ASSERT_EQ(std::string(strings[test_set]), result);
 }
@@ -173,9 +173,9 @@ TEST(SequentialPipelineTest, TestSequentialPipelineThreeStage) {
     EXPECT_CALL(*stage3, Run(strings[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
-    double result = pipeline.AddStage(std::move(stage1))
-                          .AddStage(std::move(stage2))
-                          .Complete(std::move(stage3))
+    double result = pipeline.AddStage(ToFunctionStage<char, int>(std::move(stage1)))
+                          .AddStage(ToFunctionStage<int, std::string>(std::move(stage2)))
+                          .Complete(ToFunctionStage<std::string, double>(std::move(stage3)))
                           .Run(characters[test_set]);
     ASSERT_EQ(doubles[test_set], result);
 }
@@ -201,10 +201,10 @@ TEST(SequentialPipelineTest, TestSequentialPipelineGeneral) {
     EXPECT_CALL(*stage4, Run(doubles[test_set]))
         .WillOnce(testing::Return(strings[test_set]));
 
-    std::string result = pipeline.AddStage(std::move(stage1))
-                                 .AddStage(std::move(stage2))
-                                 .AddStage(std::move(stage3))
-                                 .Complete(std::move(stage4))
+    std::string result = pipeline.AddStage(ToFunctionStage<double, int>(std::move(stage1)))
+                                 .AddStage(ToFunctionStage<int, char>(std::move(stage2)))
+                                 .AddStage(ToFunctionStage<char, double>(std::move(stage3)))
+                                 .Complete(ToFunctionStage<double, std::string>(std::move(stage4)))
                                  .Run(doubles[test_set]);
     ASSERT_EQ(strings[test_set], result);
 }
@@ -227,7 +227,8 @@ TEST(SequentialPipelineTest, TestSequentialPipelineBeginningPipelineInPipeline) 
     EXPECT_CALL(*innerStage2, Run(characters[test_set]))
         .WillOnce(testing::Return(integers[test_set]));
 
-    innerPipeline->AddStage(std::move(innerStage1)).Complete(std::move(innerStage2));
+    innerPipeline->AddStage(ToFunctionStage<char, char>(std::move(innerStage1)))
+                 .Complete(ToFunctionStage<char, int>(std::move(innerStage2)));
 
     std::unique_ptr<MockFunctionStage<int, int>> outerStage1(new MockFunctionStage<int, int>());
     EXPECT_CALL(*outerStage1, Run(integers[test_set]))
@@ -237,9 +238,9 @@ TEST(SequentialPipelineTest, TestSequentialPipelineBeginningPipelineInPipeline) 
     EXPECT_CALL(*outerStage2, Run(integers[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
-    outerPipeline.AddStage(std::move(innerPipeline))
-                 .AddStage(std::move(outerStage1))
-                 .Complete(std::move(outerStage2));
+    outerPipeline.AddStage(ToFunctionStage<char, int>(std::move(innerPipeline)))
+                 .AddStage(ToFunctionStage<int, int>(std::move(outerStage1)))
+                 .Complete(ToFunctionStage<int, double>(std::move(outerStage2)));
 
     double result = outerPipeline.Run(characters[test_set]);
 
@@ -264,15 +265,15 @@ TEST(SequentialPipelineTest, TestSequentialPipelineMiddlePipelineInPipeline) {
     EXPECT_CALL(*innerStage1, Run(integers[test_set]))
         .WillOnce(testing::Return(floats[test_set]));
 
-    innerPipeline->Complete(std::move(innerStage1));
+    innerPipeline->Complete(ToFunctionStage<int, float>(std::move(innerStage1)));
 
     std::unique_ptr<MockFunctionStage<float, double>> outerStage2(new MockFunctionStage<float, double>());
     EXPECT_CALL(*outerStage2, Run(floats[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
-    outerPipeline.AddStage(std::move(outerStage1))
-                 .AddStage(std::move(innerPipeline))
-                 .Complete(std::move(outerStage2));
+    outerPipeline.AddStage(ToFunctionStage<char, int>(std::move(outerStage1)))
+                 .AddStage(ToFunctionStage<int, float>(std::move(innerPipeline)))
+                 .Complete(ToFunctionStage<float, double>(std::move(outerStage2)));
 
     double result = outerPipeline.Run(characters[test_set]);
 
@@ -297,10 +298,10 @@ TEST(SequentialPipelineTest, TestSequentialPipelineEndPipelineInPipeline) {
     EXPECT_CALL(*innerStage1, Run(integers[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
-    innerPipeline->Complete(std::move(innerStage1));
+    innerPipeline->Complete(ToFunctionStage<int, double>(std::move(innerStage1)));
 
-    outerPipeline.AddStage(std::move(outerStage1))
-                 .Complete(std::move(innerPipeline));
+    outerPipeline.AddStage(ToFunctionStage<char, int>(std::move(outerStage1)))
+                 .Complete(ToFunctionStage<int, double>(std::move(innerPipeline)));
 
     double result = outerPipeline.Run(characters[test_set]);
 
@@ -323,9 +324,10 @@ TEST(SequentialPipelineTest, TestThreeSequentialPipelinesInPipeline) {
     EXPECT_CALL(*stage2, Run(strings[test_set]))
         .WillOnce(testing::Return(characters[test_set]));
 
-    doubleInner->Complete(std::move(stage1));
+    doubleInner->Complete(ToFunctionStage<int, std::string>(std::move(stage1)));
 
-    inner1->AddStage(std::move(doubleInner)).Complete(std::move(stage2));
+        inner1->AddStage(ToFunctionStage<int, std::string>(std::move(doubleInner)))
+            .Complete(ToFunctionStage<std::string, char>(std::move(stage2)));
 
     std::unique_ptr<SequentialPipeline<char, double>> inner2(new SequentialPipeline<char, double>());
 
@@ -333,7 +335,7 @@ TEST(SequentialPipelineTest, TestThreeSequentialPipelinesInPipeline) {
     EXPECT_CALL(*stage3, Run(characters[test_set]))
         .WillOnce(testing::Return(doubles[test_set]));
 
-    inner2->Complete(std::move(stage3));
+    inner2->Complete(ToFunctionStage<char, double>(std::move(stage3)));
 
     std::unique_ptr<SequentialPipeline<double, std::string>> inner3(new SequentialPipeline<double, std::string>());
 
@@ -347,11 +349,13 @@ TEST(SequentialPipelineTest, TestThreeSequentialPipelinesInPipeline) {
     EXPECT_CALL(*stage6, Run(characters[test_set]))
         .WillOnce(testing::Return(strings[test_set]));
 
-    inner3->AddStage(std::move(stage4)).AddStage(std::move(stage5)).Complete(std::move(stage6));
+        inner3->AddStage(ToFunctionStage<double, int>(std::move(stage4)))
+            .AddStage(ToFunctionStage<int, char>(std::move(stage5)))
+            .Complete(ToFunctionStage<char, std::string>(std::move(stage6)));
 
-    std::string actual = pipeline.AddStage(std::move(inner1))
-                                 .AddStage(std::move(inner2))
-                                 .Complete(std::move(inner3))
+    std::string actual = pipeline.AddStage(ToFunctionStage<int, char>(std::move(inner1)))
+                                 .AddStage(ToFunctionStage<char, double>(std::move(inner2)))
+                                 .Complete(ToFunctionStage<double, std::string>(std::move(inner3)))
                                  .Run(integers[test_set]);
 
     ASSERT_EQ(strings[test_set], actual);
@@ -464,6 +468,107 @@ TEST(ModifyingPipelineTest, TestModifyingPipelineThreeStages) {
     ASSERT_EQ(expectedResource, resource);
 }
 
+TEST(ModifyingPipelineTest, TestModifyingPipelineRunNotReadyWithStages) {
+    INIT_M_INT_PIPELINE(pipeline);
+
+    std::unique_ptr<MockModifyingStage<int>> stage1(new MockModifyingStage<int>());
+    pipeline.AddStage(std::move(stage1));
+
+    ASSERT_THROW(pipeline.Run(1), std::runtime_error);
+}
+
+TEST(ModifyingPipelineTest, TestModifyingPipelinePointsRunNotReadyWithStages) {
+    INIT_M_PIPELINE(Points, pipeline);
+
+    std::unique_ptr<MockModifyingStage<Points>> stage1(new MockModifyingStage<Points>());
+    pipeline.AddStage(std::move(stage1));
+
+    ASSERT_THROW(pipeline.Run(points), std::runtime_error);
+}
+
+TEST(ModifyingPipelineTest, TestModifyingPipelineRunTwiceAsserts) {
+    INIT_M_INT_PIPELINE(pipeline);
+
+    std::unique_ptr<MockModifyingStage<int>> stage1(new MockModifyingStage<int>());
+    EXPECT_CALL(*stage1, Run(testing::_))
+        .WillRepeatedly([](int &arg0) {
+            arg0 += 1;
+        });
+
+    pipeline.Complete(std::move(stage1));
+    pipeline.Run(1);
+
+    ASSERT_DEATH(pipeline.Run(2), ".*");
+}
+
+TEST(ModifyingPipelineTest, TestModifyingPipelineUsesExternalProduct) {
+    MockExposedModifyingPipeline<int> pipeline;
+
+    int input = 7;
+    int external = 0;
+
+    std::unique_ptr<MockModifyingStage<int>> stage(new MockModifyingStage<int>());
+    EXPECT_CALL(*stage, Run(testing::_))
+        .WillOnce([](int &arg0) {
+            arg0 += 3;
+        });
+
+    pipeline.Complete(std::move(stage));
+    pipeline.SetExternalProduct(&external);
+
+    int result = pipeline.Run(input);
+
+    ASSERT_EQ(input + 3, result);
+    ASSERT_EQ(input + 3, external);
+    ASSERT_FALSE(pipeline.HasFinalProduct());
+}
+
+TEST(ModifyingPipelineTest, TestModifyingPipelinePointsUsesExternalProduct) {
+    MockExposedModifyingPipeline<Points> pipeline;
+
+    Points input = points;
+    Points external;
+
+    std::unique_ptr<MockModifyingStage<Points>> stage(new MockModifyingStage<Points>());
+    EXPECT_CALL(*stage, Run(testing::_))
+        .WillOnce([](Points &arg0) {
+            (void)arg0;
+        });
+
+    pipeline.Complete(std::move(stage));
+    pipeline.SetExternalProduct(&external);
+
+    Points result = pipeline.Run(input);
+
+    ASSERT_EQ(input.size(), result.size());
+    ASSERT_EQ(input.size(), external.size());
+    ASSERT_EQ(input[0].x, external[0].x);
+    ASSERT_EQ(input[0].y, external[0].y);
+    ASSERT_FALSE(pipeline.HasFinalProduct());
+}
+
+TEST(ModifyingPipelineTest, TestModifyingPipelineCharUsesExternalProduct) {
+    MockExposedModifyingPipeline<char> pipeline;
+
+    char input = 'b';
+    char external = '\0';
+
+    std::unique_ptr<MockModifyingStage<char>> stage(new MockModifyingStage<char>());
+    EXPECT_CALL(*stage, Run(testing::_))
+        .WillOnce([](char &arg0) {
+            arg0 += 2;
+        });
+
+    pipeline.Complete(std::move(stage));
+    pipeline.SetExternalProduct(&external);
+
+    char result = pipeline.Run(input);
+
+    ASSERT_EQ(static_cast<char>(input + 2), result);
+    ASSERT_EQ(static_cast<char>(input + 2), external);
+    ASSERT_FALSE(pipeline.HasFinalProduct());
+}
+
 TEST(ModifyingPipelineTest, TestModifierAtBeginningOfSequentialPipeline) {
     std::unique_ptr<ModifyingPipeline<int>> modPipeline(new ModifyingPipeline<int>());
 
@@ -487,9 +592,9 @@ TEST(ModifyingPipelineTest, TestModifierAtBeginningOfSequentialPipeline) {
     EXPECT_CALL(*stage3, Run(doubles[test_set]))
             .WillOnce(testing::Return(characters[test_set]));
 
-    int actual = sqPipeline.AddStage(std::move(modPipeline))
-                           .AddStage(std::move(stage2))
-                           .Complete(std::move(stage3))
+    int actual = sqPipeline.AddStage(ToFunctionStage<int, int>(std::move(modPipeline)))
+                           .AddStage(ToFunctionStage<char, double>(std::move(stage2)))
+                           .Complete(ToFunctionStage<double, char>(std::move(stage3)))
                            .Run(resource);
 
     ASSERT_EQ(characters[test_set], actual);
@@ -526,9 +631,9 @@ TEST(ModifyingPipelineTest, TestModifierAtEndOfSequentialPipeline) {
     EXPECT_CALL(*stage4, Run(doubles[test_set]))
             .WillOnce(testing::Return(resource));
 
-    int actual = sqPipeline.AddStage(std::move(stage3))
-                           .AddStage(std::move(stage4))
-                           .Complete(std::move(modPipeline))
+    int actual = sqPipeline.AddStage(ToFunctionStage<int, double>(std::move(stage3)))
+                           .AddStage(ToFunctionStage<double, char>(std::move(stage4)))
+                           .Complete(ToFunctionStage<char, char>(std::move(modPipeline)))
                            .Run(integers[test_set]);
 
     ASSERT_EQ(expected, actual);
@@ -576,10 +681,10 @@ TEST(ModifyingPipelineTest, TestModifierAtMiddleSequentialPipeline) {
     EXPECT_CALL(*stage6, Run(expectedIntermediate))
             .WillOnce(testing::Return(doubles[test_set]));
 
-    double actual = sqPipeline.AddStage(std::move(stage1))
-                              .AddStage(std::move(stage2))
-                              .AddStage(std::move(modPipeline))
-                              .Complete(std::move(stage6))
+    double actual = sqPipeline.AddStage(ToFunctionStage<int, std::string>(std::move(stage1)))
+                              .AddStage(ToFunctionStage<std::string, int>(std::move(stage2)))
+                              .AddStage(ToFunctionStage<int, int>(std::move(modPipeline)))
+                              .Complete(ToFunctionStage<int, double>(std::move(stage6)))
                               .Run(integers[test_set]);
 
     ASSERT_EQ(doubles[test_set], actual);
@@ -602,7 +707,8 @@ TEST(NominalPipelineTest, TestPipelinesAsStages) {
     EXPECT_CALL(*distanceStage, Run(testing::_))
         .WillOnce(testing::Return(expectedVec));
 
-    PositionVector actualVec(distancePipeline.Complete(std::move(distanceStage))
+    PositionVector actualVec(distancePipeline.Complete(
+                                             ToFunctionStage<Image, PositionVector>(std::move(distanceStage)))
                                              .Run({}));
 
     ASSERT_VEC3_EQ_DEFAULT(expectedVec, actualVec);
@@ -617,10 +723,10 @@ TEST(NominalPipelineTest, TestPipelinesAsStages) {
     EXPECT_CALL(*orbitStage, Run(testing::_))
         .WillOnce(testing::Return(expectedLR));
 
-    orbitPipeline->Complete(std::move(orbitStage));
+    orbitPipeline->Complete(ToFunctionStage<LocationRecords, LocationRecords>(std::move(orbitStage)));
 
     OrbitPipeline wrapperOrbitPipeline;
-    wrapperOrbitPipeline.Complete(std::move(orbitPipeline));
+    wrapperOrbitPipeline.Complete(ToFunctionStage<LocationRecords, LocationRecords>(std::move(orbitPipeline)));
     LocationRecords actualLR(wrapperOrbitPipeline.Run({}));
 
     ASSERT_THAT(expectedLR, LocationRecordsEqual(actualLR));
@@ -635,10 +741,10 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     EXPECT_CALL(*calibrationStage, Run(testing::_))
         .WillOnce(testing::Return(expectedQuat));
 
-    calibrationPipeline->Complete(std::move(calibrationStage));
+    calibrationPipeline->Complete(ToFunctionStage<Orientations, Quaternion>(std::move(calibrationStage)));
 
     CalibrationPipeline wrapperCalibrationPipeline;
-    wrapperCalibrationPipeline.Complete(std::move(calibrationPipeline));
+    wrapperCalibrationPipeline.Complete(ToFunctionStage<Orientations, Quaternion>(std::move(calibrationPipeline)));
     Quaternion actualQuat(wrapperCalibrationPipeline.Run({}));
 
     ASSERT_QUAT_EQ_DEFAULT(expectedQuat, actualQuat);
@@ -661,12 +767,12 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     EXPECT_CALL(*vectorStage, Run(testing::_))
         .WillOnce(testing::Return(expectedVec));
 
-    distancePipeline->AddStage(std::move(edgeDetectionStage))
-                    .AddStage(std::move(distanceStage))
-                    .Complete(std::move(vectorStage));
+    distancePipeline->AddStage(ToFunctionStage<Image, Points>(std::move(edgeDetectionStage)))
+                    .AddStage(ToFunctionStage<Points, PositionVector>(std::move(distanceStage)))
+                    .Complete(ToFunctionStage<PositionVector, PositionVector>(std::move(vectorStage)));
 
     DistancePipeline wrapperDistancePipeline;
-    wrapperDistancePipeline.Complete(std::move(distancePipeline));
+    wrapperDistancePipeline.Complete(ToFunctionStage<Image, PositionVector>(std::move(distancePipeline)));
     PositionVector actualVec(wrapperDistancePipeline.Run({}));
 
     ASSERT_VEC3_EQ_DEFAULT(expectedVec, actualVec);
@@ -679,10 +785,10 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     EXPECT_CALL(*undefinedOrbitStage, Run(testing::_))
         .WillOnce(testing::Return(expectedLR));
 
-    orbitPipeline->Complete(std::move(undefinedOrbitStage));
+    orbitPipeline->Complete(ToFunctionStage<LocationRecords, LocationRecords>(std::move(undefinedOrbitStage)));
 
     OrbitPipeline wrapperOrbitPipeline;
-    wrapperOrbitPipeline.Complete(std::move(orbitPipeline));
+    wrapperOrbitPipeline.Complete(ToFunctionStage<LocationRecords, LocationRecords>(std::move(orbitPipeline)));
     LocationRecords actualLR(wrapperOrbitPipeline.Run({}));
 
     ASSERT_THAT(expectedLR, LocationRecordsEqual(actualLR));
@@ -697,7 +803,7 @@ TEST(NominalPipelineTest, TestNominalPipelinesModifyingPipelinesAsStages) {
 
     // Second, put them into a pipeline
     INIT_SQ_PIPELINE(Points, Points, edgeFilteringPipeline);
-    edgeFilteringPipeline.Complete(std::move(edgeFilteringStage));
+    edgeFilteringPipeline.Complete(ToFunctionStage<Points, Points>(std::move(edgeFilteringStage)));
 
     // Third, call and verify the output
     Points actual(edgeFilteringPipeline.Run(points));

@@ -11,7 +11,6 @@
 
 namespace found {
 
-
 typedef ModifyingPipeline<Points> EdgeFilteringAlgorithms;
 
 /**

@@ -76,7 +76,7 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /**
      * Constructs a DistancePipelineExecutor (no edge-filters)
      *
-     * @param options The DistanceOptions to configure the pipeline (moved into the executor)
+     * @param options The DistanceOptions to configure the pipeline
      * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
      * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
      * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)

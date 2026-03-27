@@ -14,6 +14,13 @@ class MockEdgeDetectionAlgorithm : public EdgeDetectionAlgorithm {
     MOCK_METHOD(Points, Run, (const Image& image), (override));
 };
 
+class MockEdgeFilteringAlgorithm : public EdgeFilteringAlgorithm {
+ public:
+    MockEdgeFilteringAlgorithm() = default;
+    ~MockEdgeFilteringAlgorithm() override = default;
+    MOCK_METHOD(void, Run, (Points& pts), (override));
+};
+
 class MockDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm {
  public:
     MOCK_METHOD(PositionVector, Run, (const Points& points), (override));
@@ -22,13 +29,6 @@ class MockDistanceDeterminationAlgorithm : public DistanceDeterminationAlgorithm
 class MockVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
  public:
     MOCK_METHOD(PositionVector, Run, (const PositionVector& points), (override));
-};
-
-class MockEdgeFilteringAlgorithm : public EdgeFilteringAlgorithm {
- public:
-    MockEdgeFilteringAlgorithm() = default;
-    ~MockEdgeFilteringAlgorithm() override = default;
-    MOCK_METHOD(void, Run, (Points& pts), (override));
 };
 
 }  // namespace found
