@@ -1,7 +1,5 @@
 var classfound_1_1FunctionStage =
 [
-    [ "InputType", "classfound_1_1FunctionStage.html#a0c46551a36c4256b9a20f2b37aca85d2", null ],
-    [ "OutputType", "classfound_1_1FunctionStage.html#a40d011dc475ebd6720f17a7c37fe2581", null ],
     [ "FunctionStage", "classfound_1_1FunctionStage.html#a3669fea4a09a843ad5f02902cc209298", null ],
     [ "~FunctionStage", "classfound_1_1FunctionStage.html#ad88583e917033c8421ed33ea2410723a", null ],
     [ "DoAction", "classfound_1_1FunctionStage.html#a4b8e2c89cb8c82b89cb0a795486f2651", null ],

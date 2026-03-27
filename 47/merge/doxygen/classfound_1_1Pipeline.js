@@ -6,7 +6,7 @@ var classfound_1_1Pipeline =
     [ "DoActionHelper", "classfound_1_1Pipeline.html#a283af81df154b3ac0c38434d44377291", null ],
     [ "Run", "classfound_1_1Pipeline.html#a9d735ebe747c08637884c925915cec74", null ],
     [ "finalProduct", "classfound_1_1Pipeline.html#a2a946eeb973d15bece75bcdd72ad05af", null ],
-    [ "ownedStages", "classfound_1_1Pipeline.html#afe1594f7c9950f65f0c74a9afe4f1bb1", null ],
     [ "ready", "classfound_1_1Pipeline.html#aea82599564e6d8188961b86512f7b062", null ],
-    [ "size", "classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4", null ]
+    [ "size", "classfound_1_1Pipeline.html#a636669f8bda183f8007c5c124b106fc4", null ],
+    [ "stages", "classfound_1_1Pipeline.html#a86498ff59144f2f7c42bac2c7efd31ce", null ]
 ];

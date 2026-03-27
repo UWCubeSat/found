@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['addstage_0',['addstage',['../classfound_1_1SequentialPipeline.html#ac4ea00dfef62143a470ce223f4a3afd7',1,'found::SequentialPipeline::AddStage()'],['../classfound_1_1ModifyingPipeline.html#a4db52fdd3ccaa516f344665ec775e140',1,'found::ModifyingPipeline::AddStage()']]],
+  ['addstage_0',['addstage',['../classfound_1_1SequentialPipeline.html#a3a8583d2d3b24fd493b7bc098664967b',1,'found::SequentialPipeline::AddStage()'],['../classfound_1_1ModifyingPipeline.html#a4db52fdd3ccaa516f344665ec775e140',1,'found::ModifyingPipeline::AddStage()']]],
   ['addstagehelper_1',['AddStageHelper',['../classfound_1_1Pipeline.html#a1d487c785457ba141b81c314251119e9',1,'found::Pipeline']]],
   ['angle_2',['Angle',['../classfound_1_1Quaternion.html#a05f87920a68264d12073eb1193ff96a2',1,'found::Quaternion']]],
   ['approximateorbitpropagationalgorithm_3',['ApproximateOrbitPropagationAlgorithm',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a1556b5f65d1f7b02b7d61414fcbaf313',1,'found::ApproximateOrbitPropagationAlgorithm']]],
