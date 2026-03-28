@@ -1,21 +1,21 @@
 #ifndef SRC_COMMON_STYLE_HPP_
 #define SRC_COMMON_STYLE_HPP_
 
-#include <vector>
 #include <unordered_set>
 #include <functional>
 #include <utility>
 #include <memory>
 
+#include "common/found_containers.hpp"
+#include "common/etl_config.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
 #include "common/pipeline/pipelines.hpp"
 
 namespace found {
 
-/// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
-/// to a vector of 2D points on the image, according to image coordinate systems
-typedef std::vector<Vec2> Points;
+/// The output for Edge Detection Algorithms (edge.hpp/cpp). Now uses FOUND_VECTOR macro for embedded friendliness.
+typedef FOUND_VECTOR(Vec2, FOUND_MAX_POINTS) Points;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -62,7 +62,7 @@ struct Edge {
 };
 
 /// A collection of Edges
-typedef std::vector<Edge> Edges;
+typedef FOUND_VECTOR(Edge, FOUND_MAX_EDGES) Edges;
 
 /**
  * Represents a connected component in an image
@@ -80,7 +80,7 @@ struct Component {
 };
 
 /// A collection of Image Pixels
-typedef std::vector<Component> Components;
+typedef FOUND_VECTOR(Component, FOUND_MAX_COMPONENTS) Components;
 
 /**
  * @brief Represents a single spatial data point with position and timestamp.
@@ -99,7 +99,7 @@ struct LocationRecord {
 
 // so that we don't have to copy the data.
 /// A collection of Location Records
-typedef std::vector<LocationRecord> LocationRecords;
+typedef FOUND_VECTOR(LocationRecord, FOUND_MAX_LOCATION_RECORDS) LocationRecords;
 
 /**
  * OrbitParams defines the orbital

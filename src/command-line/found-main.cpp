@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     }
     std::string command(argv[1]);
 
-    std::unique_ptr<PipelineExecutor> executor;
+    PipelineExecutorPtr executor;
     if (command == "calibration") {
         executor = CreateCalibrationPipelineExecutor(ParseCalibrationOptions(argc, argv));
     } else if (command == "distance") {

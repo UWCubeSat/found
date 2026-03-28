@@ -1,6 +1,7 @@
 #include <memory>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "common/spatial/attitude-utils.hpp"
@@ -248,6 +249,12 @@ uint32_t calculateCRC32(const void* data, size_t length) {
 }
 
 void serializeDataFile(const DataFile& data, std::ostream& stream) {
+    if (data.header.num_positions > data.positions.size()) {
+        throw std::runtime_error("DataFile header.num_positions exceeds stored position count");
+    }
+    if (data.header.num_positions > FOUND_MAX_LOCATION_RECORDS) {
+        throw std::runtime_error("DataFile contains more position records than FOUND_MAX_LOCATION_RECORDS");
+    }
     DataFileHeader header = data.header;
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     hton(header);
@@ -266,7 +273,10 @@ DataFile deserializeDataFile(std::istream& stream) {
 
     read(stream, data.relative_attitude);
 
-    data.positions = std::make_unique<LocationRecord[]>(data.header.num_positions);
+    if (data.header.num_positions > FOUND_MAX_LOCATION_RECORDS) {
+        throw std::runtime_error("DataFile contains more position records than FOUND_MAX_LOCATION_RECORDS");
+    }
+    data.positions.resize(data.header.num_positions);
     for (uint32_t i = 0; i < data.header.num_positions; ++i) {
         read(stream, data.positions[i]);
     }

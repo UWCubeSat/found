@@ -75,15 +75,36 @@ set(DOC_DOXYGEN_DIR ${DOC_DIR}/doxygen)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
 # Include dirs
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${SRC_DIR})
+
+##### ETL #####
+# ETL definitions (FetchContent style, git)
+set(ETL "etl")
+set(ETL_VERSION "20.46.2")
+FetchContent_Declare(
+    ${ETL}
+    GIT_REPOSITORY https://github.com/ETLCPP/etl.git
+    GIT_TAG ${ETL_VERSION}
+)
+FetchContent_MakeAvailable(${ETL})
+set(ETL_INCLUDE_DIR "${etl_SOURCE_DIR}/include")
+include_directories(${ETL_INCLUDE_DIR})
+
 
 # Logging macros
 option(DISABLE_LOGGING "Disable logging" OFF)
 set(LOGGING_LEVEL
     INFO
     CACHE STRING "Logging level")
+
+# Stack container config
+option(FOUND_USE_STACK_CONTAINERS "Use ETL stack containers instead of STL" OFF)
+if(FOUND_USE_STACK_CONTAINERS)
+    add_compile_definitions(FOUND_USE_STACK_CONTAINERS)
+endif()
 
 # Floating-point config
 option(FLOAT_MODE "Enable FOUND_FLOAT_MODE" OFF)
@@ -139,15 +160,17 @@ set(SRC_LIBS ${STB_IMAGE})
 
 ##### FOUND Library #####
 
+
 add_library(found_lib STATIC ${FILTERED_SRC})
 target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
 target_include_directories(found_lib
-        PUBLIC
-        $<BUILD_INTERFACE:${SRC_DIR}>
-        $<INSTALL_INTERFACE:include>)
+    PUBLIC
+    $<BUILD_INTERFACE:${SRC_DIR}>
+    $<BUILD_INTERFACE:${ETL_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>)
 target_compile_definitions(found_lib PRIVATE 
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
 add_library(found::found_lib ALIAS found_lib)
 
 ########## Test Libraries ##########
@@ -201,16 +224,17 @@ add_compile_options(-Wdouble-promotion -Werror)
 
 file(MAKE_DIRECTORY ${BIN_DIR})
 
-add_executable(found ${SRC_MAIN})
 
+add_executable(found ${SRC_MAIN})
+target_include_directories(found PRIVATE ${ETL_INCLUDE_DIR})
 target_link_libraries(found PRIVATE ${SRC_LIBS} found_lib)
 target_compile_definitions(found PRIVATE 
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
 set_target_properties(found PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_custom_target(compile
-                  DEPENDS found
-                  COMMENT "Compiles source code")
+          DEPENDS found
+          COMMENT "Compiles source code")
 
 if(ENABLE_WORKFLOW)
 

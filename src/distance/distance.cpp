@@ -123,12 +123,14 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
-    std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
+    FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) projectedPoints;
+    projectedPoints.resize(pointsSize);
     for (const Vec2 &point : p) {
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    std::unique_ptr<uint64_t[]> logits(new uint64_t[pointsSize]);
+    FOUND_VECTOR(uint64_t, FOUND_MAX_POINTS) logits;
+    logits.resize(pointsSize);
 
     // Step 2a: Use the first estimate as a reference
     PositionVector first(SphericalDistanceDeterminationAlgorithm::Run(p));
@@ -168,7 +170,8 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
-                                                                       std::unique_ptr<Vec3[]> &projectedPoints,
+                                                                       FOUND_VECTOR(Vec3, FOUND_MAX_POINTS)
+                                                                       &projectedPoints,
                                                                        size_t size) {
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
     // error):
@@ -189,9 +192,9 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
-                                    std::unique_ptr<Vec3[]> &source,
+                                    FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) &source,
                                     size_t n,
-                                    std::unique_ptr<uint64_t[]> &logits) {
+                                    FOUND_VECTOR(uint64_t, FOUND_MAX_POINTS) &logits) {
     // Step 0: Setup the random number generators
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
@@ -209,7 +212,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
         logits[j] = this->Pow(j - index1, this->pdfOrder_);
     }
     // Sample for the next number
-    std::discrete_distribution<size_t> dist1(logits.get(), logits.get() + n);
+    std::discrete_distribution<size_t> dist1(logits.data(), logits.data() + n);
     size_t index2 = dist1(gen);
     Vec3 &b = source[index2];
     assert(dist1.min() == 0);
@@ -222,7 +225,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
         logits[j] *= this->Pow(j - index2, this->pdfOrder_);
     }
     // Sample for the last number
-    std::discrete_distribution<size_t> dist2(logits.get(), logits.get() + n);
+    std::discrete_distribution<size_t> dist2(logits.data(), logits.data() + n);
     Vec3 &c = source[dist2(gen)];
     assert(dist2.min() == 0);
     assert(dist2.max() == n - 1);

@@ -7,6 +7,7 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 #include "common/logging.hpp"
 
@@ -145,7 +146,7 @@ inline LocationRecords strtolr(const std::string &str) {
         if (str.substr(str.size() - 6) == ".found") {
             LOG_INFO("Getting Position Data from Data File (*.found)");
             DataFile data = strtodf(str);
-            return LocationRecords(data.positions.get(), data.positions.get() + data.header.num_positions);
+            return LocationRecords(data.positions.data(), data.positions.data() + data.header.num_positions);
         }
     }
 
@@ -163,6 +164,10 @@ inline LocationRecords strtolr(const std::string &str) {
         if (!(iss >> record.timestamp >> record.position.x >> record.position.y >> record.position.z)) {
             file.close();
             throw std::runtime_error("Invalid format for file " + str + ": " + line);
+        }
+        if (records.size() >= FOUND_MAX_LOCATION_RECORDS) {
+            file.close();
+            throw std::runtime_error("Position record count exceeds FOUND_MAX_LOCATION_RECORDS");
         }
         records.push_back(record);
     }

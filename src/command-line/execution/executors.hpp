@@ -36,6 +36,8 @@ class PipelineExecutor {
     virtual void OutputResults() = 0;
 };
 
+using PipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(PipelineExecutor, 1);
+
 /**
  * CalibrationPipelineExecutor is the pipeline
  * executor for the calibration pipeline.
@@ -49,7 +51,7 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param calibrationAlgorithm The calibration algorithm to use
      */
     explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                         std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
+                                         FOUND_UNIQUE_PTR_TYPE(CalibrationAlgorithm, 1) calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -60,8 +62,10 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
     /// The Calibration Algorithm used
-    std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
+    FOUND_UNIQUE_PTR_TYPE(CalibrationAlgorithm, 1) calibrationAlgorithm;
 };
+
+using CalibrationPipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(CalibrationPipelineExecutor, 1);
 
 /**
  * DistancePipelineExecutor is the pipeline
@@ -87,9 +91,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * and it throws an error if the image is not valid.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+                                      FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1) edgeDetectionAlgorithm,
+                                      FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1) distanceAlgorithm,
+                                      FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1) vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -100,12 +104,14 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
-    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1) edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
-    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1) distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
-    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
+    FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1) vectorizationAlgorithm;
 };
+
+using DistancePipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(DistancePipelineExecutor, 1);
 
 /**
  * OrbitPipelineExecutor is the pipeline
@@ -120,7 +126,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
     explicit OrbitPipelineExecutor(OrbitOptions &&options,
-                                   std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
+                                   FOUND_UNIQUE_PTR_TYPE(OrbitPropagationAlgorithm, 1) orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -131,8 +137,10 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
     /// The Orbit Propagation Algorithm being used
-    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
+    FOUND_UNIQUE_PTR_TYPE(OrbitPropagationAlgorithm, 1) orbitPropagationAlgorithm;
 };
+
+using OrbitPipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(OrbitPipelineExecutor, 1);
 
 }  // namespace found
 

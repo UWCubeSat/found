@@ -4,8 +4,9 @@
 
 #include <sstream>
 #include <string>
-#include <istream>
 #include <cstdio>
+#include <istream>
+#include <utility>
 
 #include "test/common/common.hpp"
 
@@ -18,6 +19,18 @@
 #include "src/command-line/parsing/options.hpp"
 
 namespace found {
+
+std::pair<int, std::string> RunMainCapturingStdout(int argc, const char* argv[]) {
+    testing::internal::CaptureStdout();
+    try {
+        const int result = main(argc, const_cast<char **>(argv));
+        return {result, testing::internal::GetCapturedStdout()};
+    } catch (...) {
+        (void)testing::internal::GetCapturedStdout();
+        throw;
+    }
+}
+
 
 /// The default arc second tolerance
 #define DEFAULT_ARC_SEC_TOL DECIMAL(1500)  // Equivalent to 5/12 of a degree
@@ -50,21 +63,15 @@ TEST_F(IntegrationTest, TestMainHelp) {
     int argc = 2;
     const char *argv[2] = {"found", "-h"};
 
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output1 = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    const auto [result1, output1] = RunMainCapturingStdout(argc, argv);
+    ASSERT_EQ(EXIT_SUCCESS, result1);
     ASSERT_NE(static_cast<size_t>(0), output1.size());
 
     argv[1] = "--help";
     optind = 2;
 
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output2 = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    const auto [result2, output2] = RunMainCapturingStdout(argc, argv);
+    ASSERT_EQ(EXIT_SUCCESS, result2);
     ASSERT_NE(static_cast<size_t>(0), output2.size());
 }
 
@@ -81,11 +88,8 @@ TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     int argc = 2;
     const char *argv[] = {"found", "calibration"};
 
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    ASSERT_EQ(EXIT_SUCCESS, result);
 
     std::stringstream expectedOutput;
     expectedOutput << "\\[INFO\\s[0-9]{4}-[0-9]{2}-[0-9]{2}\\s[0-9]{2}:[0-9]{2}:[0-9]{2}\\s[A-Z]+\\] "
@@ -104,7 +108,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 
     testing::internal::CaptureStdout();  // Start capturing stdout
 
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+    int result = main(argc, const_cast<char **>(argv));
 
     Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3)));
     Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6)));
@@ -116,6 +120,7 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
     };
 
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    ASSERT_EQ(EXIT_SUCCESS, result);
 
     std::ifstream file(temp_df);
     DataFile actual = deserializeDataFile(file);
@@ -130,11 +135,8 @@ TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
         "--reference-orientation", "1.1 1.2 1.3",
         "--relative-orientation", "1.4 1.5 1.6"};
 
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    ASSERT_EQ(EXIT_SUCCESS, result);
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;
@@ -153,11 +155,8 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
         "--image", "test/common/assets/example_image.jpg",
         "--reference-as-orientation"};
 
-    testing::internal::CaptureStdout();  // Start capturing stdout
-
-    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
-
-    std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
+    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    ASSERT_EQ(EXIT_SUCCESS, result);
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
     std::stringstream expectedOutput;

@@ -78,7 +78,7 @@ struct DataFile {
     /**
      * @brief Collection of location records in the file.
      */
-    std::unique_ptr<LocationRecord[]> positions;
+    FOUND_VECTOR(LocationRecord, FOUND_MAX_LOCATION_RECORDS) positions;
 
     /**
      * The path of this DataFile.

@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include <functional>
 #include <unordered_set>
@@ -19,6 +20,9 @@ namespace found {
 Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 0: Define Common Variables
     uint64_t imageSize = image.width * image.height;
+    if (imageSize > FOUND_MAX_IMAGE_PIXELS) {
+        throw std::runtime_error("Image pixel count exceeds FOUND_MAX_IMAGE_PIXELS");
+    }
 
     // Step 1: Obtain the component that represents space
     Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
@@ -98,6 +102,9 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             while (points.find(index) == points.end()) index += update;
             if (index / image.width != edge_condition) {
                 index -= update;
+                if (result.size() >= FOUND_MAX_POINTS) {
+                    throw std::runtime_error("Edge point count exceeds FOUND_MAX_POINTS");
+                }
                 result.push_back({DECIMAL(index % image.width),
                                     DECIMAL(index / image.width) - offset});
             }
@@ -129,6 +136,9 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             while (points.find(index) == points.end()) index += update;
             if (index % image.width != edge_condition) {
                 index -= update;
+                if (result.size() >= FOUND_MAX_POINTS) {
+                    throw std::runtime_error("Edge point count exceeds FOUND_MAX_POINTS");
+                }
                 result.push_back({DECIMAL(index % image.width) - offset,
                                     DECIMAL(index / image.width)});
             }
@@ -252,9 +262,15 @@ inline int NWayEquivalenceAdd(const Image &image,
 
 Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
     // Step 0: Setup the Problem
+    const uint64_t imageSize = static_cast<uint64_t>(image.width) * image.height;
+    if (imageSize > FOUND_MAX_IMAGE_PIXELS) {
+        throw std::runtime_error("Image pixel count exceeds FOUND_MAX_IMAGE_PIXELS");
+    }
     std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
-    std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
+    FOUND_VECTOR(int, FOUND_MAX_IMAGE_PIXELS) componentPoints;
+    componentPoints.resize(imageSize);
+    std::fill(componentPoints.begin(), componentPoints.end(), 0);
 
     int L = 0;
     int adjacentLabels[4];
@@ -269,7 +285,6 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         componentPoints[0] = L;
     }
 
-    uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
     for (uint64_t i = 1; i < imageSize; i++) {
         // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
@@ -361,7 +376,12 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
     // Step 3: Return the components
     Components result;
-    for (const auto &[label, component] : components) result.push_back(component);
+    for (const auto &[label, component] : components) {
+        if (result.size() >= FOUND_MAX_COMPONENTS) {
+            throw std::runtime_error("Connected component count exceeds FOUND_MAX_COMPONENTS");
+        }
+        result.push_back(component);
+    }
 
     return result;
 }

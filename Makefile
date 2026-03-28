@@ -85,11 +85,18 @@ ifdef FLOAT_MODE
 	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion
 endif
 
+# FOUND_USE_STACK_CONTAINERS macro
+ifdef FOUND_USE_STACK_CONTAINERS
+    FOUND_STACK_MACRO := -DFOUND_USE_STACK_CONTAINERS
+    CXXFLAGS += $(FOUND_STACK_MACRO)
+    CXXFLAGS_TEST += $(FOUND_STACK_MACRO)
+endif
+
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
 # Compiler flags
-LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
-LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
+LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR) -I$(ETL_INCLUDE_DIR)
+LIBS_TEST := $(TEST_LIBS) -I$(BUILD_LIBRARY_TEST_DIR) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -I$(ETL_INCLUDE_DIR) -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=gnu++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
@@ -100,6 +107,13 @@ endif
 CXXFLAGS += $(LOGGING_MACROS)
 LDFLAGS := $(STB_IMAGE_DIR)/$(STB_IMAGE).o # Any external libraries go here
 LDFLAGS_TEST := $(LDFLAGS) -L$(GTEST_CACHE_BUILD_DIR)/lib -lgtest -lgtest_main -lgmock -lgmock_main -pthread
+
+# Define the ETL library (FetchContent style)
+ETL := etl
+ETL_VERSION := 20.46.2
+ETL_URL := https://github.com/ETLCPP/etl.git
+ETL_CACHE_DIR := $(CACHE_DIR)/$(ETL)-$(ETL_VERSION)
+ETL_INCLUDE_DIR := $(ETL_CACHE_DIR)/include
 
 # Targets
 COMPILE_SETUP_TARGET := compile_setup
@@ -154,7 +168,7 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(ETL_CACHE_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
@@ -264,3 +278,6 @@ release: CXXFLAGS += -DNDEBUG
 release: compile
 
 -include $(SRC_OBJS:.o=.d) $(TEST_OBJS:.o=.d)
+
+$(ETL_CACHE_DIR):
+	git clone --branch $(ETL_VERSION) --depth 1 $(ETL_URL) $(ETL_CACHE_DIR)
