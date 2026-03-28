@@ -29,10 +29,10 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-FOUND_UNIQUE_PTR_TYPE(LOSTCalibrationAlgorithm, 1) ProvideCalibrationAlgorithm([[maybe_unused]]
+inline unique_ptr<LOSTCalibrationAlgorithm, 1> ProvideCalibrationAlgorithm([[maybe_unused]]
                                                                                const CalibrationOptions &options) {
-    static FOUND_POOL(LOSTCalibrationAlgorithm, 1) pool;
-    return FOUND_UNIQUE_PTR(LOSTCalibrationAlgorithm, 1, pool);
+    static pool<LOSTCalibrationAlgorithm, 1> pool;
+    return make_unique<LOSTCalibrationAlgorithm, 1>(pool);
 }
 
 /**
@@ -42,10 +42,10 @@ FOUND_UNIQUE_PTR_TYPE(LOSTCalibrationAlgorithm, 1) ProvideCalibrationAlgorithm([
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-FOUND_UNIQUE_PTR_TYPE(SimpleEdgeDetectionAlgorithm, 1) ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
-    static FOUND_POOL(SimpleEdgeDetectionAlgorithm, 1) pool;
-    return FOUND_UNIQUE_PTR(SimpleEdgeDetectionAlgorithm, 1, pool, options.SEDAThreshold,
-                            options.SEDABorderLen, options.SEDAOffset);
+inline unique_ptr<SimpleEdgeDetectionAlgorithm, 1> ProvideEdgeDetectionAlgorithm(const DistanceOptions &options) {
+    static pool<SimpleEdgeDetectionAlgorithm, 1> pool;
+    return make_unique<SimpleEdgeDetectionAlgorithm, 1>(pool, options.SEDAThreshold, options.SEDABorderLen,
+                                                        options.SEDAOffset);
 }
 
 /**
@@ -55,28 +55,28 @@ FOUND_UNIQUE_PTR_TYPE(SimpleEdgeDetectionAlgorithm, 1) ProvideEdgeDetectionAlgor
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-FOUND_UNIQUE_PTR_TYPE(SphericalDistanceDeterminationAlgorithm, 1)
+inline unique_ptr<SphericalDistanceDeterminationAlgorithm, 1>
 ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
-    static FOUND_POOL(SphericalDistanceDeterminationAlgorithm, 1) poolSDDA;
-    static FOUND_POOL(IterativeSphericalDistanceDeterminationAlgorithm, 1) poolISDDA;
+    static pool<SphericalDistanceDeterminationAlgorithm, 1> poolSDDA;
+    static pool<IterativeSphericalDistanceDeterminationAlgorithm, 1> poolISDDA;
     if (options.distanceAlgo == SDDA) {
-        return FOUND_UNIQUE_PTR(SphericalDistanceDeterminationAlgorithm, 1, poolSDDA, options.radius,
-                                                                         Camera(options.focalLength,
-                                                                                options.pixelSize,
-                                                                                options.image.width,
-                                                                                options.image.height));
+        return make_unique<SphericalDistanceDeterminationAlgorithm, 1>(poolSDDA, options.radius,
+                                                                       Camera(options.focalLength,
+                                                                              options.pixelSize,
+                                                                              options.image.width,
+                                                                              options.image.height));
     } else if (options.distanceAlgo == ISDDA) {
-        return FOUND_UNIQUE_PTR(IterativeSphericalDistanceDeterminationAlgorithm, 1, poolISDDA, options.radius,
-                                                                                  Camera(options.focalLength,
-                                                                                         options.pixelSize,
-                                                                                         options.image.width,
-                                                                                         options.image.height),
-                                                                                  options.ISDDAMinIters,
-                                                                                  options.ISDDAMaxRefresh,
-                                                                                  options.ISDDADistRatio,
-                                                                                  options.ISDDADiscimRatio,
-                                                                                  options.ISDDAPdfOrd,
-                                                                                  options.ISDDARadLossOrd);
+        return make_unique<IterativeSphericalDistanceDeterminationAlgorithm, 1>(poolISDDA, options.radius,
+                                                                                Camera(options.focalLength,
+                                                                                       options.pixelSize,
+                                                                                       options.image.width,
+                                                                                       options.image.height),
+                                                                                options.ISDDAMinIters,
+                                                                                options.ISDDAMaxRefresh,
+                                                                                options.ISDDADistRatio,
+                                                                                options.ISDDADiscimRatio,
+                                                                                options.ISDDAPdfOrd,
+                                                                                options.ISDDARadLossOrd);
     } else {
         LOG_ERROR("Unrecognized distance algorithm: " << options.distanceAlgo);
         throw std::runtime_error("Unrecognized distance algorithm: " + options.distanceAlgo);
@@ -90,21 +90,21 @@ ProvideDistanceDeterminationAlgorithm(const DistanceOptions &options) {
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-FOUND_UNIQUE_PTR_TYPE(LOSTVectorGenerationAlgorithm, 1)
+inline unique_ptr<LOSTVectorGenerationAlgorithm, 1>
 ProvideVectorGenerationAlgorithm(const DistanceOptions &options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
-    static FOUND_POOL(LOSTVectorGenerationAlgorithm, 1) pool;
+    static pool<LOSTVectorGenerationAlgorithm, 1> pool;
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
-        return FOUND_UNIQUE_PTR(LOSTVectorGenerationAlgorithm, 1, pool, options.calibrationData.relative_attitude,
-                                                               referenceOrientation);
+        return make_unique<LOSTVectorGenerationAlgorithm, 1>(pool, options.calibrationData.relative_attitude,
+                                                             referenceOrientation);
     } else {
         Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
-            return FOUND_UNIQUE_PTR(LOSTVectorGenerationAlgorithm, 1, pool, referenceOrientation);
+            return make_unique<LOSTVectorGenerationAlgorithm, 1>(pool, referenceOrientation);
         }
-        return FOUND_UNIQUE_PTR(LOSTVectorGenerationAlgorithm, 1, pool, relativeOrientation, referenceOrientation);
+        return make_unique<LOSTVectorGenerationAlgorithm, 1>(pool, relativeOrientation, referenceOrientation);
     }
 }
 

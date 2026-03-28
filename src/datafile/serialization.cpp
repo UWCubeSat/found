@@ -249,11 +249,11 @@ uint32_t calculateCRC32(const void* data, size_t length) {
 }
 
 void serializeDataFile(const DataFile& data, std::ostream& stream) {
-    if (data.header.num_positions > data.positions.size()) {
-        throw std::runtime_error("DataFile header.num_positions exceeds stored position count");
-    }
     if (data.header.num_positions > FOUND_MAX_LOCATION_RECORDS) {
         throw std::runtime_error("DataFile contains more position records than FOUND_MAX_LOCATION_RECORDS");
+    }
+    if (data.header.num_positions > data.positions.size()) {
+        throw std::runtime_error("DataFile header.num_positions exceeds stored position count");
     }
     DataFileHeader header = data.header;
     header.crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));

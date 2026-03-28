@@ -1,7 +1,7 @@
 #ifndef SRC_COMMON_ETL_CONFIG_HPP_
 #define SRC_COMMON_ETL_CONFIG_HPP_
 
-// Default max sizes for ETL containers (can be overridden by CMake or user)
+// Default max sizes for ETL containers
 #ifndef FOUND_MAX_POINTS
 #define FOUND_MAX_POINTS 4096
 #endif

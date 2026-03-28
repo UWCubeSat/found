@@ -17,9 +17,8 @@ namespace found {
  * @return A pointer to a CalibrationPipelineExecutor
  */
 inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(CalibrationOptions options) {
-    static FOUND_POOL(CalibrationPipelineExecutor, 1) pool;
-    return FOUND_UNIQUE_PTR(CalibrationPipelineExecutor, 1, pool, std::move(options),
-                            ProvideCalibrationAlgorithm(options));
+    static pool<CalibrationPipelineExecutor, 1> pool;
+    return make_unique<CalibrationPipelineExecutor, 1>(pool, std::move(options), ProvideCalibrationAlgorithm(options));
 }
 
 /**
@@ -30,11 +29,10 @@ inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(Calibrat
  * @return A pointer to a DistancePipelineExecutor
  */
 inline DistancePipelineExecutorPtr CreateDistancePipelineExecutor(DistanceOptions options) {
-    static FOUND_POOL(DistancePipelineExecutor, 1) pool;
-    return FOUND_UNIQUE_PTR(DistancePipelineExecutor, 1, pool, std::move(options),
-                            ProvideEdgeDetectionAlgorithm(options),
-                            ProvideDistanceDeterminationAlgorithm(options),
-                            ProvideVectorGenerationAlgorithm(options));
+    static pool<DistancePipelineExecutor, 1> pool;
+    return make_unique<DistancePipelineExecutor, 1>(pool, std::move(options), ProvideEdgeDetectionAlgorithm(options),
+                                                    ProvideDistanceDeterminationAlgorithm(options),
+                                                    ProvideVectorGenerationAlgorithm(options));
 }
 
 // TODO: Uncomment when orbit stage is implemented

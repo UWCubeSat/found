@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <memory>
+#include <vector>
 
 #include "common/style.hpp"
 #include "common/pipeline/stages.hpp"
@@ -226,7 +227,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      */
     decimal GenerateLoss(PositionVector &position,
                          decimal targetDistanceSq,
-                         FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) &projectedPoints,
+                         vector<Vec3, FOUND_MAX_POINTS> &projectedPoints,
                          size_t size);
 
     /**
@@ -261,9 +262,9 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    PositionVector ShuffledCall(FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) &source,
+    PositionVector ShuffledCall(vector<Vec3, FOUND_MAX_POINTS> &source,
                                  size_t n,
-                                 FOUND_VECTOR(uint64_t, FOUND_MAX_POINTS) &logits);
+                                 vector<uint64_t, FOUND_MAX_POINTS> &logits);
 
     /**
      * Performs exponentiation for uint64_t

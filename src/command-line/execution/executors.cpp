@@ -12,7 +12,7 @@
 namespace found {
 
 CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                                         FOUND_UNIQUE_PTR_TYPE(CalibrationAlgorithm, 1)
+                                                         unique_ptr<CalibrationAlgorithm, 1>
                                                          calibrationAlgorithm)
                                                          : options_(std::move(options)) {
     this->calibrationAlgorithm = std::move(calibrationAlgorithm);
@@ -44,11 +44,11 @@ DistancePipelineExecutor::~DistancePipelineExecutor() {
 }
 
 DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
-                                                   FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1)
+                                                   unique_ptr<EdgeDetectionAlgorithm, 1>
                                                    edgeDetectionAlgorithm,
-                                                   FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1)
+                                                   unique_ptr<DistanceDeterminationAlgorithm, 1>
                                                    distanceAlgorithm,
-                                                   FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1)
+                                                   unique_ptr<VectorGenerationAlgorithm, 1>
                                                    vectorizationAlgorithm)
                                                    : options_(std::move(options)) {
     this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
@@ -101,7 +101,7 @@ void DistancePipelineExecutor::OutputResults() {
 }
 
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
-                                             FOUND_UNIQUE_PTR_TYPE(OrbitPropagationAlgorithm, 1)
+                                             unique_ptr<OrbitPropagationAlgorithm, 1>
                                              orbitPropagationAlgorithm)
                                              : options_(std::move(options)) {
     this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);

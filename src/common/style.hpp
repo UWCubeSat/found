@@ -5,8 +5,9 @@
 #include <functional>
 #include <utility>
 #include <memory>
+#include <vector>
 
-#include "common/found_containers.hpp"
+#include "common/containers.hpp"
 #include "common/etl_config.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
@@ -14,8 +15,8 @@
 
 namespace found {
 
-/// The output for Edge Detection Algorithms (edge.hpp/cpp). Now uses FOUND_VECTOR macro for embedded friendliness.
-typedef FOUND_VECTOR(Vec2, FOUND_MAX_POINTS) Points;
+/// The output for Edge Detection Algorithms (edge.hpp/cpp). Uses found::vector to switch between STL and ETL backends.
+typedef vector<Vec2, FOUND_MAX_POINTS> Points;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -62,7 +63,7 @@ struct Edge {
 };
 
 /// A collection of Edges
-typedef FOUND_VECTOR(Edge, FOUND_MAX_EDGES) Edges;
+typedef vector<Edge, FOUND_MAX_EDGES> Edges;
 
 /**
  * Represents a connected component in an image
@@ -80,7 +81,7 @@ struct Component {
 };
 
 /// A collection of Image Pixels
-typedef FOUND_VECTOR(Component, FOUND_MAX_COMPONENTS) Components;
+typedef vector<Component, FOUND_MAX_COMPONENTS> Components;
 
 /**
  * @brief Represents a single spatial data point with position and timestamp.
@@ -99,7 +100,7 @@ struct LocationRecord {
 
 // so that we don't have to copy the data.
 /// A collection of Location Records
-typedef FOUND_VECTOR(LocationRecord, FOUND_MAX_LOCATION_RECORDS) LocationRecords;
+typedef vector<LocationRecord, FOUND_MAX_LOCATION_RECORDS> LocationRecords;
 
 /**
  * OrbitParams defines the orbital

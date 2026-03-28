@@ -36,8 +36,9 @@ MATCHER_P(ImageMatcher, expected, "") {
 }
 
 MATCHER_P(PointsMatcher, expected, "") {
-    return arg.size() == expected.size() && std::equal(arg.begin(), arg.end(), expected.begin(), expected.end(),
-        [](const Vec2& a, const Vec2& b) {
+    return arg.size() == expected.size() &&
+           std::equal(arg.begin(), arg.end(), expected.begin(), expected.end(),
+                      [](const Vec2& a, const Vec2& b) {
             return a.x == b.x && a.y == b.y;
         });
 }
@@ -53,9 +54,10 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
         temp_df
     };
 
-    static FOUND_POOL(LOSTCalibrationAlgorithm, 1) calibrationAlgorithmPool;
-    CalibrationPipelineExecutor executor(std::move(options),
-                                         FOUND_UNIQUE_PTR(LOSTCalibrationAlgorithm, 1, calibrationAlgorithmPool));
+    static pool<LOSTCalibrationAlgorithm, 1> calibrationAlgorithmPool;
+    CalibrationPipelineExecutor executor(
+        std::move(options),
+        make_unique<LOSTCalibrationAlgorithm, 1>(calibrationAlgorithmPool));
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -115,28 +117,31 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     PositionVector positionVector2{4, 5, 6};
 
     // Setup Mocks
-    static FOUND_POOL(MockEdgeDetectionAlgorithm, 1) mockEdgeDetectionAlgorithmPool;
-    auto mockEdgeDetectionAlgorithm = FOUND_UNIQUE_PTR(MockEdgeDetectionAlgorithm, 1, mockEdgeDetectionAlgorithmPool);
+    static pool<MockEdgeDetectionAlgorithm, 1> mockEdgeDetectionAlgorithmPool;
+    unique_ptr<MockEdgeDetectionAlgorithm, 1> mockEdgeDetectionAlgorithm =
+        make_unique<MockEdgeDetectionAlgorithm, 1>(mockEdgeDetectionAlgorithmPool);
     EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
         .WillOnce(testing::Return(points));
 
-    static FOUND_POOL(MockDistanceDeterminationAlgorithm, 1) mockDistanceDeterminationAlgorithmPool;
-    auto mockDistanceDeterminationAlgorithm = FOUND_UNIQUE_PTR(
-        MockDistanceDeterminationAlgorithm, 1, mockDistanceDeterminationAlgorithmPool);
-    EXPECT_CALL(*mockDistanceDeterminationAlgorithm, Run(PointsMatcher(points)))
+    static pool<MockDistanceDeterminationAlgorithm, 1> mockDistanceDeterminationAlgorithmPool;
+    unique_ptr<MockDistanceDeterminationAlgorithm, 1> mockDistanceDeterminationAlgorithm =
+        make_unique<MockDistanceDeterminationAlgorithm, 1>(mockDistanceDeterminationAlgorithmPool);
+    EXPECT_CALL(*mockDistanceDeterminationAlgorithm,
+                Run(PointsMatcher(points)))
         .WillOnce(testing::Return(positionVector1));
 
-    static FOUND_POOL(MockVectorGenerationAlgorithm, 1) mockVectorGenerationAlgorithmPool;
-    auto mockVectorGenerationAlgorithm = FOUND_UNIQUE_PTR(
-        MockVectorGenerationAlgorithm, 1, mockVectorGenerationAlgorithmPool);
-    EXPECT_CALL(*mockVectorGenerationAlgorithm, Run(PositionVectorMatcher(positionVector1)))
+    static pool<MockVectorGenerationAlgorithm, 1> mockVectorGenerationAlgorithmPool;
+    unique_ptr<MockVectorGenerationAlgorithm, 1> mockVectorGenerationAlgorithm =
+        make_unique<MockVectorGenerationAlgorithm, 1>(mockVectorGenerationAlgorithmPool);
+    EXPECT_CALL(*mockVectorGenerationAlgorithm,
+                Run(PositionVectorMatcher(positionVector1)))
         .WillOnce(testing::Return(positionVector2));
 
-    FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1)
+    unique_ptr<EdgeDetectionAlgorithm, 1>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
-    FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1)
+    unique_ptr<DistanceDeterminationAlgorithm, 1>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
-    FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1)
+    unique_ptr<VectorGenerationAlgorithm, 1>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
 
     DistancePipelineExecutor executor(std::move(options),
@@ -204,28 +209,31 @@ TEST(ExecutorsTest, TestDistancePipelineExecutorFullCalibrationDataThrows) {
     PositionVector positionVector1{1, 2, 3};
     PositionVector positionVector2{4, 5, 6};
 
-    static FOUND_POOL(MockEdgeDetectionAlgorithm, 1) mockEdgeDetectionAlgorithmPool;
-    auto mockEdgeDetectionAlgorithm = FOUND_UNIQUE_PTR(MockEdgeDetectionAlgorithm, 1, mockEdgeDetectionAlgorithmPool);
+    static pool<MockEdgeDetectionAlgorithm, 1> mockEdgeDetectionAlgorithmPool;
+    unique_ptr<MockEdgeDetectionAlgorithm, 1> mockEdgeDetectionAlgorithm =
+        make_unique<MockEdgeDetectionAlgorithm, 1>(mockEdgeDetectionAlgorithmPool);
     EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
         .WillOnce(testing::Return(points));
 
-    static FOUND_POOL(MockDistanceDeterminationAlgorithm, 1) mockDistanceDeterminationAlgorithmPool;
-    auto mockDistanceDeterminationAlgorithm = FOUND_UNIQUE_PTR(
-        MockDistanceDeterminationAlgorithm, 1, mockDistanceDeterminationAlgorithmPool);
-    EXPECT_CALL(*mockDistanceDeterminationAlgorithm, Run(PointsMatcher(points)))
+    static pool<MockDistanceDeterminationAlgorithm, 1> mockDistanceDeterminationAlgorithmPool;
+    unique_ptr<MockDistanceDeterminationAlgorithm, 1> mockDistanceDeterminationAlgorithm =
+        make_unique<MockDistanceDeterminationAlgorithm, 1>(mockDistanceDeterminationAlgorithmPool);
+    EXPECT_CALL(*mockDistanceDeterminationAlgorithm,
+                Run(PointsMatcher(points)))
         .WillOnce(testing::Return(positionVector1));
 
-    static FOUND_POOL(MockVectorGenerationAlgorithm, 1) mockVectorGenerationAlgorithmPool;
-    auto mockVectorGenerationAlgorithm = FOUND_UNIQUE_PTR(
-        MockVectorGenerationAlgorithm, 1, mockVectorGenerationAlgorithmPool);
-    EXPECT_CALL(*mockVectorGenerationAlgorithm, Run(PositionVectorMatcher(positionVector1)))
+    static pool<MockVectorGenerationAlgorithm, 1> mockVectorGenerationAlgorithmPool;
+    unique_ptr<MockVectorGenerationAlgorithm, 1> mockVectorGenerationAlgorithm =
+        make_unique<MockVectorGenerationAlgorithm, 1>(mockVectorGenerationAlgorithmPool);
+    EXPECT_CALL(*mockVectorGenerationAlgorithm,
+                Run(PositionVectorMatcher(positionVector1)))
         .WillOnce(testing::Return(positionVector2));
 
-    FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1)
+    unique_ptr<EdgeDetectionAlgorithm, 1>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
-    FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1)
+    unique_ptr<DistanceDeterminationAlgorithm, 1>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
-    FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1)
+    unique_ptr<VectorGenerationAlgorithm, 1>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
 
     DistancePipelineExecutor executor(std::move(options),
@@ -256,13 +264,14 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
         {6, {6, 6, 6}}
     };
 
-    static FOUND_POOL(MockOrbitPropagationAlgorithm, 1) mockOrbitPropagationAlgorithmPool;
-    auto mockOrbitPropagationAlgorithm = FOUND_UNIQUE_PTR(
-        MockOrbitPropagationAlgorithm, 1, mockOrbitPropagationAlgorithmPool);
+    static pool<MockOrbitPropagationAlgorithm, 1> mockOrbitPropagationAlgorithmPool;
+    unique_ptr<MockOrbitPropagationAlgorithm, 1> mockOrbitPropagationAlgorithm =
+        make_unique<MockOrbitPropagationAlgorithm, 1>(mockOrbitPropagationAlgorithmPool);
     EXPECT_CALL(*mockOrbitPropagationAlgorithm, Run(testing::_))
         .WillOnce(testing::Return(expectedResult));
 
-    OrbitPipelineExecutor executor(std::move(options), std::move(mockOrbitPropagationAlgorithm));
+    OrbitPipelineExecutor executor(std::move(options),
+                                   std::move(mockOrbitPropagationAlgorithm));
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -278,6 +287,5 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
-
 
 }  // namespace found

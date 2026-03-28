@@ -36,7 +36,7 @@ class PipelineExecutor {
     virtual void OutputResults() = 0;
 };
 
-using PipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(PipelineExecutor, 1);
+using PipelineExecutorPtr = unique_ptr<PipelineExecutor, 1>;
 
 /**
  * CalibrationPipelineExecutor is the pipeline
@@ -51,7 +51,7 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param calibrationAlgorithm The calibration algorithm to use
      */
     explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                         FOUND_UNIQUE_PTR_TYPE(CalibrationAlgorithm, 1) calibrationAlgorithm);
+                                         unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -62,10 +62,10 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
     /// The Calibration Algorithm used
-    FOUND_UNIQUE_PTR_TYPE(CalibrationAlgorithm, 1) calibrationAlgorithm;
+    unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm;
 };
 
-using CalibrationPipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(CalibrationPipelineExecutor, 1);
+using CalibrationPipelineExecutorPtr = unique_ptr<CalibrationPipelineExecutor, 1>;
 
 /**
  * DistancePipelineExecutor is the pipeline
@@ -91,9 +91,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * and it throws an error if the image is not valid.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1) edgeDetectionAlgorithm,
-                                      FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1) distanceAlgorithm,
-                                      FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1) vectorizationAlgorithm);
+                                      unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm,
+                                      unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm,
+                                      unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -104,14 +104,14 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
-    FOUND_UNIQUE_PTR_TYPE(EdgeDetectionAlgorithm, 1) edgeDetectionAlgorithm;
+    unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
-    FOUND_UNIQUE_PTR_TYPE(DistanceDeterminationAlgorithm, 1) distanceAlgorithm;
+    unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
-    FOUND_UNIQUE_PTR_TYPE(VectorGenerationAlgorithm, 1) vectorizationAlgorithm;
+    unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm;
 };
 
-using DistancePipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(DistancePipelineExecutor, 1);
+using DistancePipelineExecutorPtr = unique_ptr<DistancePipelineExecutor, 1>;
 
 /**
  * OrbitPipelineExecutor is the pipeline
@@ -126,7 +126,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
     explicit OrbitPipelineExecutor(OrbitOptions &&options,
-                                   FOUND_UNIQUE_PTR_TYPE(OrbitPropagationAlgorithm, 1) orbitPropagationAlgorithm);
+                                   unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -137,10 +137,10 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
     /// The Orbit Propagation Algorithm being used
-    FOUND_UNIQUE_PTR_TYPE(OrbitPropagationAlgorithm, 1) orbitPropagationAlgorithm;
+    unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm;
 };
 
-using OrbitPipelineExecutorPtr = FOUND_UNIQUE_PTR_TYPE(OrbitPipelineExecutor, 1);
+using OrbitPipelineExecutorPtr = unique_ptr<OrbitPipelineExecutor, 1>;
 
 }  // namespace found
 

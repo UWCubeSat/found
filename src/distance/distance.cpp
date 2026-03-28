@@ -6,6 +6,7 @@
 #include <utility>
 #include <random>
 #include <memory>
+#include <vector>
 
 #include "common/logging.hpp"
 #include "common/spatial/attitude-utils.hpp"
@@ -123,13 +124,13 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t i = 0;
     size_t j = 0;
     size_t pointsSize = p.size();
-    FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) projectedPoints;
+    vector<Vec3, FOUND_MAX_POINTS> projectedPoints;
     projectedPoints.resize(pointsSize);
     for (const Vec2 &point : p) {
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;
-    FOUND_VECTOR(uint64_t, FOUND_MAX_POINTS) logits;
+    vector<uint64_t, FOUND_MAX_POINTS> logits;
     logits.resize(pointsSize);
 
     // Step 2a: Use the first estimate as a reference
@@ -170,7 +171,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
-                                                                       FOUND_VECTOR(Vec3, FOUND_MAX_POINTS)
+                                                                       vector<Vec3, FOUND_MAX_POINTS>
                                                                        &projectedPoints,
                                                                        size_t size) {
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
@@ -192,9 +193,9 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
-                                    FOUND_VECTOR(Vec3, FOUND_MAX_POINTS) &source,
+                                    vector<Vec3, FOUND_MAX_POINTS> &source,
                                     size_t n,
-                                    FOUND_VECTOR(uint64_t, FOUND_MAX_POINTS) &logits) {
+                                    vector<uint64_t, FOUND_MAX_POINTS> &logits) {
     // Step 0: Setup the random number generators
     static std::random_device device;  // GCOVR_EXCL_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
