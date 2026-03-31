@@ -172,7 +172,7 @@ TEST(ConvertersTest, TestLocationRecordsDataFileEmpty) {
 }
 
 TEST(ConvertersTest, TestLocationRecordsEmptyTextFile) {
-    const std::string path = "/workspace/test/common/assets/temp-empty-pos-data.txt";
+    const std::string path = "test/common/assets/temp-empty-pos-data.txt";
     std::ofstream file(path);
     file.close();
 
@@ -183,7 +183,7 @@ TEST(ConvertersTest, TestLocationRecordsEmptyTextFile) {
 }
 
 TEST(ConvertersTest, TestLocationRecordsTooManyLines) {
-    const std::string path = "/workspace/test/common/assets/temp-pos-data.txt";
+    const std::string path = "test/common/assets/temp-pos-data.txt";
     std::ofstream file(path);
     for (size_t i = 0; i <= FOUND_MAX_LOCATION_RECORDS; ++i) {
         file << i << " 1 2 3\n";
