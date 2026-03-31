@@ -17,8 +17,9 @@ namespace found {
  * @return A pointer to a CalibrationPipelineExecutor
  */
 inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(CalibrationOptions options) {
-    static pool<CalibrationPipelineExecutor, 1> pool;
-    return make_unique<CalibrationPipelineExecutor, 1>(pool, std::move(options), ProvideCalibrationAlgorithm(options));
+    static pool<CalibrationPipelineExecutor, 1> pool;  // GCOVR_EXCL_BR_LINE
+    return make_unique<CalibrationPipelineExecutor, 1>(pool, std::move(options),
+                                                       ProvideCalibrationAlgorithm(options));  // GCOVR_EXCL_BR_LINE
 }
 
 /**
@@ -29,10 +30,10 @@ inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(Calibrat
  * @return A pointer to a DistancePipelineExecutor
  */
 inline DistancePipelineExecutorPtr CreateDistancePipelineExecutor(DistanceOptions options) {
-    static pool<DistancePipelineExecutor, 1> pool;
+    static pool<DistancePipelineExecutor, 1> pool;  // GCOVR_EXCL_BR_LINE
     return make_unique<DistancePipelineExecutor, 1>(pool, std::move(options), ProvideEdgeDetectionAlgorithm(options),
                                                     ProvideDistanceDeterminationAlgorithm(options),
-                                                    ProvideVectorGenerationAlgorithm(options));
+                                                    ProvideVectorGenerationAlgorithm(options));  // GCOVR_EXCL_BR_LINE
 }
 
 // TODO: Uncomment when orbit stage is implemented

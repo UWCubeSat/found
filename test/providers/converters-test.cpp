@@ -44,6 +44,24 @@ TEST(ConvertersTest, TestEAIncomplete) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(0)), angles.roll);
 }
 
+TEST(ConvertersTest, TestEAExtraValuesIgnored) {
+    std::string str = "10,20,30,40";
+    EulerAngles angles = strtoea(str);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(10)), angles.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(20)), angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(30)), angles.roll);
+}
+
+TEST(ConvertersTest, TestEASingleValuePadsZeroes) {
+    std::string str = "5";
+    EulerAngles angles = strtoea(str);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(5)), angles.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.roll);
+}
+
 TEST(ConvertersTest, TestBoolFalse) {
     ASSERT_FALSE(strtobool(""));
     ASSERT_FALSE(strtobool("0"));
@@ -139,6 +157,29 @@ TEST(ConvertersTest, TestLocationRecordsDataFile) {
     ASSERT_TRUE(LocationRecordEqual(expected.positions[2], actual[2]));
 
     std::remove(temp_df);
+}
+
+TEST(ConvertersTest, TestLocationRecordsDataFileEmpty) {
+    DataFile expected{{{'F', 'O', 'U', 'N'}, 1U, 0}, Quaternion(1, 0, 0, 0)};
+    std::ofstream file(temp_df);
+    serializeDataFile(expected, file);
+    file.flush();
+    LocationRecords actual = strtolr(temp_df);
+
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
+
+    std::remove(temp_df);
+}
+
+TEST(ConvertersTest, TestLocationRecordsEmptyTextFile) {
+    const std::string path = "/workspace/test/common/assets/temp-empty-pos-data.txt";
+    std::ofstream file(path);
+    file.close();
+
+    LocationRecords actual = strtolr(path);
+    ASSERT_TRUE(actual.empty());
+
+    std::remove(path.c_str());
 }
 
 TEST(ConvertersTest, TestLocationRecordsTooManyLines) {

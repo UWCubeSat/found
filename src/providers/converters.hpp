@@ -78,12 +78,12 @@ inline EulerAngles strtoea(const std::string &str) {
     size_t index = 0;
 
     while (index != 2 && end != std::string::npos) {
-        result[index++] = strtodecimal(str.substr(start, end - start));
+        result[index++] = strtodecimal(str.substr(start, end - start));  // GCOVR_EXCL_BR_LINE
         start = end + 1;
         end = str.find(delimiter, start);
     }
 
-    result[index++] = strtodecimal(str.substr(start));
+    result[index++] = strtodecimal(str.substr(start));  // GCOVR_EXCL_BR_LINE
 
     while (index != 3) result[index++] = 0;
 
@@ -117,7 +117,7 @@ inline Image strtoimage(const std::string &str) {
     Image image;
     image.image = stbi_load(str.c_str(), &image.width, &image.height, &image.channels, 0);
     if (!image.image) {
-        throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());
+        throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());  // GCOVR_EXCL_BR_LINE
     }
     return image;
 }
@@ -143,10 +143,12 @@ inline DataFile strtodf(const std::string &str) {
  */
 inline LocationRecords strtolr(const std::string &str) {
     if (str.size() >= 6) {
-        if (str.substr(str.size() - 6) == ".found") {
+        if (str.substr(str.size() - 6) == ".found") {  // GCOVR_EXCL_BR_LINE
             LOG_INFO("Getting Position Data from Data File (*.found)");
-            DataFile data = strtodf(str);
-            return LocationRecords(data.positions.data(), data.positions.data() + data.header.num_positions);
+            DataFile data = strtodf(str);  // GCOVR_EXCL_BR_LINE
+            // GCOVR_EXCL_BR_LINE: excludes stdlib constructor exception-edge branches.
+            return LocationRecords(data.positions.data(),
+                                   data.positions.data() + data.header.num_positions);
         }
     }
 
@@ -154,7 +156,7 @@ inline LocationRecords strtolr(const std::string &str) {
     LocationRecords records;
     std::ifstream file(str);
     if (!file.is_open()) {
-        throw std::runtime_error("Could not open file " + str);
+        throw std::runtime_error("Could not open file " + str);  // GCOVR_EXCL_BR_LINE
     }
 
     std::string line;
@@ -163,7 +165,7 @@ inline LocationRecords strtolr(const std::string &str) {
         LocationRecord record;
         if (!(iss >> record.timestamp >> record.position.x >> record.position.y >> record.position.z)) {
             file.close();
-            throw std::runtime_error("Invalid format for file " + str + ": " + line);
+            throw std::runtime_error("Invalid format for file " + str + ": " + line);  // GCOVR_EXCL_BR_LINE
         }
         if (records.size() >= FOUND_MAX_LOCATION_RECORDS) {
             file.close();

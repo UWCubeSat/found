@@ -184,11 +184,6 @@ target_compile_definitions(found_lib PRIVATE
     $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
     $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
 
-if(ENABLE_WORKFLOW)
-    target_compile_options(found_lib PRIVATE --coverage)
-    target_link_options(found_lib PRIVATE --coverage)
-endif()
-
 add_library(found::found_lib ALIAS found_lib)
 
 ########## Test Libraries ##########
@@ -246,12 +241,6 @@ target_compile_definitions(found PRIVATE
     $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
     $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
 
-if(ENABLE_WORKFLOW)
-    target_compile_options(found PRIVATE --coverage)
-    target_link_options(found PRIVATE --coverage)
-
-endif()
-
 set_target_properties(found PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_custom_target(compile
           DEPENDS found
@@ -259,12 +248,17 @@ add_custom_target(compile
 
 
 ##### test #####
-add_executable(found-test EXCLUDE_FROM_ALL ${TEST})
+add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
 
-target_link_libraries(found-test PRIVATE
-    found_lib
-    ${TEST_LIBS}
-)
+if(ENABLE_WORKFLOW)
+    target_link_libraries(found-test PRIVATE
+        ${TEST_LIBS}
+    )
+else()
+    target_link_libraries(found-test PRIVATE
+        found_lib
+    )
+endif()
 
 target_link_options(found-test PRIVATE
     --coverage
@@ -284,7 +278,9 @@ target_compile_options(found-test PRIVATE
 )
 
 set_target_properties(found-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-add_dependencies(found-test ${TEST_LIBS})
+if(TEST_LIBS)
+    add_dependencies(found-test ${TEST_LIBS})
+endif()
 
 add_custom_target(test
                   DEPENDS found-test

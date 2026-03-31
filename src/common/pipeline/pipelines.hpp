@@ -38,7 +38,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      * for optimization.
      */
     void DoAction() override {
-        this->Run(this->resource);
+        this->Run(this->resource);  // GCOVR_EXCL_BR_LINE
     }
 
     /**

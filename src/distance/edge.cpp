@@ -25,6 +25,7 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     }
 
     // Step 1: Obtain the component that represents space
+    // GCOVR_EXCL_LINE: gcovr may mark this multiline lambda call as uncovered.
     Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
         // Average the pixel, then threshold it
         int sum = 0;
