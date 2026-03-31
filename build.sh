@@ -11,7 +11,7 @@ execute_cmd() {
 display_help() {
     echo "Usage:"
     echo "  ./build.sh cmake \"[CMake Config Options]\" [CMake Build Options]"
-    echo "  ./build.sh cmake-etl [CMake Build Options]"
+    echo "  ./build.sh cmake-etl \"[CMake Config Options]\" [CMake Build Options]"
     echo "  ./build.sh make [GNU Make Options]"
     echo "  ./build.sh make-etl [GNU Make Options]"
     echo "  ./build.sh clean"
@@ -41,7 +41,17 @@ case "$1" in
         shift
         mkdir -p build-etl && cd build-etl
 
-        CMD="cmake -DFOUND_CONTAINER_BACKEND=ETL .. && cmake --build . $*"
+        CONFIG_OPTS=""
+        if [ $# -gt 0 ]; then
+            case "$1" in
+                ""|-D*|-C*|-G*|-U*|-W*|-A*|-T*)
+                    CONFIG_OPTS="$1"
+                    shift
+                    ;;
+            esac
+        fi
+
+        CMD="cmake -DFOUND_CONTAINER_BACKEND=ETL $CONFIG_OPTS .. && cmake --build . $*"
         ;;
 
     make)
