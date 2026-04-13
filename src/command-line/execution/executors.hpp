@@ -36,6 +36,8 @@ class PipelineExecutor {
     virtual void OutputResults() = 0;
 };
 
+using PipelineExecutorPtr = unique_ptr<PipelineExecutor, 1>;
+
 /**
  * CalibrationPipelineExecutor is the pipeline
  * executor for the calibration pipeline.
@@ -49,7 +51,7 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param calibrationAlgorithm The calibration algorithm to use
      */
     explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                         std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
+                                         unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -60,8 +62,10 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
     /// The Calibration Algorithm used
-    std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
+    unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm;
 };
+
+using CalibrationPipelineExecutorPtr = unique_ptr<CalibrationPipelineExecutor, 1>;
 
 /**
  * DistancePipelineExecutor is the pipeline
@@ -87,9 +91,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * and it throws an error if the image is not valid.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+                                      unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm,
+                                      unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm,
+                                      unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -100,12 +104,14 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
-    std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
-    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
-    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
+    unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm;
 };
+
+using DistancePipelineExecutorPtr = unique_ptr<DistancePipelineExecutor, 1>;
 
 /**
  * OrbitPipelineExecutor is the pipeline
@@ -120,7 +126,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
     explicit OrbitPipelineExecutor(OrbitOptions &&options,
-                                   std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
+                                   unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -131,8 +137,10 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
     /// The Orbit Propagation Algorithm being used
-    std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
+    unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm;
 };
+
+using OrbitPipelineExecutorPtr = unique_ptr<OrbitPipelineExecutor, 1>;
 
 }  // namespace found
 

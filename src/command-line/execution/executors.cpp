@@ -1,8 +1,10 @@
 #include "command-line/execution/executors.hpp"
 
-#include <memory>
-#include <utility>
+#include <algorithm>
 #include <cstring>
+#include <memory>
+#include <stdexcept>
+#include <utility>
 
 #include "common/logging.hpp"
 #include "common/time/time.hpp"
@@ -10,7 +12,8 @@
 namespace found {
 
 CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                                         std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm)
+                                                         unique_ptr<CalibrationAlgorithm, 1>
+                                                         calibrationAlgorithm)
                                                          : options_(std::move(options)) {
     this->calibrationAlgorithm = std::move(calibrationAlgorithm);
     this->pipeline_.Complete(*this->calibrationAlgorithm);
@@ -41,9 +44,12 @@ DistancePipelineExecutor::~DistancePipelineExecutor() {
 }
 
 DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
-                                                   std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                                   std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                                   std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
+                                                   unique_ptr<EdgeDetectionAlgorithm, 1>
+                                                   edgeDetectionAlgorithm,
+                                                   unique_ptr<DistanceDeterminationAlgorithm, 1>
+                                                   distanceAlgorithm,
+                                                   unique_ptr<VectorGenerationAlgorithm, 1>
+                                                   vectorizationAlgorithm)
                                                    : options_(std::move(options)) {
     this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
     this->distanceAlgorithm = std::move(distanceAlgorithm);
@@ -72,13 +78,17 @@ void DistancePipelineExecutor::OutputResults() {
     if (this->options_.calibrationData.header.version != emptyDFVer) {
         outputDF.header = this->options_.calibrationData.header;
         outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
-        outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
-        std::memcpy(outputDF.positions.get(),
-                    this->options_.calibrationData.positions.get(),
-                    outputDF.header.num_positions);
+        if (outputDF.header.num_positions >= FOUND_MAX_LOCATION_RECORDS) {
+            throw std::runtime_error("Position record count exceeds FOUND_MAX_LOCATION_RECORDS");
+        }
+        outputDF.positions.resize(outputDF.header.num_positions + 1);
+        std::copy(this->options_.calibrationData.positions.begin(),
+                  this->options_.calibrationData.positions.begin() + outputDF.header.num_positions,
+                  outputDF.positions.begin());
     } else {
         outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
-        outputDF.positions = std::make_unique<LocationRecord[]>(1);
+        outputDF.header.num_positions = 0;
+        outputDF.positions.resize(1);
     }
     outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
     if (this->options_.outputFile != "") {
@@ -91,7 +101,8 @@ void DistancePipelineExecutor::OutputResults() {
 }
 
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
-                                             std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm)
+                                             unique_ptr<OrbitPropagationAlgorithm, 1>
+                                             orbitPropagationAlgorithm)
                                              : options_(std::move(options)) {
     this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);
     this->pipeline_.Complete(*this->orbitPropagationAlgorithm);

@@ -48,7 +48,6 @@ endfunction()
 set(BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(CACHE_DIR ${PROJECT_SOURCE_DIR}/.cache)
 set(BIN_DIR ${BUILD_DIR}/bin)
-# set(OBJ_DIR ${BUILD_DIR}/objects) No longer needed
 set(DOC_DIR ${BUILD_DIR}/documentation)
 
 # Source directory
@@ -63,7 +62,6 @@ set(SRC_MAIN "${SRC_DIR}/main.cpp")
 set(TEST_DIR ${PROJECT_SOURCE_DIR}/test)
 file(GLOB_RECURSE TEST CONFIGURE_DEPENDS ${TEST_DIR}/*.cpp)
 file(GLOB_RECURSE TEST_H ${TEST_DIR}/*.hpp)
-list(APPEND TEST_H ${SRC_DIR})
 
 # Documentation directory
 set(DOC_COVERAGE_DIR ${DOC_DIR}/coverage)
@@ -79,11 +77,45 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${SRC_DIR})
 
+##### ETL #####
+# ETL definitions
+set(ETL "etl")
+set(ETL_VERSION "20.46.2")
+FetchContent_Declare(
+    ${ETL}
+    GIT_REPOSITORY https://github.com/ETLCPP/etl.git
+    GIT_TAG ${ETL_VERSION}
+)
+FetchContent_MakeAvailable(${ETL})
+set(ETL_INCLUDE_DIR "${etl_SOURCE_DIR}/include")
+include_directories(${ETL_INCLUDE_DIR})
+
 # Logging macros
 option(DISABLE_LOGGING "Disable logging" OFF)
 set(LOGGING_LEVEL
     INFO
     CACHE STRING "Logging level")
+
+# Container backend config
+set(FOUND_CONTAINER_BACKEND
+    "STL"
+    CACHE STRING "Container backend to use (STL or ETL)")
+set_property(CACHE FOUND_CONTAINER_BACKEND PROPERTY STRINGS STL ETL)
+
+set(FOUND_SUPPORTED_CONTAINER_BACKENDS STL ETL)
+string(TOUPPER "${FOUND_CONTAINER_BACKEND}" FOUND_CONTAINER_BACKEND)
+if(NOT FOUND_CONTAINER_BACKEND IN_LIST FOUND_SUPPORTED_CONTAINER_BACKENDS)
+    message(FATAL_ERROR
+        "FOUND_CONTAINER_BACKEND must be one of: STL, ETL")
+endif()
+
+set(FOUND_CONTAINER_BACKEND_DEFINITIONS)
+if(FOUND_CONTAINER_BACKEND STREQUAL "ETL")
+    list(APPEND FOUND_CONTAINER_BACKEND_DEFINITIONS
+         FOUND_USE_ETL_CONTAINERS)
+endif()
+
+message(STATUS "FOUND container backend: ${FOUND_CONTAINER_BACKEND}")
 
 # Floating-point config
 option(FLOAT_MODE "Enable FOUND_FLOAT_MODE" OFF)
@@ -98,7 +130,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # Global compile options
-add_compile_options(-Wall -Wextra -Wno-missing-field-initializers -pedantic)
+add_compile_options(-Wall -Wextra -Wno-missing-field-initializers -pedantic -Wdouble-promotion -Werror)
 
 ########## Source Libraries ##########
 
@@ -131,6 +163,7 @@ if(NOT EXISTS ${STB_IMAGE_SRC})
     file(WRITE ${STB_IMAGE_SRC} "#include \"${STB_IMAGE}/${STB_IMAGE}.h\"\n")
 endif()
 add_library(${STB_IMAGE} STATIC ${STB_IMAGE_SRC})
+target_compile_options(${STB_IMAGE} PRIVATE -Wno-error -Wno-double-promotion)
 target_compile_definitions(${STB_IMAGE} PRIVATE STB_IMAGE_IMPLEMENTATION)
 target_include_directories(${STB_IMAGE} PUBLIC $<BUILD_INTERFACE:${CACHE_DIR}>)
 
@@ -142,12 +175,15 @@ set(SRC_LIBS ${STB_IMAGE})
 add_library(found_lib STATIC ${FILTERED_SRC})
 target_link_libraries(found_lib PRIVATE ${STB_IMAGE})
 target_include_directories(found_lib
-        PUBLIC
-        $<BUILD_INTERFACE:${SRC_DIR}>
-        $<INSTALL_INTERFACE:include>)
-target_compile_definitions(found_lib PRIVATE 
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+    PUBLIC
+    $<BUILD_INTERFACE:${SRC_DIR}>
+    $<BUILD_INTERFACE:${ETL_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>)
+target_compile_definitions(found_lib PRIVATE
+    ${FOUND_CONTAINER_BACKEND_DEFINITIONS}
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+
 add_library(found::found_lib ALIAS found_lib)
 
 ########## Test Libraries ##########
@@ -160,8 +196,6 @@ if(ENABLE_WORKFLOW)
 set(GTEST googletest)
 set(GTEST_VERSION release-1.12.1)
 set(GTEST_LIBS gmock gmock_main)
-
-include(FetchContent)
 
 FetchContent_Declare(
     googletest
@@ -195,47 +229,69 @@ endif()
 
 ########## Targets ##########
 
-add_compile_options(-Wdouble-promotion -Werror)
-
 ##### compile #####
 
 file(MAKE_DIRECTORY ${BIN_DIR})
 
 add_executable(found ${SRC_MAIN})
-
+target_include_directories(found PRIVATE ${ETL_INCLUDE_DIR})
 target_link_libraries(found PRIVATE ${SRC_LIBS} found_lib)
-target_compile_definitions(found PRIVATE 
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
-        $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+target_compile_definitions(found PRIVATE
+    ${FOUND_CONTAINER_BACKEND_DEFINITIONS}
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:ENABLE_LOGGING>
+    $<$<NOT:$<BOOL:${DISABLE_LOGGING}>>:LOGGING_LEVEL=${LOGGING_LEVEL}>)
+
 set_target_properties(found PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 add_custom_target(compile
-                  DEPENDS found
-                  COMMENT "Compiles source code")
+          DEPENDS found
+          COMMENT "Compiles source code")
 
-if(ENABLE_WORKFLOW)
 
 ##### test #####
-
 add_executable(found-test EXCLUDE_FROM_ALL ${TEST} ${FILTERED_SRC})
-target_compile_definitions(found-test PRIVATE ENABLE_LOGGING
-                                                LOGGING_LEVEL=INFO)
+
+if(ENABLE_WORKFLOW)
+    target_link_libraries(found-test PRIVATE
+        ${TEST_LIBS}
+    )
+else()
+    target_link_libraries(found-test PRIVATE
+        found_lib
+    )
+endif()
+
+target_link_options(found-test PRIVATE
+    --coverage
+    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
+)
+
+target_compile_definitions(found-test PRIVATE
+    ${FOUND_CONTAINER_BACKEND_DEFINITIONS}
+    ENABLE_LOGGING
+    LOGGING_LEVEL=INFO)
+
 target_compile_options(found-test PRIVATE
     --coverage
     -pthread
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
     $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>
 )
-target_link_libraries(found-test PRIVATE
-    --coverage
-    ${TEST_LIBS}
-    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fsanitize=address>
-    $<$<NOT:$<BOOL:${OMIT_ASAN}>>:-fomit-frame-pointer>)
-set_target_properties(found-test PROPERTIES
-                        RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-add_dependencies(found-test ${TEST_LIBS})
+
+set_target_properties(found-test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+if(TEST_LIBS)
+    add_dependencies(found-test ${TEST_LIBS})
+endif()
+
 add_custom_target(test
                   DEPENDS found-test
                   COMMENT "Compiles test code")
+
+add_custom_target(
+    integration-test
+    COMMAND cd ${PROJECT_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_filter=IntegrationTest.* --gtest_brief=1
+    COMMENT "Runs integration tests for the configured container backend"
+    VERBATIM
+    DEPENDS found-test)
 
 ##### coverage #####
 
@@ -243,15 +299,25 @@ file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
 
 check_program_version(GCOVR gcovr 8.3)
 set(GCOVR_CONFIG ${PROJECT_SOURCE_DIR}/gcovr.cfg)
+set(GCOVR_EXCLUDE_BUILD_DIR_REGEX "${PROJECT_SOURCE_DIR}/build-etl$")
+if(FOUND_CONTAINER_BACKEND STREQUAL "ETL")
+    set(GCOVR_EXCLUDE_BUILD_DIR_REGEX "${PROJECT_SOURCE_DIR}/build$")
+endif()
 
 add_custom_target(
     coverage
     COMMAND cd ${PROJECT_SOURCE_DIR} && ${BIN_DIR}/found-test --gtest_brief=1
-    COMMAND ${GCOVR} -r ${PROJECT_SOURCE_DIR}
-    # WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMAND ${GCOVR}
+            --config ${GCOVR_CONFIG}
+            --object-directory .
+            --gcov-exclude-directories ${GCOVR_EXCLUDE_BUILD_DIR_REGEX}
+            -r ${PROJECT_SOURCE_DIR}
+            --html-details ${DOC_COVERAGE_DIR}/index.html
     COMMENT "Running tests and generating coverage report"
     VERBATIM
-    DEPENDS found-test)
+    WORKING_DIRECTORY ${BUILD_DIR}
+    DEPENDS found-test
+    )
 
 ##### linting #####
 
@@ -277,8 +343,6 @@ add_custom_target(
     VERBATIM
     DEPENDS ${DOXYGEN_AWESOME_ARTIFACT} ${SRC}
     COMMENT "Generates Doxygen Documentation over code")
-
-endif()
 
 ##### clean_all #####
 

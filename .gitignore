@@ -1,5 +1,6 @@
 # Don't include the build folder
 build
+build-etl
 
 # Don't include personal .vscode settings
 .vscode

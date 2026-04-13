@@ -529,4 +529,39 @@ TEST(SimpleEdgeDetectionTest, TestVerticalOffset) {
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
 }
 
+TEST(SimpleEdgeDetectionTest, TestImagePixelCapacityGuard) {
+    unsigned char imageData[1] = {0};
+    Image image = {static_cast<int>(FOUND_MAX_IMAGE_PIXELS + 1), 1, 1, imageData};
+
+    ASSERT_THROW(minimalSEDA.Run(image), std::runtime_error);
+}
+
+TEST(SimpleEdgeDetectionTest, TestVerticalEdgeCapacityGuard) {
+    const int width = FOUND_MAX_POINTS + 1;
+    const int height = 2;
+    std::vector<unsigned char> imageData(static_cast<size_t>(width * height), 0);
+    for (int x = 0; x < width; ++x) {
+        imageData[x] = 5;
+    }
+
+    Image image = {width, height, 1, imageData.data()};
+    SimpleEdgeDetectionAlgorithm algorithm(1, 1, 0.0);
+
+    ASSERT_THROW(algorithm.Run(image), std::runtime_error);
+}
+
+TEST(SimpleEdgeDetectionTest, TestHorizontalEdgeCapacityGuard) {
+    const int width = 2;
+    const int height = FOUND_MAX_POINTS + 1;
+    std::vector<unsigned char> imageData(static_cast<size_t>(width * height), 0);
+    for (int y = 0; y < height; ++y) {
+        imageData[static_cast<size_t>(y * width)] = 5;
+    }
+
+    Image image = {width, height, 1, imageData.data()};
+    SimpleEdgeDetectionAlgorithm algorithm(1, 1, 0.0);
+
+    ASSERT_THROW(algorithm.Run(image), std::runtime_error);
+}
+
 }  // namespace found

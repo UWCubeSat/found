@@ -33,12 +33,11 @@ TEST(NominalPipelineTest, TestPipelinesAsStages) {
     PositionVector expectedVec(1, 2, 3);
 
     // Here, we make a single stage that looks like the distance pipeline
-    std::unique_ptr<MockFunctionStage<Image, PositionVector>>
-        distanceStage(new MockFunctionStage<Image, PositionVector>());
-    EXPECT_CALL(*distanceStage, Run(testing::_))
+    MockFunctionStage<Image, PositionVector> distanceStage;
+    EXPECT_CALL(distanceStage, Run(testing::_))
         .WillOnce(testing::Return(expectedVec));
 
-    PositionVector actualVec(distancePipeline.Complete(*distanceStage)
+    PositionVector actualVec(distancePipeline.Complete(distanceStage)
                                              .Run({}));
 
     ASSERT_VEC3_EQ_DEFAULT(expectedVec, actualVec);
@@ -48,12 +47,11 @@ TEST(NominalPipelineTest, TestPipelinesAsStages) {
 
     // Again, we make a single stage regardless of how many there
     // actually are in the pipeline
-    std::unique_ptr<MockFunctionStage<LocationRecords, LocationRecords>>
-        orbitStage(new MockFunctionStage<LocationRecords, LocationRecords>());
-    EXPECT_CALL(*orbitStage, Run(testing::_))
+    MockFunctionStage<LocationRecords, LocationRecords> orbitStage;
+    EXPECT_CALL(orbitStage, Run(testing::_))
         .WillOnce(testing::Return(expectedLR));
 
-    orbitPipeline.Complete(*orbitStage);
+    orbitPipeline.Complete(orbitStage);
 
     OrbitPipeline wrapperOrbitPipeline;
     wrapperOrbitPipeline.Complete(orbitPipeline);
@@ -66,12 +64,11 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     CalibrationPipeline calibrationPipeline;
     Quaternion expectedQuat{1, 2, 3, 4};
 
-    std::unique_ptr<MockFunctionStage<Orientations, Quaternion>>
-        calibrationStage(new MockFunctionStage<Orientations, Quaternion>());
-    EXPECT_CALL(*calibrationStage, Run(testing::_))
+    MockFunctionStage<Orientations, Quaternion> calibrationStage;
+    EXPECT_CALL(calibrationStage, Run(testing::_))
         .WillOnce(testing::Return(expectedQuat));
 
-    calibrationPipeline.Complete(*calibrationStage);
+    calibrationPipeline.Complete(calibrationStage);
 
     CalibrationPipeline wrapperCalibrationPipeline;
     wrapperCalibrationPipeline.Complete(calibrationPipeline);
@@ -82,24 +79,21 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     DistancePipeline distancePipeline;
     PositionVector expectedVec(1, 2, 3);
 
-    std::unique_ptr<MockEdgeDetectionAlgorithm>
-        edgeDetectionStage(new MockEdgeDetectionAlgorithm());
-    EXPECT_CALL(*edgeDetectionStage, Run(testing::_))
+    MockEdgeDetectionAlgorithm edgeDetectionStage;
+    EXPECT_CALL(edgeDetectionStage, Run(testing::_))
         .WillOnce(testing::Return(Points()));
 
-    std::unique_ptr<MockDistanceDeterminationAlgorithm>
-        distanceStage(new MockDistanceDeterminationAlgorithm());
-    EXPECT_CALL(*distanceStage, Run(testing::_))
+    MockDistanceDeterminationAlgorithm distanceStage;
+    EXPECT_CALL(distanceStage, Run(testing::_))
         .WillOnce(testing::Return(PositionVector()));
 
-    std::unique_ptr<MockVectorGenerationAlgorithm>
-        vectorStage(new MockVectorGenerationAlgorithm());
-    EXPECT_CALL(*vectorStage, Run(testing::_))
+    MockVectorGenerationAlgorithm vectorStage;
+    EXPECT_CALL(vectorStage, Run(testing::_))
         .WillOnce(testing::Return(expectedVec));
 
-    distancePipeline.AddStage(*edgeDetectionStage)
-                    .AddStage(*distanceStage)
-                    .Complete(*vectorStage);
+    distancePipeline.AddStage(edgeDetectionStage)
+                    .AddStage(distanceStage)
+                    .Complete(vectorStage);
 
     DistancePipeline wrapperDistancePipeline;
     wrapperDistancePipeline.Complete(distancePipeline);
@@ -110,12 +104,11 @@ TEST(NominalPipelineTest, TestNominalPipelinesWrapped) {
     OrbitPipeline orbitPipeline;
     LocationRecords expectedLR;
 
-    std::unique_ptr<MockFunctionStage<LocationRecords, LocationRecords>>
-        undefinedOrbitStage(new MockFunctionStage<LocationRecords, LocationRecords>());
-    EXPECT_CALL(*undefinedOrbitStage, Run(testing::_))
+    MockFunctionStage<LocationRecords, LocationRecords> undefinedOrbitStage;
+    EXPECT_CALL(undefinedOrbitStage, Run(testing::_))
         .WillOnce(testing::Return(expectedLR));
 
-    orbitPipeline.Complete(*undefinedOrbitStage);
+    orbitPipeline.Complete(undefinedOrbitStage);
 
     OrbitPipeline wrapperOrbitPipeline;
     wrapperOrbitPipeline.Complete(orbitPipeline);

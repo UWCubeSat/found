@@ -96,6 +96,55 @@ TEST_F(SerializationTest, IncorrectSizeHeader) {
 /**
  * @test Serializes and deserializes a DataFile object and verifies round-trip consistency.
  */
+TEST_F(SerializationTest, SerializeDataFileRejectsHeaderLargerThanPositions) {
+    DataFile data;
+    memcpy(data.header.magic, "FOUN", 4);
+    data.header.version = 1;
+    data.header.num_positions = 1;
+
+    std::ostringstream out;
+
+    ASSERT_THROW(serializeDataFile(data, out), std::runtime_error);
+}
+
+TEST_F(SerializationTest, SerializeDataFileRejectsTooManyPositions) {
+    DataFile data;
+    memcpy(data.header.magic, "FOUN", 4);
+    data.header.version = 1;
+    data.header.num_positions = FOUND_MAX_LOCATION_RECORDS + 1;
+    data.positions.resize(data.header.num_positions);
+
+    std::ostringstream out;
+
+    ASSERT_THROW(serializeDataFile(data, out), std::runtime_error);
+}
+
+TEST_F(SerializationTest, DeserializeDataFileRejectsTooManyPositions) {
+    std::ostringstream out;
+    DataFileHeader header;
+    memcpy(header.magic, "FOUN", 4);
+    header.version = 1;
+    header.num_positions = FOUND_MAX_LOCATION_RECORDS + 1;
+    header.crc = found::calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
+    header.version = htonl(header.version);
+    header.num_positions = htonl(header.num_positions);
+    header.crc = htonl(header.crc);
+    out.write(reinterpret_cast<const char*>(&header), sizeof(header));
+
+    struct Quat {
+        double real = 1.0;
+        double i = 0.0;
+        double j = 0.0;
+        double k = 0.0;
+    } quaternion_field;
+    out.write(reinterpret_cast<const char*>(&quaternion_field), sizeof(quaternion_field));
+
+    std::string buffer = out.str();
+    std::istringstream in(buffer);
+
+    ASSERT_THROW(found::deserializeDataFile(in), std::runtime_error);
+}
+
 TEST_F(SerializationTest, RoundTripSerialization) {
     DataFile expected;
     memcpy(expected.header.magic, "FOUN", 4);
@@ -106,9 +155,8 @@ TEST_F(SerializationTest, RoundTripSerialization) {
     LocationRecord loc1{161803398, {100, 200, 300}};
     LocationRecord loc2{271828182, {-100, -200, -300}};
 
-    expected.positions = std::make_unique<LocationRecord[]>(2);
-    expected.positions[0] = loc1;
-    expected.positions[1] = loc2;
+    expected.positions.push_back(loc1);
+    expected.positions.push_back(loc2);
 
     std::ostringstream out;
     serializeDataFile(expected, out);

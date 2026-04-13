@@ -44,6 +44,24 @@ TEST(ConvertersTest, TestEAIncomplete) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(0)), angles.roll);
 }
 
+TEST(ConvertersTest, TestEAExtraValuesIgnored) {
+    std::string str = "10,20,30,40";
+    EulerAngles angles = strtoea(str);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(10)), angles.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(20)), angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(30)), angles.roll);
+}
+
+TEST(ConvertersTest, TestEASingleValuePadsZeroes) {
+    std::string str = "5";
+    EulerAngles angles = strtoea(str);
+
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(5)), angles.ra);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.de);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.roll);
+}
+
 TEST(ConvertersTest, TestBoolFalse) {
     ASSERT_FALSE(strtobool(""));
     ASSERT_FALSE(strtobool("0"));
@@ -84,17 +102,12 @@ TEST(ConvertersTest, TestDataFileNonExistent) {
 }
 
 TEST(ConvertersTest, TestDataFileNormal) {
-    DataFile expected{
-        {{'F', 'O', 'U', 'N'}, 1U, 5},
-        Quaternion(-0.26, 8.5, 0, 9.2),
-        std::unique_ptr<LocationRecord[]>(new LocationRecord[5]{
-            {45, {95.21, -62.15, 62.14}},
-            {62, {623.25, -6182.9, -361.2}},
-            {821, {623.26, 86.18, -105.21}},
-            {926, {156.16, -296.29, 682.21}},
-            {1062, {61.16, -168.21, -181.21}}
-        })
-    };
+    DataFile expected{{{'F', 'O', 'U', 'N'}, 1U, 5}, Quaternion(-0.26, 8.5, 0, 9.2)};
+    expected.positions.push_back({45, {95.21, -62.15, 62.14}});
+    expected.positions.push_back({62, {623.25, -6182.9, -361.2}});
+    expected.positions.push_back({821, {623.26, 86.18, -105.21}});
+    expected.positions.push_back({926, {156.16, -296.29, 682.21}});
+    expected.positions.push_back({1062, {61.16, -168.21, -181.21}});
     std::ofstream file(temp_df);
     serializeDataFile(expected, file);
     file.flush();  // Write out all file contents
@@ -129,15 +142,10 @@ TEST(ConvertersTest, TestLocationRecordsNormal) {
 }
 
 TEST(ConvertersTest, TestLocationRecordsDataFile) {
-    DataFile expected{
-        {{'F', 'O', 'U', 'N'}, 1U, 3},
-        Quaternion(1, 0, 0, 0),
-        std::unique_ptr<LocationRecord[]>(new LocationRecord[3]{
-            {45, {95.21, -62.15, 62.14}},
-            {62, {623.25, -6182.9, -361.2}},
-            {821, {623.26, 86.18, -105.21}}
-        })
-    };
+    DataFile expected{{{'F', 'O', 'U', 'N'}, 1U, 3}, Quaternion(1, 0, 0, 0)};
+    expected.positions.push_back({45, {95.21, -62.15, 62.14}});
+    expected.positions.push_back({62, {623.25, -6182.9, -361.2}});
+    expected.positions.push_back({821, {623.26, 86.18, -105.21}});
     std::ofstream file(temp_df);
     serializeDataFile(expected, file);
     file.flush();  // Write out all file contents
@@ -149,6 +157,42 @@ TEST(ConvertersTest, TestLocationRecordsDataFile) {
     ASSERT_TRUE(LocationRecordEqual(expected.positions[2], actual[2]));
 
     std::remove(temp_df);
+}
+
+TEST(ConvertersTest, TestLocationRecordsDataFileEmpty) {
+    DataFile expected{{{'F', 'O', 'U', 'N'}, 1U, 0}, Quaternion(1, 0, 0, 0)};
+    std::ofstream file(temp_df);
+    serializeDataFile(expected, file);
+    file.flush();
+    LocationRecords actual = strtolr(temp_df);
+
+    ASSERT_EQ(static_cast<size_t>(0), actual.size());
+
+    std::remove(temp_df);
+}
+
+TEST(ConvertersTest, TestLocationRecordsEmptyTextFile) {
+    const std::string path = "test/common/assets/temp-empty-pos-data.txt";
+    std::ofstream file(path);
+    file.close();
+
+    LocationRecords actual = strtolr(path);
+    ASSERT_TRUE(actual.empty());
+
+    std::remove(path.c_str());
+}
+
+TEST(ConvertersTest, TestLocationRecordsTooManyLines) {
+    const std::string path = "test/common/assets/temp-pos-data.txt";
+    std::ofstream file(path);
+    for (size_t i = 0; i <= FOUND_MAX_LOCATION_RECORDS; ++i) {
+        file << i << " 1 2 3\n";
+    }
+    file.close();
+
+    ASSERT_THROW(strtolr(path), std::runtime_error);
+
+    std::remove(path.c_str());
 }
 
 }  // namespace found

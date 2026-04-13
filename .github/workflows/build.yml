@@ -23,6 +23,20 @@ jobs:
         max_attempts: 3
         timeout_minutes: 3
         command: make clean && make compile -j16
+
+  build-etl:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all ETL
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: ./build.sh clean && ./build.sh make-etl compile -j16
   
   test:
     runs-on: ubuntu-latest
@@ -145,6 +159,20 @@ jobs:
         timeout_minutes: 3
         command: ./build.sh clean && ./build.sh cmake "" --parallel 16
 
+  cmake-build-etl:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build all ETL
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: ./build.sh clean && ./build.sh cmake-etl "" --target compile --parallel 16
+
   cmake-float:
     runs-on: ubuntu-latest
     container: huskysat/found:latest
@@ -178,3 +206,20 @@ jobs:
           ./build.sh clean
           ./build.sh cmake -DOMIT_ASAN=ON --target found-test --parallel 16
           valgrind ./build/bin/found-test
+
+  cmake-etl-test:
+    runs-on: ubuntu-latest
+    container: huskysat/found:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Memory Check (ETL)
+      uses: nick-fields/retry@v3.0.2
+      with:
+        max_attempts: 3
+        timeout_minutes: 3
+        command: |
+          ./build.sh clean
+          ./build.sh cmake-etl "-DOMIT_ASAN=ON" --target found-test --parallel 16
+          valgrind ./build-etl/bin/found-test

@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <memory>
+#include <stdexcept>
+#include <utility>
 #include <vector>
 #include <functional>
 #include <unordered_set>
@@ -19,16 +21,22 @@ namespace found {
 Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
     // Step 0: Define Common Variables
     uint64_t imageSize = image.width * image.height;
+    if (imageSize > FOUND_MAX_IMAGE_PIXELS) {
+        throw std::runtime_error("Image pixel count exceeds FOUND_MAX_IMAGE_PIXELS");
+    }
 
     // Step 1: Obtain the component that represents space
-    Components spaces = ConnectedComponentsAlgorithm(image, [&](uint64_t index, const Image &image) {
-        // Average the pixel, then threshold it
+    std::function<bool(uint64_t, const Image &)> isSpacePixel = [&](uint64_t index, const Image &inputImage) {
+        // Average the pixel, then threshold it.
         int sum = 0;
-        for (int i = 0; i < image.channels; i++) sum += image.image[image.channels * index + i];
-        return sum / image.channels < this->threshold_;
-    });
+        for (int i = 0; i < inputImage.channels; i++) {
+            sum += inputImage.image[inputImage.channels * index + i];
+        }
+        return sum / inputImage.channels < this->threshold_;
+    };
+    Components spaces = ConnectedComponentsAlgorithm(image, isSpacePixel);
     Component *space = nullptr;
-    for (auto &component : spaces) {
+    for (Component &component : spaces) {
         // Basically, if the component touches the border, and its the biggest one,
         // we assume it is space
         if ((component.upperLeft.x < this->borderLength_ ||
@@ -98,6 +106,9 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             while (points.find(index) == points.end()) index += update;
             if (index / image.width != edge_condition) {
                 index -= update;
+                if (result.size() >= FOUND_MAX_POINTS) {
+                    throw std::runtime_error("Edge point count exceeds FOUND_MAX_POINTS");
+                }
                 result.push_back({DECIMAL(index % image.width),
                                     DECIMAL(index / image.width) - offset});
             }
@@ -129,6 +140,9 @@ Points SimpleEdgeDetectionAlgorithm::Run(const Image &image) {
             while (points.find(index) == points.end()) index += update;
             if (index % image.width != edge_condition) {
                 index -= update;
+                if (result.size() >= FOUND_MAX_POINTS) {
+                    throw std::runtime_error("Edge point count exceeds FOUND_MAX_POINTS");
+                }
                 result.push_back({DECIMAL(index % image.width) - offset,
                                     DECIMAL(index / image.width)});
             }
@@ -247,14 +261,20 @@ inline int NWayEquivalenceAdd(const Image &image,
             }
         }
     }
-    return minLabel;
+    return minLabel;  // GCOVR_EXCL_BR_LINE
 }
 
 Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(uint64_t, const Image &)> Criteria) {
     // Step 0: Setup the Problem
+    const uint64_t imageSize = static_cast<uint64_t>(image.width) * image.height;
+    if (imageSize > FOUND_MAX_IMAGE_PIXELS) {
+        throw std::runtime_error("Image pixel count exceeds FOUND_MAX_IMAGE_PIXELS");
+    }
     std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
-    std::unique_ptr<int[]> componentPoints(new int[image.width * image.height]{});  // Faster than using a hashset
+    vector<int, FOUND_MAX_IMAGE_PIXELS> componentPoints;
+    componentPoints.resize(imageSize);
+    std::fill(componentPoints.begin(), componentPoints.end(), 0);
 
     int L = 0;
     int adjacentLabels[4];
@@ -269,7 +289,6 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         componentPoints[0] = L;
     }
 
-    uint64_t imageSize = static_cast<uint64_t>(image.width * image.height);
     for (uint64_t i = 1; i < imageSize; i++) {
         // Step 1b: Check if the pixel is an component point
         if (!Criteria(i, image)) {
@@ -279,50 +298,60 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
         // Step 1c: Figure out all adjacent labels
         if (i / image.width == 0) {
             // Top Row (1 other pixel)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            int left = componentPoints[i - 1];
+            if (left != 0) {
                 adjacentLabels[size++] = left;
             }
         } else if (i % image.width == 0) {
             // Left Column (2 other pixels)
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            int top = componentPoints[i - image.width];
+            if (top != 0) {
                 adjacentLabels[size++] = top;
             }
-            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+            int topRight = componentPoints[i - image.width + 1];
+            if (topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
             }
         } else if ((i + 1) % image.width == 0) {
             // Right Column (3 other pixels)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            int left = componentPoints[i - 1];
+            if (left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+            int topLeft = componentPoints[i - image.width - 1];
+            if (topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            int top = componentPoints[i - image.width];
+            if (top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
         } else {
             // All others pixels (4 other pixels)
-            if (auto left = componentPoints[i - 1]; left != 0) {
+            int left = componentPoints[i - 1];
+            if (left != 0) {
                 adjacentLabels[size++] = left;
             }
-            if (auto topLeft = componentPoints[i - image.width - 1]; topLeft != 0) {
+            int topLeft = componentPoints[i - image.width - 1];
+            if (topLeft != 0) {
                 if (!LabelPresent(topLeft, adjacentLabels, size)) {
                     adjacentLabels[size++] = topLeft;
                 }
             }
-            if (auto top = componentPoints[i - image.width]; top != 0) {
+            int top = componentPoints[i - image.width];
+            if (top != 0) {
                 if (!LabelPresent(top, adjacentLabels, size)) {
                     adjacentLabels[size++] = top;
                 }
             }
-            if (auto topRight = componentPoints[i - image.width + 1]; topRight != 0) {
+            int topRight = componentPoints[i - image.width + 1];
+            if (topRight != 0) {
                 if (!LabelPresent(topRight, adjacentLabels, size)) {
                     adjacentLabels[size++] = topRight;
                 }
@@ -338,17 +367,17 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     // label into the lower label, and update the lowest and highest points,
     // and then get rid of the higher label's component data. We iterate from highest to lowest
     for (int i = L; i >= 0; i--) {
-        auto it = equivalencies.find(i);
+        std::unordered_map<int, int>::iterator it = equivalencies.find(i);
         if (it == equivalencies.end()) continue;
 
         // Guarenteed to be the lowest label
         int lowestLabel = it->second;
 
         // Merge the components
-        auto compIt = components.find(i);
+        std::unordered_map<int, Component>::iterator compIt = components.find(i);
         // compIt is guarenteed to exist, so we do not perform a check here
-        auto &compToMerge = compIt->second;
-        auto &lowestComp = components[lowestLabel];
+        Component &compToMerge = compIt->second;
+        Component &lowestComp = components[lowestLabel];
         lowestComp.points.insert(compToMerge.points.begin(), compToMerge.points.end());
         if (compToMerge.upperLeft.x < lowestComp.upperLeft.x) lowestComp.upperLeft.x = compToMerge.upperLeft.x;
         if (compToMerge.lowerRight.x > lowestComp.lowerRight.x) lowestComp.lowerRight.x = compToMerge.lowerRight.x;
@@ -361,9 +390,15 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
 
     // Step 3: Return the components
     Components result;
-    for (const auto &[label, component] : components) result.push_back(component);
+    for (const std::pair<const int, Component> &entry : components) {
+        const Component &component = entry.second;
+        if (result.size() >= FOUND_MAX_COMPONENTS) {
+            throw std::runtime_error("Connected component count exceeds FOUND_MAX_COMPONENTS");
+        }
+        result.push_back(component);
+    }
 
-    return result;
+    return result;  // GCOVR_EXCL_BR_LINE
 }
 
 }  // namespace found
