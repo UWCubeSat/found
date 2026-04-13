@@ -26,12 +26,12 @@
                 <span>src/</span>
             </div>
             <div>File: providers/factory.hpp</div>
-            <div>Date: 2026-03-31 01:21:17</div>
+            <div>Date: 2026-04-13 01:17:12</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
                 <div class="mr-2">Lines:</div>
-                <div class="mr-2" style="margin: auto;">7/7</div>
+                <div class="mr-2" style="margin: auto;">13/13</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
             <div class="d-flex">
@@ -41,7 +41,7 @@
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">2/2</div>
+                <div class="mr-2" style="margin: auto;">6/6</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
         </div>
@@ -60,7 +60,7 @@
       <th>Block coverage</th>
     </tr>
     <tr><td><a href="#l19">found::CreateCalibrationPipelineExecutor(CalibrationOptions) (line 19)</a></td><td>called 6 times</td><td>75.0%</td></tr>
-    <tr><td><a href="#l32">found::CreateDistancePipelineExecutor(DistanceOptions) (line 32)</a></td><td>called 9 times</td><td>79.0%</td></tr>
+    <tr><td><a href="#l32">found::CreateDistancePipelineExecutor(DistanceOptions) (line 32)</a></td><td>called 9 times</td><td>88.0%</td></tr>
   </table>
 </details>
 </div>
@@ -228,9 +228,16 @@
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>2/2</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 2 taken 6 times.</div>
+                            <div class="color-taken-branch">&check; Branch 5 taken 6 times.</div>
+                        </div>
+                    </details>
                 </td>
                 <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
-                <td class="src coveredLine"><span class="w">                                                       </span><span class="n">ProvideCalibrationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">));</span><span class="w">  </span><span class="c1">// GCOVR_EXCL_BR_LINE</span></td>
+                <td class="src coveredLine"><span class="w">                                                       </span><span class="n">ProvideCalibrationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l23" href="#l23">23</a></td>
@@ -315,161 +322,222 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 1 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 9 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
-                <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">),</span><span class="w"> </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">SimpleEdgeDetectionAlgorithm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edgeAlgorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l35" href="#l35">35</a></td>
                 <td class="text-right src linenos ws-unset">
-                    <details class="normal details-overlay">
-                        <summary>1/1</summary>
-                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 1 taken 8 times.</div>
-                        </div>
-                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">17</td>
-                <td class="src coveredLine"><span class="w">                                                    </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">SphericalDistanceDeterminationAlgorithm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distanceAlgorithm</span><span class="w"> </span><span class="o">=</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/1</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">35</td>
-                <td class="src coveredLine"><span class="w">                                                    </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span><span class="n">options</span><span class="p">));</span><span class="w">  </span><span class="c1">// GCOVR_EXCL_BR_LINE</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l37" href="#l37">37</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/1</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 3 taken 8 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine"><span class="w">    </span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">LOSTVectorGenerationAlgorithm</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vectorAlgorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l39" href="#l39">39</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="c1">// TODO: Uncomment when orbit stage is implemented</span></td>
+                <td class="src "><span class="w">        </span><span class="n">pool</span><span class="p">,</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm">/**</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l41" href="#l41">41</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * Creates an OrbitPipelineExecutor</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">edgeAlgorithm</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l42" href="#l42">42</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">distanceAlgorithm</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l43" href="#l43">43</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/1</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @param options The options to create the pipeline executor from</span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">24</td>
+                <td class="src coveredLine"><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">vectorAlgorithm</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * </span></td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
+                <td class="src coveredLine"><span class="p">}</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> * @return A OrbitPipelineExecutor</span></td>
+                <td class="src "></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cm"> */</span></td>
+                <td class="src "><span class="c1">// TODO: Uncomment when orbit stage is implemented</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="c1">// inline std::unique_ptr&lt;OrbitPipelineExecutor&gt; CreateOrbitPipelineExecutor(OrbitOptions &amp;&amp;options) {</span></td>
+                <td class="src "><span class="cm">/**</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l48" href="#l48">48</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="c1">//     return std::make_unique&lt;OrbitPipelineExecutor&gt;(std::forward&lt;OrbitOptions&gt;(options),</span></td>
+                <td class="src "><span class="cm"> * Creates an OrbitPipelineExecutor</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l49" href="#l49">49</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="c1">//                                     ProvideOrbitPropagationAlgorithm(std::forward&lt;OrbitOptions&gt;(options)));</span></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="c1">// }</span></td>
+                <td class="src "><span class="cm"> * @param options The options to create the pipeline executor from</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm"> * </span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+                <td class="src "><span class="cm"> * @return A OrbitPipelineExecutor</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l53" href="#l53">53</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "></td>
+                <td class="src "><span class="cm"> */</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l54" href="#l54">54</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_PROVIDERS_FACTORY_HPP_</span></td>
+                <td class="src "><span class="c1">// inline std::unique_ptr&lt;OrbitPipelineExecutor&gt; CreateOrbitPipelineExecutor(OrbitOptions &amp;&amp;options) {</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l55" href="#l55">55</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="c1">//     return std::make_unique&lt;OrbitPipelineExecutor&gt;(std::forward&lt;OrbitOptions&gt;(options),</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l56" href="#l56">56</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="c1">//                                     ProvideOrbitPropagationAlgorithm(std::forward&lt;OrbitOptions&gt;(options)));</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l57" href="#l57">57</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="c1">// }</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l58" href="#l58">58</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l59" href="#l59">59</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace found</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l60" href="#l60">60</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l61" href="#l61">61</a></td>
+                <td class="text-right src linenos ws-unset">
+                </td>
+                <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
+                <td class="src "><span class="cp">#endif  </span><span class="c1">// SRC_PROVIDERS_FACTORY_HPP_</span></td>
+            </tr>
+            <tr>
+                <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
                 <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>

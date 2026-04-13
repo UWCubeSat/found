@@ -125,26 +125,26 @@ $(document).ready(function(){initNavTree('stage-providers_8hpp_source.html','');
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">inline</span> unique_ptr&lt;LOSTCalibrationAlgorithm, 1&gt; ProvideCalibrationAlgorithm([[maybe_unused]]</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>                                                                               <span class="keyword">const</span> <a class="code hl_class" href="classCalibrationOptions.html">CalibrationOptions</a> &amp;options) {</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keyword">static</span> pool&lt;LOSTCalibrationAlgorithm, 1&gt; pool;  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordflow">return</span> make_unique&lt;LOSTCalibrationAlgorithm, 1&gt;(pool);  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordflow">return</span> make_unique&lt;LOSTCalibrationAlgorithm, 1&gt;(pool);</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>}</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="keyword">inline</span> unique_ptr&lt;SimpleEdgeDetectionAlgorithm, 1&gt; ProvideEdgeDetectionAlgorithm(<span class="keyword">const</span> <a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;options) {</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="keyword">inline</span> unique_ptr&lt;SimpleEdgeDetectionAlgorithm, 1&gt; ProvideEdgeDetectionAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">static</span> pool&lt;SimpleEdgeDetectionAlgorithm, 1&gt; pool;  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">return</span> make_unique&lt;SimpleEdgeDetectionAlgorithm, 1&gt;(pool, options.SEDAThreshold, options.SEDABorderLen,</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                                                        options.SEDAOffset);  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                                                        options.SEDAOffset);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>}</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keyword">inline</span> unique_ptr&lt;SphericalDistanceDeterminationAlgorithm, 1&gt;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>ProvideDistanceDeterminationAlgorithm(<span class="keyword">const</span> <a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;options) {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>ProvideDistanceDeterminationAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">static</span> pool&lt;SphericalDistanceDeterminationAlgorithm, 1&gt; poolSDDA;  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keyword">static</span> pool&lt;IterativeSphericalDistanceDeterminationAlgorithm, 1&gt; poolISDDA;  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordflow">if</span> (options.distanceAlgo == SDDA) {  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordflow">if</span> (options.distanceAlgo == SDDA) {</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordflow">return</span> make_unique&lt;SphericalDistanceDeterminationAlgorithm, 1&gt;(poolSDDA, options.radius,</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>                                                                       Camera(options.focalLength,</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>                                                                              options.pixelSize,</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>                                                                              options.image.width,</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                                                 options.image.height));  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (options.distanceAlgo == ISDDA) {  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                                                                              options.image.height));</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (options.distanceAlgo == ISDDA) {</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="keywordflow">return</span> make_unique&lt;IterativeSphericalDistanceDeterminationAlgorithm, 1&gt;(poolISDDA, options.radius,</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                                                                                Camera(options.focalLength,</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                                                                                       options.pixelSize,</div>
@@ -158,20 +158,20 @@ $(document).ready(function(){initNavTree('stage-providers_8hpp_source.html','');
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                                                                                options.ISDDARadLossOrd);</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    } <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        LOG_ERROR(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> &lt;&lt; options.distanceAlgo);</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> + options.distanceAlgo);  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Unrecognized distance algorithm: &quot;</span> + options.distanceAlgo);</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    }</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>}</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">inline</span> unique_ptr&lt;LOSTVectorGenerationAlgorithm, 1&gt;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>ProvideVectorGenerationAlgorithm(<span class="keyword">const</span> <a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;options) {</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>ProvideVectorGenerationAlgorithm(<a class="code hl_class" href="classDistanceOptions.html">DistanceOptions</a> &amp;&amp;options) {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    <span class="keyword">static</span> pool&lt;LOSTVectorGenerationAlgorithm, 1&gt; pool;  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keywordflow">if</span> (options.calibrationData.header.version != emptyDFVer) {</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        LOG_INFO(<span class="stringliteral">&quot;Using DataFile for calibration information&quot;</span>);</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordflow">return</span> make_unique&lt;LOSTVectorGenerationAlgorithm, 1&gt;(pool, options.calibrationData.relative_attitude,</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                                                             referenceOrientation);</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);  <span class="comment">// GCOVR_EXCL_BR_LINE</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <span class="keywordflow">if</span> (options.refAsOrientation) {</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            LOG_INFO(<span class="stringliteral">&quot;Using provided reference orientation for calibration information&quot;</span>);</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            <span class="keywordflow">return</span> make_unique&lt;LOSTVectorGenerationAlgorithm, 1&gt;(pool, referenceOrientation);</div>
