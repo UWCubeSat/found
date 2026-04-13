@@ -72,8 +72,6 @@ template <typename T, size_t N, typename PoolType, typename... Args>
 unique_ptr<T, N> make_unique([[maybe_unused]] PoolType &pool_ref, Args &&...args) {
     return std::make_unique<T>(std::forward<Args>(args)...);
 }
-
-// GCOVR_EXCL_STOP
 #endif
 
 }  // namespace found

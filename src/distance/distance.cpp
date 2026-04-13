@@ -197,8 +197,8 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
                                     size_t n,
                                     vector<uint64_t, FOUND_MAX_POINTS> &logits) {
     // Step 0: Setup the random number generators
-    static std::random_device device;  // GCOVR_EXCL_LINE
-    static std::mt19937 gen(device());  // GCOVR_EXCL_LINE
+    static std::random_device device;  // GCOVR_EXCL_BR_LINE
+    static std::mt19937 gen(device());  // GCOVR_EXCL_BR_LINE
     // This is okay (being static) since we always override the values
 
     // Uniformly generate the first number

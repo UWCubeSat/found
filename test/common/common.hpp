@@ -18,18 +18,18 @@ namespace found {
 
 #define DEFAULT_TOLERANCE DECIMAL(1e-3)
 
-constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
+inline bool vectorEqual(const Vec2 &a, const Vec2 &b) {
     return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
-};
+}
 
-constexpr auto Vec3Equal = [](const Vec3 &a, const Vec3 &b) {
+inline bool Vec3Equal(const Vec3 &a, const Vec3 &b) {
     return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE
            && abs(a.z - b.z) < DEFAULT_TOLERANCE;
-};
+}
 
-constexpr auto LocationRecordEqual = [](const LocationRecord &a, const LocationRecord &b) {
+inline bool LocationRecordEqual(const LocationRecord &a, const LocationRecord &b) {
     return a.timestamp == b.timestamp && Vec3Equal(a.position, b.position);
-};
+}
 
 MATCHER_P(LocationRecordsEqual, expected, "") {
     return std::is_permutation(expected.begin(), expected.end(),

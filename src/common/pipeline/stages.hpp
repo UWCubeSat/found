@@ -71,7 +71,7 @@ class FunctionStage : public Stage<const raw_type<Input> &, raw_type<Output>> {
      * @pre this->product points to a valid location
      */
     void DoAction() override {
-         *this->product = this->Run(this->resource);  // GCOVR_EXCL_BR_LINE
+        *this->product = this->Run(this->resource);
     };
 
     /**

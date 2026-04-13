@@ -63,14 +63,18 @@ TEST_F(IntegrationTest, TestMainHelp) {
     int argc = 2;
     const char *argv[2] = {"found", "-h"};
 
-    const auto [result1, output1] = RunMainCapturingStdout(argc, argv);
+    const std::pair<int, std::string> runOutput1 = RunMainCapturingStdout(argc, argv);
+    const int result1 = runOutput1.first;
+    const std::string output1 = runOutput1.second;
     ASSERT_EQ(EXIT_SUCCESS, result1);
     ASSERT_NE(static_cast<size_t>(0), output1.size());
 
     argv[1] = "--help";
     optind = 2;
 
-    const auto [result2, output2] = RunMainCapturingStdout(argc, argv);
+    const std::pair<int, std::string> runOutput2 = RunMainCapturingStdout(argc, argv);
+    const int result2 = runOutput2.first;
+    const std::string output2 = runOutput2.second;
     ASSERT_EQ(EXIT_SUCCESS, result2);
     ASSERT_NE(static_cast<size_t>(0), output2.size());
 }
@@ -88,7 +92,9 @@ TEST_F(IntegrationTest, TestMainCalibrationOptionBlank) {
     int argc = 2;
     const char *argv[] = {"found", "calibration"};
 
-    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    const std::pair<int, std::string> runOutput = RunMainCapturingStdout(argc, argv);
+    const int result = runOutput.first;
+    const std::string output = runOutput.second;
     ASSERT_EQ(EXIT_SUCCESS, result);
 
     std::stringstream expectedOutput;
@@ -135,7 +141,9 @@ TEST_F(IntegrationTest, TestMainDistanceWithManualRelOrientationPrint) {
         "--reference-orientation", "1.1 1.2 1.3",
         "--relative-orientation", "1.4 1.5 1.6"};
 
-    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    const std::pair<int, std::string> runOutput = RunMainCapturingStdout(argc, argv);
+    const int result = runOutput.first;
+    const std::string output = runOutput.second;
     ASSERT_EQ(EXIT_SUCCESS, result);
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector
@@ -155,7 +163,9 @@ TEST_F(IntegrationTest, TestMainDistanceOptionReferenceAsOrientationPrint) {
         "--image", "test/common/assets/example_image.jpg",
         "--reference-as-orientation"};
 
-    const auto [result, output] = RunMainCapturingStdout(argc, argv);
+    const std::pair<int, std::string> runOutput = RunMainCapturingStdout(argc, argv);
+    const int result = runOutput.first;
+    const std::string output = runOutput.second;
     ASSERT_EQ(EXIT_SUCCESS, result);
 
     // Current output is just nothing, it outputs the {0, 0, 0} m vector

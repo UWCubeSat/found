@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <stdexcept>
 #include <utility>
 
@@ -11,69 +12,82 @@ namespace found {
 TEST(StageProvidersTest, TestProvideCalibrationAlgorithmTwice) {
     CalibrationOptions options;
 
-    auto first = ProvideCalibrationAlgorithm(options);
+    unique_ptr<LOSTCalibrationAlgorithm, 1> first = ProvideCalibrationAlgorithm(options);
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
-    auto second = ProvideCalibrationAlgorithm(options);
+    unique_ptr<LOSTCalibrationAlgorithm, 1> second = ProvideCalibrationAlgorithm(options);
     ASSERT_NE(nullptr, second.get());
 }
 
 TEST(StageProvidersTest, TestProvideEdgeDetectionAlgorithmTwice) {
-    DistanceOptions options;
+    DistanceOptions firstOptions;
 
-    auto first = ProvideEdgeDetectionAlgorithm(options);
+    unique_ptr<SimpleEdgeDetectionAlgorithm, 1> first = ProvideEdgeDetectionAlgorithm(std::move(firstOptions));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
-    auto second = ProvideEdgeDetectionAlgorithm(options);
+    DistanceOptions secondOptions;
+    unique_ptr<SimpleEdgeDetectionAlgorithm, 1> second = ProvideEdgeDetectionAlgorithm(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 
 TEST(StageProvidersTest, TestProvideDistanceDeterminationAlgorithmBranches) {
-    DistanceOptions options;
-    options.image.width = 2;
-    options.image.height = 2;
-
-    options.distanceAlgo = SDDA;
-    auto sdda = ProvideDistanceDeterminationAlgorithm(options);
+    DistanceOptions sddaOptions;
+    sddaOptions.image.width = 2;
+    sddaOptions.image.height = 2;
+    sddaOptions.distanceAlgo = SDDA;
+    unique_ptr<SphericalDistanceDeterminationAlgorithm, 1> sdda =
+        ProvideDistanceDeterminationAlgorithm(std::move(sddaOptions));
     ASSERT_NE(nullptr, sdda.get());
     sdda.reset();
 
-    options.distanceAlgo = ISDDA;
-    auto isdda = ProvideDistanceDeterminationAlgorithm(options);
+    DistanceOptions isddaOptions;
+    isddaOptions.image.width = 2;
+    isddaOptions.image.height = 2;
+    isddaOptions.distanceAlgo = ISDDA;
+    unique_ptr<SphericalDistanceDeterminationAlgorithm, 1> isdda =
+        ProvideDistanceDeterminationAlgorithm(std::move(isddaOptions));
     ASSERT_NE(nullptr, isdda.get());
 
-    options.distanceAlgo = "UNKNOWN";
-    ASSERT_THROW(ProvideDistanceDeterminationAlgorithm(options), std::runtime_error);
+    DistanceOptions unknownOptions;
+    unknownOptions.image.width = 2;
+    unknownOptions.image.height = 2;
+    unknownOptions.distanceAlgo = "UNKNOWN";
+    ASSERT_THROW(ProvideDistanceDeterminationAlgorithm(std::move(unknownOptions)), std::runtime_error);
 }
 
 TEST(StageProvidersTest, TestProvideVectorGenerationAlgorithmBranches) {
-    DistanceOptions options;
+    DistanceOptions relativeOptions;
 
-    auto fromRelative = ProvideVectorGenerationAlgorithm(options);
+    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromRelative =
+        ProvideVectorGenerationAlgorithm(std::move(relativeOptions));
     ASSERT_NE(nullptr, fromRelative.get());
     fromRelative.reset();
 
-    options.refAsOrientation = true;
-    auto fromReference = ProvideVectorGenerationAlgorithm(options);
+    DistanceOptions referenceOptions;
+    referenceOptions.refAsOrientation = true;
+    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromReference =
+        ProvideVectorGenerationAlgorithm(std::move(referenceOptions));
     ASSERT_NE(nullptr, fromReference.get());
     fromReference.reset();
 
-    options.calibrationData.header = {{'F', 'O', 'U', 'N'}, 1U, 0};
-    options.calibrationData.relative_attitude = Quaternion(1, 0, 0, 0);
-    auto fromDataFile = ProvideVectorGenerationAlgorithm(options);
+    DistanceOptions dataFileOptions;
+    dataFileOptions.calibrationData.header = {{'F', 'O', 'U', 'N'}, 1U, 0};
+    dataFileOptions.calibrationData.relative_attitude = Quaternion(1, 0, 0, 0);
+    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromDataFile =
+        ProvideVectorGenerationAlgorithm(std::move(dataFileOptions));
     ASSERT_NE(nullptr, fromDataFile.get());
 }
 
 TEST(FactoryTest, TestCreateCalibrationPipelineExecutorTwice) {
     CalibrationOptions options;
 
-    auto first = CreateCalibrationPipelineExecutor(options);
+    CalibrationPipelineExecutorPtr first = CreateCalibrationPipelineExecutor(options);
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
-    auto second = CreateCalibrationPipelineExecutor(options);
+    CalibrationPipelineExecutorPtr second = CreateCalibrationPipelineExecutor(options);
     ASSERT_NE(nullptr, second.get());
 }
 
@@ -84,7 +98,7 @@ TEST(FactoryTest, TestCreateDistancePipelineExecutorTwice) {
     firstOptions.image.channels = 1;
     firstOptions.image.image = nullptr;
 
-    auto first = CreateDistancePipelineExecutor(std::move(firstOptions));
+    DistancePipelineExecutorPtr first = CreateDistancePipelineExecutor(std::move(firstOptions));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
@@ -94,7 +108,7 @@ TEST(FactoryTest, TestCreateDistancePipelineExecutorTwice) {
     secondOptions.image.channels = 1;
     secondOptions.image.image = nullptr;
 
-    auto second = CreateDistancePipelineExecutor(std::move(secondOptions));
+    DistancePipelineExecutorPtr second = CreateDistancePipelineExecutor(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 

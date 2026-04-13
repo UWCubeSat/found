@@ -19,7 +19,7 @@ namespace found {
 inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(CalibrationOptions options) {
     static pool<CalibrationPipelineExecutor, 1> pool;  // GCOVR_EXCL_BR_LINE
     return make_unique<CalibrationPipelineExecutor, 1>(pool, std::move(options),
-                                                       ProvideCalibrationAlgorithm(options));  // GCOVR_EXCL_BR_LINE
+                                                       ProvideCalibrationAlgorithm(options));
 }
 
 /**
@@ -31,9 +31,16 @@ inline CalibrationPipelineExecutorPtr CreateCalibrationPipelineExecutor(Calibrat
  */
 inline DistancePipelineExecutorPtr CreateDistancePipelineExecutor(DistanceOptions options) {
     static pool<DistancePipelineExecutor, 1> pool;  // GCOVR_EXCL_BR_LINE
-    return make_unique<DistancePipelineExecutor, 1>(pool, std::move(options), ProvideEdgeDetectionAlgorithm(options),
-                                                    ProvideDistanceDeterminationAlgorithm(options),
-                                                    ProvideVectorGenerationAlgorithm(options));  // GCOVR_EXCL_BR_LINE
+    unique_ptr<SimpleEdgeDetectionAlgorithm, 1> edgeAlgorithm = ProvideEdgeDetectionAlgorithm(std::move(options));
+    unique_ptr<SphericalDistanceDeterminationAlgorithm, 1> distanceAlgorithm =
+        ProvideDistanceDeterminationAlgorithm(std::move(options));
+    unique_ptr<LOSTVectorGenerationAlgorithm, 1> vectorAlgorithm = ProvideVectorGenerationAlgorithm(std::move(options));
+    return make_unique<DistancePipelineExecutor, 1>(
+        pool,
+        std::move(options),
+        std::move(edgeAlgorithm),
+        std::move(distanceAlgorithm),
+        std::move(vectorAlgorithm));
 }
 
 // TODO: Uncomment when orbit stage is implemented
