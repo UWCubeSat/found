@@ -16,6 +16,7 @@ using raw_type = std::remove_cv_t<std::remove_reference_t<T>>;
  */
 class Action {
  public:
+    virtual ~Action() = default;
     /**
      * Performs some action
      */

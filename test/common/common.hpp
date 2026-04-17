@@ -22,6 +22,11 @@ constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
     return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
 };
 
+MATCHER_P(Vec2Equal, expected, "") {
+    return abs(expected.x - arg.x) < DEFAULT_TOLERANCE &&
+           abs(expected.y - arg.y) < DEFAULT_TOLERANCE;
+}
+
 constexpr auto Vec3Equal = [](const Vec3 &a, const Vec3 &b) {
     return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE
            && abs(a.z - b.z) < DEFAULT_TOLERANCE;
