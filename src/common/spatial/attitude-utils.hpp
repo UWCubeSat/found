@@ -19,11 +19,12 @@ namespace found {
  * A Vec2 is an immutable object that represents a 2D Vector
  * 
 */
+template<typename T = decimal>
 struct Vec2 {
     /// The x coordinate
-    decimal x;
+    T x;
     /// The y coordinate
-    decimal y;
+    T y;
 
     // Magnitude
 
@@ -32,14 +33,14 @@ struct Vec2 {
      * 
      * @return The magnitude of this
     */
-    decimal Magnitude() const;
+    T Magnitude() const;
 
     /**
      * Provides the square of the magnitude of this Vec2
      * 
      * @return The square of the magnitude of this
     */
-    decimal MagnitudeSq() const;
+    T MagnitudeSq() const;
 
     // Unit Vector
 
@@ -48,7 +49,7 @@ struct Vec2 {
      * 
      * @return The normalized vector of this
      */
-    Vec2 Normalize() const;
+    Vec2<T> Normalize() const;
 
     // Vector Operations
 
@@ -59,7 +60,7 @@ struct Vec2 {
      * 
      * @return The dot of this and other
      */
-    decimal operator*(const Vec2 &other) const;
+    T operator*(const Vec2<T> &other) const;
 
     /**
      * Scalar-vector Product
@@ -68,7 +69,7 @@ struct Vec2 {
      * 
      * @return scalar * this
      */
-    Vec2 operator*(const decimal &scalar) const;
+    Vec2<T> operator*(const T &scalar) const;
 
     /**
      * Vector Addition
@@ -77,7 +78,7 @@ struct Vec2 {
      * 
      * @return this + other
      */
-    Vec2 operator+(const Vec2 &other) const;
+    Vec2<T> operator+(const Vec2<T> &other) const;
 
     /**
      * Vector Subtraction
@@ -86,7 +87,7 @@ struct Vec2 {
      * 
      * @return this - other
      */
-    Vec2 operator-(const Vec2 &other) const;
+    Vec2<T> operator-(const Vec2<T> &other) const;
 };
 
 class Mat3;  // define above so we can use in Vec3 class
@@ -240,7 +241,7 @@ class Vec3 {
  *
  * @return The midpoint vector
 */
-Vec2 Midpoint(const Vec2 &, const Vec2 &);
+Vec2<> Midpoint(const Vec2<> &, const Vec2<> &);
 
 /**
  * Finds the midpoint between two different vectors
@@ -271,7 +272,7 @@ Vec3 Midpoint(const Vec3 &, const Vec3 &, const Vec3 &);
  * 
  * @return The distance between v1 and v2
 */
-decimal Distance(const Vec2 &, const Vec2 &);
+decimal Distance(const Vec2<> &, const Vec2<> &);
 
 /**
  * Determines the Distance between two vectors

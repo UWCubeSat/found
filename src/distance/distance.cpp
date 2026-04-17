@@ -124,7 +124,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     size_t j = 0;
     size_t pointsSize = p.size();
     std::unique_ptr<Vec3[]> projectedPoints(new Vec3[pointsSize]);
-    for (const Vec2 &point : p) {
+    for (const Vec2<> &point : p) {
         projectedPoints[i++] = this->cam_.CameraToSpatial(point).Normalize();
     }
     i = 0;

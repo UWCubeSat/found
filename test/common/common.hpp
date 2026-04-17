@@ -18,7 +18,7 @@ namespace found {
 
 #define DEFAULT_TOLERANCE DECIMAL(1e-3)
 
-constexpr auto vectorEqual = [](const Vec2 &a, const Vec2 &b) {
+constexpr auto vectorEqual = [](const Vec2<> &a, const Vec2<> &b) {
     return abs(a.x - b.x) < DEFAULT_TOLERANCE && abs(a.y - b.y) < DEFAULT_TOLERANCE;
 };
 

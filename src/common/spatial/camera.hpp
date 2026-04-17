@@ -71,7 +71,7 @@ class Camera {
     * from the center of the sensor, i.e., any vector (x, 0, 0) will be at 
     * (xResolution/2, yResolution/2) on the sensor.
     */
-    Vec2 SpatialToCamera(const Vec3 &) const;
+    Vec2<> SpatialToCamera(const Vec3 &) const;
 
     /**
     * Gives a point in 3d space that could correspond to the given vector, using the same
@@ -85,7 +85,7 @@ class Camera {
     * 
     * @warning Other functions rely on the fact that returned vectors are placed one unit away (x-component equal to 1). Don't change this behavior!
     */
-    Vec3 CameraToSpatial(const Vec2 &) const;
+    Vec3 CameraToSpatial(const Vec2<> &) const;
 
     /**
     * Evaluates whether a vector can be seen in the camera
@@ -94,7 +94,7 @@ class Camera {
     * 
     * @return true iff vector could be seen in this camera
    */
-    bool InSensor(const Vec2 &vector) const;
+    bool InSensor(const Vec2<> &vector) const;
 
     // Accessor Methods to Camera Parameters
 

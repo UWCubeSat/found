@@ -35,7 +35,7 @@ MATCHER_P(ImageMatcher, expected, "") {
 
 MATCHER_P(PointsMatcher, expected, "") {
     return arg.size() == expected.size() && std::equal(arg.begin(), arg.end(), expected.begin(), expected.end(),
-        [](const Vec2& a, const Vec2& b) {
+        [](const Vec2<> &a, const Vec2<> &b) {
             return a.x == b.x && a.y == b.y;
         });
 }

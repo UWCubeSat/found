@@ -12,34 +12,41 @@ namespace found {
 ///////// VECTOR CLASSES //////////
 ///////////////////////////////////
 
-decimal Vec2::Magnitude() const {
+template<typename T>
+T Vec2<T>::Magnitude() const {
     return sqrt(MagnitudeSq());
 }
 
-decimal Vec2::MagnitudeSq() const {
+template<typename T>
+T Vec2<T>::MagnitudeSq() const {
     return x*x+y*y;
 }
 
-Vec2 Vec2::Normalize() const {
-    decimal mag = Magnitude();
+template<typename T>
+Vec2<T> Vec2<T>::Normalize() const {
+    T mag = Magnitude();
     return {
         x/mag, y/mag,
     };
 }
 
-decimal Vec2::operator*(const Vec2 &other) const {
+template<typename T>
+T Vec2<T>::operator*(const Vec2<T> &other) const {
     return x*other.x + y*other.y;
 }
 
-Vec2 Vec2::operator*(const decimal &scalar) const {
+template<typename T>
+Vec2<T> Vec2<T>::operator*(const T &scalar) const {
     return { x*scalar, y*scalar };
 }
 
-Vec2 Vec2::operator+(const Vec2 &other) const {
+template<typename T>
+Vec2<T> Vec2<T>::operator+(const Vec2<T> &other) const {
     return {x + other.x, y + other.y };
 }
 
-Vec2 Vec2::operator-(const Vec2 &other) const {
+template<typename T>
+Vec2<T> Vec2<T>::operator-(const Vec2<T> &other) const {
     return { x - other.x, y - other.y };
 }
 
@@ -115,7 +122,7 @@ Mat3 Vec3::OuterProduct(const Vec3 &other) const {
 ///// VECTOR UTILITY FUNCTIONS ////
 ///////////////////////////////////
 
-Vec2 Midpoint(const Vec2 &vec1, const Vec2 &vec2) {
+Vec2<> Midpoint(const Vec2<> &vec1, const Vec2<> &vec2) {
     return {(vec1.x + vec2.x)/2, (vec1.y + vec2.y)/2};
 }
 
@@ -127,9 +134,12 @@ Vec3 Midpoint(const Vec3 &vec1, const Vec3 &vec2, const Vec3 &vec3) {
     return {(vec1.x + vec2.x + vec3.x)/3, (vec1.y + vec2.y + vec3.y)/3, (vec1.z + vec2.z + vec3.z)/3};
 }
 
-decimal Distance(const Vec2 &v1, const Vec2 &v2) {
+decimal Distance(const Vec2<> &v1, const Vec2<> &v2) {
     return (v1-v2).Magnitude();
 }
+
+template struct Vec2<decimal>;
+template struct Vec2<int>;
 
 decimal Distance(const Vec3 &v1, const Vec3 &v2) {
     return (v1-v2).Magnitude();

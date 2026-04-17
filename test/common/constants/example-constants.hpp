@@ -28,8 +28,8 @@ Image image = {1, 0, 1, imageContents};
  */
 
 // Expected Points
-Vec2 expectedPoint1 = {1.0, 2.0};
-Vec2 expectedPoint2 = {3.0, 4.0};
+Vec2<> expectedPoint1 = {1.0, 2.0};
+Vec2<> expectedPoint2 = {3.0, 4.0};
 Points expectedPoints = {expectedPoint1, expectedPoint2};
 // Expected Size of Points
 const std::size_t expectedSize = 2;

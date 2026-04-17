@@ -15,7 +15,7 @@ namespace found {
 
 /// The output for Edge Detection Algorithms (edge.hpp/cpp). Currently set
 /// to a vector of 2D points on the image, according to image coordinate systems
-typedef std::vector<Vec2> Points;
+using Points = std::vector<Vec2<>>;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -56,13 +56,23 @@ struct Edge {
     /// The edge points
     Points points;
     /// The lowest point (left upper edge)
-    Vec2 upperLeft;
+    Vec2<> upperLeft;
     /// The highest point (right lower edge)
-    Vec2 lowerRight;
+    Vec2<> lowerRight;
 };
 
 /// A collection of Edges
-typedef std::vector<Edge> Edges;
+using Edges = std::vector<Edge>;
+
+/**
+ * Holds the real and imaginary parts of a complex number.
+ */
+struct ComplexNumber {
+    /// Real part
+    decimal real;
+    /// Imaginary part
+    decimal imag;
+};
 
 /**
  * Represents a connected component in an image
@@ -74,13 +84,13 @@ struct Component {
     /// The points in this component
     std::unordered_set<uint64_t> points;
     /// The lowest point (left upper edge)
-    Vec2 upperLeft;
+    Vec2<> upperLeft;
     /// The highest point (right lower edge)
-    Vec2 lowerRight;
+    Vec2<> lowerRight;
 };
 
 /// A collection of Image Pixels
-typedef std::vector<Component> Components;
+using Components = std::vector<Component>;
 
 /**
  * @brief Represents a single spatial data point with position and timestamp.

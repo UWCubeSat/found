@@ -11,7 +11,7 @@ namespace found {
 ////////// CAMERA CLASS ///////////
 ///////////////////////////////////
 
-Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
+Vec2<> Camera::SpatialToCamera(const Vec3 &vector) const {
     // can't handle things behind the camera.
     assert(vector.x > 0);
     // TODO: is there any sort of accuracy problem when vector.y and vector.z are small?
@@ -24,7 +24,7 @@ Vec2 Camera::SpatialToCamera(const Vec3 &vector) const {
     return { -yPixel + xCenter, -zPixel + yCenter };
 }
 
-Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
+Vec3 Camera::CameraToSpatial(const Vec2<> &vector) const {
     assert(InSensor(vector));
 
     // isn't it interesting: To convert from center-based to left-corner-based coordinates is the
@@ -39,7 +39,7 @@ Vec3 Camera::CameraToSpatial(const Vec2 &vector) const {
     };
 }
 
-bool Camera::InSensor(const Vec2 &vector) const {
+bool Camera::InSensor(const Vec2<> &vector) const {
     // if vector.x == xResolution, then it is at the leftmost point
     // of the pixel that's "hanging off" the edge of the image,
     // so vector is still in the image.
