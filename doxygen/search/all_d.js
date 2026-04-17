@@ -11,6 +11,7 @@ var searchData=
   ['minute_8',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
   ['modifyingpipeline_9',['modifyingpipeline',['../classfound_1_1ModifyingPipeline.html',1,'found::ModifyingPipeline&lt; T, N &gt;'],['../classfound_1_1ModifyingPipeline.html#a31655f2bf17e8e059988c8aa1fe728dc',1,'found::ModifyingPipeline::ModifyingPipeline()']]],
   ['modifyingstage_10',['modifyingstage',['../classfound_1_1ModifyingStage.html',1,'found::ModifyingStage&lt; T &gt;'],['../classfound_1_1ModifyingStage.html#a4865377e21d359c2c7f2f889aa7d0962',1,'found::ModifyingStage::ModifyingStage()']]],
-  ['month_11',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
-  ['mu_5f_12',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
+  ['modifyingstage_3c_20points_20_3e_11',['ModifyingStage&lt; Points &gt;',['../classfound_1_1ModifyingStage.html',1,'found']]],
+  ['month_12',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
+  ['mu_5f_13',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];

@@ -6,6 +6,7 @@ var hierarchy =
       [ "found::Stage< const raw_type< std::pair< EulerAngles, EulerAngles > > &, raw_type< Quaternion > >", "classfound_1_1Stage.html", null ],
       [ "found::Stage< const raw_type< Points > &, raw_type< PositionVector > >", "classfound_1_1Stage.html", null ],
       [ "found::Stage< const raw_type< Image > &, raw_type< Points > >", "classfound_1_1Stage.html", null ],
+      [ "found::Stage< raw_type< Points > &, void >", "classfound_1_1Stage.html", null ],
       [ "found::Stage< const raw_type< Input > &, raw_type< Output > >", "classfound_1_1Stage.html", [
         [ "found::FunctionStage< Input, Output >", "classfound_1_1FunctionStage.html", [
           [ "found::Pipeline< T, T, DEFAULT_NUM_STAGES >", "classfound_1_1Pipeline.html", null ],
@@ -61,7 +62,11 @@ var hierarchy =
             [ "found::LOSTVectorGenerationAlgorithm", "classfound_1_1LOSTVectorGenerationAlgorithm.html", null ]
           ] ]
         ] ],
-        [ "found::FunctionStage< Image, PositionVector >", "classfound_1_1FunctionStage.html", null ]
+        [ "found::FunctionStage< Image, PositionVector >", "classfound_1_1FunctionStage.html", null ],
+        [ "found::ModifyingStage< Points >", "classfound_1_1ModifyingStage.html", [
+          [ "found::EdgeFilteringAlgorithm", "classfound_1_1EdgeFilteringAlgorithm.html", null ],
+          [ "found::NoOpEdgeFilter", "classfound_1_1NoOpEdgeFilter.html", null ]
+        ] ]
       ] ]
     ] ],
     [ "found::Attitude", "classfound_1_1Attitude.html", null ],

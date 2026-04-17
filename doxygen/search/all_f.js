@@ -13,7 +13,7 @@ var searchData=
   ['orbitoptions_10',['OrbitOptions',['../classOrbitOptions.html',1,'']]],
   ['orbitparams_11',['OrbitParams',['../structfound_1_1OrbitParams.html',1,'found']]],
   ['orbitpipelineexecutor_12',['orbitpipelineexecutor',['../classfound_1_1OrbitPipelineExecutor.html',1,'found::OrbitPipelineExecutor'],['../classfound_1_1OrbitPipelineExecutor.html#a759e232da42188e42ad90857d61fc4c4',1,'found::OrbitPipelineExecutor::OrbitPipelineExecutor()']]],
-  ['orbitpropagationalgorithm_13',['orbitpropagationalgorithm',['../classfound_1_1OrbitPropagationAlgorithm.html',1,'found::OrbitPropagationAlgorithm'],['../classfound_1_1OrbitPipelineExecutor.html#a6f0665327e1ccbb6b2fcc3f16bba24d3',1,'found::OrbitPipelineExecutor::orbitPropagationAlgorithm'],['../classfound_1_1OrbitPropagationAlgorithm.html#a329cfa1389c3e3666b3ebf61c771cba7',1,'found::OrbitPropagationAlgorithm::OrbitPropagationAlgorithm()']]],
+  ['orbitpropagationalgorithm_13',['orbitpropagationalgorithm',['../classfound_1_1OrbitPropagationAlgorithm.html',1,'found::OrbitPropagationAlgorithm'],['../classfound_1_1OrbitPropagationAlgorithm.html#a329cfa1389c3e3666b3ebf61c771cba7',1,'found::OrbitPropagationAlgorithm::OrbitPropagationAlgorithm()']]],
   ['orientation_14',['orientation',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#ac7ee96e7a752852eec28726c5ef2c1af',1,'found::LOSTVectorGenerationAlgorithm']]],
   ['outerproduct_15',['OuterProduct',['../classfound_1_1Vec3.html#a01d9c2a1cd0d3a96d48881d252c612a0',1,'found::Vec3']]],
   ['outplanerotation_16',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]],

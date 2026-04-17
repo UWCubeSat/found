@@ -15,13 +15,12 @@ var searchData=
   ['determiner_12',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
   ['discriminatorratio_5f_13',['discriminatorRatio_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a472fd8b2b769128fb652f69b576e095e',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
   ['distance_20determination_14',['distance determination',['../index.html#autotoc_md12',1,'Distance Determination'],['../index.html#autotoc_md10',1,'Distance Determination']]],
-  ['distancealgorithm_15',['distanceAlgorithm',['../classfound_1_1DistancePipelineExecutor.html#a85a7982e86b1e105715b5306996ef7e5',1,'found::DistancePipelineExecutor']]],
-  ['distancedeterminationalgorithm_16',['DistanceDeterminationAlgorithm',['../classfound_1_1DistanceDeterminationAlgorithm.html',1,'found']]],
-  ['distanceoptions_17',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
-  ['distancepipelineexecutor_18',['distancepipelineexecutor',['../classfound_1_1DistancePipelineExecutor.html#a211dc4f507b8fe1e7d1c3fb9c5ca79f7',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()'],['../classfound_1_1DistancePipelineExecutor.html',1,'found::DistancePipelineExecutor']]],
-  ['distanceratiosq_5f_19',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['doaction_20',['doaction',['../classfound_1_1ModifyingStage.html#a860cdb8578c0717bd3921282b29a5bba',1,'found::ModifyingStage::DoAction()'],['../classfound_1_1FunctionStage.html#a4b8e2c89cb8c82b89cb0a795486f2651',1,'found::FunctionStage::DoAction()'],['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Pipeline.html#ae103e91d6f40898eee3d864893457aa1',1,'found::Pipeline::DoAction() override']]],
-  ['doactionhelper_21',['DoActionHelper',['../classfound_1_1Pipeline.html#a283af81df154b3ac0c38434d44377291',1,'found::Pipeline']]],
-  ['docker_22',['Setup via Docker',['../index.html#autotoc_md3',1,'']]],
-  ['dt_5f_23',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
+  ['distancedeterminationalgorithm_15',['DistanceDeterminationAlgorithm',['../classfound_1_1DistanceDeterminationAlgorithm.html',1,'found']]],
+  ['distanceoptions_16',['DistanceOptions',['../classDistanceOptions.html',1,'']]],
+  ['distancepipelineexecutor_17',['distancepipelineexecutor',['../classfound_1_1DistancePipelineExecutor.html#a47bb3a6154b80b6a4ee01aab5844e9d9',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()'],['../classfound_1_1DistancePipelineExecutor.html',1,'found::DistancePipelineExecutor'],['../classfound_1_1DistancePipelineExecutor.html#a211dc4f507b8fe1e7d1c3fb9c5ca79f7',1,'found::DistancePipelineExecutor::DistancePipelineExecutor()']]],
+  ['distanceratiosq_5f_18',['distanceRatioSq_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a3ee7b47bf73a0b418e13a046bc926338',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['doaction_19',['doaction',['../classfound_1_1ModifyingStage.html#a860cdb8578c0717bd3921282b29a5bba',1,'found::ModifyingStage::DoAction()'],['../classfound_1_1FunctionStage.html#a4b8e2c89cb8c82b89cb0a795486f2651',1,'found::FunctionStage::DoAction()'],['../classfound_1_1Action.html#af4bc343c66ec82f8093de989a010cc07',1,'found::Action::DoAction()'],['../classfound_1_1Pipeline.html#ae103e91d6f40898eee3d864893457aa1',1,'found::Pipeline::DoAction() override']]],
+  ['doactionhelper_20',['DoActionHelper',['../classfound_1_1Pipeline.html#a283af81df154b3ac0c38434d44377291',1,'found::Pipeline']]],
+  ['docker_21',['Setup via Docker',['../index.html#autotoc_md3',1,'']]],
+  ['dt_5f_22',['dt_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a934bf9d69f3c03dcd34659a0b319e92d',1,'found::ApproximateOrbitPropagationAlgorithm']]]
 ];
