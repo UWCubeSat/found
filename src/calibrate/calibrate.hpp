@@ -33,10 +33,12 @@ class LOSTCalibrationAlgorithm : public CalibrationAlgorithm {
     /**
      * Runs the calibration algorithm
      * 
-     * @param orientations orientation.first is the reference frame F in terms of G in spherical coordinates.
-     * orientation.second is the orientation of reference frame L in terms of G in spherical coordinates.
+     * @param orientations orientation.first is the reference frame F in terms of G in spherical coordinates 
+     * (local orientation). orientation.second is the orientation of reference frame L in terms of G in 
+     * spherical coordinates (reference orientation).
      * 
-     * @return The quaternion that represents the rotation from reference frame F to reference frame L
+     * @return The quaternion that represents the rotation from reference frame F to reference frame L. This 
+     * is a rotation from the local orientation -> reference orientation. 
      * 
      * @note Set the reference orientation to 0 to make this absolute (i.e., 
      * the orientation of this camera becomes the relative rotation)

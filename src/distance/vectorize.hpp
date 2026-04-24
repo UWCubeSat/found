@@ -31,14 +31,14 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
     /**
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
-     * @param relativeOrientation The rotation from FOUND image's reference frame into reference frame L.
+     * @param relativeOrientation The rotation from FOUND camera's reference frame into reference frame L.
      * @param referenceOrientation The orientation of the equatorial reference frame with respect 
      * to a reference frame L.
      *
-     * @pre relativeOrientation must go from FOUND image's reference frame → reference frame L and
+     * @pre relativeOrientation must go from FOUND camera's reference frame → reference frame L and
      * referenceOrientation must go from reference frame L → equatorial reference frame.
      *
-     * @note orientation equals FOUND image's reference frame → reference frame L → equatorial reference frame
+     * @note orientation equals FOUND camera's reference frame → reference frame L → equatorial reference frame
      */
     explicit LOSTVectorGenerationAlgorithm(Quaternion relativeOrientation, Quaternion referenceOrientation)
         : LOSTVectorGenerationAlgorithm(relativeOrientation * referenceOrientation) {}
@@ -47,9 +47,9 @@ class LOSTVectorGenerationAlgorithm : public VectorGenerationAlgorithm {
      * Creates a LOSTVectorGenerationAlgorithm object
      * 
      * @param orientation The orientation of the equaotrial reference frame in terms of the FOUND 
-     * image's reference frame.
+     * camera's reference frame.
      * 
-     * @pre orientation must go from camera -> equatorial reference frame.
+     * @pre orientation must go from FOUND camera's reference frame -> equatorial reference frame.
      * 
      */
     explicit LOSTVectorGenerationAlgorithm(Quaternion orientation)

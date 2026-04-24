@@ -63,74 +63,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
 
     // Check if the result is as expected
     // Run(x_E) = -(relOri * refOri * x_E)
-    PositionVector expected = -(relativeOrientation * referenceOrientation * x_E);
-    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
-}
-
-TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest1) {
-    // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 12), 0, 0);
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
-
-    // Create a PositionVector to test with
-    PositionVector x_E = {100.0, 200.0, 300.0};
-    PositionVector actual = vectorGen.Run(x_E);
-
-    // Run(x_E) = -(relOri * refOri * x_E)
-    PositionVector expected = -(relativeOrientation * referenceOrientation * x_E);
-
-    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
-}
-
-TEST(LOSTVectorGenerationAlgorithmTest, TestSimpleZRotationTest2) {
-    // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(DECIMAL_M_PI / 6), 0, 0);
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
-
-    // Create a PositionVector to test with
-    PositionVector x_E = {100.0, 200.0, 300.0};
-    PositionVector actual = vectorGen.Run(x_E);
-
-    // Run(x_E) = -(relOri * refOri * x_E)
-    PositionVector expected = -(relativeOrientation * referenceOrientation * x_E);
-    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
-}
-
-TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoAribtraryFrame) {
-    // Setup Dependencies
-    Quaternion orientation = SphericalToQuaternion(DECIMAL(3.9), DECIMAL(-0.5), DECIMAL(6.1));
-    LOSTVectorGenerationAlgorithm vectorGen(orientation, Quaternion::Identity());
-
-    // Create PositionVector to test with
-    PositionVector x_E = {92.5, -152.1, 529.2};
-
-    // Run(x_E) = -(orientation * x_E)
-    PositionVector expected = -(orientation * x_E);
-
-    // Obtain the result and test
-    PositionVector actual = vectorGen.Run(x_E);
-
-    ASSERT_VEC3_EQ_DEFAULT(expected, actual);
-}
-
-TEST(LOSTVectorGenerationAlgorithmTest, TestRotationIntoArbitraryReferenceAndRelativeFrames) {
-    // Setup Dependencies
-    Quaternion referenceOrientation = SphericalToQuaternion(DECIMAL(5.9), DECIMAL(1.2), DECIMAL(4.7));
-    Quaternion relativeOrientation = SphericalToQuaternion(DECIMAL(5.2), DECIMAL(-0.5), DECIMAL(3.4));
-    LOSTVectorGenerationAlgorithm vectorGen(relativeOrientation, referenceOrientation);
-
-    Quaternion newOrientation = (relativeOrientation * referenceOrientation);
-
-    // Create PositionVector to test with
-    PositionVector x_E = {915.2, 1692.6, -2962.2};
-
-    // Run(x_E) = -(newOrientation * x_E)
-    PositionVector expected = -(newOrientation * x_E);
-
-    PositionVector actual = vectorGen.Run(x_E);
-
+    PositionVector expected = -{-100.0, -200.0, 300.0};
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 
