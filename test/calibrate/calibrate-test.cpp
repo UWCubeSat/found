@@ -58,7 +58,7 @@ TEST(CalibrationTest, TestCalibrateGeneral) {
     // local -> reference
 
     // locacl -> reference * reference -> world = local -> world
-    Quaternion actualLocal = result * SphericalToQuaternion(reference) ;
+    Quaternion actualLocal = result * SphericalToQuaternion(reference);
 
     // See if the calibration holds for different axes
     ASSERT_QUAT_EQ_DEFAULT(SphericalToQuaternion(local),

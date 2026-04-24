@@ -63,7 +63,7 @@ TEST(LOSTVectorGenerationAlgorithmTest, TestIdentityReferenceSimpleTest) {
 
     // Check if the result is as expected
     // Run(x_E) = -(relOri * refOri * x_E)
-    PositionVector expected = -{-100.0, -200.0, 300.0};
+    PositionVector expected = {100.0, 200.0, -300.0};
     ASSERT_VEC3_EQ_DEFAULT(expected, actual);
 }
 

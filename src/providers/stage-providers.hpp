@@ -100,8 +100,7 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
         }
         return std::make_unique<LOSTVectorGenerationAlgorithm>(
             SphericalToQuaternion(options.relOrientation),
-            referenceOrientation
-        );
+            referenceOrientation);
     }
 }
 
