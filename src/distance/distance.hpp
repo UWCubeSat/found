@@ -94,6 +94,24 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
      */
     PositionVector Run(const Points &p) override;
 
+    const Camera &getCamera() const {
+        return cam_;
+    }
+
+    /**
+     * Returns the global to local transformation matrix.
+     */
+    const Mat3 &getTPC() const {
+        return TPC_;
+    }
+
+    /**
+     * Returns the principle axes of the target planet.
+     */
+    const Vec3 &getPrincipleAxes() const {
+        return principleAxes_;
+    }
+
  protected:
    /**
     * cam_ field instance describes the camera settings used for the photo taken
@@ -117,6 +135,22 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
 
     /** Injected regression: data (Nx4) -> 3-vector; if empty, TLS is used. */
     RegressionFunc regression_;
+};
+
+class SpheroidDistanceAndCovarianceDeterminationAlgorithm : public FunctionStage<Points, DistanceAndCovariance> {
+ public:
+
+    SpheroidDistanceAndCovarianceDeterminationAlgorithm(
+        std::unique_ptr<SpheroidDistanceDeterminationAlgorithm> algorithm
+    ) : algorithm_(std::move(algorithm)) {};
+
+    virtual ~SpheroidDistanceAndCovarianceDeterminationAlgorithm() {}
+
+    DistanceAndCovariance Run(const Points &p) override;
+
+ protected:
+    std::unique_ptr<SpheroidDistanceDeterminationAlgorithm> algorithm_;
+
 };
 
 /**

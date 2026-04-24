@@ -22,6 +22,14 @@ typedef std::vector<Vec2> Points;
 /// coordinate system.
 typedef Vec3 PositionVector;
 
+/// The output of a DistanceAndCovarianceDeterminationAlgorithm. Outputs a 3D
+/// Vector and its associated covariance matrix that represents the satellite's
+/// position.
+struct DistanceAndCovariance {
+    PositionVector distance;
+    Mat3 covariance;
+};
+
 /**
  * Represents an image
  * 
