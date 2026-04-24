@@ -4,6 +4,9 @@
 #include <optional>
 #include <stdexcept>
 #include <cassert>
+#include <memory>
+#include <type_traits>
+#include <utility>
 
 #include "common/pipeline/stages.hpp"
 
@@ -60,8 +63,8 @@ class Pipeline : public FunctionStage<Input, Output> {
     virtual Output Run(const Input &input) = 0;
 
  protected:
-    /// The stages of this
-    Action *stages[N];
+    /// Ownership storage for the stages
+    std::unique_ptr<Action> stages[N];
     /// The number of stages
     size_t size = 0;
     /// Whether we're complete
@@ -70,39 +73,42 @@ class Pipeline : public FunctionStage<Input, Output> {
     std::optional<Output> finalProduct;
 
     /**
-     * Adds a stage to this pipeline
-     * 
-     * @param stage The stage to add to the pipeline
-     * 
-     * @throw std::invalid_argument iff this is already completed
-     * 
+     * Adds a stage to this pipeline, taking ownership of the provided stage.
+     *
+     * @param stage The stage to add to this
+     *
+     * @throw std::invalid_argument iff this has already been completed
+     *
      * @pre This method is called when the number of registered stages is
-     * less than N - 1
-     * 
+     *      less than N - 1
+     *
+     * @post stage is stored inside this such that stage and this share the same
+     *       lifetime. Ownership of stage is transferred to this
      */
-    inline void AddStageHelper(Action &stage) {
+    inline void AddStageHelper(std::unique_ptr<Action> &&stage) {
+        assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->stages[size++] = &stage;
+        this->stages[size++] = std::move(stage);
     }
 
     /**
-     * Completes a pipeline with a stage
-     * 
-     * @param stage The stage to add
-     * 
-     * @throw std::invalid_argument iff this is already completed
-     * 
+     * Completes a pipeline with a final stage, taking ownership of it.
+     *
+     * @param stage The final stage to add
+     *
+     * @throw std::invalid_argument iff this has already been completed
+     *
      * @pre This method is called when the number of
-     * registered stages is less than N
-     * 
-     * @pre The pipeline is not ready yet (this->ready == false)
-     * 
-     * @post The pipeline is ready (this->ready == true)
+     *       registered stages is less than N
+     * @pre This is not ready yet
+     *
+     * @post This is now ready. Ownership of stage is transferred to this. The
+     *       lifetime of stage matches this 
      */
-    inline void CompleteHelper(Action &stage) {
+    inline void CompleteHelper(std::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->stages[size++] = &stage;
+        this->stages[size++] = std::move(stage);
         this->ready = true;
     }
 
@@ -162,20 +168,21 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * @pre This method is called when the number of registered stages is
      * less than N - 1
      */
-    template<typename I, typename O> SequentialPipeline &AddStage(FunctionStage<I, O> &stage) {
+    template<typename I, typename O> SequentialPipeline &AddStage(std::unique_ptr<FunctionStage<I, O>> stage) {
+        FunctionStage<I, O> *stagePtr = stage.get();
         if (this->size == 0) {
             if (!std::is_same<Input, I>::value) {
                 throw std::invalid_argument("The initial input type is not correct");
             }
-           this->firstResource = reinterpret_cast<Input *>(&stage.GetResource());
+            this->firstResource = reinterpret_cast<Input *>(&stagePtr->GetResource());
         } else {
             // Chain here, and blindly trust the user
-            *this->lastProduct = static_cast<void *>(&stage.GetResource());
+            *this->lastProduct = static_cast<void *>(&stagePtr->GetResource());
         }
         // Add to our list
-        Pipeline<Input, Output, N>::AddStageHelper(stage);
+        Pipeline<Input, Output, N>::AddStageHelper(std::move(stage));
         // Now, reset the lastProduct to be of this stage
-        this->lastProduct = reinterpret_cast<void **>(&stage.GetProduct());
+        this->lastProduct = reinterpret_cast<void **>(&stagePtr->GetProduct());
         // Return the pipeline for chaining
         return *this;
     }
@@ -186,19 +193,18 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * 
      * @param stage The stage to add
      * 
-     * @return this, with the last stage added (to run this::Run)
+     * @return this, with the last stage added
      * 
-     * @throws invalid_argument iff this is the first time this
-     * method is called, and I does not match Input OR if the SequentialPipeline
-     * is already complete (aka this::Complete was called successfully)
+     * @throws invalid_argument iff this is the first time Complete
+     *         is called on this, and I does not match Input OR 
+     *         if this is already complete
      * 
-     * @pre This method is called when the number of registered stages is less
-     * than N
+     * @pre The number of registered stages is less than N
      */
-    template<typename I> SequentialPipeline &Complete(FunctionStage<I, Output> &stage) {
+    template<typename I> SequentialPipeline &Complete(std::unique_ptr<FunctionStage<I, Output>> stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
-        this->AddStage(stage);
+        this->AddStage(std::move(stage));
         this->ready = true;
         return *this;
     }
@@ -269,9 +275,9 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      * 
      * @return this, with the added stage
      */
-    ModifyingPipeline &AddStage(ModifyingStage<T> &stage) {
+    ModifyingPipeline &AddStage(std::unique_ptr<ModifyingStage<T>> stage) {
         assert(this->size < N - 1);
-        Pipeline<T, T, N>::AddStageHelper(stage);
+        Pipeline<T, T, N>::AddStageHelper(std::move(stage));
         return *this;
     }
 
@@ -285,9 +291,9 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      * @pre This method is called when the number of
      * registered stages is less than N
      */
-    ModifyingPipeline &Complete(ModifyingStage<T> &stage) {
+    ModifyingPipeline &Complete(std::unique_ptr<ModifyingStage<T>> stage) {
         assert(this->size < N);
-        Pipeline<T, T, N>::CompleteHelper(stage);
+        Pipeline<T, T, N>::CompleteHelper(std::move(stage));
         return *this;
     }
 
@@ -305,14 +311,15 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
             throw std::runtime_error("This is an illegal action: the pipeline is not ready yet");
         // Construct here if there is no next product,
         // or construct there if there is
-        if (this->product == nullptr) {
+        if (this->product == nullptr) {  // GCOVR_EXCL_BR_LINE
             // engage our finalProduct
             this->finalProduct.emplace();
             this->product = &this->finalProduct.value();
         }
         *this->product = input;
         for (size_t i = 0; i < this->size; i++) {
-            dynamic_cast<ModifyingStage<T> *>(this->stages[i])->SetResource(*this->product);
+            dynamic_cast<ModifyingStage<T> *>(this->stages[i].get())
+                                              ->SetResource(*this->product);  // GCOVR_EXCL_LINE
         }
         Pipeline<T, T, N>::DoActionHelper();
         return *this->product;

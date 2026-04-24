@@ -9,24 +9,22 @@
 #include <fstream>
 #include <ctime>
 
-#include "test/common/mocks/distance-mocks.hpp"
-#include "test/common/mocks/orbit-mocks.hpp"
-#include "test/common/common.hpp"
-
-#include "src/providers/converters.hpp"
 #include "src/datafile/datafile.hpp"
 #include "src/datafile/serialization.hpp"
-
 #include "src/calibrate/calibrate.hpp"
-
 #include "src/distance/edge.hpp"
 #include "src/distance/distance.hpp"
 #include "src/distance/vectorize.hpp"
+#include "src/distance/edge-filters.hpp"
+#include "src/command-line/execution/executors.hpp"
+
+#include "test/common/mocks/distance-mocks.hpp"
+#include "test/common/mocks/orbit-mocks.hpp"
+#include "test/common/common.hpp"
+#include "test/common/mocks/pipeline-mocks.hpp"
 
 // TODO: Fully Implement orbit stuff this after orbit stage is implemented
 // TODO: Include statement for Orbit Pipeline
-
-#include "src/command-line/execution/executors.hpp"
 
 namespace found {
 
@@ -83,27 +81,26 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
 }
 
 TEST(ExecutorsTest, TestDistancePipelineExecutor) {
-    DistanceOptions options = {
-        strtoimage("test/common/assets/example_image.jpg"),
-        strtodf("test/common/assets/empty-df.found"),
-        false,
-        0.012,
-        20E-6,
-        {0, 0, 0},
-        {0, 0, 0},
-        DECIMAL_M_E,
-        25,
-        1,
-        0.0,
-        "hello",
-        92,
-        300,
-        2.0,
-        0,
-        10,
-        12,
-        temp_df
-    };
+    DistanceOptions options;
+    options.image = strtoimage("test/common/assets/example_image.jpg");
+    options.calibrationData = strtodf("test/common/assets/empty-df.found");
+    options.refAsOrientation = false;
+    options.focalLength = 0.012;
+    options.pixelSize = 20E-6;
+    options.refOrientation = {0, 0, 0};
+    options.relOrientation = {0, 0, 0};
+    options.radius = DECIMAL_M_E;
+    options.SEDAThreshold = 25;
+    options.SEDABorderLen = 1;
+    options.SEDAOffset = 0.0;
+    options.distanceAlgo = "hello";
+    options.ISDDAMinIters = 92;
+    options.ISDDADistRatio = 300;
+    options.ISDDADiscimRatio = 2.0;
+    options.ISDDAPdfOrd = 10;
+    options.ISDDARadLossOrd = 12;
+    options.outputFile = temp_df;
+    options.enableNoOpEdgeFilter = false;
     Points points = {
         {0, 0},
         {1, 1},
@@ -130,20 +127,24 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
     std::unique_ptr<EdgeDetectionAlgorithm>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
+    std::unique_ptr<EdgeFilteringAlgorithms> filters = std::make_unique<EdgeFilteringAlgorithms>();
+    std::unique_ptr<MockModifyingStage<Points>> mockFilter = std::make_unique<MockModifyingStage<Points>>();
+    EXPECT_CALL(*mockFilter, Run(PointsMatcher(points)))
+        .WillOnce(testing::Invoke([](Points &){ /* no-op for test */ }));
+    filters->Complete(std::move(mockFilter));
+
     std::unique_ptr<DistanceDeterminationAlgorithm>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
     std::unique_ptr<VectorGenerationAlgorithm>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
-
     DistancePipelineExecutor executor(std::move(options),
                                       std::move(edgeDetectionAlgorithm),
+                                      std::move(filters),
                                       std::move(distanceDeterminationAlgorithm),
                                       std::move(vectorGenerationAlgorithm));
 
     executor.ExecutePipeline();
-
     testing::internal::CaptureStdout();  // Start capturing stdout
-
     executor.OutputResults();
 
     std::string output = testing::internal::GetCapturedStdout();  // Stop capturing stdout
@@ -208,6 +209,5 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 }
-
 
 }  // namespace found
