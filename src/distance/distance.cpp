@@ -56,19 +56,23 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(const Points &p) {
     PositionVector vecToEarth = algorithm_->Run(p); // s_C
 
-    const Vec3 shapeMatrixFactor = algorithm_->getPrincipleAxes().cwiseInverse();
-    const Mat3 shapeMatrix = shapeMatrixFactor.cwiseProduct(shapeMatrixFactor).asDiagonal();
+    Vec3 shapeMatrixFactor = algorithm_->getPrincipleAxes().cwiseInverse();
+    Mat3 shapeMatrix = shapeMatrixFactor.cwiseProduct(shapeMatrixFactor).asDiagonal();
     
     // A_C
-    const Mat3 transformedShapeMatrix = algorithm_->getTPC() * shapeMatrix * algorithm_->getTPC().transpose();
+    Mat3 transformedShapeMatrix = algorithm_->getTPC() * shapeMatrix * algorithm_->getTPC().transpose();
 
     // M_C
-    const Mat3 transformedConicLocusMatrix = transformedShapeMatrix * (vecToEarth * vecToEarth.transpose()) * transformedShapeMatrix - (vecToEarth.transpose() * transformedShapeMatrix * vecToEarth - 1.0) * transformedShapeMatrix;
+    Mat3 transformedConicLocusMatrix = transformedShapeMatrix * (vecToEarth * vecToEarth.transpose()) * transformedShapeMatrix - (vecToEarth.transpose() * transformedShapeMatrix * vecToEarth - 1.0) * transformedShapeMatrix;
 
-    // sigma_{u_i}
-    const decimal pixelStandardDeviation = 0.0; // TODO
-    // d_x
-    const decimal focalLengthPixels = 0.0; // TODO
+    // sigma_{x_i}
+    decimal pointVariance = 0.0;
+    for (const auto &point : p) {
+        Vec3 homogeneous = point.homogeneous();
+        decimal residual = homogeneous.transpose() * transformedConicLocusMatrix * homogeneous;
+        pointVariance += residual * residual;
+    }
+    pointVariance /= p.size();
 
     Mat3 outCovarianceInverse = Mat3::Zero();
 
@@ -77,15 +81,11 @@ DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(c
         // x_i
         const Vec3 &point = algorithm_->getCamera().PixelToImageCoordinates(p[i]);
 
-        // we can also calculate this by using the image plane points, we dont
-        // need to necessarily get it from the pixel coordinates
-        const decimal pointVariance = (pixelStandardDeviation / focalLengthPixels);
-        
         // see Exercise 8.6
-        const Mat3 pointCovariance = Vec3(pointVariance, pointVariance, 0).asDiagonal();
+        Mat3 pointCovariance = Vec3(pointVariance, pointVariance, 0).asDiagonal();
 
-        const decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix * pointCovariance * transformedConicLocusMatrix * point;
-        const Mat3 jacobian = 2.0 * vecToEarth.transpose() * ((point.transpose() * transformedShapeMatrix * point) * transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * transformedShapeMatrix);
+        decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix * pointCovariance * transformedConicLocusMatrix * point;
+        Mat3 jacobian = 2.0 * vecToEarth.transpose() * ((point.transpose() * transformedShapeMatrix * point) * transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * transformedShapeMatrix);
 
         outCovarianceInverse += (jacobian.transpose() * jacobian) / residualVariance;
     }
