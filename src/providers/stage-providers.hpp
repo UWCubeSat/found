@@ -87,44 +87,20 @@ inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminat
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
-    // flips the world to camera rotation quaternion to a camera to world rotation quaternion,
-    // which is the convention used by the LOSTVectorGenerationAlgorithm
+inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
         return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
                                                                referenceOrientation);
     } else {
+        Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
             return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
         }
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(
-            SphericalToQuaternion(options.relOrientation),
-            referenceOrientation);
+        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
     }
-}
-
-/**
- * Provides an EdgeFilteringAlgorithms ptr. Currently only
- * allows no operations.
- * 
- * @param options The options to derive the edge filtering algorithm from
- * 
- * @return std::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
- */
-inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &&options) {
-    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
-    bool added = false;
-
-    if (options.enableNoOpEdgeFilter) {
-        pipeline->Complete(std::make_unique<NoOpEdgeFilter>());
-        added = true;
-    }
-
-    if (!added) return nullptr;
-    return pipeline;
 }
 
 /**
