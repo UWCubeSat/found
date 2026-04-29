@@ -60,10 +60,14 @@ DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(c
     Mat3 shapeMatrix = shapeMatrixFactor.cwiseProduct(shapeMatrixFactor).asDiagonal();
     
     // A_C
-    Mat3 transformedShapeMatrix = algorithm_->getTPC() * shapeMatrix * algorithm_->getTPC().transpose();
+    Mat3 transformedShapeMatrix = algorithm_->getTPC() * 
+        shapeMatrix * algorithm_->getTPC().transpose();
 
     // M_C
-    Mat3 transformedConicLocusMatrix = transformedShapeMatrix * (vecToEarth * vecToEarth.transpose()) * transformedShapeMatrix - (vecToEarth.transpose() * transformedShapeMatrix * vecToEarth - 1.0) * transformedShapeMatrix;
+    Mat3 transformedConicLocusMatrix = transformedShapeMatrix * 
+            (vecToEarth * vecToEarth.transpose()) * transformedShapeMatrix - 
+            (vecToEarth.transpose() * transformedShapeMatrix * vecToEarth - 1.0) * 
+            transformedShapeMatrix;
 
     // sigma_{x_i}
     decimal pointVariance = 0.0;
@@ -84,8 +88,12 @@ DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(c
         // see Exercise 8.6
         Mat3 pointCovariance = Vec3(pointVariance, pointVariance, 0).asDiagonal();
 
-        decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix * pointCovariance * transformedConicLocusMatrix * point;
-        Mat3 jacobian = 2.0 * vecToEarth.transpose() * ((point.transpose() * transformedShapeMatrix * point) * transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * transformedShapeMatrix);
+        decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix *
+            pointCovariance * transformedConicLocusMatrix * point;
+        Mat3 jacobian = 2.0 * vecToEarth.transpose() * 
+            ((point.transpose() * transformedShapeMatrix * point) * 
+             transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * 
+             transformedShapeMatrix);
 
         outCovarianceInverse += (jacobian.transpose() * jacobian) / residualVariance;
     }

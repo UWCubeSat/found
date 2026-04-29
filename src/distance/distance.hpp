@@ -137,18 +137,37 @@ class SpheroidDistanceDeterminationAlgorithm : public DistanceDeterminationAlgor
     RegressionFunc regression_;
 };
 
+/**
+ * This class represents a wrapper around the SpheroidDistanceDeterminationAlgorithm that
+ * additionally calculates a covariance matrix for the calculated point.
+ */
 class SpheroidDistanceAndCovarianceDeterminationAlgorithm : public FunctionStage<Points, DistanceAndCovariance> {
  public:
 
+    /**
+     * Creates a SpheroidDistanceAndCovarianceDeterminationAlgorithm using a pointer to a given
+     * SpheroidDistanceDeterminationAlgorithm.
+     *
+     * @param algorithm The SpheroidDistanceDeterminationAlgorithm to use when calculating
+     * covariance.
+     */
     SpheroidDistanceAndCovarianceDeterminationAlgorithm(
         std::unique_ptr<SpheroidDistanceDeterminationAlgorithm> algorithm
     ) : algorithm_(std::move(algorithm)) {};
-
     virtual ~SpheroidDistanceAndCovarianceDeterminationAlgorithm() {}
 
+    /**
+     * Using a set of points on the horizon of a celestial body, obtains a position of the planet
+     * relative to the camera, and then calculates the covariance of the estimate.
+     *
+     * @param p The list of points on the horizon to use.
+     * @return The estimated position of the planet relative to the camera and the covariance of the
+     * estimate.
+     */
     DistanceAndCovariance Run(const Points &p) override;
 
  protected:
+    /** The SpheroidDistanceDeterminationAlgorithm to use when determining position of the planet */
     std::unique_ptr<SpheroidDistanceDeterminationAlgorithm> algorithm_;
 
 };
