@@ -329,8 +329,8 @@ TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterEnabled) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 
     std::remove(temp_df);
