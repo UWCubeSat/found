@@ -1,6 +1,8 @@
 #ifndef TEST_COMMON_CONSTANTS_PIPELINE_CONSTANTS_HPP_
 #define TEST_COMMON_CONSTANTS_PIPELINE_CONSTANTS_HPP_
 
+#include "src/common/style.hpp"
+
 #include "src/common/pipeline/pipelines.hpp"
 
 namespace found {
@@ -20,6 +22,7 @@ constexpr const char *strings[] = {"Hello World!", "Foo", "Bar"};
 constexpr char characters[] = {'c', 'a', '\n'};
 constexpr float floats[] = {5.5, 8.8, -152.1};
 constexpr double doubles[] = {-5.1, 23.2, -63.2};
+Points points = {{1, 2}, {3, 4}, {5, 6}};
 
 // std {vector, map, lists, struc, vec2, vec3}
 

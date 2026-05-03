@@ -221,4 +221,37 @@ TEST_F(ParserTest, OrbitParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(400000.0), options.mu);
 }
 
+TEST_F(ParserTest, DistanceParserEnableNoopWithEqualsTrue) {
+    int argc = 3;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter=true"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopNoValueAtEnd) {
+    int argc = 3;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopExplicitFalse) {
+    int argc = 4;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter", "false"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_FALSE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopNoValueBeforeAnotherFlag) {
+    int argc = 7;
+    const char *argv[] = {"found", "distance",
+        "--enable-noop-edge-filter",
+        "--image", "test/common/assets/example_image.jpg",
+        "--calibration-data", "test/common/assets/empty-df.found"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+    stbi_image_free(options.image.image);
+}
+
 }  // namespace found

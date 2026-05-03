@@ -12,6 +12,7 @@
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
+#include "distance/edge-filters.hpp"
 
 #include "orbit/orbit.hpp"
 
@@ -79,21 +80,40 @@ class DistancePipelineExecutor : public PipelineExecutor {
     ~DistancePipelineExecutor();
 
     /**
-     * Constructs a DistancePipelineExecutor
-     * 
-     * @param options The options to create the pipeline
-     * @param edgeDetectionAlgorithm The edge detection algorithm to use
-     * @param distanceAlgorithm The distance determination algorithm to use
-     * @param vectorizationAlgorithm The vectorization algorithm to use
-     * 
-     * @pre options.image.image must be point to heap allocated memory.
-     * This is guarenteed as long as strtoimage is used to create the image,
-     * and it throws an error if the image is not valid.
+     * Constructs a DistancePipelineExecutor (no edge-filters)
+     *
+     * @param options The DistanceOptions to configure the pipeline
+     * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
+     * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
+     * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
+     *
+     * @pre edgeDetectionAlgorithm, distanceAlgorithm, and vectorizationAlgorithm are non-null and already
+     *      configured to operate on (Image -> Points -> PositionVector) in that order.
+     * @pre Each provided stage is already "ready" (e.g., pipelines passed in were Completed) before transfer.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
                                       unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm,
                                       unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm,
                                       unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm);
+
+    /**
+     * Constructs a DistancePipelineExecutor with an edge-filtering pipeline
+     *
+     * @param options The DistanceOptions to configure the pipeline (moved into the executor)
+     * @param edgeDetectionAlgorithm The EdgeDetectionAlgorithm used by the pipeline (moved into the executor)
+     * @param filters A pipeline of edge filtering stages; ownership is transferred to the executor
+     * @param distanceAlgorithm The DistanceDeterminationAlgorithm used by the pipeline (moved into the executor)
+     * @param vectorizationAlgorithm The VectorGenerationAlgorithm used by the pipeline (moved into the executor)
+     *
+     * @pre edgeDetectionAlgorithm, filters, distanceAlgorithm, and vectorizationAlgorithm are non-null.
+     * @pre filters has been completed (ready) prior to being passed in so it can run as a stage.
+     * @pre Stage input/output types align with the Distance pipeline: Image -> Points -> Points -> PositionVector.
+     */
+    explicit DistancePipelineExecutor(DistanceOptions &&options,
+                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      std::unique_ptr<EdgeFilteringAlgorithms> filters,
+                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
