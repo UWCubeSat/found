@@ -90,12 +90,13 @@ DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(c
 
         decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix *
             pointCovariance * transformedConicLocusMatrix * point;
-        Mat3 jacobian = 2.0 * vecToEarth.transpose() * 
+
+        auto H = 2.0 * vecToEarth.transpose() * 
             ((point.transpose() * transformedShapeMatrix * point) * 
              transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * 
              transformedShapeMatrix);
 
-        outCovarianceInverse += (jacobian.transpose() * jacobian) / residualVariance;
+        outCovarianceInverse += (H.transpose() * H) / residualVariance;
     }
 
     return {
