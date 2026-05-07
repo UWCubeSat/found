@@ -58,4 +58,6 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
 
     // test that the covariance is symmetric
     EXPECT_TRUE(result.covariance.isApprox(result.covariance.transpose()));
+        // I'm pretty sure this is the right way to check for symmetry, 
+        //but if not, we can also check that the off-diagonal elements are equal
 }
