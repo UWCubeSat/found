@@ -46,7 +46,7 @@ var hierarchy =
         ] ],
         [ "found::FunctionStage< Image, Points >", "classfound_1_1FunctionStage.html", [
           [ "found::EdgeDetectionAlgorithm", "classfound_1_1EdgeDetectionAlgorithm.html", [
-            [ "found::LoCEdgeDetectionAlgorithm", "classfound_1_1LoCEdgeDetectionAlgorithm.html", null ],
+            [ "found::LoGEdgeDetectionAlgorithm", "classfound_1_1LoGEdgeDetectionAlgorithm.html", null ],
             [ "found::SimpleEdgeDetectionAlgorithm", "classfound_1_1SimpleEdgeDetectionAlgorithm.html", null ]
           ] ]
         ] ],
@@ -69,7 +69,6 @@ var hierarchy =
         ] ]
       ] ]
     ] ],
-    [ "found::Attitude", "classfound_1_1Attitude.html", null ],
     [ "CalibrationOptions", "classCalibrationOptions.html", null ],
     [ "found::Camera", "classfound_1_1Camera.html", null ],
     [ "found::Component", "structfound_1_1Component.html", null ],
@@ -79,18 +78,13 @@ var hierarchy =
     [ "DistanceOptions", "classDistanceOptions.html", null ],
     [ "found::EarthSphericalVec3", "structfound_1_1EarthSphericalVec3.html", null ],
     [ "found::Edge", "structfound_1_1Edge.html", null ],
-    [ "found::EulerAngles", "classfound_1_1EulerAngles.html", null ],
     [ "found::Image", "structfound_1_1Image.html", null ],
     [ "found::LocationRecord", "structfound_1_1LocationRecord.html", null ],
-    [ "found::Mat3", "classfound_1_1Mat3.html", null ],
     [ "OrbitOptions", "classOrbitOptions.html", null ],
     [ "found::OrbitParams", "structfound_1_1OrbitParams.html", null ],
     [ "found::PipelineExecutor", "classfound_1_1PipelineExecutor.html", [
       [ "found::CalibrationPipelineExecutor", "classfound_1_1CalibrationPipelineExecutor.html", null ],
       [ "found::DistancePipelineExecutor", "classfound_1_1DistancePipelineExecutor.html", null ],
       [ "found::OrbitPipelineExecutor", "classfound_1_1OrbitPipelineExecutor.html", null ]
-    ] ],
-    [ "found::Quaternion", "classfound_1_1Quaternion.html", null ],
-    [ "found::Vec2", "structfound_1_1Vec2.html", null ],
-    [ "found::Vec3", "classfound_1_1Vec3.html", null ]
+    ] ]
 ];

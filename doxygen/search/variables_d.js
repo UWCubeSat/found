@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['offset_5f_0',['offset_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a23d8414ecd9c09b3df79d706cf20cd07',1,'found::SimpleEdgeDetectionAlgorithm']]],
-  ['options_5f_1',['options_',['../classfound_1_1CalibrationPipelineExecutor.html#a6868dd515ef99357515a472660d0eeea',1,'found::CalibrationPipelineExecutor::options_'],['../classfound_1_1DistancePipelineExecutor.html#a79b288b7cdafc63191981cf172875366',1,'found::DistancePipelineExecutor::options_'],['../classfound_1_1OrbitPipelineExecutor.html#ae0822e056d80e333e61f571eaa8bfede',1,'found::OrbitPipelineExecutor::options_']]],
-  ['orientation_2',['orientation',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#ac7ee96e7a752852eec28726c5ef2c1af',1,'found::LOSTVectorGenerationAlgorithm']]],
-  ['outplanerotation_3',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]]
+  ['r_5f_0',['r_',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#aa8edb30941955ad5d634132afe699ed0',1,'found::SphericalDistanceDeterminationAlgorithm']]],
+  ['radius_1',['radius',['../structfound_1_1EarthSphericalVec3.html#a389aedc1b7a002fb7a2a2d26a83ae4ab',1,'found::EarthSphericalVec3']]],
+  ['radius_5f_2',['radius_',['../classfound_1_1SphericalDistanceDeterminationAlgorithm.html#a23af8ac2176f883c942409cf14d0a39f',1,'found::SphericalDistanceDeterminationAlgorithm::radius_'],['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#acc138b5d33955594b54e3ac67ecfd646',1,'found::ApproximateOrbitPropagationAlgorithm::radius_']]],
+  ['radiuslossorder_5f_3',['radiusLossOrder_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a502f8c6d14dceddd84129e20c98b553b',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
+  ['ready_4',['ready',['../classfound_1_1Pipeline.html#aea82599564e6d8188961b86512f7b062',1,'found::Pipeline']]],
+  ['relative_5fattitude_5',['relative_attitude',['../structfound_1_1DataFile.html#ab5b0d0feadf717bceba91c1a0b3c601c',1,'found::DataFile']]],
+  ['resource_6',['resource',['../classfound_1_1FunctionStage.html#accae2a028ee0fda2ec8c81ff92c0bc4d',1,'found::FunctionStage::resource'],['../classfound_1_1ModifyingStage.html#a037468789531751bbf33115a9983b6d9',1,'found::ModifyingStage::resource']]]
 ];

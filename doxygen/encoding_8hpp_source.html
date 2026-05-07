@@ -201,8 +201,8 @@ $(document).ready(function(){initNavTree('encoding_8hpp_source.html',''); initRe
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="preprocessor">    #if ENDIANESS == __ORDER_LITTLE_ENDIAN__</span></div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <a class="code hl_union" href="unionfound_1_1__f__u__.html">_f_u_</a> t;</div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        t.<a class="code hl_variable" href="unionfound_1_1__f__u__.html#af4a9ef19131ae6ec41070d03c98dc827">f</a> = v;</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        t.<a class="code hl_variable" href="unionfound_1_1__f__u__.html#a8f58a1af248e5e5106e2bb304468dd1c">u</a> = htonl(t.<a class="code hl_variable" href="unionfound_1_1__f__u__.html#a8f58a1af248e5e5106e2bb304468dd1c">u</a>);</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordflow">return</span> t.<a class="code hl_variable" href="unionfound_1_1__f__u__.html#af4a9ef19131ae6ec41070d03c98dc827">f</a>;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        t.u = htonl(t.u);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordflow">return</span> t.f;</div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="preprocessor">    #else</span></div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        <span class="keywordflow">return</span> v;</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="preprocessor">    #endif</span></div>

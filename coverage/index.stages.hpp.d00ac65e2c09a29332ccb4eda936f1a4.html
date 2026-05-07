@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: common/pipeline/stages.hpp</div>
-            <div>Date: 2026-04-17 08:33:45</div>
+            <div>Date: 2026-05-07 00:22:50</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -41,7 +41,7 @@
             </div>
             <div class="d-flex">
                 <div class="mr-2">Branches:</div>
-                <div class="mr-2" style="margin: auto;">1/1</div>
+                <div class="mr-2" style="margin: auto;">2/2</div>
                 <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
             </div>
         </div>
@@ -59,7 +59,12 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l19">found::Action::~Action() (line 19)</a></td><td>called 275 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l19">found::Action::~Action() (line 19)</a></td><td>called 277 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>86.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::FunctionStage() (line 62)</a></td><td>called 21 times</td><td>80.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 21 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l74">found::FunctionStage&lt;char, char&gt;::DoAction() (line 74)</a></td><td>called 1 time</td><td>100.0%</td></tr>
     <tr><td><a href="#l62">found::FunctionStage&lt;char, char&gt;::FunctionStage() (line 62)</a></td><td>called 7 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l91">found::FunctionStage&lt;char, char&gt;::GetProduct() (line 91)</a></td><td>called 2 times</td><td>100.0%</td></tr>
@@ -110,21 +115,16 @@
     <tr><td><a href="#l91">found::FunctionStage&lt;float, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 1 time</td><td>100.0%</td></tr>
     <tr><td><a href="#l83">found::FunctionStage&lt;float, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 1 time</td><td>100.0%</td></tr>
     <tr><td><a href="#l67">found::FunctionStage&lt;float, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;found::Image, found::Vec3&gt;::DoAction() (line 74)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;found::Image, found::Vec3&gt;::FunctionStage() (line 62)</a></td><td>called 15 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;found::Image, found::Vec3&gt;::GetProduct() (line 91)</a></td><td>called 13 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;found::Image, found::Vec3&gt;::GetResource() (line 83)</a></td><td>called 2 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;found::Image, found::Vec3&gt;::~FunctionStage() (line 67)</a></td><td>called 15 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;found::Image, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>88.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;found::Image, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::FunctionStage() (line 62)</a></td><td>called 27 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;found::Image, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;found::Image, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;found::Image, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 27 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;found::Vec3, found::Vec3&gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;found::Vec3, found::Vec3&gt;::FunctionStage() (line 62)</a></td><td>called 19 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;found::Vec3, found::Vec3&gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;found::Vec3, found::Vec3&gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;found::Vec3, found::Vec3&gt;::~FunctionStage() (line 67)</a></td><td>called 19 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;found::Image, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::DoAction() (line 74)</a></td><td>called 1 time</td><td>86.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;found::Image, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::FunctionStage() (line 62)</a></td><td>called 15 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;found::Image, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetProduct() (line 91)</a></td><td>called 13 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;found::Image, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetResource() (line 83)</a></td><td>called 2 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;found::Image, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 15 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;found::Image, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>88.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;found::Image, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::FunctionStage() (line 62)</a></td><td>called 27 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;found::Image, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;found::Image, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;found::Image, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 27 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l74">found::FunctionStage&lt;int, char&gt;::DoAction() (line 74)</a></td><td>called 3 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l62">found::FunctionStage&lt;int, char&gt;::FunctionStage() (line 62)</a></td><td>called 9 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l91">found::FunctionStage&lt;int, char&gt;::GetProduct() (line 91)</a></td><td>called 4 times</td><td>100.0%</td></tr>
@@ -165,26 +165,26 @@
     <tr><td><a href="#l91">found::FunctionStage&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, int&gt;::GetProduct() (line 91)</a></td><td>called 1 time</td><td>100.0%</td></tr>
     <tr><td><a href="#l83">found::FunctionStage&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, int&gt;::GetResource() (line 83)</a></td><td>called 1 time</td><td>100.0%</td></tr>
     <tr><td><a href="#l67">found::FunctionStage&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, int&gt;::~FunctionStage() (line 67)</a></td><td>called 1 time</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;std::pair&lt;found::EulerAngles, found::EulerAngles&gt;, found::Quaternion&gt;::DoAction() (line 74)</a></td><td>called 9 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;std::pair&lt;found::EulerAngles, found::EulerAngles&gt;, found::Quaternion&gt;::FunctionStage() (line 62)</a></td><td>called 22 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;std::pair&lt;found::EulerAngles, found::EulerAngles&gt;, found::Quaternion&gt;::GetProduct() (line 91)</a></td><td>called 18 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;std::pair&lt;found::EulerAngles, found::EulerAngles&gt;, found::Quaternion&gt;::GetResource() (line 83)</a></td><td>called 10 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;std::pair&lt;found::EulerAngles, found::EulerAngles&gt;, found::Quaternion&gt;::~FunctionStage() (line 67)</a></td><td>called 39 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;std::pair&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;, Eigen::Quaternion&lt;double, 0&gt; &gt;::DoAction() (line 74)</a></td><td>called 9 times</td><td>86.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;std::pair&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;, Eigen::Quaternion&lt;double, 0&gt; &gt;::FunctionStage() (line 62)</a></td><td>called 39 times</td><td>80.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;std::pair&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;, Eigen::Quaternion&lt;double, 0&gt; &gt;::GetProduct() (line 91)</a></td><td>called 18 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;std::pair&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;, Eigen::Quaternion&lt;double, 0&gt; &gt;::GetResource() (line 83)</a></td><td>called 10 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;std::pair&lt;Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;, Eigen::Quaternion&lt;double, 0&gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 39 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>86.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::FunctionStage() (line 62)</a></td><td>called 45 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 45 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l74">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::DoAction() (line 74)</a></td><td>called 1 time</td><td>88.0%</td></tr>
+    <tr><td><a href="#l62">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::FunctionStage() (line 62)</a></td><td>called 16 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l91">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l83">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l67">found::FunctionStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;, std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 16 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l74">found::FunctionStage&lt;std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt;, std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt; &gt;::DoAction() (line 74)</a></td><td>called 6 times</td><td>88.0%</td></tr>
     <tr><td><a href="#l62">found::FunctionStage&lt;std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt;, std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt; &gt;::FunctionStage() (line 62)</a></td><td>called 14 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l91">found::FunctionStage&lt;std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt;, std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l83">found::FunctionStage&lt;std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt;, std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 8 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l67">found::FunctionStage&lt;std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt;, std::vector&lt;found::LocationRecord, std::allocator&lt;found::LocationRecord&gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 14 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, found::Vec3&gt;::DoAction() (line 74)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, found::Vec3&gt;::FunctionStage() (line 62)</a></td><td>called 45 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, found::Vec3&gt;::GetProduct() (line 91)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, found::Vec3&gt;::GetResource() (line 83)</a></td><td>called 12 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, found::Vec3&gt;::~FunctionStage() (line 67)</a></td><td>called 45 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l74">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::DoAction() (line 74)</a></td><td>called 1 time</td><td>88.0%</td></tr>
-    <tr><td><a href="#l62">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::FunctionStage() (line 62)</a></td><td>called 16 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l91">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::GetProduct() (line 91)</a></td><td>called 6 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l83">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::GetResource() (line 83)</a></td><td>called 6 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l67">found::FunctionStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;, std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::~FunctionStage() (line 67)</a></td><td>called 16 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l121">found::ModifyingStage&lt;char&gt;::DoAction() (line 121)</a></td><td>called 6 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l111">found::ModifyingStage&lt;char&gt;::ModifyingStage() (line 111)</a></td><td>called 10 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l133">found::ModifyingStage&lt;char&gt;::SetResource(char&amp;) (line 133)</a></td><td>called 6 times</td><td>100.0%</td></tr>
@@ -193,10 +193,10 @@
     <tr><td><a href="#l111">found::ModifyingStage&lt;int&gt;::ModifyingStage() (line 111)</a></td><td>called 8 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l133">found::ModifyingStage&lt;int&gt;::SetResource(int&amp;) (line 133)</a></td><td>called 7 times</td><td>100.0%</td></tr>
     <tr><td><a href="#l116">found::ModifyingStage&lt;int&gt;::~ModifyingStage() (line 116)</a></td><td>called 8 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l121">found::ModifyingStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::DoAction() (line 121)</a></td><td>called 6 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l111">found::ModifyingStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::ModifyingStage() (line 111)</a></td><td>called 7 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l133">found::ModifyingStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::SetResource(std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt;&amp;) (line 133)</a></td><td>called 6 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l116">found::ModifyingStage&lt;std::vector&lt;found::Vec2, std::allocator&lt;found::Vec2&gt; &gt; &gt;::~ModifyingStage() (line 116)</a></td><td>called 8 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l121">found::ModifyingStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::DoAction() (line 121)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l111">found::ModifyingStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::ModifyingStage() (line 111)</a></td><td>called 7 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l133">found::ModifyingStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::SetResource(std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt;&amp;) (line 133)</a></td><td>called 6 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l116">found::ModifyingStage&lt;std::vector&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;double, 2, 1, 0, 2, 1&gt; &gt; &gt; &gt;::~ModifyingStage() (line 116)</a></td><td>called 8 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -344,7 +344,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l19" href="#l19">19</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">550</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">554</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">Action</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -644,8 +644,14 @@
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l62" href="#l62">62</a></td>
                 <td class="text-right src linenos ws-unset">
+                    <details class="normal details-overlay">
+                        <summary>1/1</summary>
+                        <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+                            <div class="color-taken-branch">&check; Branch 2 taken 60 times.</div>
+                        </div>
+                    </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">464</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">463</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">FunctionStage</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -680,7 +686,7 @@
                 <td class="text-right src linenos"><a class="normal" id="l67" href="#l67">67</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">498</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">502</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">FunctionStage</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -738,7 +744,7 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 26 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 60 times.</div>
                         </div>
                     </details>
                 </td>

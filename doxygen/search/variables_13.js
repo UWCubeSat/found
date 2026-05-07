@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['u_0',['u',['../unionfound_1_1__f__u__.html#a8f58a1af248e5e5106e2bb304468dd1c',1,'found::_f_u_::u'],['../unionfound_1_1__d__u__.html#a2710cabda8018a20d1cd3b9c3b611ec9',1,'found::_d_u_::u']]],
-  ['upperleft_1',['upperleft',['../structfound_1_1Edge.html#a0660753a6166809163354b7f54c59259',1,'found::Edge::upperLeft'],['../structfound_1_1Component.html#a413f7638e42236b43c54534d39d69e67',1,'found::Component::upperLeft']]]
+  ['xcenter_5f_0',['xCenter_',['../classfound_1_1Camera.html#a40f6dd8a8d783399636c7f27b3113a2f',1,'found::Camera']]],
+  ['xpixelpitch_5f_1',['xPixelPitch_',['../classfound_1_1Camera.html#a98909a4bd3478ca3724b77c382792da1',1,'found::Camera']]],
+  ['xresolution_5f_2',['xResolution_',['../classfound_1_1Camera.html#a2c7c24ca9e64d031956c71e6da987754',1,'found::Camera']]]
 ];

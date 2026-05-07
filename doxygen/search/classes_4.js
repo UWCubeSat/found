@@ -4,6 +4,5 @@ var searchData=
   ['edge_1',['Edge',['../structfound_1_1Edge.html',1,'found']]],
   ['edgedetectionalgorithm_2',['EdgeDetectionAlgorithm',['../classfound_1_1EdgeDetectionAlgorithm.html',1,'found']]],
   ['edgefilteringalgorithm_3',['EdgeFilteringAlgorithm',['../classfound_1_1EdgeFilteringAlgorithm.html',1,'found']]],
-  ['ellipticdistancedeterminationalgorithm_4',['EllipticDistanceDeterminationAlgorithm',['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html',1,'found']]],
-  ['eulerangles_5',['EulerAngles',['../classfound_1_1EulerAngles.html',1,'found']]]
+  ['ellipticdistancedeterminationalgorithm_4',['EllipticDistanceDeterminationAlgorithm',['../classfound_1_1EllipticDistanceDeterminationAlgorithm.html',1,'found']]]
 ];

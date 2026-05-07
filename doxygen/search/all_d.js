@@ -1,17 +1,15 @@
 var searchData=
 [
-  ['magic_0',['magic',['../structfound_1_1DataFileHeader.html#af39bcedbc66cfe3954d9e2399503cad1',1,'found::DataFileHeader']]],
-  ['magnitude_1',['magnitude',['../structfound_1_1Vec2.html#aec58b6209a47fd7e4514aa201ef6fb20',1,'found::Vec2::Magnitude()'],['../classfound_1_1Vec3.html#a3a7138318776fe4efb7f9512f5cc6c30',1,'found::Vec3::Magnitude()']]],
-  ['magnitudesq_2',['magnitudesq',['../structfound_1_1Vec2.html#ab4d7bbb2908f7962e50263a2e6731788',1,'found::Vec2::MagnitudeSq()'],['../classfound_1_1Vec3.html#a7452f5bea77df73f79d08620a221fc23',1,'found::Vec3::MagnitudeSq()']]],
-  ['majoraxis_3',['majorAxis',['../structfound_1_1OrbitParams.html#ae61e9b2b4acc508ec05a5d5375437b47',1,'found::OrbitParams']]],
-  ['mat3_4',['Mat3',['../classfound_1_1Mat3.html',1,'found']]],
-  ['maximumrefreshes_5f_5',['maximumRefreshes_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a2339269a4bd1a7929ab24aa228403af1',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['minimumiterations_5f_6',['minimumIterations_',['../classfound_1_1IterativeSphericalDistanceDeterminationAlgorithm.html#a0a87c9bd48356173bfe8b21f5cee58fc',1,'found::IterativeSphericalDistanceDeterminationAlgorithm']]],
-  ['minoraxis_7',['minorAxis',['../structfound_1_1OrbitParams.html#afe40c130a12371106d0a67044f90167d',1,'found::OrbitParams']]],
-  ['minute_8',['minute',['../structfound_1_1DateTime.html#a571467dd3814da52d901f639821c2a03',1,'found::DateTime']]],
-  ['modifyingpipeline_9',['modifyingpipeline',['../classfound_1_1ModifyingPipeline.html',1,'found::ModifyingPipeline&lt; T, N &gt;'],['../classfound_1_1ModifyingPipeline.html#a31655f2bf17e8e059988c8aa1fe728dc',1,'found::ModifyingPipeline::ModifyingPipeline()']]],
-  ['modifyingstage_10',['modifyingstage',['../classfound_1_1ModifyingStage.html',1,'found::ModifyingStage&lt; T &gt;'],['../classfound_1_1ModifyingStage.html#a4865377e21d359c2c7f2f889aa7d0962',1,'found::ModifyingStage::ModifyingStage()']]],
-  ['modifyingstage_3c_20points_20_3e_11',['ModifyingStage&lt; Points &gt;',['../classfound_1_1ModifyingStage.html',1,'found']]],
-  ['month_12',['month',['../structfound_1_1DateTime.html#aa2ca9d0e18abe5d7eba6dba73f16ad67',1,'found::DateTime']]],
-  ['mu_5f_13',['mu_',['../classfound_1_1ApproximateOrbitPropagationAlgorithm.html#a444ba374a99b3139ab0617d999e6b2bc',1,'found::ApproximateOrbitPropagationAlgorithm']]]
+  ['offset_5f_0',['offset_',['../classfound_1_1SimpleEdgeDetectionAlgorithm.html#a23d8414ecd9c09b3df79d706cf20cd07',1,'found::SimpleEdgeDetectionAlgorithm']]],
+  ['open_20source_20universal_20navigation_20determiner_1',['FOUND: Open-Source Universal Navigation Determiner',['../index.html',1,'']]],
+  ['operator_3d_2',['operator=',['../structfound_1_1DataFile.html#a141f42534b7e86e2f2d3e1b5fcb6ef7c',1,'found::DataFile']]],
+  ['options_5f_3',['options_',['../classfound_1_1CalibrationPipelineExecutor.html#a6868dd515ef99357515a472660d0eeea',1,'found::CalibrationPipelineExecutor::options_'],['../classfound_1_1DistancePipelineExecutor.html#a79b288b7cdafc63191981cf172875366',1,'found::DistancePipelineExecutor::options_'],['../classfound_1_1OrbitPipelineExecutor.html#ae0822e056d80e333e61f571eaa8bfede',1,'found::OrbitPipelineExecutor::options_']]],
+  ['orbit_20determination_4',['Orbit Determination',['../index.html#autotoc_md14',1,'']]],
+  ['orbitoptions_5',['OrbitOptions',['../classOrbitOptions.html',1,'']]],
+  ['orbitparams_6',['OrbitParams',['../structfound_1_1OrbitParams.html',1,'found']]],
+  ['orbitpipelineexecutor_7',['orbitpipelineexecutor',['../classfound_1_1OrbitPipelineExecutor.html#a759e232da42188e42ad90857d61fc4c4',1,'found::OrbitPipelineExecutor::OrbitPipelineExecutor()'],['../classfound_1_1OrbitPipelineExecutor.html',1,'found::OrbitPipelineExecutor']]],
+  ['orbitpropagationalgorithm_8',['orbitpropagationalgorithm',['../classfound_1_1OrbitPropagationAlgorithm.html#a329cfa1389c3e3666b3ebf61c771cba7',1,'found::OrbitPropagationAlgorithm::OrbitPropagationAlgorithm()'],['../classfound_1_1OrbitPropagationAlgorithm.html',1,'found::OrbitPropagationAlgorithm']]],
+  ['orientation_9',['orientation',['../classfound_1_1LOSTVectorGenerationAlgorithm.html#ac7ee96e7a752852eec28726c5ef2c1af',1,'found::LOSTVectorGenerationAlgorithm']]],
+  ['outplanerotation_10',['outPlaneRotation',['../structfound_1_1OrbitParams.html#a27079ef76722f7ff0d21d945e0624f28',1,'found::OrbitParams']]],
+  ['outputresults_11',['outputresults',['../classfound_1_1PipelineExecutor.html#ac3f6227556a80c3f48e03514d41fefe7',1,'found::PipelineExecutor::OutputResults()'],['../classfound_1_1CalibrationPipelineExecutor.html#a619e401cf1d9cabc1c36c55ab8c04b2b',1,'found::CalibrationPipelineExecutor::OutputResults()'],['../classfound_1_1DistancePipelineExecutor.html#a4f9c505716f27df1e27e6f01b5e6912a',1,'found::DistancePipelineExecutor::OutputResults()'],['../classfound_1_1OrbitPipelineExecutor.html#a4dce6a26baf961bc6d7ff76be84b5562',1,'found::OrbitPipelineExecutor::OutputResults()']]]
 ];
