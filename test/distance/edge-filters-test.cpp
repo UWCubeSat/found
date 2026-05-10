@@ -16,8 +16,8 @@ TEST(EdgeFiltersTest, NoOpEdgeFilterDoesNotModifyPoints) {
 
     filter.Run(original);
     for (size_t i = 0; i < original.size(); ++i) {
-        EXPECT_EQ(original[i].x, expected[i].x);
-        EXPECT_EQ(original[i].y, expected[i].y);
+        EXPECT_EQ(original[i].x(), expected[i].x());
+        EXPECT_EQ(original[i].y(), expected[i].y());
     }
 }
 

@@ -542,8 +542,8 @@ TEST(ModifyingPipelineTest, TestModifyingPipelinePointsUsesExternalProduct) {
 
     ASSERT_EQ(input.size(), result.size());
     ASSERT_EQ(input.size(), external.size());
-    ASSERT_EQ(input[0].x, external[0].x);
-    ASSERT_EQ(input[0].y, external[0].y);
+    ASSERT_EQ(input[0].x(), external[0].x());
+    ASSERT_EQ(input[0].y(), external[0].y());
     ASSERT_FALSE(pipeline.HasFinalProduct());
 }
 
