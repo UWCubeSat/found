@@ -124,13 +124,13 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
     // Step 1a: Get all unit vector projections of each point and setup logits
     size_t i = 0;
     size_t pointsSize = p.size();
-    vector<Vec3, FOUND_MAX_POINTS> projectedPoints;
+    cnt::vector<Vec3, FOUND_MAX_POINTS> projectedPoints;
     projectedPoints.resize(pointsSize);
     for (const Vec2 &point : p) {
         projectedPoints[i++] = this->cam_.PixelToImageCoordinates(point).normalized();
     }
     i = 0;
-    vector<uint64_t, FOUND_MAX_POINTS> logits;
+    cnt::vector<uint64_t, FOUND_MAX_POINTS> logits;
     logits.resize(pointsSize);
 
     // Step 2a: Use the first estimate as a reference
@@ -169,7 +169,7 @@ PositionVector IterativeSphericalDistanceDeterminationAlgorithm::Run(const Point
 
 decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionVector &position,
                                                                        decimal targetDistanceSq,
-                                                                       vector<Vec3, FOUND_MAX_POINTS>
+                                                                       cnt::vector<Vec3, FOUND_MAX_POINTS>
                                                                        &projectedPoints,
                                                                        size_t size) {
     // Generate the loss on point (offset it so it won't be nan, and initialize with distance
@@ -191,9 +191,9 @@ decimal IterativeSphericalDistanceDeterminationAlgorithm::GenerateLoss(PositionV
 }
 
 PositionVector IterativeSphericalDistanceDeterminationAlgorithm::ShuffledCall(
-                                    vector<Vec3, FOUND_MAX_POINTS> &source,
+                                    cnt::vector<Vec3, FOUND_MAX_POINTS> &source,
                                     size_t n,
-                                    vector<uint64_t, FOUND_MAX_POINTS> &logits) {
+                                    cnt::vector<uint64_t, FOUND_MAX_POINTS> &logits) {
     // Step 0: Setup the random number generators
     static std::random_device device;  // GCOVR_EXCL_BR_LINE
     static std::mt19937 gen(device());  // GCOVR_EXCL_BR_LINE

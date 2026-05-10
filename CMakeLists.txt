@@ -317,10 +317,6 @@ file(MAKE_DIRECTORY ${DOC_COVERAGE_DIR})
 
 check_program_version(GCOVR gcovr 8.3)
 set(GCOVR_CONFIG ${PROJECT_SOURCE_DIR}/gcovr.cfg)
-set(GCOVR_EXCLUDE_BUILD_DIR_REGEX "${PROJECT_SOURCE_DIR}/build-etl$")
-if(FOUND_CONTAINER_BACKEND STREQUAL "ETL")
-    set(GCOVR_EXCLUDE_BUILD_DIR_REGEX "${PROJECT_SOURCE_DIR}/build$")
-endif()
 
 add_custom_target(
     coverage
@@ -328,7 +324,6 @@ add_custom_target(
     COMMAND ${GCOVR}
             --config ${GCOVR_CONFIG}
             --object-directory .
-            --gcov-exclude-directories ${GCOVR_EXCLUDE_BUILD_DIR_REGEX}
             -r ${PROJECT_SOURCE_DIR}
             --html-details ${DOC_COVERAGE_DIR}/index.html
     COMMENT "Running tests and generating coverage report"

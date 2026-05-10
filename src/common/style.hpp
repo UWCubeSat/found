@@ -8,15 +8,14 @@
 #include <vector>
 
 #include "common/containers.hpp"
-#include "common/etl_config.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/decimal.hpp"
 #include "common/pipeline/pipelines.hpp"
 
 namespace found {
 
-/// The output for Edge Detection Algorithms (edge.hpp/cpp). Uses found::vector to switch between STL and ETL backends.
-typedef vector<Vec2, FOUND_MAX_POINTS> Points;
+/// The output for Edge Detection Algorithms (edge.hpp/cpp). Uses found::cnt::vector to switch backends.
+typedef cnt::vector<Vec2, FOUND_MAX_POINTS> Points;
 
 /// The output for Vector Assembly Algorithms (vectorize.hpp). Currently set
 /// to a 3D Vector that represents the satellite's position relative to Earth's
@@ -63,7 +62,7 @@ struct Edge {
 };
 
 /// A collection of Edges
-typedef vector<Edge, FOUND_MAX_EDGES> Edges;
+typedef cnt::vector<Edge, FOUND_MAX_EDGES> Edges;
 
 /**
  * Represents a connected component in an image
@@ -81,7 +80,7 @@ struct Component {
 };
 
 /// A collection of Image Pixels
-typedef vector<Component, FOUND_MAX_COMPONENTS> Components;
+typedef std::vector<Component> Components;
 
 /**
  * @brief Represents a single spatial data point with position and timestamp.
@@ -100,7 +99,7 @@ struct LocationRecord {
 
 // so that we don't have to copy the data.
 /// A collection of Location Records
-typedef vector<LocationRecord, FOUND_MAX_LOCATION_RECORDS> LocationRecords;
+typedef cnt::vector<LocationRecord, FOUND_MAX_LOCATION_RECORDS> LocationRecords;
 
 /**
  * OrbitParams defines the orbital

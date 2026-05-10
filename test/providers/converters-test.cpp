@@ -48,18 +48,18 @@ TEST(ConvertersTest, TestEAExtraValuesIgnored) {
     std::string str = "10,20,30,40";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(10)), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(20)), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(30)), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(10)), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(20)), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(30)), angles.z());
 }
 
 TEST(ConvertersTest, TestEASingleValuePadsZeroes) {
     std::string str = "5";
     EulerAngles angles = strtoea(str);
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(5)), angles.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(DegToRad(5)), angles.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), angles.z());
 }
 
 TEST(ConvertersTest, TestBoolFalse) {

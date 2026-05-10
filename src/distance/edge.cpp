@@ -266,9 +266,7 @@ Components ConnectedComponentsAlgorithm(const Image &image, std::function<bool(u
     }
     std::unordered_map<int, Component> components;
     std::unordered_map<int, int> equivalencies;
-    vector<int, FOUND_MAX_IMAGE_PIXELS> componentPoints;
-    componentPoints.resize(imageSize);
-    std::fill(componentPoints.begin(), componentPoints.end(), 0);
+    std::vector<int> componentPoints(imageSize, 0);
 
     int L = 0;
     int adjacentLabels[4];

@@ -59,7 +59,7 @@
 #define DECIMAL_ROUND(x)        (DECIMAL(std::round(x)))
 #define DECIMAL_CEIL(x)         (DECIMAL(std::ceil(x)))
 #define DECIMAL_FLOOR(x)        (DECIMAL(std::floor(x)))
-#define DECIMAL_ABS(x)          (DECIMAL(std::abs(x)))
+#define DECIMAL_ABS(x)          (DECIMAL(std::fabs(x)))
 
 // Trig Methods wrapped with Decimal typecast)
 #define DECIMAL_SIN(x)          (DECIMAL(std::sin(x)))

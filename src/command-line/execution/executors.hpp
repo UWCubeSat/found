@@ -37,8 +37,6 @@ class PipelineExecutor {
     virtual void OutputResults() = 0;
 };
 
-using PipelineExecutorPtr = unique_ptr<PipelineExecutor, 1>;
-
 /**
  * CalibrationPipelineExecutor is the pipeline
  * executor for the calibration pipeline.
@@ -52,7 +50,7 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param calibrationAlgorithm The calibration algorithm to use
      */
     explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                         unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm);
+                                         cnt::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -63,10 +61,8 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
     /// The Calibration Algorithm used
-    unique_ptr<CalibrationAlgorithm, 1> calibrationAlgorithm;
+    cnt::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
-
-using CalibrationPipelineExecutorPtr = unique_ptr<CalibrationPipelineExecutor, 1>;
 
 /**
  * DistancePipelineExecutor is the pipeline
@@ -92,9 +88,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @pre Each provided stage is already "ready" (e.g., pipelines passed in were Completed) before transfer.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm,
-                                      unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm,
-                                      unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm);
+                                      cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     /**
      * Constructs a DistancePipelineExecutor with an edge-filtering pipeline
@@ -110,10 +106,10 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @pre Stage input/output types align with the Distance pipeline: Image -> Points -> Points -> PositionVector.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                      std::unique_ptr<EdgeFilteringAlgorithms> filters,
-                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+                                      cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      cnt::unique_ptr<EdgeFilteringAlgorithms> filters,
+                                      cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -124,14 +120,12 @@ class DistancePipelineExecutor : public PipelineExecutor {
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
     /// The Edge Detection Algorithm used
-    unique_ptr<EdgeDetectionAlgorithm, 1> edgeDetectionAlgorithm;
+    cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
     /// The Distance Determination Algorithm being used
-    unique_ptr<DistanceDeterminationAlgorithm, 1> distanceAlgorithm;
+    cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
     /// The Vectorization/Rotation Algorithm being used
-    unique_ptr<VectorGenerationAlgorithm, 1> vectorizationAlgorithm;
+    cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
-
-using DistancePipelineExecutorPtr = unique_ptr<DistancePipelineExecutor, 1>;
 
 /**
  * OrbitPipelineExecutor is the pipeline
@@ -146,7 +140,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
     explicit OrbitPipelineExecutor(OrbitOptions &&options,
-                                   unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm);
+                                   cnt::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -157,10 +151,8 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
     /// The Orbit Propagation Algorithm being used
-    unique_ptr<OrbitPropagationAlgorithm, 1> orbitPropagationAlgorithm;
+    cnt::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
-
-using OrbitPipelineExecutorPtr = unique_ptr<OrbitPipelineExecutor, 1>;
 
 }  // namespace found
 

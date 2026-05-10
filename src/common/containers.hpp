@@ -1,11 +1,34 @@
 #ifndef SRC_COMMON_CONTAINERS_HPP_
 #define SRC_COMMON_CONTAINERS_HPP_
 
+#ifndef FOUND_MAX_IMAGE_WIDTH
+#define FOUND_MAX_IMAGE_WIDTH 1024
+#endif
+#ifndef FOUND_MAX_IMAGE_HEIGHT
+#define FOUND_MAX_IMAGE_HEIGHT 1024
+#endif
+#ifndef FOUND_MAX_IMAGE_PIXELS
+#define FOUND_MAX_IMAGE_PIXELS (FOUND_MAX_IMAGE_WIDTH * FOUND_MAX_IMAGE_HEIGHT)
+#endif
+#ifndef FOUND_MAX_POINTS
+#define FOUND_MAX_POINTS \
+    ((FOUND_MAX_IMAGE_WIDTH > FOUND_MAX_IMAGE_HEIGHT) ? FOUND_MAX_IMAGE_WIDTH : FOUND_MAX_IMAGE_HEIGHT)
+#endif
+#ifndef FOUND_MAX_COMPONENTS
+#define FOUND_MAX_COMPONENTS (((FOUND_MAX_IMAGE_WIDTH + 1) / 2) * ((FOUND_MAX_IMAGE_HEIGHT + 1) / 2))
+#endif
+#ifndef FOUND_MAX_EDGES
+#define FOUND_MAX_EDGES FOUND_MAX_COMPONENTS
+#endif
+#ifndef FOUND_MAX_LOCATION_RECORDS
+#define FOUND_MAX_LOCATION_RECORDS 4096
+#endif
+
 #ifdef FOUND_USE_ETL_CONTAINERS
 #include <cstddef>
+#include <memory>
 #include <utility>
 
-#include "etl/memory.h"
 #include "etl/pool.h"
 #include "etl/vector.h"
 #else
@@ -15,44 +38,14 @@
 #include <vector>
 #endif
 
-namespace found {
+namespace found::cnt {
 
 #ifdef FOUND_USE_ETL_CONTAINERS
-struct pool_deleter {
-    void *pool = nullptr;
-    void *object = nullptr;
-    void (*destroy_fn)(void *, void *) = nullptr;
-
-    template <typename PointerType>
-    void operator()(PointerType *ptr) const {
-        (void)ptr;
-        if ((destroy_fn != nullptr) && (object != nullptr)) {
-            destroy_fn(pool, object);
-        }
-    }
-
-    template <typename PoolType, typename ObjectType>
-    static pool_deleter Make(PoolType &pool_ref, ObjectType *object_ptr) {
-        return {&pool_ref, object_ptr, [](void *pool_ptr, void *stored_object) {
-                    static_cast<PoolType *>(pool_ptr)->destroy(static_cast<ObjectType *>(stored_object));
-                }};
-    }
-};
-
 template <typename T, size_t N>
 using vector = etl::vector<T, N>;
 
-template <typename T, size_t N>
+template <typename T, size_t N = 1>
 using pool = etl::pool<T, N>;
-
-template <typename T, size_t N>
-using unique_ptr = etl::unique_ptr<T, pool_deleter>;
-
-template <typename T, size_t N, typename PoolType, typename... Args>
-unique_ptr<T, N> make_unique(PoolType &pool_ref, Args &&...args) {
-    T *object = pool_ref.create(std::forward<Args>(args)...);
-    return unique_ptr<T, N>(object, pool_deleter::Make(pool_ref, object));
-}
 #else
 struct dummy_pool {
 };
@@ -60,18 +53,33 @@ struct dummy_pool {
 template <typename T, size_t N>
 using vector = std::vector<T>;
 
-template <typename T, size_t N>
+template <typename T, size_t N = 1>
 using pool = dummy_pool;
-
-template <typename T, size_t N>
-using unique_ptr = std::unique_ptr<T>;
-
-template <typename T, size_t N, typename PoolType, typename... Args>
-unique_ptr<T, N> make_unique([[maybe_unused]] PoolType &pool_ref, Args &&...args) {
-    return std::make_unique<T>(std::forward<Args>(args)...);
-}
 #endif
 
-}  // namespace found
+template <typename T, size_t N = 1>
+using unique_ptr = std::unique_ptr<T>;
+
+template <typename T, size_t N = 1, typename... Args>
+unique_ptr<T, N> make_unique(Args &&...args) {
+    return std::make_unique<T>(std::forward<Args>(args)...);
+}
+
+template <typename Base, typename Derived, size_t N = 1, typename... Args>
+unique_ptr<Base, N> make_unique_as(Args &&...args) {
+    return std::make_unique<Derived>(std::forward<Args>(args)...);
+}
+
+template <typename T, size_t N = 1, typename... Args>
+unique_ptr<T, N> make_unique([[maybe_unused]] pool<T, N> &pool_ref, Args &&...args) {
+    return make_unique<T, N>(std::forward<Args>(args)...);
+}
+
+template <typename Base, typename Derived, size_t N = 1, typename... Args>
+unique_ptr<Base, N> make_unique_as([[maybe_unused]] pool<Derived, N> &pool_ref, Args &&...args) {
+    return make_unique_as<Base, Derived, N>(std::forward<Args>(args)...);
+}
+
+}  // namespace found::cnt
 
 #endif  // SRC_COMMON_CONTAINERS_HPP_

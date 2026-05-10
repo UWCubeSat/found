@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "common/containers.hpp"
 #include "common/pipeline/stages.hpp"
 
 /// The default number of pipeline stages
@@ -64,7 +65,7 @@ class Pipeline : public FunctionStage<Input, Output> {
 
  protected:
     /// Ownership storage for the stages
-    std::unique_ptr<Action> stages[N];
+    cnt::unique_ptr<Action> stages[N];
     /// The number of stages
     size_t size = 0;
     /// Whether we're complete
@@ -85,7 +86,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      * @post stage is stored inside this such that stage and this share the same
      *       lifetime. Ownership of stage is transferred to this
      */
-    inline void AddStageHelper(std::unique_ptr<Action> &&stage) {
+    inline void AddStageHelper(cnt::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
         this->stages[size++] = std::move(stage);
@@ -105,7 +106,7 @@ class Pipeline : public FunctionStage<Input, Output> {
      * @post This is now ready. Ownership of stage is transferred to this. The
      *       lifetime of stage matches this 
      */
-    inline void CompleteHelper(std::unique_ptr<Action> &&stage) {
+    inline void CompleteHelper(cnt::unique_ptr<Action> &&stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
         this->stages[size++] = std::move(stage);
@@ -168,7 +169,7 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * @pre This method is called when the number of registered stages is
      * less than N - 1
      */
-    template<typename I, typename O> SequentialPipeline &AddStage(std::unique_ptr<FunctionStage<I, O>> stage) {
+    template<typename I, typename O> SequentialPipeline &AddStage(cnt::unique_ptr<FunctionStage<I, O>> stage) {
         FunctionStage<I, O> *stagePtr = stage.get();
         if (this->size == 0) {
             if (!std::is_same<Input, I>::value) {
@@ -201,7 +202,7 @@ class SequentialPipeline : public Pipeline<Input, Output, N> {
      * 
      * @pre The number of registered stages is less than N
      */
-    template<typename I> SequentialPipeline &Complete(std::unique_ptr<FunctionStage<I, Output>> stage) {
+    template<typename I> SequentialPipeline &Complete(cnt::unique_ptr<FunctionStage<I, Output>> stage) {
         assert(this->size < N);
         if (this->ready) throw std::invalid_argument("Pipeline is already ready");
         this->AddStage(std::move(stage));
@@ -275,7 +276,7 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      * 
      * @return this, with the added stage
      */
-    ModifyingPipeline &AddStage(std::unique_ptr<ModifyingStage<T>> stage) {
+    ModifyingPipeline &AddStage(cnt::unique_ptr<ModifyingStage<T>> stage) {
         assert(this->size < N - 1);
         Pipeline<T, T, N>::AddStageHelper(std::move(stage));
         return *this;
@@ -291,7 +292,7 @@ class ModifyingPipeline : public Pipeline<T, T, N> {
      * @pre This method is called when the number of
      * registered stages is less than N
      */
-    ModifyingPipeline &Complete(std::unique_ptr<ModifyingStage<T>> stage) {
+    ModifyingPipeline &Complete(cnt::unique_ptr<ModifyingStage<T>> stage) {
         assert(this->size < N);
         Pipeline<T, T, N>::CompleteHelper(std::move(stage));
         return *this;

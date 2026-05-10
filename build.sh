@@ -11,12 +11,14 @@ execute_cmd() {
 display_help() {
     echo "Usage:"
     echo "  ./build.sh cmake \"[CMake Config Options]\" [CMake Build Options]"
-    echo "  ./build.sh cmake-etl \"[CMake Config Options]\" [CMake Build Options]"
     echo "  ./build.sh make [GNU Make Options]"
-    echo "  ./build.sh make-etl [GNU Make Options]"
     echo "  ./build.sh clean"
     echo "  ./build.sh clean_all"
     echo "  ./build.sh --help | -h"
+    echo ""
+    echo "ETL build examples (explicit macro required):"
+    echo "  ./build.sh cmake \"-DFOUND_CONTAINER_BACKEND=ETL\" --target compile --parallel 16"
+    echo "  ./build.sh make FOUND_CONTAINER_BACKEND=ETL compile -j16"
 }
 
 # Exit if no arguments were provided
@@ -37,39 +39,17 @@ case "$1" in
         CMD="cmake $CONFIG_OPTS .. && cmake --build . $*"
         ;;
 
-    cmake-etl)
-        shift
-        mkdir -p build-etl && cd build-etl
-
-        CONFIG_OPTS=""
-        if [ $# -gt 0 ]; then
-            case "$1" in
-                ""|-D*|-C*|-G*|-U*|-W*|-A*|-T*)
-                    CONFIG_OPTS="$1"
-                    shift
-                    ;;
-            esac
-        fi
-
-        CMD="cmake -DFOUND_CONTAINER_BACKEND=ETL $CONFIG_OPTS .. && cmake --build . $*"
-        ;;
-
     make)
         shift
         CMD="make $*"
         ;;
 
-    make-etl)
-        shift
-        CMD="make FOUND_CONTAINER_BACKEND=ETL $*"
-        ;;
-
     clean)
-        CMD="rm -rf build build-etl"
+        CMD="rm -rf build"
         ;;
 
     clean_all)
-        CMD="rm -rf build build-etl .cache"
+        CMD="rm -rf build .cache"
         ;;
 
     -h|--help)

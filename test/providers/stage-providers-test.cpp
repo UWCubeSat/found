@@ -12,23 +12,24 @@ namespace found {
 TEST(StageProvidersTest, TestProvideCalibrationAlgorithmTwice) {
     CalibrationOptions options;
 
-    unique_ptr<LOSTCalibrationAlgorithm, 1> first = ProvideCalibrationAlgorithm(options);
+    cnt::unique_ptr<CalibrationAlgorithm> first = ProvideCalibrationAlgorithm(std::move(options));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
-    unique_ptr<LOSTCalibrationAlgorithm, 1> second = ProvideCalibrationAlgorithm(options);
+    CalibrationOptions secondOptions;
+    cnt::unique_ptr<CalibrationAlgorithm> second = ProvideCalibrationAlgorithm(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 
 TEST(StageProvidersTest, TestProvideEdgeDetectionAlgorithmTwice) {
     DistanceOptions firstOptions;
 
-    unique_ptr<SimpleEdgeDetectionAlgorithm, 1> first = ProvideEdgeDetectionAlgorithm(std::move(firstOptions));
+    cnt::unique_ptr<EdgeDetectionAlgorithm> first = ProvideEdgeDetectionAlgorithm(std::move(firstOptions));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
     DistanceOptions secondOptions;
-    unique_ptr<SimpleEdgeDetectionAlgorithm, 1> second = ProvideEdgeDetectionAlgorithm(std::move(secondOptions));
+    cnt::unique_ptr<EdgeDetectionAlgorithm> second = ProvideEdgeDetectionAlgorithm(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 
@@ -37,7 +38,7 @@ TEST(StageProvidersTest, TestProvideDistanceDeterminationAlgorithmBranches) {
     sddaOptions.image.width = 2;
     sddaOptions.image.height = 2;
     sddaOptions.distanceAlgo = SDDA;
-    unique_ptr<SphericalDistanceDeterminationAlgorithm, 1> sdda =
+    cnt::unique_ptr<DistanceDeterminationAlgorithm> sdda =
         ProvideDistanceDeterminationAlgorithm(std::move(sddaOptions));
     ASSERT_NE(nullptr, sdda.get());
     sdda.reset();
@@ -46,7 +47,7 @@ TEST(StageProvidersTest, TestProvideDistanceDeterminationAlgorithmBranches) {
     isddaOptions.image.width = 2;
     isddaOptions.image.height = 2;
     isddaOptions.distanceAlgo = ISDDA;
-    unique_ptr<SphericalDistanceDeterminationAlgorithm, 1> isdda =
+    cnt::unique_ptr<DistanceDeterminationAlgorithm> isdda =
         ProvideDistanceDeterminationAlgorithm(std::move(isddaOptions));
     ASSERT_NE(nullptr, isdda.get());
 
@@ -60,14 +61,14 @@ TEST(StageProvidersTest, TestProvideDistanceDeterminationAlgorithmBranches) {
 TEST(StageProvidersTest, TestProvideVectorGenerationAlgorithmBranches) {
     DistanceOptions relativeOptions;
 
-    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromRelative =
+    cnt::unique_ptr<VectorGenerationAlgorithm> fromRelative =
         ProvideVectorGenerationAlgorithm(std::move(relativeOptions));
     ASSERT_NE(nullptr, fromRelative.get());
     fromRelative.reset();
 
     DistanceOptions referenceOptions;
     referenceOptions.refAsOrientation = true;
-    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromReference =
+    cnt::unique_ptr<VectorGenerationAlgorithm> fromReference =
         ProvideVectorGenerationAlgorithm(std::move(referenceOptions));
     ASSERT_NE(nullptr, fromReference.get());
     fromReference.reset();
@@ -75,7 +76,7 @@ TEST(StageProvidersTest, TestProvideVectorGenerationAlgorithmBranches) {
     DistanceOptions dataFileOptions;
     dataFileOptions.calibrationData.header = {{'F', 'O', 'U', 'N'}, 1U, 0};
     dataFileOptions.calibrationData.relative_attitude = Quaternion(1, 0, 0, 0);
-    unique_ptr<LOSTVectorGenerationAlgorithm, 1> fromDataFile =
+    cnt::unique_ptr<VectorGenerationAlgorithm> fromDataFile =
         ProvideVectorGenerationAlgorithm(std::move(dataFileOptions));
     ASSERT_NE(nullptr, fromDataFile.get());
 }
@@ -83,11 +84,12 @@ TEST(StageProvidersTest, TestProvideVectorGenerationAlgorithmBranches) {
 TEST(FactoryTest, TestCreateCalibrationPipelineExecutorTwice) {
     CalibrationOptions options;
 
-    CalibrationPipelineExecutorPtr first = CreateCalibrationPipelineExecutor(options);
+    cnt::unique_ptr<CalibrationPipelineExecutor> first = CreateCalibrationPipelineExecutor(std::move(options));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
-    CalibrationPipelineExecutorPtr second = CreateCalibrationPipelineExecutor(options);
+    CalibrationOptions secondOptions;
+    cnt::unique_ptr<CalibrationPipelineExecutor> second = CreateCalibrationPipelineExecutor(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 
@@ -98,7 +100,7 @@ TEST(FactoryTest, TestCreateDistancePipelineExecutorTwice) {
     firstOptions.image.channels = 1;
     firstOptions.image.image = nullptr;
 
-    DistancePipelineExecutorPtr first = CreateDistancePipelineExecutor(std::move(firstOptions));
+    cnt::unique_ptr<DistancePipelineExecutor> first = CreateDistancePipelineExecutor(std::move(firstOptions));
     ASSERT_NE(nullptr, first.get());
     first.reset();
 
@@ -108,7 +110,7 @@ TEST(FactoryTest, TestCreateDistancePipelineExecutorTwice) {
     secondOptions.image.channels = 1;
     secondOptions.image.image = nullptr;
 
-    DistancePipelineExecutorPtr second = CreateDistancePipelineExecutor(std::move(secondOptions));
+    cnt::unique_ptr<DistancePipelineExecutor> second = CreateDistancePipelineExecutor(std::move(secondOptions));
     ASSERT_NE(nullptr, second.get());
 }
 

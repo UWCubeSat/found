@@ -79,7 +79,7 @@ struct DataFile {
     /**
      * @brief Collection of location records in the file.
      */
-    vector<LocationRecord, FOUND_MAX_LOCATION_RECORDS> positions;
+    std::vector<LocationRecord> positions;
 
     /**
      * The path of this DataFile.

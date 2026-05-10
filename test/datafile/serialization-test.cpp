@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <arpa/inet.h>
 
 #include "test/common/common.hpp"
 

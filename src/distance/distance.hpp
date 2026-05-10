@@ -227,7 +227,7 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      */
     decimal GenerateLoss(PositionVector &position,
                          decimal targetDistanceSq,
-                         vector<Vec3, FOUND_MAX_POINTS> &projectedPoints,
+                         cnt::vector<Vec3, FOUND_MAX_POINTS> &projectedPoints,
                          size_t size);
 
     /**
@@ -262,9 +262,9 @@ class IterativeSphericalDistanceDeterminationAlgorithm : public SphericalDistanc
      * terrible change in terms of code, but is more compuationally
      * complex
      */
-    PositionVector ShuffledCall(vector<Vec3, FOUND_MAX_POINTS> &source,
+    PositionVector ShuffledCall(cnt::vector<Vec3, FOUND_MAX_POINTS> &source,
                                  size_t n,
-                                 vector<uint64_t, FOUND_MAX_POINTS> &logits);
+                                 cnt::vector<uint64_t, FOUND_MAX_POINTS> &logits);
 
     /**
      * Performs exponentiation for uint64_t

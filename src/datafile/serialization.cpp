@@ -13,15 +13,15 @@
 namespace found {
 
 void hton(DataFileHeader& header) {
-    header.version = htonl(header.version);
-    header.num_positions = htonl(header.num_positions);
-    header.crc = htonl(header.crc);
+    header.version = found_htonl(header.version);
+    header.num_positions = found_htonl(header.num_positions);
+    header.crc = found_htonl(header.crc);
 }
 
 void ntoh(DataFileHeader& header) {
-    header.version = ntohl(header.version);
-    header.num_positions = ntohl(header.num_positions);
-    header.crc = ntohl(header.crc);
+    header.version = found_ntohl(header.version);
+    header.num_positions = found_ntohl(header.num_positions);
+    header.crc = found_ntohl(header.crc);
 }
 
 /**
@@ -80,7 +80,7 @@ inline void read(std::istream& stream, decimal& value) {
  *
  */
 inline void write(std::ostream& stream, const uint64_t& value) {
-    uint64_t v = htonl(value);
+    uint64_t v = found_htonll(value);
     stream.write(reinterpret_cast<const char*>(&v), sizeof(uint64_t));
 }
 
@@ -100,7 +100,7 @@ inline void read(std::istream& stream, uint64_t& value) {
     if (stream.gcount() != sizeof(uint64_t)) {
         throw std::ios_base::failure("Failed to read uint64_t value");
     }
-    value = ntohl(value);
+    value = found_ntohll(value);
 }
 
 /**
@@ -114,7 +114,7 @@ inline void read(std::istream& stream, uint64_t& value) {
  *
  */
 inline void write(std::ostream& stream, const uint32_t& value) {
-    uint32_t v = htonl(value);
+    uint32_t v = found_htonl(value);
     stream.write(reinterpret_cast<const char*>(&v), sizeof(uint32_t));
 }
 
@@ -134,7 +134,7 @@ inline void read(std::istream& stream, uint32_t& value) {
     if (stream.gcount() != sizeof(uint32_t)) {
         throw std::ios_base::failure("Failed to read uint32_t value");
     }
-    value = ntohl(value);
+    value = found_ntohl(value);
 }
 
 /**
@@ -323,7 +323,7 @@ DataFileHeader readHeader(std::istream& stream) {
     // Validate CRC
     uint32_t expected_crc = calculateCRC32(&header, sizeof(header) - sizeof(header.crc));
     if (header.crc != expected_crc) {
-        LOG_ERROR("Expected CRC: " << expected_crc << ", Found CRC: " << ntohl(header.crc));
+        LOG_ERROR("Expected CRC: " << expected_crc << ", Found CRC: " << found_ntohl(header.crc));
         throw std::ios_base::failure("Header CRC validation failed: Corrupted file");
     }
 
