@@ -10,7 +10,6 @@
 #include "common/decimal.hpp"
 #include "common/spatial/camera.hpp"
 #include "common/spatial/attitude-utils.hpp"
-#incl
 
 using found::Camera;
 using found::Vec3;
@@ -20,7 +19,7 @@ using found::Points;
 using found::PositionVector;
 using found::SpheroidDistanceDeterminationAlgorithm;
 using found::SpheroidDistanceAndCovarianceDeterminationAlgorithm;
-using found::Quarternion;
+using found::Quaternion;
 
 
 // The equatorial radius of Earth (m)
@@ -34,12 +33,7 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
     // define principle axes of the spheroid
     Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
     // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
-    Quaternion relativeOrientation = found::AttitudeUtils::CalculateRelativeOrientation(
-        Vec3(1, 0, 0), // camera is looking in the positive x direction
-        Vec3(0, 1, 0), // camera's up direction is in the positive y direction
-        Vec3(0, 0, 1)  // camera's right direction is in the positive z direction
-    );
-    
+    Quaternion relativeOrientation = Quaternion::Identity();
     // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
     SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
     
@@ -61,3 +55,40 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
         // I'm pretty sure this is the right way to check for symmetry, 
         //but if not, we can also check that the off-diagonal elements are equal
 }
+
+TEST(SpheroidDistanceAndCovarianceAlgorithm, CovarianceIsPositiveDefinite) {
+    // create a camera
+    Camera cam(DECIMAL(0.005), 4000, 3000, DECIMAL(2000), DECIMAL(1500), DECIMAL(1.12e-6), DECIMAL(1.12e-6));
+    // define principle axes of the spheroid
+    Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
+    // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
+    Quaternion relativeOrientation = found::Quarternion::Identity();
+    // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
+    SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
+    
+    // create a spheriod distance and covariance determination algorithm class
+    SpheroidDistanceAndCovarianceDeterminationAlgorithm covarianceAlgorithm(std::make_unique<SpheroidDistanceDeterminationAlgorithm>(std::move(distanceAlgorithm)));
+    
+    // create a set of points on the horizon of a celestial body
+    Points points = {
+        Vec2(758, 637),
+        Vec2(845, 182),
+        Vec2(928, 304)
+    };
+
+    // run the algorithm on the set of points
+    auto result = covarianceAlgorithm.Run(points);
+
+    // test that the covariance is positive definite
+    // extract the eigenvalues of the covariance matrix
+    Eigen::EigenSolver<Mat3> es(result.covariance);
+    auto eigenvalues = es.eigenvalues();
+    // check all eigenvalues are non-negative
+    for (int i = 0; i < eigenvalues.size(); i++) {
+        EXPECT_GE(eigenvalues(i).real(), 0);
+    }
+}
+
+// test that the covariance blows up when the arc is small
+
+// what parts of the algorithm should be tested independently?
