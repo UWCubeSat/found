@@ -1,0 +1,27 @@
+---
+BasedOnStyle: Google
+
+IndentWidth: 4
+AccessModifierOffset: -3
+ColumnLimit: 120
+
+PointerAlignment: Right
+DerivePointerAlignment: false
+
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+
+BreakStringLiterals: false
+ReflowComments: false
+
+SpaceAfterTemplateKeyword: false
+
+SortIncludes: Never
+IncludeBlocks: Preserve
+
+AlignConsecutiveMacros: Consecutive
+
+BinPackParameters: false
+BinPackArguments: false
+...
