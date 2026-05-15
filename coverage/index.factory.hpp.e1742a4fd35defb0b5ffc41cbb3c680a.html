@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: providers/factory.hpp</div>
-            <div>Date: 2026-05-07 00:22:50</div>
+            <div>Date: 2026-05-15 07:14:25</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,8 +59,8 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l21">found::CreateCalibrationPipelineExecutor(CalibrationOptions&amp;&amp;) (line 21)</a></td><td>called 4 times</td><td>77.0%</td></tr>
-    <tr><td><a href="#l33">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 33)</a></td><td>called 8 times</td><td>92.0%</td></tr>
+    <tr><td><a href="#l21">found::CreateCalibrationPipelineExecutor(CalibrationOptions&amp;&amp;) (line 21)</a></td><td>called 8 times</td><td>77.0%</td></tr>
+    <tr><td><a href="#l33">found::CreateDistancePipelineExecutor(DistanceOptions&amp;&amp;) (line 33)</a></td><td>called 16 times</td><td>92.0%</td></tr>
   </table>
 </details>
 </div>
@@ -222,14 +222,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l21" href="#l21">21</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">CalibrationPipelineExecutor</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateCalibrationPipelineExecutor</span><span class="p">(</span><span class="n">CalibrationOptions</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l22" href="#l22">22</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">CalibrationPipelineExecutor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
             </tr>
             <tr>
@@ -238,12 +238,12 @@
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 3 taken 4 times.</div>
-                            <div class="color-taken-branch">&check; Branch 6 taken 4 times.</div>
+                            <div class="color-taken-branch">&check; Branch 3 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 6 taken 8 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">24</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">ProvideCalibrationAlgorithm</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">CalibrationOptions</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">)));</span></td>
             </tr>
             <tr>
@@ -313,14 +313,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l33" href="#l33">33</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateDistancePipelineExecutor</span><span class="p">(</span><span class="n">DistanceOptions</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l34" href="#l34">34</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeDetectionAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edgeAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeDetectionAlgorithm</span><span class="p">(</span></td>
             </tr>
             <tr>
@@ -329,18 +329,18 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 16 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">                                                        </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DistanceOptions</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l36" href="#l36">36</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">EdgeFilteringAlgorithms</span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtersOpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideEdgeFilteringAlgorithm</span><span class="p">(</span></td>
             </tr>
             <tr>
@@ -349,18 +349,18 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 8 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 16 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">                                                            </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DistanceOptions</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l38" href="#l38">38</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DistanceDeterminationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideDistanceDeterminationAlgorithm</span><span class="p">(</span></td>
             </tr>
             <tr>
@@ -369,18 +369,18 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 7 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 14 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">8</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">16</td>
                 <td class="src coveredLine"><span class="w">                                                                </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DistanceOptions</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l40" href="#l40">40</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">7</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">14</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">VectorGenerationAlgorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecAlg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProvideVectorGenerationAlgorithm</span><span class="p">(</span></td>
             </tr>
             <tr>
@@ -389,11 +389,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 7 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 14 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">7</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">14</td>
                 <td class="src coveredLine"><span class="w">                                                            </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DistanceOptions</span><span class="o">&amp;&amp;&gt;</span><span class="p">(</span><span class="n">options</span><span class="p">));</span></td>
             </tr>
             <tr>
@@ -409,40 +409,40 @@
                     <details class="normal details-overlay">
                         <summary>2/2</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 1 taken 1 times.</div>
-                            <div class="color-taken-branch">&check; Branch 2 taken 6 times.</div>
+                            <div class="color-taken-branch">&check; Branch 1 taken 2 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 12 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">7</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">14</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">filtersOpt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l44" href="#l44">44</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l45" href="#l45">45</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">edgeAlg</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l46" href="#l46">46</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">filtersOpt</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l47" href="#l47">47</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">distAlg</span><span class="p">),</span></td>
             </tr>
             <tr>
@@ -451,11 +451,11 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 1 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 2 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">2</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">4</td>
                 <td class="src coveredLine"><span class="w">                                    </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">vecAlg</span><span class="p">));</span></td>
             </tr>
             <tr>
@@ -469,21 +469,21 @@
                 <td class="text-right src linenos"><a class="normal" id="l50" href="#l50">50</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">DistancePipelineExecutor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">options</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l51" href="#l51">51</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
                 <td class="src coveredLine"><span class="w">                                </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">edgeAlg</span><span class="p">),</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l52" href="#l52">52</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
                 <td class="src coveredLine"><span class="w">                                </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">distAlg</span><span class="p">),</span></td>
             </tr>
             <tr>
@@ -492,18 +492,18 @@
                     <details class="normal details-overlay">
                         <summary>1/1</summary>
                         <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
-                            <div class="color-taken-branch">&check; Branch 2 taken 6 times.</div>
+                            <div class="color-taken-branch">&check; Branch 2 taken 12 times.</div>
                         </div>
                     </details>
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">24</td>
                 <td class="src coveredLine"><span class="w">                                </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">vecAlg</span><span class="p">));</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l54" href="#l54">54</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
                 <td class="src coveredLine"><span class="p">}</span></td>
             </tr>
             <tr>

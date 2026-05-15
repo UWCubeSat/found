@@ -26,7 +26,7 @@
                 <span>src/</span>
             </div>
             <div>File: common/spatial/attitude-utils.hpp</div>
-            <div>Date: 2026-05-07 00:22:50</div>
+            <div>Date: 2026-05-15 07:14:25</div>
         </div>
         <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
             <div class="d-flex">
@@ -59,10 +59,10 @@
       <th>Call count</th>
       <th>Block coverage</th>
     </tr>
-    <tr><td><a href="#l203">found::DegToRad(double) (line 203)</a></td><td>called 230 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l219">found::RadToArcSec(double) (line 219)</a></td><td>called 5 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l192">found::RadToDeg(double) (line 192)</a></td><td>called 15 times</td><td>100.0%</td></tr>
-    <tr><td><a href="#l178">found::SphericalToQuaternion(Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;) (line 178)</a></td><td>called 147 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l203">found::DegToRad(double) (line 203)</a></td><td>called 460 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l219">found::RadToArcSec(double) (line 219)</a></td><td>called 10 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l192">found::RadToDeg(double) (line 192)</a></td><td>called 30 times</td><td>100.0%</td></tr>
+    <tr><td><a href="#l178">found::SphericalToQuaternion(Eigen::Matrix&lt;double, 3, 1, 0, 3, 1&gt;) (line 178)</a></td><td>called 294 times</td><td>100.0%</td></tr>
   </table>
 </details>
 </div>
@@ -1323,14 +1323,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l178" href="#l178">178</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">147</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">294</td>
                 <td class="src coveredLine"><span class="kr">inline</span><span class="w"> </span><span class="n">Quaternion</span><span class="w"> </span><span class="nf">SphericalToQuaternion</span><span class="p">(</span><span class="n">EulerAngles</span><span class="w"> </span><span class="n">angles</span><span class="p">)</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l179" href="#l179">179</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">147</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">294</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">SphericalToQuaternion</span><span class="p">(</span><span class="n">angles</span><span class="p">.</span><span class="n">x</span><span class="p">(),</span><span class="w"> </span><span class="n">angles</span><span class="p">.</span><span class="n">y</span><span class="p">(),</span><span class="w"> </span><span class="n">angles</span><span class="p">.</span><span class="n">z</span><span class="p">());</span><span class="w"> </span><span class="p">}</span></td>
             </tr>
             <tr>
@@ -1421,14 +1421,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l192" href="#l192">192</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
                 <td class="src coveredLine"><span class="k">constexpr</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="nf">RadToDeg</span><span class="p">(</span><span class="n">decimal</span><span class="w"> </span><span class="n">rad</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l193" href="#l193">193</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">15</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">30</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">rad</span><span class="o">*</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">180.0</span><span class="p">)</span><span class="o">/</span><span class="n">DECIMAL_M_PI</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -1498,14 +1498,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l203" href="#l203">203</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">230</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">460</td>
                 <td class="src coveredLine"><span class="k">constexpr</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="nf">DegToRad</span><span class="p">(</span><span class="n">decimal</span><span class="w"> </span><span class="n">deg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l204" href="#l204">204</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">230</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">460</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">deg</span><span class="o">/</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">180.0</span><span class="p">)</span><span class="o">*</span><span class="n">DECIMAL_M_PI</span><span class="p">;</span></td>
             </tr>
             <tr>
@@ -1610,14 +1610,14 @@
                 <td class="text-right src linenos"><a class="normal" id="l219" href="#l219">219</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
                 <td class="src coveredLine"><span class="k">constexpr</span><span class="w"> </span><span class="n">decimal</span><span class="w"> </span><span class="nf">RadToArcSec</span><span class="p">(</span><span class="n">decimal</span><span class="w"> </span><span class="n">rad</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
             </tr>
             <tr>
                 <td class="text-right src linenos"><a class="normal" id="l220" href="#l220">220</a></td>
                 <td class="text-right src linenos ws-unset">
                 </td>
-                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
+                <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">10</td>
                 <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">RadToDeg</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">DECIMAL</span><span class="p">(</span><span class="mf">3600.0</span><span class="p">);</span></td>
             </tr>
             <tr>
