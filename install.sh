@@ -59,7 +59,7 @@ case "$OS" in
         fi
         INSTALL="$PM install -y"
         # List of packages to install
-        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz valgrind"
+        PACKAGES="git g++ make cmake wget tar python3 python3-pip pipx graphviz valgrind clang-format"
         ;;
     Darwin*)
         # Check if Homebrew is installed; install it if not
@@ -69,7 +69,7 @@ case "$OS" in
         fi
         INSTALL="brew install"
         # List of packages to install
-        PACKAGES="git gcc make cmake wget gnu-tar python pipx graphviz"
+        PACKAGES="git gcc make cmake wget gnu-tar python pipx graphviz clang-format"
         ;;
     *)
         echo "Unknown Operating System $OS"
