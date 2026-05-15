@@ -1,9 +1,0 @@
-<map id="found::OrbitPropagationAlgorithm" name="found::OrbitPropagationAlgorithm">
-<area shape="rect" id="Node000001" title="The OrbitPropagationAlgorithm is an algorithm that propagates an orbit over a specified time period." alt="" coords="5,269,247,295"/>
-<area shape="rect" id="Node000002" href="$classfound_1_1FunctionStage.html" title=" " alt="" coords="23,167,229,221"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,235,129,269,123,269,123,235"/>
-<area shape="rect" id="Node000003" href="$classfound_1_1Stage.html" title="Stage is an interface that wraps an SISO function." alt="" coords="48,79,204,119"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="129,132,129,167,123,167,123,132"/>
-<area shape="rect" id="Node000004" href="$classfound_1_1Action.html" title="Action is an interface that wraps a function that does something." alt="" coords="72,5,180,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="129,44,129,79,123,79,123,44"/>
-</map>
