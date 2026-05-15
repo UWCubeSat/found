@@ -131,18 +131,13 @@ TEST(TimeTest, TestGetUT1Time) {
 }
 
 TEST(TimeTest, TestGetJulianDateNow) {
-    DateTime time = getUT1Time();
-    #ifdef FOUND_FLOAT_MODE
-        sleep(1.5);
-    #endif
+    DateTime timeBefore = getUT1Time();
     decimal julianDate = getCurrentJulianDateTime();
-    decimal expectedJulianDate = time.epochs / 86400.0 + 2440587.5;
+    DateTime timeAfter = getUT1Time();
+    decimal minJulianDate = timeBefore.epochs / 86400.0 + 2440587.5;
+    decimal maxJulianDate = timeAfter.epochs / 86400.0 + 2440587.5;
 
-    #ifndef FOUND_FLOAT_MODE
-        ASSERT_RANGE(julianDate, expectedJulianDate, expectedJulianDate + SECONDS_TOLERANCE);
-    #else
-        ASSERT_RANGE(julianDate, expectedJulianDate - SECONDS_TOLERANCE, expectedJulianDate + SECONDS_TOLERANCE);
-    #endif
+    ASSERT_RANGE(julianDate, minJulianDate - SECONDS_TOLERANCE, maxJulianDate + SECONDS_TOLERANCE);
 }
 
 TEST(TimeTest, TestGetJulianDateBefore1900) {

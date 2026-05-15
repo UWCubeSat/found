@@ -32,9 +32,9 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
+inline cnt::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
     [[maybe_unused]] const CalibrationOptions &&options) {
-    return std::make_unique<LOSTCalibrationAlgorithm>();
+    return cnt::make_unique_as<CalibrationAlgorithm, LOSTCalibrationAlgorithm>();
 }
 
 /**
@@ -42,12 +42,13 @@ inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
  * 
  * @param options The options to derive the edge detection algorithm from
  * 
- * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
+ * @return cnt::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &&options) {
-    return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
-                                                          options.SEDABorderLen,
-                                                          options.SEDAOffset);
+inline cnt::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &&options) {
+    return cnt::make_unique_as<EdgeDetectionAlgorithm, SimpleEdgeDetectionAlgorithm>(
+                                                                                     options.SEDAThreshold,
+                                                                                     options.SEDABorderLen,
+                                                                                     options.SEDAOffset);
 }
 
 /**
@@ -55,25 +56,19 @@ inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(con
  * 
  * @param options The options to derive the distance determination algorithm from
  * 
- * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
+ * @return cnt::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
+inline cnt::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
     const DistanceOptions &&options) {
     if (options.distanceAlgo == SDDA) {
-        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, Camera(options.focalLength,
-            options.pixelSize, options.image.width, options.image.height));
+        return cnt::make_unique_as<DistanceDeterminationAlgorithm, SphericalDistanceDeterminationAlgorithm>(
+            options.radius, Camera(options.focalLength, options.pixelSize, options.image.width,
+                                   options.image.height));
     } else if (options.distanceAlgo == ISDDA) {
-        return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                                  Camera(options.focalLength,
-                                                                                    options.pixelSize,
-                                                                                    options.image.width,
-                                                                                    options.image.height),
-                                                                                  options.ISDDAMinIters,
-                                                                                  options.ISDDAMaxRefresh,
-                                                                                  options.ISDDADistRatio,
-                                                                                  options.ISDDADiscimRatio,
-                                                                                  options.ISDDAPdfOrd,
-                                                                                  options.ISDDARadLossOrd);
+        return cnt::make_unique_as<DistanceDeterminationAlgorithm, IterativeSphericalDistanceDeterminationAlgorithm>(
+            options.radius, Camera(options.focalLength, options.pixelSize, options.image.width,
+                                   options.image.height), options.ISDDAMinIters, options.ISDDAMaxRefresh,
+            options.ISDDADistRatio, options.ISDDADiscimRatio, options.ISDDAPdfOrd, options.ISDDARadLossOrd);
     } else {
         LOG_ERROR("Unrecognized distance algorithm: " << options.distanceAlgo);
         throw std::runtime_error("Unrecognized distance algorithm: " + options.distanceAlgo);
@@ -85,21 +80,23 @@ inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminat
  * 
  * @param options The options to derive the vector generation algorithm from
  * 
- * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
+ * @return cnt::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &&options) {
+inline cnt::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(options.calibrationData.relative_attitude,
-                                                               referenceOrientation);
+        return cnt::make_unique_as<VectorGenerationAlgorithm, LOSTVectorGenerationAlgorithm>(
+            options.calibrationData.relative_attitude, referenceOrientation);
     } else {
         Quaternion relativeOrientation = SphericalToQuaternion(options.relOrientation);
         if (options.refAsOrientation) {
             LOG_INFO("Using provided reference orientation for calibration information");
-            return std::make_unique<LOSTVectorGenerationAlgorithm>(referenceOrientation);
+            return cnt::make_unique_as<VectorGenerationAlgorithm, LOSTVectorGenerationAlgorithm>(
+                referenceOrientation);
         }
-        return std::make_unique<LOSTVectorGenerationAlgorithm>(relativeOrientation, referenceOrientation);
+        return cnt::make_unique_as<VectorGenerationAlgorithm, LOSTVectorGenerationAlgorithm>(
+            relativeOrientation, referenceOrientation);
     }
 }
 
@@ -109,18 +106,18 @@ inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorit
  * 
  * @param options The options to derive the edge filtering algorithm from
  * 
- * @return std::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
+ * @return cnt::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
  */
-inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &&options) {
-    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
+inline cnt::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &&options) {
+    cnt::unique_ptr<EdgeFilteringAlgorithms> pipeline = cnt::make_unique<EdgeFilteringAlgorithms>();
     bool added = false;
 
     if (options.enableNoOpEdgeFilter) {
-        pipeline->Complete(std::make_unique<NoOpEdgeFilter>());
+        pipeline->Complete(cnt::make_unique_as<ModifyingStage<Points>, NoOpEdgeFilter>());
         added = true;
     }
 
-    if (!added) return nullptr;
+    if (!added) return cnt::unique_ptr<EdgeFilteringAlgorithms>();
     return pipeline;
 }
 

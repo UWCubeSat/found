@@ -776,4 +776,21 @@ TEST(ConnectedComponentsTest, Test4BlobsGeneral) {
     ASSERT_THAT(actual, testing::UnorderedElementsAreArray(matchers));
 }
 
+TEST(ConnectedComponentsTest, TestComponentCapacityGuard) {
+    const int width = FOUND_MAX_COMPONENTS * 2 + 1;
+    unsigned char imageData[FOUND_MAX_COMPONENTS * 2 + 1] = {};
+    for (int i = 0; i < width; i += 2) {
+        imageData[i] = 1;
+    }
+
+    Image image = {
+        width,
+        1,
+        1,
+        imageData,
+    };
+
+    ASSERT_THROW(ConnectedComponentsAlgorithm(image, criteria), std::runtime_error);
+}
+
 }  // namespace found

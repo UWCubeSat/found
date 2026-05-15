@@ -51,7 +51,10 @@ TEST(ExecutorsTest, TestCalibrationPipelineExecutor) {
         temp_df
     };
 
-    CalibrationPipelineExecutor executor(std::move(options), std::make_unique<LOSTCalibrationAlgorithm>());
+    static cnt::pool<LOSTCalibrationAlgorithm> calibrationAlgorithmPool;
+    CalibrationPipelineExecutor executor(
+        std::move(options),
+        cnt::make_unique<LOSTCalibrationAlgorithm>(calibrationAlgorithmPool));
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout
@@ -110,32 +113,40 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
     PositionVector positionVector2{4, 5, 6};
 
     // Setup Mocks
-    std::unique_ptr<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithm =
-        std::make_unique<MockEdgeDetectionAlgorithm>();
+    static cnt::pool<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithmPool;
+    cnt::unique_ptr<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithm =
+        cnt::make_unique<MockEdgeDetectionAlgorithm>(mockEdgeDetectionAlgorithmPool);
     EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
         .WillOnce(testing::Return(points));
 
-    std::unique_ptr<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithm =
-        std::make_unique<MockDistanceDeterminationAlgorithm>();
-    EXPECT_CALL(*mockDistanceDeterminationAlgorithm, Run(PointsMatcher(points)))
+    static cnt::pool<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithmPool;
+    cnt::unique_ptr<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithm =
+        cnt::make_unique<MockDistanceDeterminationAlgorithm>(mockDistanceDeterminationAlgorithmPool);
+    EXPECT_CALL(*mockDistanceDeterminationAlgorithm,
+                Run(PointsMatcher(points)))
         .WillOnce(testing::Return(positionVector1));
 
-    std::unique_ptr<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithm =
-        std::make_unique<MockVectorGenerationAlgorithm>();
-    EXPECT_CALL(*mockVectorGenerationAlgorithm, Run(PositionVectorMatcher(positionVector1)))
+    static cnt::pool<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithmPool;
+    cnt::unique_ptr<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithm =
+        cnt::make_unique<MockVectorGenerationAlgorithm>(mockVectorGenerationAlgorithmPool);
+    EXPECT_CALL(*mockVectorGenerationAlgorithm,
+                Run(PositionVectorMatcher(positionVector1)))
         .WillOnce(testing::Return(positionVector2));
 
-    std::unique_ptr<EdgeDetectionAlgorithm>
+    cnt::unique_ptr<EdgeDetectionAlgorithm>
         edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
-    std::unique_ptr<EdgeFilteringAlgorithms> filters = std::make_unique<EdgeFilteringAlgorithms>();
-    std::unique_ptr<MockModifyingStage<Points>> mockFilter = std::make_unique<MockModifyingStage<Points>>();
+    static cnt::pool<EdgeFilteringAlgorithms> filtersPool;
+    cnt::unique_ptr<EdgeFilteringAlgorithms> filters = cnt::make_unique<EdgeFilteringAlgorithms>(filtersPool);
+    static cnt::pool<MockModifyingStage<Points>> mockFilterPool;
+    cnt::unique_ptr<MockModifyingStage<Points>> mockFilter =
+        cnt::make_unique<MockModifyingStage<Points>>(mockFilterPool);
     EXPECT_CALL(*mockFilter, Run(PointsMatcher(points)))
         .WillOnce(testing::Invoke([](Points &){ /* no-op for test */ }));
     filters->Complete(std::move(mockFilter));
 
-    std::unique_ptr<DistanceDeterminationAlgorithm>
+    cnt::unique_ptr<DistanceDeterminationAlgorithm>
         distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
-    std::unique_ptr<VectorGenerationAlgorithm>
+    cnt::unique_ptr<VectorGenerationAlgorithm>
         vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
     DistancePipelineExecutor executor(std::move(options),
                                       std::move(edgeDetectionAlgorithm),
@@ -158,16 +169,86 @@ TEST(ExecutorsTest, TestDistancePipelineExecutor) {
 
     ASSERT_THAT(output, testing::MatchesRegex(expectedOutput.str()));
 
-    DataFile expected{
-        {{'F', 'O', 'U', 'N'}, 1U, 1},
-        {},
-        std::make_unique<LocationRecord[]>(1)
-    };
-    expected.positions[0] = {145295, {4, 5, 6}};
+    DataFile expected{{{'F', 'O', 'U', 'N'}, 1U, 1}, {}};
+    expected.positions.push_back({145295, {4, 5, 6}});
 
     std::ifstream file(temp_df);
     DataFile actual = deserializeDataFile(file);
     ASSERT_DF_EQ(expected, actual, 1);
+
+    std::remove(temp_df);
+}
+
+TEST(ExecutorsTest, TestDistancePipelineExecutorFullCalibrationDataThrows) {
+    DataFile fullCalibrationData(
+        {{{'F', 'O', 'U', 'N'}, 1U, FOUND_MAX_LOCATION_RECORDS}, {}});
+    fullCalibrationData.positions.resize(FOUND_MAX_LOCATION_RECORDS);
+
+    DistanceOptions options = {
+        strtoimage("test/common/assets/example_image.jpg"),
+        std::move(fullCalibrationData),
+        false,
+        0.012,
+        20E-6,
+        {0, 0, 0},
+        {0, 0, 0},
+        DECIMAL_M_E,
+        25,
+        1,
+        0.0,
+        "hello",
+        92,
+        300,
+        2.0,
+        0,
+        10,
+        12,
+        false,
+        temp_df
+    };
+    Points points = {
+        {0, 0},
+        {1, 1},
+        {2, 2}
+    };
+    PositionVector positionVector1{1, 2, 3};
+    PositionVector positionVector2{4, 5, 6};
+
+    static cnt::pool<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithmPool;
+    cnt::unique_ptr<MockEdgeDetectionAlgorithm> mockEdgeDetectionAlgorithm =
+        cnt::make_unique<MockEdgeDetectionAlgorithm>(mockEdgeDetectionAlgorithmPool);
+    EXPECT_CALL(*mockEdgeDetectionAlgorithm, Run(ImageMatcher(options.image)))
+        .WillOnce(testing::Return(points));
+
+    static cnt::pool<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithmPool;
+    cnt::unique_ptr<MockDistanceDeterminationAlgorithm> mockDistanceDeterminationAlgorithm =
+        cnt::make_unique<MockDistanceDeterminationAlgorithm>(mockDistanceDeterminationAlgorithmPool);
+    EXPECT_CALL(*mockDistanceDeterminationAlgorithm,
+                Run(PointsMatcher(points)))
+        .WillOnce(testing::Return(positionVector1));
+
+    static cnt::pool<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithmPool;
+    cnt::unique_ptr<MockVectorGenerationAlgorithm> mockVectorGenerationAlgorithm =
+        cnt::make_unique<MockVectorGenerationAlgorithm>(mockVectorGenerationAlgorithmPool);
+    EXPECT_CALL(*mockVectorGenerationAlgorithm,
+                Run(PositionVectorMatcher(positionVector1)))
+        .WillOnce(testing::Return(positionVector2));
+
+    cnt::unique_ptr<EdgeDetectionAlgorithm>
+        edgeDetectionAlgorithm(std::move(mockEdgeDetectionAlgorithm));
+    cnt::unique_ptr<DistanceDeterminationAlgorithm>
+        distanceDeterminationAlgorithm(std::move(mockDistanceDeterminationAlgorithm));
+    cnt::unique_ptr<VectorGenerationAlgorithm>
+        vectorGenerationAlgorithm(std::move(mockVectorGenerationAlgorithm));
+
+    DistancePipelineExecutor executor(std::move(options),
+                                      std::move(edgeDetectionAlgorithm),
+                                      std::move(distanceDeterminationAlgorithm),
+                                      std::move(vectorGenerationAlgorithm));
+
+    executor.ExecutePipeline();
+
+    ASSERT_THROW(executor.OutputResults(), std::runtime_error);
 
     std::remove(temp_df);
 }
@@ -188,12 +269,14 @@ TEST(ExecutorsTest, TestOrbitPipelineExecutor) {
         {6, {6, 6, 6}}
     };
 
-    std::unique_ptr<MockOrbitPropagationAlgorithm> mockOrbitPropagationAlgorithm =
-        std::make_unique<MockOrbitPropagationAlgorithm>();
+    static cnt::pool<MockOrbitPropagationAlgorithm> mockOrbitPropagationAlgorithmPool;
+    cnt::unique_ptr<MockOrbitPropagationAlgorithm> mockOrbitPropagationAlgorithm =
+        cnt::make_unique<MockOrbitPropagationAlgorithm>(mockOrbitPropagationAlgorithmPool);
     EXPECT_CALL(*mockOrbitPropagationAlgorithm, Run(testing::_))
         .WillOnce(testing::Return(expectedResult));
 
-    OrbitPipelineExecutor executor(std::move(options), std::move(mockOrbitPropagationAlgorithm));
+    OrbitPipelineExecutor executor(std::move(options),
+                                   std::move(mockOrbitPropagationAlgorithm));
     executor.ExecutePipeline();
 
     testing::internal::CaptureStdout();  // Start capturing stdout

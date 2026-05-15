@@ -34,6 +34,7 @@ STB_IMAGE := stb_image
 STB_IMAGE_URL := https://raw.githubusercontent.com/nothings/stb/master/$(STB_IMAGE).h
 STB_IMAGE_CACHE_DIR := $(CACHE_DIR)/$(STB_IMAGE)
 STB_IMAGE_CACHE_ARTIFACT := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).cpp
+STB_IMAGE_CACHE_OBJECT := $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o
 STB_IMAGE_DIR := $(BUILD_LIBRARY_SRC_DIR)/$(STB_IMAGE)
 
 # Define the GoogleTest library and build targets
@@ -93,10 +94,32 @@ ifdef FLOAT_MODE
 	FOUND_FLOAT_MODE_MACRO := -DFOUND_FLOAT_MODE -Wdouble-promotion
 endif
 
+# Container backend macros
+ifeq ($(FOUND_CONTAINER_BACKEND),ETL)
+    FOUND_CONTAINER_BACKEND_MACROS := -DFOUND_USE_ETL_CONTAINERS
+endif
+
+CXXFLAGS += $(FOUND_CONTAINER_BACKEND_MACROS)
+CXXFLAGS_TEST += $(FOUND_CONTAINER_BACKEND_MACROS)
+
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
+# Define the ETL library (FetchContent style)
+ETL := etl
+ETL_VERSION := 20.46.2
+ETL_URL := https://github.com/ETLCPP/etl.git
+ETL_CACHE_DIR := $(CACHE_DIR)/$(ETL)-$(ETL_VERSION)
+ETL_INCLUDE_DIR := $(ETL_CACHE_DIR)/include
+$(ETL_CACHE_DIR):
+	git clone --branch $(ETL_VERSION) --depth 1 $(ETL_URL) $(ETL_CACHE_DIR)
+
+ifeq ($(FOUND_CONTAINER_BACKEND),ETL)
+ETL_DEPS := $(ETL_CACHE_DIR)
+ETL_INCLUDE_LIBS := -I$(ETL_INCLUDE_DIR)
+endif
+
 # Compiler flags
-LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR) -isystem $(EIGEN_DIR)
+LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR) -isystem $(EIGEN_DIR) $(ETL_INCLUDE_LIBS)
 LIBS_TEST := $(TEST_LIBS) -isystem $(EIGEN_DIR) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
@@ -129,14 +152,7 @@ ifdef DEBUG
 endif
 PASS_ON_COVERAGE_FAIL := false
 
-# Prints out a Header when each
-# target begins
-# 
-# Argument
-# - $(1) The name of the target
-#
-# Prints out a banner for each
-# target with the specified name
+# Prints out a Header when each target begins
 define PRINT_TARGET_HEADER
 	@MIDDLE_LINE="Target: $(1)"; \
 	MIDDLE_LINE_LEN=$$(echo -n "$$MIDDLE_LINE" | wc -m); \
@@ -162,7 +178,7 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR) $(ETL_DEPS)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
@@ -174,12 +190,16 @@ $(BUILD_LIBRARY_SRC_DIR):
 	mkdir -p $(BUILD_LIBRARY_SRC_DIR)
 compile_setup_message:
 	$(call PRINT_TARGET_HEADER, $(COMPILE_SETUP_TARGET))
-$(STB_IMAGE_DIR): $(STB_IMAGE_CACHE_ARTIFACT) $(BUILD_LIBRARY_SRC_DIR)
-	cp -r $(STB_IMAGE_CACHE_DIR) $(BUILD_LIBRARY_SRC_DIR)
+$(STB_IMAGE_DIR)/$(STB_IMAGE).o: $(STB_IMAGE_CACHE_OBJECT) $(BUILD_LIBRARY_SRC_DIR)
+	mkdir -p $(STB_IMAGE_DIR)
+	cp -r $(STB_IMAGE_CACHE_DIR)/* $(STB_IMAGE_DIR)/
+# Update the directory alias to depend on the file
+$(STB_IMAGE_DIR): $(STB_IMAGE_DIR)/$(STB_IMAGE).o
+$(STB_IMAGE_CACHE_OBJECT): $(STB_IMAGE_CACHE_ARTIFACT)
+	$(CXX) -I$(CACHE_DIR) -DSTB_IMAGE_IMPLEMENTATION -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_OBJECT) # Exclude CXXFLAGS because we know its fine
 $(STB_IMAGE_CACHE_ARTIFACT):
 	wget $(STB_IMAGE_URL) -P $(STB_IMAGE_CACHE_DIR)
-	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
-	$(CXX) -I$(CACHE_DIR) -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o # Exclude CXXFLAGS because we know its fine
+	echo '#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
 
 # Eigen header-only library (download and extract)
 $(EIGEN_DIR): $(EIGEN_CACHE_ARTIFACT) $(BUILD_LIBRARY_SRC_DIR)
@@ -190,9 +210,9 @@ $(EIGEN_CACHE_ARTIFACT):
 
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR) $(ETL_DEPS)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR) $(EIGEN_DIR)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR) $(EIGEN_DIR) $(ETL_DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -c $< -o $@
 compile_message:
@@ -221,12 +241,15 @@ test_setup_message:
 
 # The test target
 $(TEST_TARGET): $(TEST_SETUP_TARGET) test_message $(TEST_BIN)
-$(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR)
+$(TEST_BIN): $(GTEST_DIR) $(TEST_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
 	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -o $(TEST_BIN) $(TEST_OBJS) $(LIBS) $(LDFLAGS_TEST)
-$(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR)
+
+
+$(BUILD_TEST_DIR)/%.o: $(TEST_DIR)/%.cpp $(GTEST_DIR) $(ETL_DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@
-$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR)
+
+$(BUILD_TEST_DIR)/%.o: $(SRC_DIR)/%.cpp $(GTEST_DIR) $(ETL_DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) $(COVERAGE_FLAGS) -c $< -o $@
 test_message:
@@ -236,7 +259,7 @@ test_message:
 $(COVERAGE_TARGET): $(TEST_SETUP_TARGET) $(TEST_TARGET)
 	$(call PRINT_TARGET_HEADER, $(COVERAGE_TARGET))
 	./$(TEST_BIN) --gtest_brief=1
-	gcovr || $(PASS_ON_COVERAGE_FAIL)
+	gcovr --html-details $(BUILD_DOCUMENTATION_COVERAGE_DIR)/index.html || $(PASS_ON_COVERAGE_FAIL)
 
 # The stylecheck target for tests
 $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
@@ -245,10 +268,12 @@ $(GOOGLE_STYLECHECK_TEST_TARGET): $(TEST) $(TEST_H)
 
 # The pre-processed artifacts target (private)
 $(PRIVATE_TARGET): $(COMPILE_SETUP_TARGET) $(TEST_SETUP_TARGET) private_message $(PRIVATE_SRC) $(PRIVATE_TEST)
-$(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC)
+
+$(BUILD_PRIVATE_SRC_DIR)/%.i: $(SRC) $(ETL_DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -E $< -o $@
-$(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST)
+
+$(BUILD_PRIVATE_TEST_DIR)/%.i: $(TEST) $(ETL_DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS_TEST) -E $< -o $@
 private_message:

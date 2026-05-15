@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <algorithm>
 #include <string>
 #include <sstream>
 
@@ -36,9 +37,9 @@ constexpr auto Vec3Equal = [](const Vec3 &a, const Vec3 &b) {
            && abs(a.z() - b.z()) < DEFAULT_TOLERANCE;
 };
 
-constexpr auto LocationRecordEqual = [](const LocationRecord &a, const LocationRecord &b) {
+inline bool LocationRecordEqual(const LocationRecord &a, const LocationRecord &b) {
     return a.timestamp == b.timestamp && Vec3Equal(a.position, b.position);
-};
+}
 
 MATCHER_P(LocationRecordsEqual, expected, "") {
     return std::is_permutation(expected.begin(), expected.end(),

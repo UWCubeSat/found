@@ -50,7 +50,7 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
      * @param calibrationAlgorithm The calibration algorithm to use
      */
     explicit CalibrationPipelineExecutor(CalibrationOptions &&options,
-                                         std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
+                                         cnt::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -60,6 +60,8 @@ class CalibrationPipelineExecutor : public PipelineExecutor {
     const CalibrationOptions options_;
     /// The Calibration pipeline
     CalibrationPipeline pipeline_;
+    /// The Calibration Algorithm used
+    cnt::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm;
 };
 
 /**
@@ -86,9 +88,9 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @pre Each provided stage is already "ready" (e.g., pipelines passed in were Completed) before transfer.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+                                      cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     /**
      * Constructs a DistancePipelineExecutor with an edge-filtering pipeline
@@ -104,10 +106,10 @@ class DistancePipelineExecutor : public PipelineExecutor {
      * @pre Stage input/output types align with the Distance pipeline: Image -> Points -> Points -> PositionVector.
      */
     explicit DistancePipelineExecutor(DistanceOptions &&options,
-                                      std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
-                                      std::unique_ptr<EdgeFilteringAlgorithms> filters,
-                                      std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
-                                      std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
+                                      cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                      cnt::unique_ptr<EdgeFilteringAlgorithms> filters,
+                                      cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                      cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -117,6 +119,12 @@ class DistancePipelineExecutor : public PipelineExecutor {
     const DistanceOptions options_;
     /// The Distance pipeline being used
     DistancePipeline pipeline_;
+    /// The Edge Detection Algorithm used
+    cnt::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm;
+    /// The Distance Determination Algorithm being used
+    cnt::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm;
+    /// The Vectorization/Rotation Algorithm being used
+    cnt::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm;
 };
 
 /**
@@ -132,7 +140,7 @@ class OrbitPipelineExecutor : public PipelineExecutor {
      * @param orbitPropagationAlgorithm The orbit propagation algorithm to use
      */
     explicit OrbitPipelineExecutor(OrbitOptions &&options,
-                                   std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
+                                   cnt::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm);
 
     void ExecutePipeline() override;
     void OutputResults() override;
@@ -142,6 +150,8 @@ class OrbitPipelineExecutor : public PipelineExecutor {
     const OrbitOptions options_;
     /// The Orbit pipeline
     OrbitPipeline pipeline_;
+    /// The Orbit Propagation Algorithm being used
+    cnt::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm;
 };
 
 }  // namespace found

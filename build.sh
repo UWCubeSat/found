@@ -15,6 +15,10 @@ display_help() {
     echo "  ./build.sh clean"
     echo "  ./build.sh clean_all"
     echo "  ./build.sh --help | -h"
+    echo ""
+    echo "ETL build examples (explicit macro required):"
+    echo "  ./build.sh cmake \"-DFOUND_CONTAINER_BACKEND=ETL\" --target compile --parallel 16"
+    echo "  ./build.sh make FOUND_CONTAINER_BACKEND=ETL compile -j16"
 }
 
 # Exit if no arguments were provided
@@ -29,7 +33,7 @@ case "$1" in
         shift
         mkdir -p build && cd build
 
-        CONFIG_OPTS="${1:-}"  # Use empty string if not set
+        CONFIG_OPTS="${1:-}"
         if [ $# -gt 0 ]; then shift; fi
 
         CMD="cmake $CONFIG_OPTS .. && cmake --build . $*"

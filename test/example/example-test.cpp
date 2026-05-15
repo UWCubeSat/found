@@ -40,23 +40,12 @@ class ExampleTest : public testing::Test {
  protected:
     // This is a common EdgeDetectionAlgorithm
     // that we'd like to use
-    MockEdgeDetectionAlgorithm *eda;
+    MockEdgeDetectionAlgorithm eda;
     /**
      * This method always runs before TEST_F(ExampleTest, ...)
      * test cases, and can be used to setup our mock.
      * Here, we initialize our field to a Mock EdgeDetectionAlgorithm
      */
-    void SetUp() override {
-        eda = new MockEdgeDetectionAlgorithm();
-    }
-    /**
-     * This method always runs after TEST_F(ExampleTest, ...)
-     * test cases, and can be used to destroy any heap objects.
-     * Here, we delete our mock.
-     */
-    virtual void TearDown() {
-        delete eda;
-    }
 };
 
 /**
@@ -90,12 +79,12 @@ TEST_F(ExampleTest, MySecondTest) {
     // More information about what's happening can be found within
     // test/common/mocks/example-mocks.hpp, or at the following website:
     // https://google.github.io/googletest/gmock_for_dummies.html
-    EXPECT_CALL(*eda, Run(testing::_))
+    EXPECT_CALL(eda, Run(testing::_))
         .WillOnce(testing::Return(expectedPoints));
 
     // Here, we run the function we want to test,
     // which will execute our Mocked behavior
-    Points p = eda->Run(image);
+    Points p = eda.Run(image);
 
     // Now, we test if the result of our
     // function matched our expectation
