@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 
+#include <Eigen/Eigenvalues>
+
 // Test for SpheroidDistanceAndCovarianceAlgorithm
 #include "distance/distance.hpp"
 #include "common/decimal.hpp"
@@ -93,4 +95,54 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, CovarianceIsPositiveDefinite) {
     for (int i = 0; i < eigenvalues.size(); i++) {
         EXPECT_GE(eigenvalues(i).real(), 0);
     }
+}
+
+TEST(SpheroidDistanceAndCovarianceAlgorithm, NotEnoughPoints) {
+    // create a camera
+    Camera cam(DECIMAL(0.005), 4000, 3000, DECIMAL(2000), DECIMAL(1500), DECIMAL(1.12e-6), DECIMAL(1.12e-6));
+    
+    // define principle axes of the spheroid
+    Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
+    
+    // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
+    Quaternion relativeOrientation = found::Quaternion::Identity();
+    
+    // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
+    SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
+    
+    // create a spheriod distance and covariance determination algorithm class
+    SpheroidDistanceAndCovarianceDeterminationAlgorithm covarianceAlgorithm(std::make_unique<SpheroidDistanceDeterminationAlgorithm>(std::move(distanceAlgorithm)));
+    
+    // create a set of points that is too small (under 3)
+    Points points = {
+        Vec2(758, 637),
+    };
+    
+    auto result = covarianceAlgorithm.Run(points);
+    EXPECT_EQ(result.distance, Vec3(0, 0, 0));
+    EXPECT_EQ(result.covariance, Mat3());
+}
+
+TEST(SpheroidDistanceAndCovarianceAlgorithm, OopsNoPoints) {
+    // create a camera
+    Camera cam(DECIMAL(0.005), 4000, 3000, DECIMAL(2000), DECIMAL(1500), DECIMAL(1.12e-6), DECIMAL(1.12e-6));
+    
+    // define principle axes of the spheroid
+    Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
+    
+    // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
+    Quaternion relativeOrientation = found::Quaternion::Identity();
+    
+    // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
+    SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
+    
+    // create a spheriod distance and covariance determination algorithm class
+    SpheroidDistanceAndCovarianceDeterminationAlgorithm covarianceAlgorithm(std::make_unique<SpheroidDistanceDeterminationAlgorithm>(std::move(distanceAlgorithm)));
+    
+    // create a set of nothing
+    Points points = {};
+    
+    auto result = covarianceAlgorithm.Run(points);
+    EXPECT_EQ(result.distance, Vec3(0, 0, 0));
+    EXPECT_EQ(result.covariance, Mat3());
 }

@@ -54,6 +54,9 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
 ///// SpheroidDistanceAndCovarianceDeterminationAlgorithm /////
 
 DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3u) // GCOVR_EXCL_BR_LINE
+        return {};
+
     PositionVector vecToEarth = algorithm_->Run(p); // s_C
 
     Vec3 shapeMatrixFactor = algorithm_->getPrincipleAxes().cwiseInverse();
@@ -76,11 +79,11 @@ DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(c
         decimal residual = homogeneous.transpose() * transformedConicLocusMatrix * homogeneous;
         pointVariance += residual * residual;
     }
-    pointVariance /= p.size();
+    pointVariance /= p.size(); // GCOVR_EXCL_BR_LINE
 
     Mat3 outCovarianceInverse = Mat3::Zero();
 
-    for (size_t i = 0; i < p.size(); i++) {
+    for (size_t i = 0; i < p.size(); i++) { // GCOVR_EXCL_BR_LINE
         // p[i] = u_i
         // x_i
         const Vec3 &point = algorithm_->getCamera().PixelToImageCoordinates(p[i]);
