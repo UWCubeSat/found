@@ -30,10 +30,13 @@ using found::Quaternion;
 TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
     // create a camera
     Camera cam(DECIMAL(0.005), 4000, 3000, DECIMAL(2000), DECIMAL(1500), DECIMAL(1.12e-6), DECIMAL(1.12e-6));
+    
     // define principle axes of the spheroid
     Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
-    // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
+
+    // calculate the orientation of the camera relative to the spheroid
     Quaternion relativeOrientation = Quaternion::Identity();
+
     // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
     SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
     
@@ -42,9 +45,9 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
     
     // create a set of points on the horizon of a celestial body
     Points points = {
-        Vec2(1000, 1500),
-        Vec2(2000, 1500),
-        Vec2(3000, 1500)
+        Vec2(837, 924),
+        Vec2(878, 734),
+        Vec2(960, 675)
     };
 
     // run the algorithm on the set of points
@@ -59,10 +62,13 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, SymmetricCovarianceOutput) {
 TEST(SpheroidDistanceAndCovarianceAlgorithm, CovarianceIsPositiveDefinite) {
     // create a camera
     Camera cam(DECIMAL(0.005), 4000, 3000, DECIMAL(2000), DECIMAL(1500), DECIMAL(1.12e-6), DECIMAL(1.12e-6));
+    
     // define principle axes of the spheroid
     Vec3 principleAxes(RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_A, RADIUS_OF_EARTH_C);
+    
     // calculate the orientation of the camera relative to the spheroid - thi is a matrix?
-    Quaternion relativeOrientation = found::Quarternion::Identity();
+    Quaternion relativeOrientation = found::Quaternion::Identity();
+    
     // create a spheriod distance determination algorithm class to pass into the covariance algorithm class
     SpheroidDistanceDeterminationAlgorithm distanceAlgorithm(std::move(cam), principleAxes, relativeOrientation, relativeOrientation);
     
@@ -88,7 +94,3 @@ TEST(SpheroidDistanceAndCovarianceAlgorithm, CovarianceIsPositiveDefinite) {
         EXPECT_GE(eigenvalues(i).real(), 0);
     }
 }
-
-// test that the covariance blows up when the arc is small
-
-// what parts of the algorithm should be tested independently?
