@@ -92,7 +92,7 @@ if(FLOAT_MODE)
 endif()
 
 # Debug config
-set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -fno-stack-protector -fno-omit-frame-pointer")
 
 # Release config
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")

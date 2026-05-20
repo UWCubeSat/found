@@ -51,6 +51,63 @@ PositionVector SpheroidDistanceDeterminationAlgorithm::Run(const Points &p) {
     return vecToEarth;
 }
 
+///// SpheroidDistanceAndCovarianceDeterminationAlgorithm /////
+
+DistanceAndCovariance SpheroidDistanceAndCovarianceDeterminationAlgorithm::Run(const Points &p) {
+    if (p.size() < 3u) // GCOVR_EXCL_BR_LINE
+        return {};
+
+    PositionVector vecToEarth = algorithm_->Run(p); // s_C
+
+    Vec3 shapeMatrixFactor = algorithm_->getPrincipleAxes().cwiseInverse();
+    Mat3 shapeMatrix = shapeMatrixFactor.cwiseProduct(shapeMatrixFactor).asDiagonal();
+    
+    // A_C
+    Mat3 transformedShapeMatrix = algorithm_->getTPC() * 
+        shapeMatrix * algorithm_->getTPC().transpose();
+
+    // M_C
+    Mat3 transformedConicLocusMatrix = transformedShapeMatrix * 
+            (vecToEarth * vecToEarth.transpose()) * transformedShapeMatrix - 
+            (vecToEarth.transpose() * transformedShapeMatrix * vecToEarth - 1.0) * 
+            transformedShapeMatrix;
+
+    // sigma_{x_i}
+    decimal pointVariance = 0.0;
+    for (const auto &point : p) {
+        Vec3 homogeneous = point.homogeneous();
+        decimal residual = homogeneous.transpose() * transformedConicLocusMatrix * homogeneous;
+        pointVariance += residual * residual;
+    }
+    pointVariance /= p.size(); // GCOVR_EXCL_BR_LINE
+
+    Mat3 outCovarianceInverse = Mat3::Zero();
+
+    for (size_t i = 0; i < p.size(); i++) { // GCOVR_EXCL_BR_LINE
+        // p[i] = u_i
+        // x_i
+        const Vec3 &point = algorithm_->getCamera().PixelToImageCoordinates(p[i]);
+
+        // see Exercise 8.6
+        Mat3 pointCovariance = Vec3(pointVariance, pointVariance, 0).asDiagonal();
+
+        decimal residualVariance = 4.0 * point.transpose() * transformedConicLocusMatrix *
+            pointCovariance * transformedConicLocusMatrix * point;
+
+        auto H = 2.0 * vecToEarth.transpose() * 
+            ((point.transpose() * transformedShapeMatrix * point) * 
+             transformedShapeMatrix - transformedShapeMatrix * point * point.transpose() * 
+             transformedShapeMatrix);
+
+        outCovarianceInverse += (H.transpose() * H) / residualVariance;
+    }
+
+    return {
+        vecToEarth,
+        outCovarianceInverse.inverse()
+    };
+}
+
 ///// SphericalDistanceDeterminationAlgorithm /////
 
 PositionVector SphericalDistanceDeterminationAlgorithm::Run(const Points &p) {
