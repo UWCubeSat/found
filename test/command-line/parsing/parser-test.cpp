@@ -20,13 +20,13 @@ TEST_F(ParserTest, CalibrationParserBaseCase) {
     const char *argv[] = {"found", "calibration"};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.lclOrientation.z());
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0), options.refOrientation.z());
 
     ASSERT_EQ("", options.outputFile);
 }
@@ -39,13 +39,13 @@ TEST_F(ParserTest, TestCalibrationParserGeneral) {
         "--output-file", temp_df};
     CalibrationOptions options = ParseCalibrationOptions(argc, const_cast<char **>(argv));
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(1), options.lclOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(2), options.lclOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3), options.lclOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(1), options.lclOrientation.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(2), options.lclOrientation.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3), options.lclOrientation.z());
 
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3.0), options.refOrientation.ra);
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(-9.0), options.refOrientation.de);
-    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(27.2), options.refOrientation.roll);
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(3.0), options.refOrientation.x());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(-9.0), options.refOrientation.y());
+    ASSERT_DECIMAL_EQ_DEFAULT(DegToRad(27.2), options.refOrientation.z());
 
     ASSERT_EQ(temp_df, options.outputFile);
 }
@@ -242,6 +242,39 @@ TEST_F(ParserTest, OrbitParserGeneral) {
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(0.02), options.dt);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(7000.0), options.radius);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(400000.0), options.mu);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopWithEqualsTrue) {
+    int argc = 3;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter=true"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopNoValueAtEnd) {
+    int argc = 3;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopExplicitFalse) {
+    int argc = 4;
+    const char *argv[] = {"found", "distance", "--enable-noop-edge-filter", "false"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+    ASSERT_FALSE(options.enableNoOpEdgeFilter);
+}
+
+TEST_F(ParserTest, DistanceParserEnableNoopNoValueBeforeAnotherFlag) {
+    int argc = 7;
+    const char *argv[] = {"found", "distance",
+        "--enable-noop-edge-filter",
+        "--image", "test/common/assets/example_image.jpg",
+        "--calibration-data", "test/common/assets/empty-df.found"};
+    DistanceOptions options = ParseDistanceOptions(argc, const_cast<char **>(argv));
+
+    ASSERT_TRUE(options.enableNoOpEdgeFilter);
+    stbi_image_free(options.image.image);
 }
 
 }  // namespace found

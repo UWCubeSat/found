@@ -3,9 +3,11 @@
 
 #include <memory>
 #include <utility>
+#include <optional>
 
 #include "command-line/execution/executors.hpp"
 #include "providers/stage-providers.hpp"
+#include "distance/edge-filters.hpp"
 
 namespace found {
 
@@ -17,8 +19,8 @@ namespace found {
  * @return A pointer to a CalibrationPipelineExecutor
  */
 inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExecutor(CalibrationOptions &&options) {
-    return std::make_unique<CalibrationPipelineExecutor>(std::forward<CalibrationOptions>(options),
-                                    ProvideCalibrationAlgorithm(std::forward<CalibrationOptions>(options)));
+    return std::make_unique<CalibrationPipelineExecutor>(std::move(options),
+                                    ProvideCalibrationAlgorithm(std::forward<const CalibrationOptions&&>(options)));
 }
 
 /**
@@ -29,11 +31,28 @@ inline std::unique_ptr<CalibrationPipelineExecutor> CreateCalibrationPipelineExe
  * @return A pointer to a DistancePipelineExecutor
  */
 inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(DistanceOptions &&options) {
-    return std::make_unique<DistancePipelineExecutor>(std::forward<DistanceOptions>(options),
-                                    ProvideEdgeDetectionAlgorithm(std::forward<DistanceOptions>(options)),
-                                    ProvideDistanceDeterminationAlgorithm(std::forward<DistanceOptions>(options)),
-                                    ProvideVectorGenerationAlgorithm(std::forward<DistanceOptions>(options)));
+    std::unique_ptr<EdgeDetectionAlgorithm> edgeAlg = ProvideEdgeDetectionAlgorithm(
+                                                        std::forward<const DistanceOptions&&>(options));
+    std::unique_ptr<EdgeFilteringAlgorithms> filtersOpt = ProvideEdgeFilteringAlgorithm(
+                                                            std::forward<const DistanceOptions&&>(options));
+    std::unique_ptr<DistanceDeterminationAlgorithm> distAlg = ProvideDistanceDeterminationAlgorithm(
+                                                                std::forward<const DistanceOptions&&>(options));
+    std::unique_ptr<VectorGenerationAlgorithm> vecAlg = ProvideVectorGenerationAlgorithm(
+                                                            std::forward<const DistanceOptions&&>(options));
+
+    if (filtersOpt) {
+        return std::make_unique<DistancePipelineExecutor>(std::move(options),
+                                    std::move(edgeAlg),
+                                    std::move(filtersOpt),
+                                    std::move(distAlg),
+                                    std::move(vecAlg));
+    }
+    return std::make_unique<DistancePipelineExecutor>(std::move(options),
+                                std::move(edgeAlg),
+                                std::move(distAlg),
+                                std::move(vecAlg));
 }
+
 
 // TODO: Uncomment when orbit stage is implemented
 /**
@@ -45,7 +64,7 @@ inline std::unique_ptr<DistancePipelineExecutor> CreateDistancePipelineExecutor(
  */
 // inline std::unique_ptr<OrbitPipelineExecutor> CreateOrbitPipelineExecutor(OrbitOptions &&options) {
 //     return std::make_unique<OrbitPipelineExecutor>(std::forward<OrbitOptions>(options),
-//                                     ProvideOrbitPropagationAlgorithm(std::forward<OrbitOptions>(options)));
+//                                     ProvideOrbitPropagationAlgorithm(options));
 // }
 
 }  // namespace found

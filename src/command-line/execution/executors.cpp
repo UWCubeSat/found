@@ -1,8 +1,8 @@
 #include "command-line/execution/executors.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <utility>
-#include <cstring>
 
 #include "common/logging.hpp"
 #include "common/time/time.hpp"
@@ -12,8 +12,9 @@ namespace found {
 CalibrationPipelineExecutor::CalibrationPipelineExecutor(CalibrationOptions &&options,
                                                          std::unique_ptr<CalibrationAlgorithm> calibrationAlgorithm)
                                                          : options_(std::move(options)) {
-    this->calibrationAlgorithm = std::move(calibrationAlgorithm);
-    this->pipeline_.Complete(*this->calibrationAlgorithm);
+    std::unique_ptr<FunctionStage<std::pair<EulerAngles, EulerAngles>, Quaternion>> calibrationStage(
+        std::move(calibrationAlgorithm));
+    this->pipeline_.Complete(std::move(calibrationStage));
 }
 
 void CalibrationPipelineExecutor::ExecutePipeline() {
@@ -26,10 +27,10 @@ void CalibrationPipelineExecutor::ExecutePipeline() {
 void CalibrationPipelineExecutor::OutputResults() {
     // Output the results of the calibration
     Quaternion *&calibrationQuaternion = this->pipeline_.GetProduct();
-    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->real << ", "
-                                         << calibrationQuaternion->i << ", "
-                                         << calibrationQuaternion->j << ", "
-                                         << calibrationQuaternion->k << ")");
+    LOG_INFO("Calibration Quaternion: (" << calibrationQuaternion->w() << ", "
+                                         << calibrationQuaternion->x() << ", "
+                                         << calibrationQuaternion->y() << ", "
+                                         << calibrationQuaternion->z() << ")");
     DataFile outputDF{};
     outputDF.relative_attitude = *calibrationQuaternion;
     std::ofstream outputFile(this->options_.outputFile);
@@ -45,12 +46,31 @@ DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
                                                    std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
                                                    std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
                                                    : options_(std::move(options)) {
-    this->edgeDetectionAlgorithm = std::move(edgeDetectionAlgorithm);
-    this->distanceAlgorithm = std::move(distanceAlgorithm);
-    this->vectorizationAlgorithm = std::move(vectorizationAlgorithm);
-    this->pipeline_.AddStage(*this->edgeDetectionAlgorithm)
-                   .AddStage(*this->distanceAlgorithm)
-                   .Complete(*this->vectorizationAlgorithm);
+    std::unique_ptr<FunctionStage<Image, Points>> edgeDetectionStage(std::move(edgeDetectionAlgorithm));
+    std::unique_ptr<FunctionStage<Points, PositionVector>> distanceStage(std::move(distanceAlgorithm));
+    std::unique_ptr<FunctionStage<PositionVector, PositionVector>> vectorStage(
+        std::move(vectorizationAlgorithm));
+    this->pipeline_.AddStage(std::move(edgeDetectionStage))
+                   .AddStage(std::move(distanceStage))
+                   .Complete(std::move(vectorStage));
+}
+
+
+DistancePipelineExecutor::DistancePipelineExecutor(DistanceOptions &&options,
+                                                   std::unique_ptr<EdgeDetectionAlgorithm> edgeDetectionAlgorithm,
+                                                   std::unique_ptr<EdgeFilteringAlgorithms> filters,
+                                                   std::unique_ptr<DistanceDeterminationAlgorithm> distanceAlgorithm,
+                                                   std::unique_ptr<VectorGenerationAlgorithm> vectorizationAlgorithm)
+                                                   : options_(std::move(options)) {
+    std::unique_ptr<FunctionStage<Image, Points>> edgeDetectionStage(std::move(edgeDetectionAlgorithm));
+    std::unique_ptr<FunctionStage<Points, Points>> filterStage(std::move(filters));
+    std::unique_ptr<FunctionStage<Points, PositionVector>> distanceStage(std::move(distanceAlgorithm));
+    std::unique_ptr<FunctionStage<PositionVector, PositionVector>> vectorStage(
+        std::move(vectorizationAlgorithm));
+    this->pipeline_.AddStage(std::move(edgeDetectionStage))
+                   .AddStage(std::move(filterStage))
+                   .AddStage(std::move(distanceStage))
+                   .Complete(std::move(vectorStage));
 }
 
 void DistancePipelineExecutor::ExecutePipeline() {
@@ -61,10 +81,10 @@ void DistancePipelineExecutor::ExecutePipeline() {
 
 void DistancePipelineExecutor::OutputResults() {
     PositionVector *&positionVector = this->pipeline_.GetProduct();
-    LOG_INFO("Calculated Position: (" << positionVector->x << ", "
-                                      << positionVector->y << ", "
-                                      << positionVector->z << ") m");
-    LOG_INFO("Distance from Earth: " << positionVector->Magnitude() << " m");
+    LOG_INFO("Calculated Position: (" << positionVector->x() << ", "
+                                      << positionVector->y() << ", "
+                                      << positionVector->z() << ") m");
+    LOG_INFO("Distance from Earth: " << positionVector->norm() << " m");
     // TODO: Figure out a much more optimized way of doing this please, especially
     // since we're saving it into the exact same file, there should be an easy way
     // to simply modify the file directly instead of this mess.
@@ -73,11 +93,13 @@ void DistancePipelineExecutor::OutputResults() {
         outputDF.header = this->options_.calibrationData.header;
         outputDF.relative_attitude = this->options_.calibrationData.relative_attitude;
         outputDF.positions = std::make_unique<LocationRecord[]>(outputDF.header.num_positions + 1);
-        std::memcpy(outputDF.positions.get(),
-                    this->options_.calibrationData.positions.get(),
-                    outputDF.header.num_positions);
+        std::copy(this->options_.calibrationData.positions.get(),
+                  this->options_.calibrationData.positions.get() + outputDF.header.num_positions,
+                  outputDF.positions.get());
     } else {
-        outputDF.relative_attitude = SphericalToQuaternion(this->options_.relOrientation);
+        outputDF.relative_attitude = this->options_.refAsOrientation
+            ? Quaternion::Identity()  // GCOVR_EXCL_BR_LINE
+            : SphericalToQuaternion(this->options_.relOrientation);  // GCOVR_EXCL_LINE
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
     // epochs is already in nanoseconds
@@ -94,8 +116,9 @@ void DistancePipelineExecutor::OutputResults() {
 OrbitPipelineExecutor::OrbitPipelineExecutor(OrbitOptions &&options,
                                              std::unique_ptr<OrbitPropagationAlgorithm> orbitPropagationAlgorithm)
                                              : options_(std::move(options)) {
-    this->orbitPropagationAlgorithm = std::move(orbitPropagationAlgorithm);
-    this->pipeline_.Complete(*this->orbitPropagationAlgorithm);
+    std::unique_ptr<FunctionStage<LocationRecords, LocationRecords>> orbitStage(
+        std::move(orbitPropagationAlgorithm));
+    this->pipeline_.Complete(std::move(orbitStage));
 }
 
 void OrbitPipelineExecutor::ExecutePipeline() {
@@ -107,9 +130,9 @@ void OrbitPipelineExecutor::ExecutePipeline() {
 void OrbitPipelineExecutor::OutputResults() {
     // TODO: Output this somewhere
     [[maybe_unused]] LocationRecord &futurePosition = this->pipeline_.GetProduct()->back();
-    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x << ", "
-                                             << futurePosition.position.y << ", "
-                                             << futurePosition.position.z << ") m"
+    LOG_INFO("Calculated Future Position: (" << futurePosition.position.x() << ", "
+                                             << futurePosition.position.y() << ", "
+                                             << futurePosition.position.z() << ") m"
                                              << " at time "
                                              << futurePosition.timestamp << " ns");
 }

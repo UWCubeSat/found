@@ -2,6 +2,7 @@
 #define SRC_PROVIDERS_STAGE_PROVIDERS_HPP_
 
 #include <memory>
+#include <utility>
 
 #include "command-line/parsing/options.hpp"
 
@@ -12,8 +13,10 @@
 #include "distance/edge.hpp"
 #include "distance/distance.hpp"
 #include "distance/vectorize.hpp"
+#include "distance/edge-filters.hpp"
 
 #include "orbit/orbit.hpp"
+
 
 // TODO(nguy8tri): Include statement for Orbit Pipeline
 // TODO: Fully Implement this when orbit stage is implemented
@@ -29,7 +32,8 @@ namespace found {
  * 
  * @return A pointer to the CalibrationAlgorithm
  */
-std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused]] CalibrationOptions &&options) {
+inline std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm(
+    [[maybe_unused]] const CalibrationOptions &&options) {
     return std::make_unique<LOSTCalibrationAlgorithm>();
 }
 
@@ -40,7 +44,7 @@ std::unique_ptr<CalibrationAlgorithm> ProvideCalibrationAlgorithm([[maybe_unused
  * 
  * @return std::unique_ptr<EdgeDetectionAlgorithm> The edge detection algorithm
  */
-std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(const DistanceOptions &&options) {
     return std::make_unique<SimpleEdgeDetectionAlgorithm>(options.SEDAThreshold,
                                                           options.SEDABorderLen,
                                                           options.SEDAOffset);
@@ -53,19 +57,17 @@ std::unique_ptr<EdgeDetectionAlgorithm> ProvideEdgeDetectionAlgorithm(DistanceOp
  * 
  * @return std::unique_ptr<DistanceDeterminationAlgorithm> The distance determination algorithm
  */
-std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgorithm(
+    const DistanceOptions &&options) {
     if (options.distanceAlgo == SDDA) {
-        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius,
-                                                                         Camera(options.focalLength,
-                                                                                options.pixelSize,
-                                                                                options.image.width,
-                                                                                options.image.height));
+        return std::make_unique<SphericalDistanceDeterminationAlgorithm>(options.radius, Camera(options.focalLength,
+            options.pixelSize, options.image.width, options.image.height));
     } else if (options.distanceAlgo == ISDDA) {
         return std::make_unique<IterativeSphericalDistanceDeterminationAlgorithm>(options.radius,
                                                                                   Camera(options.focalLength,
-                                                                                         options.pixelSize,
-                                                                                         options.image.width,
-                                                                                         options.image.height),
+                                                                                    options.pixelSize,
+                                                                                    options.image.width,
+                                                                                    options.image.height),
                                                                                   options.ISDDAMinIters,
                                                                                   options.ISDDAMaxRefresh,
                                                                                   options.ISDDADistRatio,
@@ -85,7 +87,7 @@ std::unique_ptr<DistanceDeterminationAlgorithm> ProvideDistanceDeterminationAlgo
  * 
  * @return std::unique_ptr<VectorGenerationAlgorithm> The vector generation algorithm
  */
-std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(DistanceOptions &&options) {
+inline std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(const DistanceOptions &&options) {
     Quaternion referenceOrientation = SphericalToQuaternion(options.refOrientation);
     if (options.calibrationData.header.version != emptyDFVer) {
         LOG_INFO("Using DataFile for calibration information");
@@ -101,6 +103,27 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
     }
 }
 
+/**
+ * Provides an EdgeFilteringAlgorithms ptr. Currently only
+ * allows no operations.
+ * 
+ * @param options The options to derive the edge filtering algorithm from
+ * 
+ * @return std::unique_ptr<EdgeFilteringAlgorithms> The edge filtering algorithm
+ */
+inline std::unique_ptr<EdgeFilteringAlgorithms> ProvideEdgeFilteringAlgorithm(const DistanceOptions &&options) {
+    std::unique_ptr<EdgeFilteringAlgorithms> pipeline = std::make_unique<EdgeFilteringAlgorithms>();
+    bool added = false;
+
+    if (options.enableNoOpEdgeFilter) {
+        pipeline->Complete(std::make_unique<NoOpEdgeFilter>());
+        added = true;
+    }
+
+    if (!added) return nullptr;
+    return pipeline;
+}
+
 // TODO: Uncomment when orbit stage is implemented
 /**
  * Provides an OrbitPropagationAlgorithm
@@ -109,7 +132,7 @@ std::unique_ptr<VectorGenerationAlgorithm> ProvideVectorGenerationAlgorithm(Dist
  * 
  * @return std::unique_ptr<OrbitPropagationAlgorithm> The orbit propagation algorithm
  */
-// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(OrbitOptions &&options) {
+// std::unique_ptr<OrbitPropagationAlgorithm> ProvideOrbitPropagationAlgorithm(const OrbitOptions &options) {
 //     return std::make_unique<ApproximateOrbitPropagationAlgorithm>(options.totalTime,
 //                                                                   options.dt,
 //                                                                   options.radius,

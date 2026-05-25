@@ -22,9 +22,9 @@ struct EarthSphericalVec3 {
 };
 
     /**
-     * Converts a celestial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
+     * Converts a equatorial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
      * 
-     * @param celestialVector The celestial vector to convert (in meters)
+     * @param equatorialVector The equatorial vector to convert (in meters)
      * @param gmst The current Greenwich Mean Sidereal Time value, in degrees
      * 
      * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters.
@@ -33,25 +33,25 @@ struct EarthSphericalVec3 {
      *         - y-axis points to 90°E longitude on the equator (0° lat, 90°E)
      *         - z-axis points to the North Pole (90°N lat)
      * 
-     * @pre celestialVector must be in the frame of the celestial (inertial)
+     * @pre equatorialVector must be in the frame of the equatorial (inertial)
      *      coordinate system NOT the camera coordinate system
      */
-    ECEFCoordinates GetEarthCoordinates(Vec3 &celestialVector, decimal gmst);
+    ECEFCoordinates GetEarthCoordinates(Vec3 &equatorialVector, decimal gmst);
 
     /**
-     * Obtains a celestial vector within Earth's Rotating Frame,
+     * Obtains a equatorial vector within Earth's Rotating Frame,
      * in longitude/lattitude/altitude
      * 
-     * @param celestialVector The celestial vector to convert
+     * @param equatorialVector The equatorial vector to convert
      * @param gmst The current GMST value, in degrees
      * 
-     * @return An EarthSphericalVec3 describing celestialVector
+     * @return An EarthSphericalVec3 describing equatorialVector
      * within Earth's Rotating Frame at time GMST
      * 
-     * @pre celestialVector must be in the frame of the celestial
+     * @pre equatorialVector must be in the frame of the equatorial
      * coordinate system NOT the camera coordinate system
      */
-    EarthSphericalVec3 GetEarthLLACoordinates(Vec3 &celestialVector, decimal gmst);
+    EarthSphericalVec3 GetEarthLLACoordinates(Vec3 &equatorialVector, decimal gmst);
 
 }  // namespace found
 

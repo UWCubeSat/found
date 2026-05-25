@@ -62,6 +62,13 @@
 // Infinity
 #define DECIMAL_INF          (DECIMAL(INFINITY))
 
+// Decimal tolerance for chechking equality of two decimals.
+#ifdef FOUND_FLOAT_MODE
+    #define DECIMAL_TOLERANCE       (DECIMAL(1e-3))          /* Tolerance for float */
+#else
+    #define DECIMAL_TOLERANCE       (DECIMAL(1e-6))          /* Tolerance for double */
+#endif
+
 // Math Functions wrapped with Decimal typecast
 #define DECIMAL_POW(base,power) (DECIMAL(std::pow(base, power)))
 #define DECIMAL_SQRT(x)         (DECIMAL(std::sqrt(x)))

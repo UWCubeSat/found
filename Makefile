@@ -52,6 +52,14 @@ DOXYGEN_AWESOME_URL := https://github.com/jothepro/$(DOXYGEN_AWESOME)/archive/re
 DOXYGEN_AWESOME_ZIP := $(CACHE_DIR)/v$(DOXYGEN_AWESOME_VERSION).tar.gz
 DOXYGEN_AWESOME_ARTIFACT := $(CACHE_DIR)/$(DOXYGEN_AWESOME)-$(DOXYGEN_AWESOME_VERSION)
 
+# Define the Eigen library
+EIGEN := eigen
+EIGEN_VERSION := 3.4.0
+EIGEN_URL := https://gitlab.com/libeigen/eigen/-/archive/$(EIGEN_VERSION)/eigen-$(EIGEN_VERSION).tar.gz
+EIGEN_CACHE_ARTIFACT := $(CACHE_DIR)/eigen-$(EIGEN_VERSION).tar.gz
+EIGEN_CACHE_DIR := $(CACHE_DIR)/eigen-$(EIGEN_VERSION)
+EIGEN_DIR := $(BUILD_LIBRARY_SRC_DIR)/eigen-$(EIGEN_VERSION)
+
 
 # Define all source and test code
 SRC := $(shell find $(SRC_DIR) -name "*.cpp")
@@ -88,8 +96,8 @@ endif
 LOGGING_MACROS_TEST := -DENABLE_LOGGING -DLOGGING_LEVEL=INFO
 
 # Compiler flags
-LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR)
-LIBS_TEST := $(TEST_LIBS) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
+LIBS := $(SRC_LIBS) -I$(BUILD_LIBRARY_SRC_DIR) -isystem $(EIGEN_DIR)
+LIBS_TEST := $(TEST_LIBS) -isystem $(EIGEN_DIR) -I$(GTEST_DIR)/$(GTEST)/include -I$(GTEST_DIR)/googlemock/include -pthread
 DEBUG_FLAGS := -ggdb -fno-omit-frame-pointer
 COVERAGE_FLAGS := --coverage
 CXXFLAGS := $(CXXFLAGS) -Wall -Wextra -Wno-missing-field-initializers -Werror -pedantic --std=gnu++17 -MMD $(LIBS) $(FOUND_FLOAT_MODE_MACRO)
@@ -154,7 +162,7 @@ all: $(COMPILE_SETUP_TARGET) \
 	 $(DOXYGEN_TARGET) \
 
 # The build setup target (sets up appropriate directories)
-$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR)
+$(COMPILE_SETUP_TARGET): compile_setup_message $(BUILD_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DOCUMENTATION_DIR)
@@ -173,11 +181,18 @@ $(STB_IMAGE_CACHE_ARTIFACT):
 	echo '#define STB_IMAGE_IMPLEMENTATION\n#include "stb_image/stb_image.h"' > $(STB_IMAGE_CACHE_ARTIFACT)
 	$(CXX) -I$(CACHE_DIR) -c $(STB_IMAGE_CACHE_ARTIFACT) -o $(STB_IMAGE_CACHE_DIR)/$(STB_IMAGE).o # Exclude CXXFLAGS because we know its fine
 
+# Eigen header-only library (download and extract)
+$(EIGEN_DIR): $(EIGEN_CACHE_ARTIFACT) $(BUILD_LIBRARY_SRC_DIR)
+	tar -xzf $(EIGEN_CACHE_ARTIFACT) -C $(BUILD_LIBRARY_SRC_DIR)
+$(EIGEN_CACHE_ARTIFACT):
+	mkdir -p $(CACHE_DIR)
+	wget $(EIGEN_URL) -P $(CACHE_DIR)
+
 # The compile target
 $(COMPILE_TARGET): $(COMPILE_SETUP_TARGET) compile_message $(BIN)
-$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR)
+$(BIN): $(SRC_OBJS) $(BIN_DIR) $(STB_IMAGE_DIR) $(EIGEN_DIR)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -o $(BIN) $(SRC_OBJS) $(LDFLAGS)
-$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR)
+$(BUILD_SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(STB_IMAGE_DIR) $(EIGEN_DIR)
 	mkdir -p $(@D)
 	$(CXX) $(OPTIMIZATION) $(CXXFLAGS) -c $< -o $@
 compile_message:

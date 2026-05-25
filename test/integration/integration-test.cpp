@@ -106,9 +106,9 @@ TEST_F(IntegrationTest, TestMainCalibrationGeneral) {
 
     ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
 
-    Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3)));
-    Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6)));
-    Quaternion rel = ref * loc.Conjugate();
+    Quaternion ref = SphericalToQuaternion(EulerAngles(DegToRad(1.1), DegToRad(1.2), DegToRad(1.3))).conjugate();
+    Quaternion loc = SphericalToQuaternion(EulerAngles(DegToRad(1.4), DegToRad(1.5), DegToRad(1.6))).conjugate();
+    Quaternion rel = loc.conjugate() * ref;
 
     DataFile expected{
         {},
@@ -190,8 +190,8 @@ TEST_F(IntegrationTest, TestIndependentDistancePipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -219,8 +219,8 @@ TEST_F(IntegrationTest, TestIndependentDistancePipelineWithISDDA) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -256,8 +256,8 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipeline) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 }
 
@@ -296,8 +296,8 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
     ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
     ASSERT_QUAT_EQ(SphericalToQuaternion(example_earth1.orientation), actual.relative_attitude, 1);
     ASSERT_GE(DEFAULT_MAG_ERR_TOL,
-              (example_earth1.position.Magnitude() - actual.positions[0].position.Magnitude())
-                / example_earth1.position.Magnitude());
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
     ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
 
     std::remove(other_path);
@@ -314,5 +314,31 @@ TEST_F(IntegrationTest, TestCalibrationDistanceCombinedPipelineOtherOutput) {
 
 //     ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
 // }
+// TODO: Remove/replace when noop-edge-filter is not needed.
+TEST_F(IntegrationTest, TestMainDistanceNoOpEdgeFilterEnabled) {
+    int argc = 14;
+    const char *argv[] = {"found", "distance",
+                        "--image", example_earth1.path,
+                        "--reference-as-orientation",
+                        "--camera-focal-length", example_earth1.FocalLength.c_str(),
+                        "--camera-pixel-size", example_earth1.PixelSize.c_str(),
+                        "--reference-orientation", "140,0,0",
+                        "--enable-noop-edge-filter",
+                        "--output-file", temp_df};
+
+    ASSERT_EQ(EXIT_SUCCESS, main(argc, const_cast<char **>(argv)));
+
+    std::ifstream file(temp_df);
+    DataFile actual = deserializeDataFile(file);
+
+    ASSERT_EQ(static_cast<size_t>(1), actual.header.num_positions);
+    ASSERT_QUAT_EQ_DEFAULT(Quaternion(1, 0, 0, 0), actual.relative_attitude);
+    ASSERT_GE(DEFAULT_MAG_ERR_TOL,
+              (example_earth1.position.norm() - actual.positions[0].position.norm())
+                / example_earth1.position.norm());
+    ASSERT_GE(DEFAULT_ARC_SEC_TOL, RadToArcSec(Angle(example_earth1.position, actual.positions[0].position)));
+
+    std::remove(temp_df);
+}
 
 }  // namespace found

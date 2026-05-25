@@ -147,10 +147,10 @@ inline void read(std::istream& stream, uint32_t& value) {
  *
  */
 inline void write(std::ostream& stream, const Quaternion& quat) {
-    write(stream, quat.real);
-    write(stream, quat.i);
-    write(stream, quat.j);
-    write(stream, quat.k);
+    write(stream, quat.w());
+    write(stream, quat.x());
+    write(stream, quat.y());
+    write(stream, quat.z());
 }
 
 /**
@@ -164,10 +164,12 @@ inline void write(std::ostream& stream, const Quaternion& quat) {
  *
  */
 inline void read(std::istream& stream, Quaternion& quat) {
-    read(stream, quat.real);
-    read(stream, quat.i);
-    read(stream, quat.j);
-    read(stream, quat.k);
+    decimal w, x, y, z;
+    read(stream, w);
+    read(stream, x);
+    read(stream, y);
+    read(stream, z);
+    quat = Quaternion(w, x, y, z);
 }
 
 /**
@@ -181,9 +183,9 @@ inline void read(std::istream& stream, Quaternion& quat) {
  *
  */
 inline void write(std::ostream& stream, const Vec3& v) {
-    write(stream, v.x);
-    write(stream, v.y);
-    write(stream, v.z);
+    write(stream, v.x());
+    write(stream, v.y());
+    write(stream, v.z());
 }
 
 /**
@@ -197,9 +199,11 @@ inline void write(std::ostream& stream, const Vec3& v) {
  *
  */
 inline void read(std::istream& stream, Vec3& v) {
-    read(stream, v.x);
-    read(stream, v.y);
-    read(stream, v.z);
+    decimal vx, vy, vz;
+    read(stream, vx);
+    read(stream, vy);
+    read(stream, vz);
+    v = Vec3(vx, vy, vz);
 }
 
 /**
