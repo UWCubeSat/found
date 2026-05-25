@@ -108,10 +108,10 @@ decimal getGreenwichMeanSiderealTime(DateTime &time) {
     decimal D_tt = JDT - J2000_JULIAN_DATE;  // Julian date - J2000.0
     decimal t = D_tt / DAYS_PER_JULIAN_CENTURY;  // Julian centuries since J2000.0
 
-    return DECIMAL(280.46061837) +
-           DECIMAL(360.98564736629) * D_tt +
-           (DECIMAL(0.000387933) * t * t) -
-           (t * t * t / DECIMAL(38710000.0));
+    return DECIMAL_GMST_AT_J2000_DEG +
+           DECIMAL_SIDEREAL_ROTATION_RATE_DEG_PER_DAY * D_tt +
+           (DECIMAL_PRECESSION_DRIFT_TERM * t * t) -
+           (t * t * t / DECIMAL_PRECESSION_DRIFT_DIVISOR);
 }
 
 decimal getCurrentGreenwichMeanSiderealTime() {

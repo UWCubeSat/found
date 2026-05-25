@@ -117,16 +117,8 @@ TEST_F(ParserTest, DistanceParserGeneral) {
 
     // Test Time (epochs in nanoseconds: 1762889400 seconds * NS_PER_SEC)
     DateTime expectedImageTime{1762889400000000000ULL, 2025, 11, 11, 19, 30, 0};
-    ASSERT_EQ(expectedImageTime.epochs, options.imageTime.epochs);
-    ASSERT_EQ(expectedImageTime.year, options.imageTime.year);
-    ASSERT_EQ(expectedImageTime.month, options.imageTime.month);
-    ASSERT_EQ(expectedImageTime.day, options.imageTime.day);
-    ASSERT_EQ(expectedImageTime.hour, options.imageTime.hour);
-    ASSERT_EQ(expectedImageTime.minute, options.imageTime.minute);
-    ASSERT_EQ(expectedImageTime.second, options.imageTime.second);
-    ASSERT_EQ(expectedImageTime.nanosecond, options.imageTime.nanosecond);
 
-    // Test other options
+    ASSERT_DATETIME_EQ(expectedImageTime, options.imageTime);
     ASSERT_DF_EQ_DEFAULT(expectedDataFile, options.calibrationData);
     ASSERT_FALSE(options.refAsOrientation);
     ASSERT_DECIMAL_EQ_DEFAULT(DECIMAL(1.5), options.focalLength);

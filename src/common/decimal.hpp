@@ -61,6 +61,14 @@
 #define DECIMAL_M_B_E        (DECIMAL_M_A_E * DECIMAL_SQRT(DECIMAL(1.0) - DECIMAL_M_E2_E))
 // Infinity
 #define DECIMAL_INF          (DECIMAL(INFINITY))
+// GMST at J2000.0 in degrees
+#define DECIMAL_GMST_AT_J2000_DEG (DECIMAL(280.46061837))
+// Sidereal rotation rate in degrees per day
+#define DECIMAL_SIDEREAL_ROTATION_RATE_DEG_PER_DAY (DECIMAL(360.98564736629))
+// Precession drift term
+#define DECIMAL_PRECESSION_DRIFT_TERM (DECIMAL(0.000387933))
+// Precession drift divisor
+#define DECIMAL_PRECESSION_DRIFT_DIVISOR (DECIMAL(38710000.0))
 
 // Decimal tolerance for chechking equality of two decimals.
 #ifdef FOUND_FLOAT_MODE

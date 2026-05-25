@@ -79,7 +79,7 @@ We can then use this calibration information to now make some position estimates
     --calibration-data example-df.found            \
     --camera-focal-length 85e-3                    \
     --camera-pixel-size 20e-6                      \
-    --reference-orientation 110,0,0                \
+    --reference-orientation 110,0,0
 ```
 
 For the distance flags:

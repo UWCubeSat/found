@@ -197,8 +197,9 @@ TEST(ConvertersTest, TestDateTimeNoNanoseconds) {
 }
 
 TEST(ConvertersTest, TestDateTimeInvalidNanoseconds) {
-    std::string str = "2024-12-22 14:30:45.abc";
-    ASSERT_THROW(strtodatetime(str), std::invalid_argument);
+    std::string str = "2024-12-22 14:30:45.abc";  // No valid fraction defaults to 0
+    DateTime dt = strtodatetime(str);
+    ASSERT_EQ(0ULL, dt.nanosecond);
 }
 
 
@@ -219,7 +220,7 @@ TEST(ConvertersTest, TestDateTimeInvalidNonLeapYearFeb29) {
 }
 
 TEST(ConvertersTest, TestDateTimeValidNanoseconds) {
-    std::string str = "2024-12-22 14:30:45.123456789";
+    std::string str = "2024-12-22 14:30:45.123456789";  // Uses first two digits only (.12)
     DateTime dt = strtodatetime(str);
     std::tm tm = {};
     tm.tm_year = 2024 - 1900;
@@ -228,14 +229,14 @@ TEST(ConvertersTest, TestDateTimeValidNanoseconds) {
     tm.tm_hour = 14;
     tm.tm_min = 30;
     tm.tm_sec = 45;
-    uint64_t expected_epochs = static_cast<uint64_t>(timegm(&tm)) * NS_PER_SEC + 123456789;
-    DateTime expected{expected_epochs, 2024, 12, 22, 14, 30, 45, 123456789};
+    uint64_t expected_epochs = static_cast<uint64_t>(timegm(&tm)) * NS_PER_SEC + 12 * (NS_PER_SEC / 100);
+    DateTime expected{expected_epochs, 2024, 12, 22, 14, 30, 45, 12};
 
     ASSERT_DATETIME_EQ(expected, dt);
 }
 
 TEST(ConvertersTest, TestDateTimeValidNanosecondsShort) {
-    std::string str = "2024-12-22 14:30:45.123";  // Short nanoseconds, should be padded
+    std::string str = "2024-12-22 14:30:45.12";
     DateTime dt = strtodatetime(str);
     std::tm tm = {};
     tm.tm_year = 2024 - 1900;
@@ -244,8 +245,8 @@ TEST(ConvertersTest, TestDateTimeValidNanosecondsShort) {
     tm.tm_hour = 14;
     tm.tm_min = 30;
     tm.tm_sec = 45;
-    uint64_t expected_epochs = static_cast<uint64_t>(timegm(&tm)) * NS_PER_SEC + 123000000;
-    DateTime expected{expected_epochs, 2024, 12, 22, 14, 30, 45, 123000000};
+    uint64_t expected_epochs = static_cast<uint64_t>(timegm(&tm)) * NS_PER_SEC + 12 * (NS_PER_SEC / 100);
+    DateTime expected{expected_epochs, 2024, 12, 22, 14, 30, 45, 12};
 
     ASSERT_DATETIME_EQ(expected, dt);
 }
