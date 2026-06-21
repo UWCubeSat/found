@@ -16,32 +16,29 @@ namespace found {
 #define MINUTES_TOLERANCE 1
 #define HOURS_TOLERANCE 1
 
-TEST(TimeTest, TestGetUTCTime) {
-    // Get current time point from system_clock
-    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));  // Ensure we have a different time point
-    DateTime actual = getUTCTime();
-
-    // Duration since epoch in nanoseconds
-    std::chrono::nanoseconds epoch_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
-
-    // Convert to time_t (epoch seconds)
+// Shared assertion body for getUTCTime / getUT1Time
+static void AssertCurrentDateTime(const DateTime &actual,
+                                  std::chrono::system_clock::time_point now,
+                                  uint64_t epoch_offset_ns,
+                                  uint64_t second_offset) {
+    auto epoch_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
     std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm *expected = std::gmtime(&now_c);
 
-    // Convert to UTC calendar time
-    std::tm* expected = std::gmtime(&now_c);
+    const uint64_t epoch_lo = static_cast<uint64_t>(epoch_ns.count()) + epoch_offset_ns;
+    ASSERT_RANGE(actual.epochs, epoch_lo, epoch_lo + 5 * NS_PER_SEC);  // 5 seconds tolerance
 
-    // Check the nanoseconds with tolerance
-    ASSERT_RANGE(actual.epochs,
-                 static_cast<uint64_t>(epoch_ns.count()),
-                 static_cast<uint64_t>(epoch_ns.count() + 5 * NS_PER_SEC));  // 5 seconds tolerance
     // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
     ASSERT_EQ(static_cast<uint64_t>(expected->tm_year + 1900), actual.year);
     // NOTE: In the rare case you run this when the month changes in UTC, this may fail
     ASSERT_EQ(static_cast<uint64_t>(expected->tm_mon + 1), actual.month);
-    if (expected->tm_hour == 23 &&
-            (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
-            (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
+
+    const bool min_near_rollover =
+        expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE;
+    const bool sec_near_rollover =
+        expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE;
+
+    if (expected->tm_hour == 23 && min_near_rollover && sec_near_rollover) {
         ASSERT_RANGE(actual.day,
                      static_cast<uint64_t>(expected->tm_mday),
                      static_cast<uint64_t>(expected->tm_mday + 1));
@@ -49,9 +46,7 @@ TEST(TimeTest, TestGetUTCTime) {
         ASSERT_EQ(static_cast<uint64_t>(expected->tm_mday), actual.day);
     }
 
-    // Check the hour with tolerance if warranted
-    if ((expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
-        (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
+    if (min_near_rollover && sec_near_rollover) {
         ASSERT_RANGE(actual.hour,
                      static_cast<uint64_t>(expected->tm_hour),
                      static_cast<uint64_t>(expected->tm_hour + HOURS_TOLERANCE));
@@ -59,8 +54,7 @@ TEST(TimeTest, TestGetUTCTime) {
         ASSERT_EQ(static_cast<uint64_t>(expected->tm_hour), actual.hour);
     }
 
-    // Check the minute with tolerance if warranted
-    if (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE) {
+    if (sec_near_rollover) {
         ASSERT_RANGE(actual.minute,
                      static_cast<uint64_t>(expected->tm_min),
                      static_cast<uint64_t>(expected->tm_min + MINUTES_TOLERANCE));
@@ -68,70 +62,23 @@ TEST(TimeTest, TestGetUTCTime) {
         ASSERT_EQ(static_cast<uint64_t>(expected->tm_min), actual.minute);
     }
 
-    // Check the second with tolerance
     ASSERT_RANGE(actual.second,
-                 static_cast<uint64_t>(expected->tm_sec),
-                 static_cast<uint64_t>(expected->tm_sec + SECONDS_TOLERANCE));
+                 static_cast<uint64_t>(expected->tm_sec) + second_offset,
+                 static_cast<uint64_t>(expected->tm_sec) + second_offset + SECONDS_TOLERANCE);
+}
+
+TEST(TimeTest, TestGetUTCTime) {
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
+    DateTime actual = getUTCTime();
+    AssertCurrentDateTime(actual, now, 0, 0);
 }
 
 TEST(TimeTest, TestGetUT1Time) {
-    // Get current time point from system_clock
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));  // Ensure we have a different time point
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME));
     DateTime actual = getUT1Time();
-
-    // Duration since epoch in nanoseconds)
-    std::chrono::nanoseconds epoch_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch());
-
-    // Convert to time_t (epoch seconds)
-    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-
-    // Convert to UTC calendar time
-    std::tm* expected = std::gmtime(&now_c);
-
-    // Check the nanoseconds with tolerance
-    // UT1 = UTC + AVG_DELTA_UT1, so add that offset to expected
-    uint64_t delta_ut1_ns = AVG_DELTA_UT1_NS;
-    ASSERT_RANGE(actual.epochs,
-                 static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns,
-                 static_cast<uint64_t>(epoch_ns.count()) + delta_ut1_ns + 5 * NS_PER_SEC);  // 5 seconds tolerance
-    // NOTE: In the rare case you run this at midnight on new years UTC, this may fail
-    ASSERT_EQ(static_cast<uint64_t>(expected->tm_year + 1900), actual.year);
-    // NOTE: In the rare case you run this when the month changes in UTC, this may fail
-    ASSERT_EQ(static_cast<uint64_t>(expected->tm_mon + 1), actual.month);
-    if (expected->tm_hour == 23 &&
-            (expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
-            (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
-        ASSERT_RANGE(actual.day,
-                     static_cast<uint64_t>(expected->tm_mday),
-                     static_cast<uint64_t>(expected->tm_mday + 1));
-    } else {
-        ASSERT_EQ(static_cast<uint64_t>(expected->tm_mday), actual.day);
-    }
-
-    // Check the hour with tolerance if warranted
-    if ((expected->tm_min > 60 - MINUTES_TOLERANCE && expected->tm_min < MINUTES_TOLERANCE) &&
-        (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE)) {
-        ASSERT_RANGE(actual.hour,
-                     static_cast<uint64_t>(expected->tm_hour),
-                     static_cast<uint64_t>(expected->tm_hour + HOURS_TOLERANCE));
-    } else {
-        ASSERT_EQ(static_cast<uint64_t>(expected->tm_hour), actual.hour);
-    }
-
-    // Check the minute with tolerance if warranted
-    if (expected->tm_sec > 60 - SECONDS_TOLERANCE && expected->tm_sec < SECONDS_TOLERANCE) {
-        ASSERT_RANGE(actual.minute,
-                     static_cast<uint64_t>(expected->tm_min),
-                     static_cast<uint64_t>(expected->tm_min + MINUTES_TOLERANCE));
-    } else {
-        ASSERT_EQ(static_cast<uint64_t>(expected->tm_min), actual.minute);
-    }
-
-    // Check the second with tolerance
-    ASSERT_RANGE(actual.second,
-                 static_cast<uint64_t>(expected->tm_sec + AVG_DELTA_UT1),
-                 static_cast<uint64_t>(expected->tm_sec + + AVG_DELTA_UT1 + SECONDS_TOLERANCE));
+    AssertCurrentDateTime(actual, now, AVG_DELTA_UT1_NS, static_cast<uint64_t>(AVG_DELTA_UT1));
 }
 
 TEST(TimeTest, TestGetJulianDateNow) {
