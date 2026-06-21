@@ -102,7 +102,8 @@ void DistancePipelineExecutor::OutputResults() {
             : SphericalToQuaternion(this->options_.relOrientation);  // GCOVR_EXCL_LINE
         outputDF.positions = std::make_unique<LocationRecord[]>(1);
     }
-    outputDF.positions[outputDF.header.num_positions++] = {static_cast<uint64_t>(getUT1Time().epochs), *positionVector};
+    // epochs is already in nanoseconds
+    outputDF.positions[outputDF.header.num_positions++] = {this->options_.imageTime.epochs, *positionVector};
     if (this->options_.outputFile != "") {
         std::ofstream outputFile(this->options_.outputFile);
         serializeDataFile(outputDF, outputFile);
@@ -133,7 +134,7 @@ void OrbitPipelineExecutor::OutputResults() {
                                              << futurePosition.position.y() << ", "
                                              << futurePosition.position.z() << ") m"
                                              << " at time "
-                                             << futurePosition.timestamp << " s");
+                                             << futurePosition.timestamp << " ns");
 }
 
 }  // namespace found

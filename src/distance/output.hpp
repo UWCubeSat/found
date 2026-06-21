@@ -6,21 +6,37 @@
 
 namespace found {
 
+/**
+ * Represents Earth coordinates in spherical form (Longitude, Latitude, Altitude)
+ * with associated GMST value
+ */
+struct EarthSphericalVec3 {
+    /// Longitude in degrees
+    decimal longitude;
+    /// Latitude in degrees
+    decimal latitude;
+    /// Altitude in meters (distance from Earth's center)
+    decimal altitude;
+    /// Greenwich Mean Sidereal Time in degrees
+    decimal gmst;
+};
+
     /**
-     * Represents an Earth-centric
-     * Spherical Vector with time
-     * information
+     * Converts a equatorial vector to Earth-Centered, Earth-Fixed (ECEF) coordinates.
+     * 
+     * @param equatorialVector The equatorial vector to convert (in meters)
+     * @param gmst The current Greenwich Mean Sidereal Time value, in degrees
+     * 
+     * @return An ECEFCoordinates representing the ECEF coordinates (x, y, z) in meters.
+     *         The coordinates are in the Earth-Centered, Earth-Fixed frame where:
+     *         - x-axis points to the intersection of the equator and prime meridian (0° lat, 0° lon)
+     *         - y-axis points to 90°E longitude on the equator (0° lat, 90°E)
+     *         - z-axis points to the North Pole (90°N lat)
+     * 
+     * @pre equatorialVector must be in the frame of the equatorial (inertial)
+     *      coordinate system NOT the camera coordinate system
      */
-    struct EarthSphericalVec3 {
-        /// Longitude (RA, degrees)
-        decimal longitude;
-        /// Lattitude (DE, degrees)
-        decimal lattitude;
-        /// Radius NOT Altitude (r, meters)
-        decimal radius;
-        /// Greenwich Mean Sidereal Time (degrees)
-        decimal GMST;
-    };
+    ECEFCoordinates GetEarthCoordinates(Vec3 &equatorialVector, decimal gmst);
 
     /**
      * Obtains a equatorial vector within Earth's Rotating Frame,
@@ -35,11 +51,7 @@ namespace found {
      * @pre equatorialVector must be in the frame of the equatorial
      * coordinate system NOT the camera coordinate system
      */
-    EarthSphericalVec3 GetEarthCoordinates(Vec3 &equatorialVector, decimal gmst);
-
-    // NOTE: I purposefully don't include a GetEarthCoordinates(Vec3 &equatorialVector).
-    // This is becuase equatorialVector and gmst are derived at different times, though
-    // they originate from the same time point.
+    EarthSphericalVec3 GetEarthLLACoordinates(Vec3 &equatorialVector, decimal gmst);
 
 }  // namespace found
 

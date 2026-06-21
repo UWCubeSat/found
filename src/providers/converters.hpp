@@ -7,9 +7,11 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
+#include <ctime>
 
 #include "common/logging.hpp"
-
+#include "common/time/time.hpp"
 #include "common/spatial/attitude-utils.hpp"
 #include "common/style.hpp"
 #include "common/decimal.hpp"
@@ -119,6 +121,44 @@ inline Image strtoimage(const std::string &str) {
         throw std::runtime_error("Could not load image " + str + ": " + stbi_failure_reason());
     }
     return image;
+}
+
+/**
+ * Converts a string to time
+ *
+ * @param str The string to convert (YYYY-MM-DD HH:MM:SS[.XX], XX is 0-99)
+ *
+ * @return The time from epoch that the string represents (epochs in nanoseconds)
+ */
+inline DateTime strtodatetime(const std::string &str) {
+    std::tm tm = {};
+    const char *end = strptime(str.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
+    if (end == nullptr) {
+        throw std::invalid_argument("Invalid datetime format: " + str);
+    }
+
+    unsigned frac = 0;
+    std::sscanf(end, ".%2u", &frac);
+
+    // timegm normalizes tm in place; comparing before/after rejects values like
+    // Feb 30 (->Mar 2), :60 seconds (->next minute), or Feb 29 of a non-leap year.
+    const std::tm input = tm;
+    const std::time_t seconds = timegm(&tm);
+    if (tm.tm_year != input.tm_year || tm.tm_mon != input.tm_mon
+            || tm.tm_mday != input.tm_mday || tm.tm_sec != input.tm_sec) {
+        throw std::invalid_argument("Invalid datetime: " + str);
+    }
+
+    return {
+        static_cast<uint64_t>(seconds) * NS_PER_SEC + frac * (NS_PER_SEC / 100),
+        static_cast<uint64_t>(input.tm_year + 1900),
+        static_cast<uint64_t>(input.tm_mon + 1),
+        static_cast<uint64_t>(input.tm_mday),
+        static_cast<uint64_t>(input.tm_hour),
+        static_cast<uint64_t>(input.tm_min),
+        static_cast<uint64_t>(input.tm_sec),
+        frac,
+    };
 }
 
 /**

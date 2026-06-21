@@ -24,6 +24,7 @@
 #include "providers/converters.hpp"
 #include "datafile/datafile.hpp"
 #include "datafile/serialization.hpp"
+#include "common/time/time.hpp"
 
 /// Version for an empty/null Data File
 #define emptyDFVer 0U
@@ -48,6 +49,7 @@ FOUND_CLI_OPTION("output-file"          , std::string       , outputFile        
 // TODO: Remove enable-noop-edge-filter when the first edge filtering algorithm is implemented.                                                                                                                    
 #define DISTANCE \
 FOUND_CLI_OPTION("image"                   , found::Image      , image               , {}                         , found::strtoimage(optarg)  , kNoDefaultArgument, REQ_ASSIGN, "The image to process (JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC)") \
+FOUND_CLI_OPTION("image-time"              , found::DateTime   , imageTime           , {}                         , found::strtodatetime(optarg), kNoDefaultArgument, REQ_ASSIGN, "Image capture time (in UT1 in format YYYY-MM-DD HH:MM:SS[.NS], NS is 0-99)" ) \
 FOUND_CLI_OPTION("calibration-data"        , found::DataFile   , calibrationData     , {defaultDFHead}            , found::strtodf(optarg)     , kNoDefaultArgument, REQ_ASSIGN, "The calibration data (*.found)"                               ) \
 FOUND_CLI_OPTION("reference-as-orientation", bool              , refAsOrientation    , false                      , found::strtobool(optarg)   , true              , OPT_ASSIGN, "Use reference-orientation as the orientation of the camera"   ) \
 FOUND_CLI_OPTION("camera-focal-length"     , decimal           , focalLength         , 0.012                      , found::strtodecimal(optarg), kNoDefaultArgument, REQ_ASSIGN, "The camera focal length (m)"                                  ) \

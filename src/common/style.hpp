@@ -87,7 +87,7 @@ typedef std::vector<Component> Components;
  */
 struct LocationRecord {
     /**
-     * @brief Timestamp associated with the position, in microseconds or appropriate units.
+     * @brief Timestamp associated with the position, in nanoseconds since epoch.
      */
     uint64_t timestamp;
 
